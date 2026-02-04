@@ -32,7 +32,7 @@ export class AppComponent {
                 }),
                 tap((data: any) => {
                     let title = data.title;
-                    title = (title ? title + ' | ' : '') + 'وزارة الرياضة والشباب-دولة قطر';
+                    title = (title ? title + ' | ' : '') + 'الهيئة العامة للجمارك';
                     this.titleService.setTitle(title);
                 }),
             )
