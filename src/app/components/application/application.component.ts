@@ -102,7 +102,14 @@ export class ApplicationComponent {
     private ServiceFieldsByActionsApiResponse!: GetServiceFieldsByActionsApiResponse;
     translations = signal<any>(null);
     editApp = signal<any>('');
-    apiBody!: ServiceApiPayload;
+    apiBody: ServiceApiPayload | any = {
+        FKServiceID: null,
+        FKProcessID: null,
+        FKCurrentStatusID: null,
+        FKRoleID: null,
+        RequestID: null,
+        SpActionName: null
+    };
     requestID!: string;
     isPopup: boolean = false;
     apiLoading: boolean = false;
@@ -332,7 +339,7 @@ export class ApplicationComponent {
         }, { allowSignalWrites: true });
 
         effect(() => {
-            if (!!this.editApp() || !this.apiBody.FKCurrentStatusID && this.getUIResponse()) {
+            if (this.getUIResponse() && (!!this.editApp() || !this.apiBody.FKCurrentStatusID)) {
                 const allFields: FieldJson[] = [];
                 this.visibleNavigationTabs()!.forEach((tab) => {
                     tab.TabSections.forEach((section) => {
@@ -472,7 +479,8 @@ export class ApplicationComponent {
     }
     ngOnInit() {
         this.openLoader();
-        this.route.queryParams.subscribe((params: Params) => {
+        this.route.queryParams.subscribe((params: any) => {
+            this.apiBody.FKServiceID = params.ServiceID
             this.openLoader();
             this.currentTabIndex.set(1);
             if (!this.newApplicationService.newRequestData()) {
