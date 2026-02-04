@@ -1,0 +1,30 @@
+.licence-card {
+  height: auto;
+}
+@media (min-width: 768px) and (max-width: 874px) {
+  .licence-card {
+    height: 426px; 
+  }
+}
+@media (min-width: 875px) and (max-width: 990px) {
+  .licence-card {
+    height: 371px; 
+  }
+}
+@media (min-width: 991px) and (max-width: 1047px) {
+  .licence-card {
+    height: 349px; 
+  }
+}
+
+@media (min-width: 1047px) and (max-width: 1424px) {
+  .licence-card {
+    height: 324px; 
+  }
+}
+
+@media (min-width: 1424px) {
+  .licence-card {
+    height: 293px; 
+  }
+}

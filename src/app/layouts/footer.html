@@ -1,0 +1,140 @@
+﻿<div>
+    <div class="flex flex-col md:flex-row ps-5 justify-evenly mx-auto w-full gap-3">
+        <div class="grid grid-cols-5">
+            <div class="col-span-5 md:col-span-4 ps-5 mx-auto mb-2 md:mb-0 md:mx-0 space-y-4">
+                <img class="h-20 block p-[6px] object-contain object-center rounded bg-primary" src="/assets/images/logo-2022.png"
+                    alt="">
+                <div class="flex mx-auto md:mx-0 gap-2">
+                    <img src="https://www.msy.gov.qa/wp-content/themes/msy/assets/images/qgcc.png"
+                        class="rounded-xl overflow-hidden w-36" alt="Qatar Government Contact Center">
+                    <a class="mada_logo" target="_blank"
+                        href="https://monitor.mada.org.qa/website/ar/ExWKZfLBpPHfzeMR3cNmLptiZNlBJgbfZjcxfAzqaESzc87OjdI7h7ClWBIe">
+                        <img src="https://monitor.mada.org.qa/acc/ar/ExWKZfLBpPHfzeMR3cNmLptiZNlBJgbfZjcxfAzqaESzc87OjdI7h7ClWBIe"
+                            class="w-12" alt="اعتماد مدى للنفاذ الرقمي"></a>
+                </div>
+            </div>
+           <!--  <div class="col-span-5 md:col-span-4 ps-5 pe-6">
+                <button class="btn bg-[#60583d] text-white w-full hover:opacity-85">
+                    <span> {{"footer.ratingBtn" | translate}} </span>
+                </button>
+            </div> -->
+        </div>
+        @if(tabsMenuData() && tabsMenuData().length > 0){
+        <div class="flex flex-col text-center md:text-start">
+            <h3 class="text-primary font-bold text-xl">
+                {{ 'applciationsPage.mainTabs.myApplications' | translate }}
+            </h3>
+            <ul class="space-y-2 mt-3">
+                @for(item of tabsMenuData(); track $index){
+                <li>
+                    <a class="footer-link hover:text-primary cursor-pointer"
+                        (click)="navigateToNewLink($event, item.TitleEn)">
+                        {{ store.index.locale === 'en' ? item.TitleEn : item.TitleAr }}
+                    </a>
+                </li>
+                }
+            </ul>
+        </div>
+        }
+        @if(servicesMenuData() && servicesMenuData().length > 0){
+        <div class="text-center md:text-start col-span-2">
+            <h3 class="text-primary font-bold text-xl">
+                {{ 'footer.usedServices' | translate}}
+            </h3>
+            <ul class="space-y-2 mt-3 me-3">
+                @for(item of servicesMenuData().slice(0,5); track $index){
+                <li>
+                    <a routerLink="/Services/NewRequest" class="footer-link hover:text-primary"
+                        (click)="navigateToDetails(item, $event)">
+                        {{ store.index.locale === 'en' ? item.ServiceTitleEn : item.ServiceTitleAr }}
+                    </a>
+                </li>
+                }
+
+            </ul>
+        </div>
+        }
+        <div class="text-center md:text-start">
+            <h3
+                class="font-bold text-lg flex items-center gap-1 justify-center ltr:md:justify-end rtl:md:justify-start ltr:flex-row-reverse rtl:flex-row">
+                {{ 'breadCrumb.link3' | translate }}
+                <span>
+                    <img src="/assets/images/faq/helpTel.svg" target="_blank" class="w-4" alt="phone icon">
+                </span>
+            </h3>
+            <ul>
+                <li class="text-primary font-bold my-3 direction-ltr text-base md:rtl:text-end">+974 4021 111</li>
+                <!-- <li class="my-2">
+                    <a routerLink="FAQS" class="footer-link hover:text-primary">
+                        {{ translations()?.faqLink.label}}
+                    </a>
+                </li> -->
+                <li>
+                    <a routerLink="ComplaintsRequests" class="footer-link hover:text-primary" (click)="selectedLink({
+    'id': 99,
+    'TitleAr': 'طلبات الشكاوى',
+    'TitleEn': 'Complaints Requests',
+    'itemId': 78,
+    'Icon': '',
+    'ItemOrderID': 1,
+    'PositionID': 2829,
+    'PositionName': 'Middle',
+    'ItemURL': 'ComplaintsRequests',
+    'ItemURLEn': '',
+    'IsDefaultItem': true,
+    'MenuStyleID': 2853,
+    'MenuStyle': 'Submenu Dropdown',
+    'InboxType': 'ComplaintsRequests',
+    'HomeItem': false,
+    'TabStyleID': 2846,
+    'TabStyle': 'RequestCard',
+    'Statuses': '2878,2879,2880,2881',
+    'ExtraCondition': '',
+    'Services': '7008',
+    'ServicesType': 'ComplaintService',
+    'ItemLevel': 2,
+    'ServiceID': 0,
+    'FKProcessID': '',
+    'parentId': 48
+}, $event)">
+                        {{translations()?.complaintRequests.label}}
+                    </a>
+                </li>
+            </ul>
+            <h3 class="text-primary font-bold text-xl mt-3">
+                {{ 'footer.social' | translate}}
+            </h3>
+            <ul class="flex gap-3 my-3 justify-center md:justify-start">
+                <li>
+                    <a href="https://www.instagram.com/msyqatar/" target="_blank" aria-label="Follow us on Instagram">
+                        <div
+                            class="border-[#707070] border p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60 flex items-center justify-center rounded-full">
+                            <img src="/assets/images/faq/insta.svg" class="w-4 " alt="instagram icon">
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://twitter.com/msyqatar" target="_blank" aria-label="Follow us on Twitter">
+                        <div
+                            class="border-[#707070] border p-2 flex hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60 items-center justify-center rounded-full">
+                            <img src="/assets/images/faq/twitter-x.svg" class="w-4 " alt="twitter icon">
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.msy.gov.qa/%d8%aa%d9%88%d8%a7%d8%b5%d9%84-%d9%85%d8%b9%d9%86%d8%a7/"
+                        aria-label="Contact us by phone">
+                        <div
+                            class="border-[#707070] border p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60 flex items-center justify-center rounded-full">
+                            <img src="/assets/images/faq/tel.svg" class="w-4 " alt="contact us icon">
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+    <div class="px-6 text-center text-white bg-[#595959] py-7" [ngClass]=" store.index.locale == 'en'? 'text-base': ''">
+        {{
+        'footer.copyright' | translate}} {{ currYear }}</div>
+</div>

@@ -1,0 +1,356 @@
+/* Enhanced Table Styles */
+.modern-table {
+  @apply shadow-sm border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden;
+}
+
+.modern-table .ng-datatable-header {
+  @apply bg-gray-50 dark:bg-gray-800;
+}
+
+.modern-table .ng-datatable-header th {
+  @apply text-gray-700 dark:text-gray-300 font-semibold text-sm border-b border-gray-200 dark:border-gray-700 px-4 py-3;
+}
+
+.modern-table .ng-datatable-body tr {
+  @apply border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150;
+}
+
+.modern-table .ng-datatable-body td {
+  @apply px-4 py-3 text-sm text-gray-900 dark:text-gray-100;
+}
+
+.modern-table .ng-datatable-body tr:last-child {
+  @apply border-b-0;
+}
+
+/* Date Filter Styles */
+.date-filter-container {
+  @apply bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-3 border border-blue-200 dark:border-blue-800;
+}
+
+.date-input {
+  @apply px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary/20 dark:focus:border-primary transition-all duration-200 min-w-[140px];
+}
+
+.date-input:focus {
+  @apply shadow-sm;
+}
+
+/* Flatpickr Custom Styles */
+.flatpickr-calendar {
+  @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg;
+  font-family: inherit !important;
+}
+
+.flatpickr-calendar.arrowTop:before {
+  @apply border-b-gray-200 dark:border-b-gray-700;
+}
+
+.flatpickr-calendar.arrowTop:after {
+  @apply border-b-white dark:border-b-gray-800;
+}
+
+.flatpickr-months {
+  @apply bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700;
+}
+
+.flatpickr-month {
+  @apply text-gray-900 dark:text-white;
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  @apply bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600;
+}
+
+.flatpickr-current-month input.cur-year {
+  @apply bg-transparent text-gray-900 dark:text-white;
+}
+
+.flatpickr-weekdays {
+  @apply bg-gray-50 dark:bg-gray-800;
+}
+
+.flatpickr-weekday {
+  @apply text-gray-600 dark:text-gray-400 font-medium;
+}
+
+.flatpickr-days {
+  @apply bg-white dark:bg-gray-800;
+}
+
+.flatpickr-day {
+  @apply text-gray-900 dark:text-white border-0;
+}
+
+.flatpickr-day:hover {
+  @apply bg-primary/10 text-primary;
+}
+
+.flatpickr-day.selected {
+  @apply bg-primary text-white;
+}
+
+.flatpickr-day.today {
+  @apply bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-semibold;
+}
+
+.flatpickr-day.today:hover {
+  @apply bg-primary text-white;
+}
+
+.flatpickr-day.inRange {
+  @apply bg-primary/20 text-primary;
+}
+
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+  @apply bg-primary text-white;
+}
+
+.flatpickr-prev-month,
+.flatpickr-next-month {
+  @apply text-gray-600 dark:text-gray-400 hover:text-primary;
+}
+
+/* RTL Support for Flatpickr */
+.flatpickr-calendar[dir="rtl"] {
+  direction: rtl;
+}
+
+.flatpickr-calendar[dir="rtl"] .flatpickr-prev-month {
+  right: auto;
+  left: 12px;
+}
+
+.flatpickr-calendar[dir="rtl"] .flatpickr-next-month {
+  left: auto;
+  right: 12px;
+}
+
+/* Filter Badge Styles */
+.filter-badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border transition-all duration-200;
+}
+
+.filter-badge.active {
+  @apply bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800;
+}
+
+.filter-badge.clear {
+  @apply bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200 hover:border-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600;
+}
+
+.filter-badge.clear-all {
+  @apply bg-red-50 text-red-600 border-red-200 hover:bg-red-100 hover:border-red-300 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/40;
+}
+
+/* Search Input Enhancement */
+.search-input-container {
+  position: relative;
+}
+
+.search-input-container input:focus {
+  @apply ring-2 ring-primary/20 border-primary shadow-sm;
+}
+
+/* Status Badge Styles */
+.status-badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.status-badge.old {
+  @apply bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300;
+}
+
+.status-badge.new {
+  @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300;
+}
+
+/* Value Change Indicators */
+.value-was {
+  @apply bg-red-50 dark:bg-red-900/20 border-l-2 border-red-400 px-2 py-1 rounded text-gray-600 dark:text-gray-400;
+}
+
+.value-is {
+  @apply bg-green-50 dark:bg-green-900/20 border-l-2 border-green-400 px-2 py-1 rounded text-gray-600 dark:text-gray-400;
+}
+
+/* Tab Enhancement */
+.tab-button {
+  @apply relative transition-all duration-300;
+}
+
+.tab-button.active::after {
+  content: '';
+  @apply absolute bottom-0 left-0 right-0 h-0.5 bg-primary;
+}
+
+/* Export Button Animation */
+.export-btn {
+  @apply transform transition-all duration-200 hover:scale-105 active:scale-95;
+}
+
+.export-btn:disabled {
+  @apply transform-none hover:scale-100;
+}
+
+/* Filter Controls Layout */
+.filter-controls {
+  @apply flex flex-wrap items-center gap-3;
+}
+
+.filter-controls > * {
+  @apply flex-shrink-0;
+}
+
+/* Date Range Display */
+.date-range-display {
+  @apply text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded;
+}
+
+/* Loading States */
+.loading-skeleton {
+  @apply animate-pulse bg-gray-200 dark:bg-gray-700 rounded;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+  .modern-table .ng-datatable-body td {
+    @apply px-2 py-2 text-xs;
+  }
+  
+  .modern-table .ng-datatable-header th {
+    @apply px-2 py-2 text-xs;
+  }
+  
+  .filter-controls {
+    @apply flex-col items-stretch gap-2;
+  }
+  
+  .date-input {
+    @apply w-full;
+  }
+}
+
+/* Custom Scrollbar */
+.modern-table .ng-datatable-body::-webkit-scrollbar {
+  @apply w-2 h-2;
+}
+
+.modern-table .ng-datatable-body::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800 rounded;
+}
+
+.modern-table .ng-datatable-body::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded hover:bg-gray-400 dark:hover:bg-gray-500;
+}
+
+/* Pagination Enhancement */
+.ng-datatable-pagination {
+  @apply border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-4 py-3;
+}
+
+.ng-datatable-pagination .pagination-info {
+  @apply text-sm text-gray-700 dark:text-gray-300;
+}
+
+/* Empty State */
+.no-data-message {
+  @apply text-center py-12 text-gray-500 dark:text-gray-400;
+}
+
+.no-data-message svg {
+  @apply w-12 h-12 mx-auto mb-4 text-gray-300 dark:text-gray-600;
+}
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Enhanced Modal Styles */
+.modal-content {
+  @apply bg-white dark:bg-gray-900 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700;
+}
+
+.modal-header {
+  @apply bg-gradient-to-r from-primary to-primary/90 text-white rounded-t-lg;
+}
+
+/* Button Hover Effects */
+.btn-hover-effect {
+  @apply transition-all duration-200 hover:shadow-md active:scale-95;
+}
+
+/* Search Results Highlight */
+.search-highlight {
+  @apply bg-yellow-200 dark:bg-yellow-800 px-1 rounded;
+}
+
+/* Data Cell Enhancements */
+.data-cell {
+  @apply max-w-xs truncate;
+}
+
+.data-cell:hover {
+  @apply overflow-visible whitespace-normal;
+}
+
+/* Icon Animations */
+.icon-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Tooltip Enhancements */
+.tooltip-content {
+  @apply bg-gray-900 text-white text-xs rounded px-2 py-1 max-w-xs;
+}
+
+/* Focus States */
+.focus-ring {
+  @apply focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none;
+}
+
+/* Success/Error States */
+.success-state {
+  @apply text-green-600 bg-green-50 border-green-200 dark:text-green-400 dark:bg-green-900/20 dark:border-green-800;
+}
+
+.error-state {
+  @apply text-red-600 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-900/20 dark:border-red-800;
+}

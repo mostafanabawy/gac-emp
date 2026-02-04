@@ -1,0 +1,850 @@
+<app-bread-crumps [pageName]="pageName" [url]="itemURL"></app-bread-crumps>
+
+<div *ngIf="isSearchCollapsed && rows.length > 0" class="mb-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="flex flex-wrap items-center gap-3">
+        <div *ngIf="searchCriteria.length > 0" class="flex flex-wrap items-center gap-2 flex-1">
+            <span class="text-sm font-semibold text-gray-700">
+                {{ translations()?.SearchResultFor?.label }}
+            </span>
+            <div class="flex flex-wrap gap-2">
+                <div *ngFor="let criteria of searchCriteria"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                    <span class="font-semibold">{{ criteria.label }}:</span>
+                    <span>{{ criteria.value }}</span>
+                    <button (click)="removeCriteria(criteria.key)"
+                        class="hover:bg-primary/20 rounded-full p-0.5 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <button (click)="toggleSearchView()"
+            class="btn btn-outline-primary flex items-center gap-2 shadow-sm hover:shadow-md transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            {{ translations()?.ShowSearch?.label }}
+        </button>
+    </div>
+</div>
+
+
+
+<div class="panel" *ngIf="!isSearchCollapsed">
+    <div class="mb-5">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
+            <h2 class="text-lg font-bold flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                {{ isAdvancedSearch ? translations()?.AdvancedSearch?.label : translations()?.search?.label }}
+
+            </h2>
+
+            <button type="button" (click)="toggleAdvancedSearch()"
+                class="btn flex items-center gap-2 shadow-sm hover:shadow-md transition-all"
+                [ngClass]="isAdvancedSearch ? 'btn-outline-primary' : 'btn-primary'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                </svg>
+                {{ isAdvancedSearch ? translations()?.search?.label : translations()?.AdvancedSearch?.label }}
+
+            </button>
+        </div>
+
+        <form [formGroup]="searchForm" (ngSubmit)="search()">
+            <!-- البحث البسيط -->
+            <div *ngIf="!isAdvancedSearch" class="space-y-4">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <!-- نوع الخدمة -->
+                    <div>
+                        <label for="service" class="font-semibold">{{ translations()?.ServiceType?.label }}</label>
+                        <ng-select [multiple]="true" [items]="services"
+                            [bindLabel]="isArabic ? 'ServiceTitleAr' : 'ServiceTitleEn'" bindValue="ServiceID"
+                            formControlName="ServiceID" [placeholder]="getPlaceholderText('ServiceID')"
+                            class="custom-multiselect" appendTo="body" [clearable]="shouldShowClearButton('ServiceID')">
+                        </ng-select>
+                    </div>
+
+                    <!-- رقم الطلب -->
+                    <div>
+                        <label for="applicationNumber">{{ translations()?.requestNumber?.label || (isArabic ? 'رقم
+                            الطلب' : 'Request Number') }}</label>
+                        <div class="relative">
+                            <input id="applicationNumber" type="text" formControlName="ApplicationNumber"
+                                [placeholder]="translations()?.requestNumberPlaceholder?.label || (isArabic ? 'أدخل رقم الطلب' : 'Enter request number')"
+                                class="form-input ltr:pr-8 rtl:pl-8" />
+                            <div class="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-gray-400">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- نوع الإعفاء -->
+                    <div>
+                        <label for="dutyFree" class="font-semibold">{{ isArabic ? 'نوع الإعفاء' : 'Exemption Type'
+                            }}</label>
+                        <ng-select [items]="dutyFreeTypes" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+                            bindValue="LookupID" formControlName="DutyFree"
+                            [placeholder]="getPlaceholderText('DutyFree')" class="custom-multiselect"
+                            appendTo="body" [clearable]="searchForm.get('DutyFree')?.value">
+                        </ng-select>
+                    </div>
+
+                    <!-- سبب الإعفاء -->
+                    <div>
+                        <label for="exemptionReason" class="font-semibold">{{ isArabic ? 'سبب الإعفاء' : 'Exemption
+                            Reason' }}</label>
+                        <input id="exemptionReason" type="text" formControlName="ExemptionResone"
+                            [placeholder]="isArabic ? 'أدخل سبب الإعفاء' : 'Enter exemption reason'"
+                            class="form-input" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- البحث المتقدم -->
+            <div *ngIf="isAdvancedSearch" class="space-y-4">
+                <!-- Row 1: الحقول الأساسية -->
+
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+                    <div>
+                        <label for="department">{{ translations()?.DepartmentID?.label }}</label>
+                        <ng-select [multiple]="true" [items]="departments"
+                            [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'" bindValue="ID" formControlName="DepartmentID"
+                            [placeholder]="getPlaceholderText('DepartmentID')" class="custom-multiselect"
+                            appendTo="body" (change)="getSection($event)"
+                            [clearable]="shouldShowClearButton('DepartmentID')">
+                        </ng-select>
+                    </div>
+                    <div>
+                        <label for="administration">{{ translations()?.Section?.label }}</label>
+                        <ng-select [multiple]="true" [items]="administrations"
+                            [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'" bindValue="LookupID"
+                            formControlName="SectionID" [placeholder]="getPlaceholderText('SectionID')"
+                            class="custom-multiselect" appendTo="body" (change)="getServices($event)"
+                            [clearable]="shouldShowClearButton('SectionID')">
+                        </ng-select>
+                    </div>
+                    <div>
+                        <label for="requestType">{{ translations()?.RequestTypeID?.label }}</label>
+                        <ng-select [multiple]="true" [items]="Requests" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+                            bindValue="ID" formControlName="RequestTypeID"
+                            [placeholder]="getPlaceholderText('RequestTypeID')" class="custom-multiselect"
+                            appendTo="body" [clearable]="shouldShowClearButton('RequestTypeID')">
+                        </ng-select>
+                    </div>
+                    <div>
+                        <label for="service">{{ translations()?.ServiceType?.label }}</label>
+                        <ng-select [multiple]="true" [items]="services"
+                            [bindLabel]="isArabic ? 'ServiceTitleAr' : 'ServiceTitleEn'" bindValue="ServiceID"
+                            formControlName="ServiceID" [placeholder]="getPlaceholderText('ServiceID')"
+                            class="custom-multiselect" appendTo="body" (change)="getRequests($event)"
+                            [clearable]="shouldShowClearButton('ServiceID')">
+                        </ng-select>
+                    </div>
+
+                </div>
+
+                <!-- Row 2 -->
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+
+                    <div>
+                        <label for="requestStatus">{{ translations()?.Status?.label }}</label>
+                        <ng-select [multiple]="true" [items]="requestStatuses"
+                            [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'" bindValue="LookupID"
+                            formControlName="FkStatusID" [placeholder]="getPlaceholderText('FkStatusID')"
+                            class="custom-multiselect" appendTo="body"
+                            [clearable]="shouldShowClearButton('FkStatusID')">
+                        </ng-select>
+                    </div>
+                    <div>
+                        <label for="procedure">{{ translations()?.ProcessID?.label }}</label>
+                        <ng-select [multiple]="true" [items]="procedures" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+                            bindValue="LookupID" formControlName="FkProcessID"
+                            [placeholder]="getPlaceholderText('FkProcessID')" class="custom-multiselect" appendTo="body"
+                            [clearable]="shouldShowClearButton('FkProcessID')">
+                        </ng-select>
+                    </div>
+
+                    <div>
+                        <label for="applicationNumber">{{ translations()?.requestNumber?.label }}</label>
+                        <div class="relative">
+                            <input id="applicationNumber" type="text" formControlName="ApplicationNumber"
+                                [placeholder]="translations()?.requestNumberPlaceholder?.label || (isArabic ? 'أدخل رقم الطلب' : 'Enter request number')"
+                                class="form-input ltr:pr-8 rtl:pl-8" />
+                            <div class="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-gray-400">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="dutyFree" class="font-semibold">{{ isArabic ? 'نوع الإعفاء' : 'Exemption Type'
+                            }}</label>
+                        <ng-select [items]="dutyFreeTypes" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+                            bindValue="LookupID" formControlName="DutyFree"
+                            [placeholder]="getPlaceholderText('DutyFree')" class="custom-multiselect"
+                            appendTo="body" [clearable]="searchForm.get('DutyFree')?.value">
+                        </ng-select>
+                    </div>
+
+                 
+                </div>
+
+                <!-- Row 3: بيانات إضافية -->
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+                     <div>
+                        <label for="exemptionReason" class="font-semibold">{{ isArabic ? 'سبب الإعفاء' : 'Exemption
+                            Reason' }}</label>
+                        <input id="exemptionReason" type="text" formControlName="ExemptionResone"
+                            [placeholder]="isArabic ? 'أدخل سبب الإعفاء' : 'Enter exemption reason'"
+                            class="form-input" />
+                    </div>
+
+                    <div>
+                        <label for="ownerName" class="font-semibold">{{ isArabic ? 'اسم المالك' : 'Owner Name'
+                            }}</label>
+                        <input id="ownerName" type="text" formControlName="OwnerName"
+                            [placeholder]="isArabic ? 'أدخل اسم المالك' : 'Enter owner name'" class="form-input" />
+                    </div>
+
+                    <div>
+                        <label for="companyName" class="font-semibold">{{ isArabic ? 'اسم الشركة' : 'Company Name'
+                            }}</label>
+                        <input id="companyName" type="text" formControlName="CompanyName"
+                            [placeholder]="isArabic ? 'أدخل اسم الشركة' : 'Enter company name'" class="form-input" />
+                    </div>
+
+                    <div>
+                        <label for="commercialReg" class="font-semibold">{{ isArabic ? 'رقم السجل التجاري' : 'Commercial
+                            Registration No' }}</label>
+                        <input id="commercialReg" type="text" formControlName="CommercialRegistrationNo"
+                            [placeholder]="isArabic ? 'أدخل رقم السجل التجاري' : 'Enter commercial registration number'"
+                            class="form-input" />
+                    </div>
+                </div>
+
+                <!-- Row 4: التواريخ -->
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-4">
+                    <div>
+                        <label class="mb-2 block font-bold">{{ translations()?.CreationDate?.label || (isArabic ? 'تاريخ
+                            الإنشاء' : 'Creation Date') }}</label>
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-center gap-2">
+                                <label class="text-sm font-semibold w-10">{{ translations()?.from?.label || (isArabic ?
+                                    'من' : 'From') }}</label>
+                                <input type="text" mwlFlatpickr [options]="basic" class="form-input"
+                                    formControlName="CreationDateFrom"
+                                    [attr.aria-label]="(translations()?.CreationDate?.label || 'تاريخ الإنشاء') + ' - ' + (translations()?.from?.label || 'من')" />
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label class="text-sm font-semibold w-10">{{ translations()?.to?.label || (isArabic ?
+                                    'إلى' : 'To') }}</label>
+                                <input type="text" mwlFlatpickr [options]="basic" class="form-input"
+                                    formControlName="CreationDateTo"
+                                    [attr.aria-label]="(translations()?.CreationDate?.label || 'تاريخ الإنشاء') + ' - ' + (translations()?.to?.label || 'إلى')" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="mb-2 block font-bold">{{ isArabic ? 'تاريخ الإعفاء' : 'Exemption Date' }}</label>
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-center gap-2">
+                                <label class="text-sm font-semibold w-10">{{ translations()?.from?.label || (isArabic ?
+                                    'من' : 'From') }}</label>
+                                <input type="text" mwlFlatpickr [options]="basic" class="form-input"
+                                    formControlName="ExemptionDateFrom"
+                                    [attr.aria-label]="(isArabic ? 'تاريخ الإعفاء' : 'Exemption Date') + ' - ' + (translations()?.from?.label || 'من')" />
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label class="text-sm font-semibold w-10">{{ translations()?.to?.label || (isArabic ?
+                                    'إلى' : 'To') }}</label>
+                                <input type="text" mwlFlatpickr [options]="basic" class="form-input"
+                                    formControlName="ExemptionDateTo"
+                                    [attr.aria-label]="(isArabic ? 'تاريخ الإعفاء' : 'Exemption Date') + ' - ' + (translations()?.to?.label || 'إلى')" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- أزرار البحث -->
+            <div class="flex flex-wrap justify-between items-center gap-3 mt-6 pt-4 border-t border-gray-200">
+
+
+                <!-- زر تغيير الوضع على اليمين - يظهر دائماً في نموذج البحث -->
+                <button type="button" (click)="toggleSearchView()"
+                    class="btn btn-outline-primary flex items-center gap-2 shadow-sm hover:shadow-md transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                    </svg>
+                    {{ translations()?.HideSearch?.label }}
+                </button>
+                <!-- الأزرار على الشمال -->
+                <div class="flex gap-3">
+                    <button type="submit" class="btn btn-primary flex items-center gap-2"
+                        aria-label="translations()?.search?.label">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        {{ translations()?.search?.label }}
+                    </button>
+                    <button type="button" (click)="resetForm()" aria-label="translations()?.Reset?.label"
+                        class="btn btn-outline-secondary flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        {{ translations()?.Reset?.label }}
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div class="space-y-3 mb-4">
+    <!-- Global Search Bar -->
+    <div *ngIf="!isLoading && isSearchCollapsed" class="p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="flex items-center gap-2">
+            <div class="relative flex-1">
+                <input type="text" [(ngModel)]="globalSearchTerm" [placeholder]="translations()?.searcall?.label"
+                    class="form-input w-full ltr:pl-12 rtl:pr-12 ltr:pr-4 rtl:pl-4 text-lg" />
+                <div class="absolute top-1/2 -translate-y-1/2 ltr:left-4 rtl:right-4 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- زر البحث -->
+            <button type="button" (click)="globalSearch()" class="btn btn-primary flex items-center gap-2 px-6"
+                [title]="translations()?.search?.label">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <span class="hidden sm:inline">{{ translations()?.search?.label }}</span>
+            </button>
+
+            <!-- زر إعادة تعيين Global Search -->
+            <button *ngIf="globalSearchTerm" type="button" (click)="resetGlobalSearch()"
+                class="btn btn-outline-secondary flex items-center gap-2" [title]="translations()?.Reset?.label">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- أزرار الأعمدة والترتيب والتقرير -->
+    <div class="flex justify-between items-center p-3 gap-3" *ngIf="rows.length > 0 && !isLoading">
+        <!-- زر تحويل إلى تقرير -->
+        <button type="button" (click)="exportToExcel()" aria-label="translations()?.exportToExcel?.label"
+            class="btn btn-primary flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            {{ translations()?.ExportReport?.label }}
+        </button>
+
+        <!-- أزرار العرض والترتيب والأعمدة -->
+        <div class="flex gap-2">
+            <!-- أزرار تبديل العرض -->
+            <div class="flex gap-1 border border-gray-300 rounded-lg">
+                <button (click)="toggleViewMode('table')"
+                    [ngClass]="viewMode === 'table' ? 'bg-primary text-white' : 'bg-white text-gray-600 hover:bg-gray-100'"
+                    class="px-3 py-2 rounded transition-all flex items-center gap-2"
+                    [title]="translations()?.TableView?.label">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                </button>
+                <button (click)="toggleViewMode('cards')"
+                    [ngClass]="viewMode === 'cards' ? 'bg-primary text-white' : 'bg-white text-gray-600 hover:bg-gray-100'"
+                    class="px-3 py-2 rounded transition-all flex items-center gap-2"
+                    [title]="translations()?.CardsView?.label">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- زر الترتيب -->
+            <div class="relative hide-on-small-screen">
+                <button (click)="openDropdown('sort'); $event.stopPropagation()"
+                    class="btn flex items-center gap-2 relative toggle-sort-btn shadow-sm hover:shadow-md transition-shadow"
+                    [ngClass]="toggleSortDropdown ? 'btn-primary' : 'btn-outline-primary'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                    </svg>
+                    {{ translations()?.sort?.label }}
+                </button>
+
+                <!-- Dropdown للترتيب -->
+                <div *ngIf="toggleSortDropdown"
+                    class="absolute top-full mt-2 rtl:left-0 ltr:right-0 bg-white border border-gray-300 rounded-lg shadow-xl z-50 p-4 w-72 dropdown-container"
+                    (click)="$event.stopPropagation()">
+
+                    <!-- زر إعادة تعيين -->
+                    <div class="mb-3 pb-3 border-b border-gray-200">
+                        <button (click)="resetSort()"
+                            class="w-full px-3 py-2 text-sm font-medium text-white bg-primary rounded hover:bg-primary/90 transition flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            {{ translations()?.ResetSort?.label}}
+                        </button>
+                    </div>
+
+                    <!-- اختيار العمود -->
+                    <div class="mb-3">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ translations()?.SortBy?.label }}
+                        </label>
+                        <ng-select [items]="sortableColumns" bindLabel="title" [(ngModel)]="selectedSortColumn"
+                            (change)="onSortColumnChange($event)"
+                            [placeholder]="translations()?.SelectColumn?.placeholder" class="custom-multiselect"
+                            [clearable]="false">
+                        </ng-select>
+                    </div>
+
+                    <!-- اتجاه الترتيب -->
+                    <div class="border-t border-gray-200 pt-3">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ translations()?.Direction?.label }}
+                        </label>
+                        <div class="flex gap-2">
+                            <button (click)="setSortDirection(1)" [class.bg-primary]="currentSortDirection === 1"
+                                [class.text-white]="currentSortDirection === 1"
+                                [class.bg-gray-100]="currentSortDirection !== 1"
+                                [class.text-gray-700]="currentSortDirection !== 1"
+                                class="flex-1 px-3 py-2 text-sm font-medium rounded hover:opacity-90 transition flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 15l7-7 7 7" />
+                                </svg>
+                                {{ translations()?.Ascending?.label}}
+                            </button>
+                            <button (click)="setSortDirection(2)" [class.bg-primary]="currentSortDirection === 2"
+                                [class.text-white]="currentSortDirection === 2"
+                                [class.bg-gray-100]="currentSortDirection !== 2"
+                                [class.text-gray-700]="currentSortDirection !== 2"
+                                class="flex-1 px-3 py-2 text-sm font-medium rounded hover:opacity-90 transition flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                                {{ translations()?.Descending?.label }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- زر الأعمدة -->
+            <div class="relative hide-on-small-screen">
+                <button (click)="openDropdown('columns'); $event.stopPropagation()"
+                    class="btn flex items-center gap-2 relative toggle-columns-btn shadow-sm hover:shadow-md transition-shadow"
+                    [ngClass]="toggleColumnsDropdown ? 'btn-primary' : 'btn-outline-primary'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+                    </svg>
+                    {{ translations()?.columns?.label }}
+                </button>
+
+                <!-- Dropdown للتحكم في الأعمدة -->
+                <div *ngIf="toggleColumnsDropdown"
+                    class="absolute top-full mt-2 rtl:left-0 ltr:right-0 bg-white border border-gray-300 rounded-lg shadow-xl z-50 p-4 w-64 max-h-96 overflow-y-auto dropdown-container"
+                    (click)="$event.stopPropagation()">
+
+                    <!-- زر إعادة تعيين -->
+                    <div class="mb-3 pb-3 border-b border-gray-200">
+                        <button (click)="resetColumns()"
+                            class="w-full px-3 py-2 text-sm font-medium text-white bg-primary rounded hover:bg-primary/90 transition flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            {{ translations()?.Reset?.label }}
+                        </button>
+                    </div>
+
+                    <div class="flex gap-2 mb-3 pb-3 border-b border-gray-200">
+                        <button (click)="selectAllColumns()"
+                            [ngClass]="{'bg-primary text-white': areAllColumnsVisible, 'bg-gray-100 text-gray-700': !areAllColumnsVisible}"
+                            class="flex-1 px-3 py-1.5 text-xs font-medium rounded hover:opacity-90 transition">
+                            {{ translations()?.selectAll?.label }}
+                        </button>
+                        <button (click)="hideAllColumns()"
+                            [ngClass]="{'bg-primary text-white': areAllColumnsHidden, 'bg-gray-100 text-gray-700': !areAllColumnsHidden}"
+                            class="flex-1 px-3 py-1.5 text-xs font-medium rounded hover:opacity-90 transition">
+                            {{ translations()?.hideAll?.label }}
+                        </button>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label *ngFor="let col of allColumns"
+                            class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                            <input type="checkbox" [checked]="col.visible" (change)="toggleColumn(col.field)"
+                                class="w-4 h-4 text-primary rounded focus:ring-primary burgundy-checkbox">
+                            <span class="text-sm">{{ col.title }}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="rows.length === 0 && !isLoading"
+    class="mt-6 p-8 bg-white rounded-xl border-2 border-dashed border-gray-300 text-center">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+    </svg>
+    <h3 class="text-xl font-semibold text-gray-700 mb-2">
+        {{ isArabic ? 'لا توجد بيانات' : 'No Data Found' }}
+    </h3>
+    <p class="text-gray-500 mb-4">
+        {{ isArabic ? 'لم يتم العثور على نتائج. يرجى تعديل معايير البحث والمحاولة مرة أخرى.' : 'No results found. Please
+        adjust your search criteria and try again.' }}
+    </p>
+
+</div>
+
+
+
+
+
+<app-fees-table *ngIf="viewMode === 'table'" #feesTable [rows]="rows" [cols]="cols" [isLoading]="isLoading"
+    [isArabic]="isArabic" [translations]="translations()" [paginationInfo]="paginationInfo"
+    [currentSortField]="currentSortField" [currentSortDirection]="currentSortDirection" [expandedRow]="expandedRow"
+    [expandedRowDetails]="expandedRowDetails" [sortableColumns]="sortableColumns"
+    [selectedSortColumn]="selectedSortColumn" [showPaymentLegend]="false" [showStatusLegend]="false"
+    [showDutyFreeLegend]="true" [dutyFreeTypes]="dutyFreeTypes" [showDurationLegend]="false"
+    [showEscalationLegend]="false" [rowIdentifierField]="'RequestID'" (onSort)="onSortChange($event)"
+    (onPageChange)="onPageChange($event)" (onPageSizeChange)="onPageSizeChange($event)"
+    (onActionClick)="handleSpanClick($event.row.RequestID)" (onRowExpand)="toggleRowExpand($event)"
+    (onResetColumns)="onTableReset()">
+</app-fees-table>
+
+<div *ngIf="viewMode === 'cards' && (rows.length > 0 || isLoading)" class="mt-6">
+    <!-- Duty Free Legend for Cards View -->
+    <div
+        class="mb-6 px-6 py-4 bg-gradient-to-r from-primary/5 via-white to-primary/5 border-2 border-primary/20 rounded-xl shadow-md">
+        <div class="flex items-center justify-center gap-3 flex-wrap">
+            <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-md border-2 border-primary/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="font-bold text-gray-800 text-sm">{{ isArabic ? 'نوع الإعفاء' : 'Type of exemption'
+                    }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-green-50 to-green-100 text-green-700 border-2 border-green-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? 'معفي' : 'Duty Free' }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-red-50 to-red-100 text-red-700 border-2 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? 'غير معفى' : 'Not Duty Free' }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div *ngFor="let _ of [].constructor(6)" class="bg-white rounded-xl shadow-md p-6 animate-pulse">
+            <div class="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
+            <div class="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+            <div class="h-3 bg-gray-200 rounded w-2/3"></div>
+        </div>
+    </div>
+
+    <div *ngIf="!isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div *ngFor="let row of rows; let i = index"
+            class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 border border-gray-200 hover:border-primary cursor-pointer"
+            (click)="handleSpanClick(row.RequestID)">
+
+            <!-- Header -->
+            <div class="flex justify-between items-start mb-4 pb-3 border-b border-gray-200">
+                <div class="flex-1">
+                    <h3 class="text-lg font-bold text-gray-800 mb-1">
+                        {{ isArabic ? row.ServiceTitleAr : row.ServiceTitleEn }}
+                    </h3>
+                    <p class="text-sm text-gray-500">
+                        {{ row.ApplicationNumber || '-' }}
+                    </p>
+                </div>
+                <div class="flex flex-col gap-2 items-end">
+                    <!-- Duty Free Type Badge (Primary Color Coding) -->
+                    <span [ngClass]="getDutyFreeBadgeClass(row)"
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="currentColor"
+                            viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                        </svg>
+                        {{ getDutyFreeText(row) }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Details Grid -->
+            <div class="space-y-3">
+                <!-- Row 1: رقم الطلب ونوع الإعفاء -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="flex flex-col space-y-1">
+                        <span class="text-xs font-medium text-gray-500">{{ translations()?.requestNumber?.label ||
+                            (isArabic ? 'رقم الطلب' : 'Request Number') }}</span>
+                        <span class="text-sm font-semibold text-gray-800 rtl:text-right ltr:text-left force-ltr">{{
+                            row.ApplicationNumber || '-' }}</span>
+                    </div>
+                    <div class="flex flex-col space-y-1">
+                        <span class="text-xs font-medium text-gray-500">{{ translations()?.FeesValue?.label}}</span>
+                        <span class="text-sm font-semibold text-gray-800 rtl:text-right ltr:text-left force-ltr">{{
+                            row.FeesValue || '-' }}</span>
+                    </div>
+                    
+
+                </div>
+
+                <!-- Row 2: سبب الإعفاء -->
+                <div class="grid grid-cols-1 gap-4 pt-3 border-t border-gray-100">
+                    <div class="flex flex-col space-y-1">
+                        <span class="text-xs font-medium text-gray-500">{{ isArabic ? 'سبب الإعفاء' : 'Exemption Reason'
+                            }}</span>
+                        <span class="text-sm font-medium text-gray-800">{{ row.ExemptionResone || '-' }}</span>
+                    </div>
+                </div>
+
+                <!-- Row 3: الإدارة والقسم -->
+                <div class="grid grid-cols-2 gap-4 pt-3 border-t border-gray-100">
+                    <div class="flex flex-col space-y-1">
+                        <span class="text-xs font-medium text-gray-500">{{ translations()?.DepartmentID?.label ||
+                            (isArabic ? 'الإدارة' : 'Department') }}</span>
+                        <span class="text-sm font-medium text-gray-800">{{ isArabic ? row.DeptAr : row.DeptEn || '-'
+                            }}</span>
+                    </div>
+                    <div class="flex flex-col space-y-1">
+                        <span class="text-xs font-medium text-gray-500">{{ translations()?.Section?.label || (isArabic ?
+                            'القسم' : 'Section') }}</span>
+                        <span class="text-sm font-medium text-gray-800">{{ isArabic ? row.SectionAr : row.SectionEn ||
+                            '-' }}</span>
+                    </div>
+                </div>
+
+                <!-- Row 4: نوع الطلب والحالة -->
+                <div class="grid grid-cols-2 gap-4 pt-3 border-t border-gray-100">
+                    <div class="flex flex-col space-y-1">
+                        <span class="text-xs font-medium text-gray-500">{{ translations()?.RequestTypeID?.label ||
+                            (isArabic ? 'نوع الطلب' : 'Request Type') }}</span>
+                        <span class="text-sm font-medium text-gray-800">{{ isArabic ? row.ReqTypeAr : row.ReqTypeEn ||
+                            '-' }}</span>
+                    </div>
+                    <div class="flex flex-col space-y-1">
+                        <span class="text-xs font-medium text-gray-500">{{ translations()?.Status?.label || (isArabic ?
+                            'الحالة' : 'Status') }}</span>
+                        <span class="text-sm font-medium text-gray-800">{{ isArabic ? row.StatusAr : row.StatusEn || '-'
+                            }}</span>
+                    </div>
+                </div>
+
+                <!-- Row 5: الإجراء -->
+                <div class="grid grid-cols-1 gap-4 pt-3 border-t border-gray-100">
+                    <div class="flex flex-col space-y-1">
+                        <span class="text-xs font-medium text-gray-500">{{ translations()?.ProcessID?.label || (isArabic
+                            ? 'الإجراء' : 'Process') }}</span>
+                        <span class="text-sm font-medium text-gray-800">{{ isArabic ? row.ProcessAr : row.ProcessEn ||
+                            '-' }}</span>
+                    </div>
+                </div>
+
+                <!-- Row 6: بيانات المالك والشركة -->
+                <div *ngIf="row.OwnerName || row.CompanyName"
+                    class="grid grid-cols-2 gap-4 pt-3 border-t border-gray-100">
+                    <div class="flex flex-col space-y-1">
+                        <span class="text-xs font-medium text-gray-500">{{ isArabic ? 'اسم المالك' : 'Owner Name'
+                            }}</span>
+                        <span class="text-sm font-medium text-gray-800">{{ row.OwnerName || '-' }}</span>
+                    </div>
+                    <div class="flex flex-col space-y-1">
+                        <span class="text-xs font-medium text-gray-500">{{ isArabic ? 'اسم الشركة' : 'Company Name'
+                            }}</span>
+                        <span class="text-sm font-medium text-gray-800">{{ row.CompanyName || '-' }}</span>
+                    </div>
+                </div>
+
+                <!-- Row 7: السجل التجاري -->
+                <div *ngIf="row.CommercialRegistrationNo" class="grid grid-cols-1 gap-4 pt-3 border-t border-gray-100">
+                    <div class="flex flex-col space-y-1">
+                        <span class="text-xs font-medium text-gray-500">{{ isArabic ? 'رقم السجل التجاري' : 'Commercial
+                            Registration No' }}</span>
+                        <span class="text-sm font-medium text-gray-800 rtl:text-right ltr:text-left force-ltr">{{
+                            row.CommercialRegistrationNo || '-' }}</span>
+                    </div>
+                </div>
+
+                <!-- Row 8: التواريخ -->
+                <div class="grid grid-cols-1 gap-4 pt-3 border-t border-gray-100">
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="flex flex-col space-y-1">
+                            <span class="text-xs font-medium text-gray-500">{{ translations()?.creationDate?.label ||
+                                (isArabic ? 'تاريخ الإنشاء' : 'Creation Date') }}</span>
+                            <span class="text-xs font-medium text-gray-800">{{ row.CreationDate || '-' }}</span>
+                        </div>
+                        <div class="flex flex-col space-y-1">
+                            <span class="text-xs font-medium text-gray-500">{{ isArabic ? 'بداية الإعفاء' : 'Exemption
+                                From' }}</span>
+                            <span class="text-xs font-medium text-gray-800">{{ row.ExemptionDateFrom || '-' }}</span>
+                        </div>
+                        <div class="flex flex-col space-y-1">
+                            <span class="text-xs font-medium text-gray-500">{{ isArabic ? 'نهاية الإعفاء' : 'Exemption
+                                To' }}</span>
+                            <span class="text-xs font-medium text-gray-800">{{ row.ExemptionDateTo || '-' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center">
+                <span class="text-xs text-gray-500">
+                    {{ isArabic ? row.ProcessAr : row.ProcessEn }}
+                </span>
+                <button class="text-primary hover:text-primary/80 transition">
+                    <svg _ngcontent-ng-c1015478722="" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" class="w-4 h-4">
+                        <path _ngcontent-ng-c1015478722="" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path _ngcontent-ng-c1015478722="" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div
+        class="mt-6 p-4 bg-white rounded-xl shadow-md flex flex-col sm:flex-row justify-between items-center gap-3 border border-gray-200">
+        <div class="text-sm text-gray-600">
+            {{ paginationInfoText }}
+        </div>
+
+        <div class="flex items-center gap-2">
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === 1" (click)="onPageChange(1)">
+                «
+            </button>
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === 1" (click)="onPageChange(paginationInfo.CurrentPage - 1)">
+                ‹
+            </button>
+
+            <div class="flex gap-1">
+                <ng-container *ngFor="let page of getPageNumbers()">
+                    <span *ngIf="page === -1" class="px-2 text-gray-400">...</span>
+                    <button *ngIf="page !== -1"
+                        class="w-9 h-9 flex items-center justify-center rounded-full border transition font-medium"
+                        [ngClass]="{'bg-primary text-white border-primary': page === paginationInfo.CurrentPage, 'border-gray-300 text-gray-600 hover:bg-primary hover:text-white hover:border-primary': page !== paginationInfo.CurrentPage}"
+                        (click)="onPageChange(page)">
+                        {{ page }}
+                    </button>
+                </ng-container>
+            </div>
+
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === paginationInfo.TotalPages"
+                (click)="onPageChange(paginationInfo.CurrentPage + 1)">
+                ›
+            </button>
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === paginationInfo.TotalPages"
+                (click)="onPageChange(paginationInfo.TotalPages)">
+                »
+            </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <label for="cardPageSize" class="text-sm text-gray-600 whitespace-nowrap">
+                {{ translations()?.rowsPerPage?.label || (isArabic ? 'عدد الصفوف:' : 'Rows:') }}
+            </label>
+            <select id="cardPageSize"
+                class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-primary focus:border-primary bg-white"
+                [(ngModel)]="paginationInfo.PageSize" (ngModelChange)="onPageSizeChange($event)">
+                <option [value]="10">10</option>
+                <option [value]="20">20</option>
+                <option [value]="50">50</option>
+                <option [value]="100">100</option>
+            </select>
+        </div>
+    </div>
+</div>

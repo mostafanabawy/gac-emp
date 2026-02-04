@@ -1,0 +1,85 @@
+﻿<div [ngClass]="{ 'dark text-white-dark': store.index.semidark }">
+    <nav
+        class="sidebar fixed bottom-0 top-0 z-[9999] h-full min-h-screen w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-all duration-300">
+        <div class="h-full bg-white dark:bg-[#0e1726]">
+            <div *ngIf="store.index.menu == 'vertical' || store.index.menu == 'collapsible-vertical' || store.index.sidebar"
+                class="flex items-center justify-between px-4 py-3">
+                <a aria-label="home link" routerLink="/" class="main-logo flex shrink-0 items-center">
+                    <img class="w-52 flex-none" src="/assets/images/logo-2022.png" alt="website logo" />
+
+                </a>
+                <a href="javascript:;" aria-label="collapse-icon"
+                    class="collapse-icon flex h-8 w-51 items-center rounded-full transition duration-300 hover:bg-gray-500/10 hover:text-primary dark:text-white-light dark:hover:bg-dark-light/10 rtl:rotate-180"
+                    (click)="storeData.dispatch({ type: 'toggleSidebar'})">
+                    <icon-carets-down class="m-auto rotate-90" />
+                </a>
+            </div>
+            <ng-scrollbar *ngIf="store.index.menu == 'vertical' || store.index.menu == 'collapsible-vertical' || store.index.sidebar"
+                class="relative !h-[calc(100vh-80px)]" appearance="compact">
+                <ul class="relative space-y-0.5 mt-2 p-4 py-0 font-semibold" cdkTrapFocus
+                    [cdkTrapFocus]="store.index.menu == 'vertical' || store.index.menu == 'collapsible-vertical' || store.index.sidebar"
+                    [cdkTrapFocusAutoCapture]="store.index.menu == 'vertical' || store.index.menu == 'collapsible-vertical' || store.index.sidebar">
+                    <li class="accordion menu nav-item">
+                        <button type="button" class="nav-link group w-full"
+                            [ngClass]="{ active: activeDropdown.includes('dashboard') }"
+                            (click)="toggleAccordion('dashboard')">
+                            <div class="flex items-center">
+                                <icon-menu-dashboard class="shrink-0 group-hover:!text-primary" />
+
+                                <span
+                                    class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                                    {{ 'dashboard' | translate }}
+                                </span>
+                            </div>
+                            <div [ngClass]="{ 'rtl:rotate-90 -rotate-90': !activeDropdown.includes('dashboard') }">
+                                <icon-caret-down />
+                            </div>
+                        </button>
+                        <div [@slideDownUp]="!activeDropdown.includes('dashboard')" class="accordion-content">
+                            <ul class="sub-menu text-gray-500">
+                                <ng-container *ngFor="let item of menuLinks()">
+                                    @if (!item.children || item.children[0].MenuStyle === 'Tabs') {
+                                    <li>
+                                        <a [routerLink]="item.ItemURL" routerLinkActive="active"
+                                            [routerLinkActiveOptions]="{ exact: true }" (click)="toggleMobileMenu()">
+                                            {{ store.index.locale === 'en'? item.TitleEn :item.TitleAr }}</a>
+                                    </li>
+                                    }
+                                </ng-container>
+
+                            </ul>
+                        </div>
+                    </li>
+                    <ng-container *ngFor="let item of menuLinks()">
+                        <li class="accordion menu nav-item">
+                            @if (item.children && item.children[0].MenuStyle !== 'Tabs') {
+                            <app-accordion-side-menu [item]="item" [isService]="false"></app-accordion-side-menu>
+                            }
+                        </li>
+                    </ng-container>
+                </ul>
+            </ng-scrollbar>
+        </div>
+
+        <div
+            class="absolute bottom-0 left-0 right-0 bg-gray-50 dark:bg-[#0e1726] border-t border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between px-4 py-3">
+                <div class="flex items-center gap-2">
+                    <div
+                        class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold">
+                        {{ userName[0] }}
+                    </div>
+                    <div>
+                        <div class="text-sm font-semibold text-gray-800 dark:text-white">{{ userName }}</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">{{ userRole }}</div>
+                    </div>
+                </div>
+
+                <button (click)="logout()"
+                    class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm font-semibold">
+                    {{ translations()?.logoutBtnTitle?.label || "تسجيل الخروج" }}
+                </button>
+            </div>
+        </div>]
+    </nav>
+</div>

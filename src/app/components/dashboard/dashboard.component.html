@@ -1,0 +1,834 @@
+<!-- Modern Page Loader -->
+<div *ngIf="isPageLoading" class="page-loader-overlay">
+  <div class="loader-content">
+    <div class="premium-spinner">
+      <div class="inner-ring"></div>
+      <div class="outer-ring"></div>
+      <div class="center-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12 2V6M12 18V22M6 12H2M22 12H18M19.07 4.93L16.24 7.76M7.76 16.24L4.93 19.07M19.07 19.07L16.24 16.24M7.76 7.76L4.93 4.93"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+    </div>
+    <p class="loader-text">{{ isArabic ? 'جاري تحميل البيانات...' : 'Loading dashboard data...' }}</p>
+  </div>
+</div>
+
+<div class="w-full p-4 space-y-8" [attr.dir]="isArabic ? 'rtl' : 'ltr'" [class.opacity-0]="isPageLoading"
+  [class.transition-opacity]="true" [class.duration-500]="true">
+
+
+  <!-- ================== CARDS ================== -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4">
+
+    <div *ngIf="animatedPending > 0"
+      [class]="animatedPending > 0 ? 'text-white rounded-xl p-6 text-center shadow-lg cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300' : 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-600 rounded-xl p-6 text-center shadow-lg cursor-not-allowed opacity-60'"
+      style="background: linear-gradient(135deg, #9A3412 0%, #EA580C 100%);"
+      (click)="animatedPending > 0 ? navigateToInbox() : null">
+
+      <p class="text-4xl font-bold">{{ animatedPending | numFormat }}</p>
+      <h3 class="mt-2 text-lg font-semibold">
+        {{ translations()?.TotalPending?.label }}
+      </h3>
+    </div>
+    <div *ngIf="animatedFees > 0"
+      [class]="animatedFees > 0 ? 'text-white rounded-xl p-6 text-center shadow-lg cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300' : 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-600 rounded-xl p-6 text-center shadow-lg cursor-not-allowed opacity-60'"
+      style="background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%)"
+      (click)="animatedFees > 0 ? navigateToFeesDetails() : null">
+      <p class="text-4xl font-bold">{{ animatedFees | numFormat }}</p>
+      <h3 class="mt-2 text-lg font-semibold">{{ translations()?.totalFees?.label }}</h3>
+    </div>
+
+    <div *ngIf="animatedLicenses > 0"
+      [class]="animatedLicenses > 0 ? 'text-white rounded-xl p-6 text-center shadow-lg cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300' : 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-600 rounded-xl p-6 text-center shadow-lg cursor-not-allowed opacity-60'"
+      style="background: linear-gradient(135deg, #4B1D6B 0%, #6B2FA3 100%);"
+      (click)="animatedLicenses > 0 ? navigateToLicensesDetails() : null">
+      <p class="text-4xl font-bold">{{ animatedLicenses | numFormat }}</p>
+      <h3 class="mt-2 text-lg font-semibold">{{ translations()?.totalLicenses?.label }}</h3>
+    </div>
+    <div *ngIf="animatedMemberships > 0"
+      [class]="animatedMemberships > 0 ? 'text-white rounded-xl p-6 text-center shadow-lg cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300' : 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-600 rounded-xl p-6 text-center shadow-lg cursor-not-allowed opacity-60'"
+      style="background: linear-gradient(135deg, #0F2A44 0%, #1E4E79 100%);"
+      (click)="animatedMemberships > 0 ? navigateToMembershipsDetails() : null">
+
+      <p class="text-4xl font-bold">{{ animatedMemberships | numFormat }}</p>
+      <h3 class="mt-2 text-lg font-semibold">
+        {{ translations()?.TotalMemberships?.label }}
+      </h3>
+    </div>
+
+    <div *ngIf="animatedRequests > 0"
+      [class]="animatedRequests > 0 ? 'text-white rounded-xl p-6 text-center shadow-lg cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300' : 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-600 rounded-xl p-6 text-center shadow-lg cursor-not-allowed opacity-60'"
+      style="background: linear-gradient(135deg, #0F766E 0%, #14B8A6 100%);"
+      (click)="animatedRequests > 0 ? navigateToRequestsDetails() : null">
+      <p class="text-4xl font-bold">{{ animatedRequests | numFormat }}</p>
+      <h3 class="mt-2 text-lg font-semibold">{{ translations()?.totalRequests?.label }}</h3>
+    </div>
+
+    <!-- مربع الطلبات المرفوضة الجديد -->
+    <div *ngIf="dashboardData?.Pending[0]?.TotalRejected > 0"
+      [class]="dashboardData?.Pending[0]?.TotalRejected > 0 ? 'text-white rounded-xl p-6 text-center shadow-lg cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300' : 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-600 rounded-xl p-6 text-center shadow-lg cursor-not-allowed opacity-60'"
+      style="background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);"
+      (click)="dashboardData?.Pending[0]?.TotalRejected > 0 ? navigateToRejectedRequests() : null">
+      <p class="text-4xl font-bold">{{ dashboardData?.Pending[0]?.TotalRejected | numFormat }}</p>
+      <h3 class="mt-2 text-lg font-semibold">{{ isArabic ? 'الطلبات المرفوضة' : 'Rejected Requests' }}</h3>
+    </div>
+
+
+
+
+  </div>
+  <!-- ================== ENHANCED NAVIGATION BUTTONS ================== -->
+  <div class="p-6 rounded-xl shadow-md"
+    style="background: linear-gradient(135deg, rgba(138, 23, 62, 0.05) 0%, rgba(169, 27, 74, 0.05) 100%);">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4">
+
+      <!-- زر الدخول على الإحصائيات الإجمالية -->
+      <button type="button"
+        class="px-6 py-4 text-white rounded-xl transition-all duration-300 flex flex-col items-center gap-3 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+        style="background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);" (click)="navigateToTotalRPT()">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8">
+          <path d="M3 3V21H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M9 9L12 6L16 10L20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <circle cx="9" cy="9" r="1" fill="currentColor" />
+          <circle cx="12" cy="6" r="1" fill="currentColor" />
+          <circle cx="16" cy="10" r="1" fill="currentColor" />
+          <circle cx="20" cy="6" r="1" fill="currentColor" />
+        </svg>
+        <span class="text-center">{{ isArabic ? 'إحصائيات تفصيلية' : 'Detailed Statistics' }}</span>
+      </button>
+
+      <!-- زر لوحة معلومات الأندية -->
+      <button *ngIf="animatedMemberships > 0" type="button"
+        class="px-6 py-4 text-white rounded-xl transition-all duration-300 flex flex-col items-center gap-3 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+        style="background: linear-gradient(135deg, #6B1230 0%, #8A173E 100%);" (click)="navigateToClubsDashboard()">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8">
+          <path d="M3 21H21M3 7L12 3L21 7V19C21 19.5523 20.5523 20 20 20H4C3.44772 20 3 19.5523 3 19V7Z"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M9 21V12H15V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        <span class="text-center">{{ isArabic ? 'لوحة الأندية' : 'Clubs Dashboard' }}</span>
+      </button>
+
+      <!-- زر طباعة جميع الرسوم البيانية -->
+      <button type="button"
+        class="px-6 py-4 text-white rounded-xl transition-all duration-300 flex flex-col items-center gap-3 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+        style="background: linear-gradient(135deg, #A91E4A 0%, #C72156 100%);" (click)="printAllCharts()">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8">
+          <path
+            d="M6 17.9827C4.44655 17.9359 3.51998 17.7626 2.87868 17.1213C2 16.2426 2 14.8284 2 12C2 9.17157 2 7.75736 2.87868 6.87868C3.75736 6 5.17157 6 8 6H16C18.8284 6 20.2426 6 21.1213 6.87868C22 7.75736 22 9.17157 22 12C22 14.8284 22 16.2426 21.1213 17.1213C20.4800 17.7626 19.5535 17.9359 18 17.9827"
+            stroke="currentColor" stroke-width="1.5" />
+          <path opacity="0.5" d="M9 10H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M19 14L5 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          <path
+            d="M18 14V16C18 17.8856 18 18.8284 17.4142 19.4142C16.8284 20 15.8856 20 14 20H10C8.11438 20 7.17157 20 6.58579 19.4142C6 18.8284 6 17.8856 6 16V14"
+            stroke="currentColor" stroke-width="1.5" />
+          <path opacity="0.5"
+            d="M17 4C17 2.11438 17 1.17157 16.4142 0.585786C15.8284 0 14.8856 0 13 0H11C9.11438 0 8.17157 0 7.58579 0.585786C7 1.17157 7 2.11438 7 4V6H17V4Z"
+            stroke="currentColor" stroke-width="1.5" />
+        </svg>
+        <span class="text-center">{{ isArabic ? 'طباعة الكل' : 'Print All' }}</span>
+      </button>
+
+      <!-- زر التصدير المتقدم -->
+      <button type="button"
+        class="px-6 py-4 text-white rounded-xl transition-all duration-300 flex flex-col items-center gap-3 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+        style="background: linear-gradient(135deg, #8A173E 0%, #6B1230 100%);" (click)="exportAdvancedReport()">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8">
+          <path
+            d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M16 13H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M16 17H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M10 9H9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span class="text-center">{{ isArabic ? 'تصدير لإكسل' : 'Advanced Export' }}</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- =================== FEES =================== -->
+  <div *ngIf="hasFeesData" class="bg-white p-6 rounded-xl shadow-md space-y-6">
+    <!-- Single Line Header -->
+    <div class="flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-xl font-bold whitespace-nowrap">{{ translations()?.feesByServices?.label }}</h3>
+        <button
+          [class]="animatedFees > 0 ? 'px-3 py-1.5 bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-medium flex items-center gap-2 cursor-pointer whitespace-nowrap' : 'px-3 py-1.5 bg-gray-200 text-gray-400 rounded-lg text-sm font-medium flex items-center gap-2 cursor-not-allowed opacity-60 whitespace-nowrap'"
+          (click)="animatedFees > 0 ? navigateToFeesDetails() : null" [disabled]="animatedFees === 0"
+          [title]="animatedFees > 0 ? (isArabic ? 'عرض تفاصيل الرسوم' : 'View Fees Details') : (isArabic ? 'لا توجد بيانات' : 'No data available')">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+          {{ isArabic ? 'تفاصيل' : 'Details' }}
+        </button>
+        <button type="button"
+          class="px-3 py-1.5 text-white rounded-lg transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+          style="background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);"
+          (click)="printChart('fees', isArabic ? 'الرسوم حسب الخدمات' : 'Fees by Services')"
+          [title]="isArabic ? 'طباعة الرسم البياني' : 'Print Chart'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M6 17.9827C4.44655 17.9359 3.51998 17.7626 2.87868 17.1213C2 16.2426 2 14.8284 2 12C2 9.17157 2 7.75736 2.87868 6.87868C3.75736 6 5.17157 6 8 6H16C18.8284 6 20.2426 6 21.1213 6.87868C22 7.75736 22 9.17157 22 12C22 14.8284 22 16.2426 21.1213 17.1213C20.4800 17.7626 19.5535 17.9359 18 17.9827"
+              stroke="currentColor" stroke-width="1.5" />
+            <path opacity="0.5" d="M9 10H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M19 14L5 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path
+              d="M18 14V16C18 17.8856 18 18.8284 17.4142 19.4142C16.8284 20 15.8856 20 14 20H10C8.11438 20 7.17157 20 6.58579 19.4142C6 18.8284 6 17.8856 6 16V14"
+              stroke="currentColor" stroke-width="1.5" />
+            <path opacity="0.5"
+              d="M17 4C17 2.11438 17 1.17157 16.4142 0.585786C15.8284 0 14.8856 0 13 0H11C9.11438 0 8.17157 0 7.58579 0.585786C7 1.17157 7 2.11438 7 4V6H17V4Z"
+              stroke="currentColor" stroke-width="1.5" />
+          </svg>
+          {{ isArabic ? 'طباعة' : 'Print' }}
+        </button>
+        <button type="button"
+          class="px-3 py-1.5 text-white rounded-lg transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+          style="background: linear-gradient(135deg, #107c41 0%, #1e8e4f 100%);" (click)="exportChartData('fees')"
+          [title]="isArabic ? 'تصدير اكسل' : 'Export Excel'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <path d="M16 13H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M16 17H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M10 9H9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          {{ isArabic ? 'اكسل' : 'Excel' }}
+        </button>
+      </div>
+
+      <!-- Chart Type Toggle Buttons for Fees -->
+      <div class="flex items-center gap-1 rounded-xl p-1.5 border"
+        style="background: rgba(138, 23, 62, 0.1); border-color: rgba(138, 23, 62, 0.2);">
+        <button
+          [class]="feesChartType === 'bar' ? 'px-4 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all duration-300 transform scale-105' : 'px-4 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all duration-300'"
+          [style]="feesChartType === 'bar' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleFeesChartType('bar')"
+          [title]="isArabic ? 'رسم أعمدة - يُظهر البيانات كأعمدة' : 'Bar Chart - Shows data as bars'">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="8" width="4" height="13" rx="1" stroke="currentColor" stroke-width="2" />
+              <rect x="10" y="4" width="4" height="17" rx="1" stroke="currentColor" stroke-width="2" />
+              <rect x="17" y="12" width="4" height="9" rx="1" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <span class="hidden sm:inline">{{ isArabic ? 'أعمدة' : 'Bar' }}</span>
+          </div>
+        </button>
+        <button
+          [class]="feesChartType === 'doughnut' ? 'px-4 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all duration-300 transform scale-105' : 'px-4 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all duration-300'"
+          [style]="feesChartType === 'doughnut' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleFeesChartType('doughnut')"
+          [title]="isArabic ? 'رسم حلقي - رسم دائري مع فراغ في المنتصف' : 'Doughnut - Pie chart with hollow center'">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2" fill="currentColor" opacity="0.1" />
+              <path d="M12 2v4M12 18v4" stroke="currentColor" stroke-width="1" opacity="0.6" />
+            </svg>
+            <span class="hidden sm:inline">{{ isArabic ? 'حلقي' : 'Donut' }}</span>
+          </div>
+        </button>
+        <button
+          [class]="feesChartType === 'pie' ? 'px-4 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all duration-300 transform scale-105' : 'px-4 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all duration-300'"
+          [style]="feesChartType === 'pie' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleFeesChartType('pie')"
+          [title]="isArabic ? 'رسم دائري - يُظهر البيانات كقطع من الدائرة' : 'Pie Chart - Shows data as slices of a circle'">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+              <path d="M12 2v10l8.66-5" stroke="currentColor" stroke-width="2" fill="currentColor" opacity="0.3" />
+            </svg>
+            <span class="hidden sm:inline">{{ isArabic ? 'دائري' : 'Pie' }}</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters in Single Line -->
+    <div class="flex flex-wrap items-end justify-end gap-3">
+      <div class="flex flex-col">
+        <label for="feesDateFrom" class="text-sm font-semibold mb-1 whitespace-nowrap">{{
+          translations()?.feesDateFrom?.label }}</label>
+        <input id="feesDateFrom" type="text" mwlFlatpickr [options]="basic"
+          class="border rounded-lg px-3 py-2 h-10 w-[150px]" [(ngModel)]="feesDateFrom">
+      </div>
+
+      <div class="flex flex-col">
+        <label for="feesDateTo" class="text-sm font-semibold mb-1 whitespace-nowrap">{{
+          translations()?.feesDateTo?.label }}</label>
+        <input id="feesDateTo" type="text" mwlFlatpickr [options]="basic"
+          class="border rounded-lg px-3 py-2 h-10 w-[150px]" [(ngModel)]="feesDateTo">
+      </div>
+
+      <button
+        class="px-4 py-2 h-10 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors whitespace-nowrap"
+        (click)="applyFilters()">
+        {{ translations()?.Apply?.label }}
+      </button>
+
+      <button
+        class="px-4 py-2 h-10 bg-[#60583d] text-white rounded-lg hover:bg-[#60583d]/90 transition-colors whitespace-nowrap"
+        (click)="resetFilters()">
+        {{ translations()?.Reset?.label }}
+      </button>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="flex justify-center items-center w-full">
+      <div [class]="getFeesChartClass()">
+        <!-- Background decoration for pie/doughnut -->
+        <div *ngIf="feesChartType !== 'bar'"
+          class="absolute inset-0 bg-gradient-to-br from-transparent via-indigo-50/30 to-purple-100/20 rounded-2xl">
+        </div>
+        <div *ngIf="feesChartType !== 'bar'"
+          class="absolute top-4 right-4 w-20 h-20 bg-gradient-to-br from-indigo-200/20 to-purple-200/20 rounded-full blur-xl">
+        </div>
+        <div *ngIf="feesChartType !== 'bar'"
+          class="absolute bottom-4 left-4 w-16 h-16 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-lg">
+        </div>
+
+        <!-- Chart container -->
+        <div class="relative z-10 w-full h-full flex justify-center items-center">
+          <canvas #barFeesCanvas role="img" [attr.aria-label]="translations()?.feesChart?.label"
+            class="drop-shadow-lg max-w-full max-h-full"></canvas>
+        </div>
+
+        <!-- Chart type indicator for pie/doughnut -->
+        <div *ngIf="feesChartType !== 'bar'"
+          class="absolute top-4 left-4 px-3 py-1 bg-white/80 backdrop-blur-sm rounded-full text-xs font-medium text-gray-600 shadow-sm">
+          {{
+          feesChartType === 'pie' ? (isArabic ? 'رسم دائري' : 'Pie Chart') :
+          (isArabic ? 'رسم حلقي' : 'Doughnut') }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== LICENSES =================== -->
+  <div *ngIf="hasLicensesData" class="bg-white p-6 rounded-xl shadow-md space-y-6">
+    <!-- Single Line Header -->
+    <div class="flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-xl font-bold whitespace-nowrap">{{ translations()?.licensesByServices?.label }}</h3>
+        <button
+          [class]="animatedLicenses > 0 ? 'px-3 py-1.5 bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-medium flex items-center gap-2 cursor-pointer whitespace-nowrap' : 'px-3 py-1.5 bg-gray-200 text-gray-400 rounded-lg text-sm font-medium flex items-center gap-2 cursor-not-allowed opacity-60 whitespace-nowrap'"
+          (click)="animatedLicenses > 0 ? navigateToLicensesDetails() : null" [disabled]="animatedLicenses === 0"
+          [title]="animatedLicenses > 0 ? (isArabic ? 'عرض تفاصيل الرخص' : 'View Licenses Details') : (isArabic ? 'لا توجد بيانات' : 'No data available')">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+          {{ isArabic ? 'تفاصيل' : 'Details' }}
+        </button>
+        <button type="button"
+          class="px-3 py-1.5 text-white rounded-lg transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+          style="background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);"
+          (click)="printChart('licenses', isArabic ? 'الرخص حسب الخدمات' : 'Licenses by Services')"
+          [title]="isArabic ? 'طباعة الرسم البياني' : 'Print Chart'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M6 17.9827C4.44655 17.9359 3.51998 17.7626 2.87868 17.1213C2 16.2426 2 14.8284 2 12C2 9.17157 2 7.75736 2.87868 6.87868C3.75736 6 5.17157 6 8 6H16C18.8284 6 20.2426 6 21.1213 6.87868C22 7.75736 22 9.17157 22 12C22 14.8284 22 16.2426 21.1213 17.1213C20.4800 17.7626 19.5535 17.9359 18 17.9827"
+              stroke="currentColor" stroke-width="1.5" />
+            <path opacity="0.5" d="M9 10H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M19 14L5 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path
+              d="M18 14V16C18 17.8856 18 18.8284 17.4142 19.4142C16.8284 20 15.8856 20 14 20H10C8.11438 20 7.17157 20 6.58579 19.4142C6 18.8284 6 17.8856 6 16V14"
+              stroke="currentColor" stroke-width="1.5" />
+            <path opacity="0.5"
+              d="M17 4C17 2.11438 17 1.17157 16.4142 0.585786C15.8284 0 14.8856 0 13 0H11C9.11438 0 8.17157 0 7.58579 0.585786C7 1.17157 7 2.11438 7 4V6H17V4Z"
+              stroke="currentColor" stroke-width="1.5" />
+          </svg>
+          {{ isArabic ? 'طباعة' : 'Print' }}
+        </button>
+        <button type="button"
+          class="px-3 py-1.5 text-white rounded-lg transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+          style="background: linear-gradient(135deg, #107c41 0%, #1e8e4f 100%);" (click)="exportChartData('licenses')"
+          [title]="isArabic ? 'تصدير اكسل' : 'Export Excel'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <path d="M16 13H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M16 17H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M10 9H9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          {{ isArabic ? 'اكسل' : 'Excel' }}
+        </button>
+      </div>
+
+      <!-- Chart Type Toggle Buttons -->
+      <div class="flex items-center gap-1 rounded-xl p-1.5 border"
+        style="background: rgba(138, 23, 62, 0.1); border-color: rgba(138, 23, 62, 0.2);">
+
+
+        <button
+          [class]="licensesChartType === 'bar' ? 'px-4 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all duration-300 transform scale-105' : 'px-4 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all duration-300'"
+          [style]="licensesChartType === 'bar' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleLicensesChartType('bar')"
+          [title]="isArabic ? 'رسم أعمدة - يُظهر البيانات كأعمدة' : 'Bar Chart - Shows data as bars'">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="8" width="4" height="13" rx="1" stroke="currentColor" stroke-width="2" />
+              <rect x="10" y="4" width="4" height="17" rx="1" stroke="currentColor" stroke-width="2" />
+              <rect x="17" y="12" width="4" height="9" rx="1" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <span class="hidden sm:inline">{{ isArabic ? 'أعمدة' : 'Bar' }}</span>
+          </div>
+        </button>
+        <button
+          [class]="licensesChartType === 'doughnut' ? 'px-4 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all duration-300 transform scale-105' : 'px-4 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all duration-300'"
+          [style]="licensesChartType === 'doughnut' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleLicensesChartType('doughnut')"
+          [title]="isArabic ? 'رسم حلقي - رسم دائري مع فراغ في المنتصف' : 'Doughnut - Pie chart with hollow center'">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2" fill="currentColor" opacity="0.1" />
+              <path d="M12 2v4M12 18v4" stroke="currentColor" stroke-width="1" opacity="0.6" />
+            </svg>
+            <span class="hidden sm:inline">{{ isArabic ? 'حلقي' : 'Donut' }}</span>
+          </div>
+        </button>
+        <button
+          [class]="licensesChartType === 'pie' ? 'px-4 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all duration-300 transform scale-105' : 'px-4 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all duration-300'"
+          [style]="licensesChartType === 'pie' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleLicensesChartType('pie')"
+          [title]="isArabic ? 'رسم دائري - يُظهر البيانات كقطع من الدائرة' : 'Pie Chart - Shows data as slices of a circle'">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+              <path d="M12 2v10l8.66-5" stroke="currentColor" stroke-width="2" fill="currentColor" opacity="0.3" />
+            </svg>
+            <span class="hidden sm:inline">{{ isArabic ? 'دائري' : 'Pie' }}</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters in Single Line -->
+    <div class="flex flex-wrap items-end justify-end gap-3">
+      <div class="flex flex-col">
+        <label for="licCreationFrom" class="text-sm font-semibold mb-1 whitespace-nowrap">{{
+          translations()?.issueFrom?.label }}</label>
+        <input id="licCreationFrom" type="text" mwlFlatpickr [options]="basic"
+          class="border rounded-lg px-3 py-2 h-10 w-[150px]" [(ngModel)]="licCreationFrom">
+      </div>
+
+      <div class="flex flex-col">
+        <label for="licCreationTo" class="text-sm font-semibold mb-1 whitespace-nowrap">{{
+          translations()?.issueTo?.label }}</label>
+        <input id="licCreationTo" type="text" mwlFlatpickr [options]="basic"
+          class="border rounded-lg px-3 py-2 h-10 w-[150px]" [(ngModel)]="licCreationTo">
+      </div>
+
+      <div class="flex flex-col">
+        <label for="licExpireFrom" class="text-sm font-semibold mb-1 whitespace-nowrap">{{
+          translations()?.expireFrom?.label }}</label>
+        <input id="licExpireFrom" type="text" mwlFlatpickr [options]="basic"
+          class="border rounded-lg px-3 py-2 h-10 w-[150px]" [(ngModel)]="licExpireFrom">
+      </div>
+
+      <div class="flex flex-col">
+        <label for="licExpireTo" class="text-sm font-semibold mb-1 whitespace-nowrap">{{ translations()?.expireTo?.label
+          }}</label>
+        <input id="licExpireTo" type="text" mwlFlatpickr [options]="basic"
+          class="border rounded-lg px-3 py-2 h-10 w-[150px]" [(ngModel)]="licExpireTo">
+      </div>
+
+      <button
+        class="px-4 py-2 h-10 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors whitespace-nowrap"
+        (click)="applyFilters()">
+        {{ translations()?.Apply?.label }}
+      </button>
+
+      <button
+        class="px-4 py-2 h-10 bg-[#60583d] text-white rounded-lg hover:bg-[#60583d]/90 transition-colors whitespace-nowrap"
+        (click)="resetFilters()">
+        {{ translations()?.Reset?.label }}
+      </button>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="w-full flex justify-center items-center">
+      <div [class]="getChartContainerClass('licenses')">
+        <!-- Background decoration -->
+        <div *ngIf="licensesChartType !== 'bar'"
+          class="absolute inset-0 bg-gradient-to-br from-transparent via-indigo-50/30 to-purple-100/20 rounded-2xl">
+        </div>
+        <div *ngIf="licensesChartType !== 'bar'"
+          class="absolute top-4 right-4 w-20 h-20 bg-gradient-to-br from-indigo-200/20 to-purple-200/20 rounded-full blur-xl">
+        </div>
+        <div *ngIf="licensesChartType !== 'bar'"
+          class="absolute bottom-4 left-4 w-16 h-16 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-lg">
+        </div>
+
+        <!-- Chart container -->
+        <div class="relative z-10 w-full h-full flex justify-center items-center">
+          <canvas #donutLicensesCanvas id="donutLicenses" role="img"
+            [attr.aria-label]="translations()?.licensesChart?.label"
+            class="drop-shadow-lg max-w-full max-h-full"></canvas>
+        </div>
+
+        <!-- Chart type indicator -->
+        <div *ngIf="licensesChartType !== 'bar'"
+          class="absolute top-4 left-4 px-3 py-1 bg-white/80 backdrop-blur-sm rounded-full text-xs font-medium text-gray-600 shadow-sm">
+          {{
+          licensesChartType === 'pie' ? (isArabic ? 'رسم دائري' : 'Pie Chart') :
+          (isArabic ? 'رسم حلقي' : 'Doughnut') }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== REQUESTS =================== -->
+  <div *ngIf="hasRequestsData" class="bg-white p-6 rounded-xl shadow-md space-y-6">
+    <!-- Single Line Header -->
+    <div class="flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-xl font-bold whitespace-nowrap">{{ translations()?.requestsByServices?.label }}</h3>
+        <button
+          [class]="animatedRequests > 0 ? 'px-3 py-1.5 bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-medium flex items-center gap-2 cursor-pointer whitespace-nowrap' : 'px-3 py-1.5 bg-gray-200 text-gray-400 rounded-lg text-sm font-medium flex items-center gap-2 cursor-not-allowed opacity-60 whitespace-nowrap'"
+          (click)="animatedRequests > 0 ? navigateToRequestsDetails() : null" [disabled]="animatedRequests === 0"
+          [title]="animatedRequests > 0 ? (isArabic ? 'عرض تفاصيل الطلبات' : 'View Requests Details') : (isArabic ? 'لا توجد بيانات' : 'No data available')">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+          {{ isArabic ? 'تفاصيل' : 'Details' }}
+        </button>
+        <button type="button"
+          class="px-3 py-1.5 text-white rounded-lg transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+          style="background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);"
+          (click)="printChart('requests', isArabic ? 'الطلبات حسب الخدمات' : 'Requests by Services')"
+          [title]="isArabic ? 'طباعة الرسم البياني' : 'Print Chart'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M6 17.9827C4.44655 17.9359 3.51998 17.7626 2.87868 17.1213C2 16.2426 2 14.8284 2 12C2 9.17157 2 7.75736 2.87868 6.87868C3.75736 6 5.17157 6 8 6H16C18.8284 6 20.2426 6 21.1213 6.87868C22 7.75736 22 9.17157 22 12C22 14.8284 22 16.2426 21.1213 17.1213C20.4800 17.7626 19.5535 17.9359 18 17.9827"
+              stroke="currentColor" stroke-width="1.5" />
+            <path opacity="0.5" d="M9 10H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M19 14L5 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path
+              d="M18 14V16C18 17.8856 18 18.8284 17.4142 19.4142C16.8284 20 15.8856 20 14 20H10C8.11438 20 7.17157 20 6.58579 19.4142C6 18.8284 6 17.8856 6 16V14"
+              stroke="currentColor" stroke-width="1.5" />
+            <path opacity="0.5"
+              d="M17 4C17 2.11438 17 1.17157 16.4142 0.585786C15.8284 0 14.8856 0 13 0H11C9.11438 0 8.17157 0 7.58579 0.585786C7 1.17157 7 2.11438 7 4V6H17V4Z"
+              stroke="currentColor" stroke-width="1.5" />
+          </svg>
+          {{ isArabic ? 'طباعة' : 'Print' }}
+        </button>
+        <button type="button"
+          class="px-3 py-1.5 text-white rounded-lg transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+          style="background: linear-gradient(135deg, #107c41 0%, #1e8e4f 100%);" (click)="exportChartData('reports')"
+          [title]="isArabic ? 'تصدير اكسل' : 'Export Excel'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <path d="M16 13H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M16 17H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M10 9H9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          {{ isArabic ? 'اكسل' : 'Excel' }}
+        </button>
+      </div>
+
+      <!-- Chart Type Toggle Buttons for Requests -->
+      <div class="flex items-center gap-1 rounded-xl p-1.5 border"
+        style="background: rgba(138, 23, 62, 0.1); border-color: rgba(138, 23, 62, 0.2);">
+        <button
+          [class]="requestsChartType === 'bar' ? 'px-4 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all duration-300 transform scale-105' : 'px-4 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all duration-300'"
+          [style]="requestsChartType === 'bar' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleRequestsChartType('bar')"
+          [title]="isArabic ? 'رسم أعمدة - يُظهر البيانات كأعمدة' : 'Bar Chart - Shows data as bars'">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="8" width="4" height="13" rx="1" stroke="currentColor" stroke-width="2" />
+              <rect x="10" y="4" width="4" height="17" rx="1" stroke="currentColor" stroke-width="2" />
+              <rect x="17" y="12" width="4" height="9" rx="1" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <span class="hidden sm:inline">{{ isArabic ? 'أعمدة' : 'Bar' }}</span>
+          </div>
+        </button>
+        <button
+          [class]="requestsChartType === 'doughnut' ? 'px-4 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all duration-300 transform scale-105' : 'px-4 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all duration-300'"
+          [style]="requestsChartType === 'doughnut' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleRequestsChartType('doughnut')"
+          [title]="isArabic ? 'رسم حلقي - رسم دائري مع فراغ في المنتصف' : 'Doughnut - Pie chart with hollow center'">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2" fill="currentColor" opacity="0.1" />
+              <path d="M12 2v4M12 18v4" stroke="currentColor" stroke-width="1" opacity="0.6" />
+            </svg>
+            <span class="hidden sm:inline">{{ isArabic ? 'حلقي' : 'Donut' }}</span>
+          </div>
+        </button>
+        <button
+          [class]="requestsChartType === 'pie' ? 'px-4 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all duration-300 transform scale-105' : 'px-4 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all duration-300'"
+          [style]="requestsChartType === 'pie' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleRequestsChartType('pie')"
+          [title]="isArabic ? 'رسم دائري - يُظهر البيانات كقطع من الدائرة' : 'Pie Chart - Shows data as slices of a circle'">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+              <path d="M12 2v10l8.66-5" stroke="currentColor" stroke-width="2" fill="currentColor" opacity="0.3" />
+            </svg>
+            <span class="hidden sm:inline">{{ isArabic ? 'دائري' : 'Pie' }}</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters in Single Line -->
+    <div class="flex flex-wrap items-end justify-end gap-3">
+      <div class="flex flex-col">
+        <label for="reqDateFrom" class="text-sm font-semibold mb-1 whitespace-nowrap">{{
+          translations()?.reqDateFrom?.label }}</label>
+        <input id="reqDateFrom" type="text" mwlFlatpickr [options]="basic"
+          class="border rounded-lg px-3 py-2 h-10 w-[150px]" [(ngModel)]="reqDateFrom">
+      </div>
+
+      <div class="flex flex-col">
+        <label for="reqDateTo" class="text-sm font-semibold mb-1 whitespace-nowrap">{{ translations()?.reqDateTo?.label
+          }}</label>
+        <input id="reqDateTo" type="text" mwlFlatpickr [options]="basic"
+          class="border rounded-lg px-3 py-2 h-10 w-[150px]" [(ngModel)]="reqDateTo">
+      </div>
+
+      <button
+        class="px-4 py-2 h-10 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors whitespace-nowrap"
+        (click)="applyFilters()">
+        {{ translations()?.Apply?.label }}
+      </button>
+
+      <button
+        class="px-4 py-2 h-10 bg-[#60583d] text-white rounded-lg hover:bg-[#60583d]/90 transition-colors whitespace-nowrap"
+        (click)="resetFilters()">
+        {{ translations()?.Reset?.label }}
+      </button>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="flex justify-center items-center w-full">
+      <div [class]="getRequestsChartClass()">
+        <!-- Background decoration for pie/doughnut -->
+        <div *ngIf="requestsChartType !== 'bar'"
+          class="absolute inset-0 bg-gradient-to-br from-transparent via-indigo-50/30 to-purple-100/20 rounded-2xl">
+        </div>
+        <div *ngIf="requestsChartType !== 'bar'"
+          class="absolute top-4 right-4 w-20 h-20 bg-gradient-to-br from-indigo-200/20 to-purple-200/20 rounded-full blur-xl">
+        </div>
+        <div *ngIf="requestsChartType !== 'bar'"
+          class="absolute bottom-4 left-4 w-16 h-16 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-lg">
+        </div>
+
+        <!-- Chart container -->
+        <div class="relative z-10 w-full h-full flex justify-center items-center">
+          <canvas #barRequestsCanvas id="barRequests" role="img"
+            [attr.aria-label]="translations()?.requestsChart?.label"
+            class="drop-shadow-lg max-w-full max-h-full"></canvas>
+        </div>
+
+        <!-- Chart type indicator for pie/doughnut -->
+        <div *ngIf="requestsChartType !== 'bar'"
+          class="absolute top-4 left-4 px-3 py-1 bg-white/80 backdrop-blur-sm rounded-full text-xs font-medium text-gray-600 shadow-sm">
+          {{
+          requestsChartType === 'pie' ? (isArabic ? 'رسم دائري' : 'Pie Chart') :
+          (isArabic ? 'رسم حلقي' : 'Doughnut') }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================== MEMBERSHIPS =================== -->
+  <div *ngIf="hasMembershipsData" class="bg-white p-6 rounded-xl shadow-md space-y-6">
+    <!-- Single Line Header -->
+    <div class="flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-xl font-bold whitespace-nowrap">{{ isArabic ? 'العضويات حسب الأندية' : 'Memberships by Clubs' }}
+        </h3>
+        <button
+          [class]="animatedMemberships > 0 ? 'px-3 py-1.5 bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-medium flex items-center gap-2 cursor-pointer whitespace-nowrap' : 'px-3 py-1.5 bg-gray-200 text-gray-400 rounded-lg text-sm font-medium flex items-center gap-2 cursor-not-allowed opacity-60 whitespace-nowrap'"
+          (click)="animatedMemberships > 0 ? navigateToMembershipsDetails() : null"
+          [disabled]="animatedMemberships === 0"
+          [title]="animatedMemberships > 0 ? (isArabic ? 'عرض تفاصيل العضويات' : 'View Memberships Details') : (isArabic ? 'لا توجد بيانات' : 'No data available')">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+          {{ isArabic ? 'تفاصيل' : 'Details' }}
+        </button>
+        <button type="button"
+          class="px-3 py-1.5 text-white rounded-lg transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+          style="background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);"
+          (click)="printChart('memberships', isArabic ? 'العضويات حسب الأندية' : 'Memberships by Clubs')"
+          [title]="isArabic ? 'طباعة الرسم البياني' : 'Print Chart'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M6 17.9827C4.44655 17.9359 3.51998 17.7626 2.87868 17.1213C2 16.2426 2 14.8284 2 12C2 9.17157 2 7.75736 2.87868 6.87868C3.75736 6 5.17157 6 8 6H16C18.8284 6 20.2426 6 21.1213 6.87868C22 7.75736 22 9.17157 22 12C22 14.8284 22 16.2426 21.1213 17.1213C20.4800 17.7626 19.5535 17.9359 18 17.9827"
+              stroke="currentColor" stroke-width="1.5" />
+            <path opacity="0.5" d="M9 10H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M19 14L5 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path
+              d="M18 14V16C18 17.8856 18 18.8284 17.4142 19.4142C16.8284 20 15.8856 20 14 20H10C8.11438 20 7.17157 20 6.58579 19.4142C6 18.8284 6 17.8856 6 16V14"
+              stroke="currentColor" stroke-width="1.5" />
+            <path opacity="0.5"
+              d="M17 4C17 2.11438 17 1.17157 16.4142 0.585786C15.8284 0 14.8856 0 13 0H11C9.11438 0 8.17157 0 7.58579 0.585786C7 1.17157 7 2.11438 7 4V6H17V4Z"
+              stroke="currentColor" stroke-width="1.5" />
+          </svg>
+          {{ isArabic ? 'طباعة' : 'Print' }}
+        </button>
+        <button type="button"
+          class="px-3 py-1.5 text-white rounded-lg transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+          style="background: linear-gradient(135deg, #107c41 0%, #1e8e4f 100%);"
+          (click)="exportChartData('memberships')" [title]="isArabic ? 'تصدير اكسل' : 'Export Excel'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <path d="M16 13H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M16 17H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M10 9H9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          {{ isArabic ? 'اكسل' : 'Excel' }}
+        </button>
+      </div>
+
+      <!-- Chart Type Toggle Buttons for Memberships -->
+      <div class="flex items-center gap-1 rounded-xl p-1.5 border"
+        style="background: rgba(138, 23, 62, 0.1); border-color: rgba(138, 23, 62, 0.2);">
+        <button
+          [class]="membershipsChartType === 'bar' ? 'px-4 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all duration-300 transform scale-105' : 'px-4 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all duration-300'"
+          [style]="membershipsChartType === 'bar' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleMembershipsChartType('bar')"
+          [title]="isArabic ? 'رسم أعمدة - يُظهر البيانات كأعمدة' : 'Bar Chart - Shows data as bars'">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="8" width="4" height="13" rx="1" stroke="currentColor" stroke-width="2" />
+              <rect x="10" y="4" width="4" height="17" rx="1" stroke="currentColor" stroke-width="2" />
+              <rect x="17" y="12" width="4" height="9" rx="1" stroke="currentColor" stroke-width="2" />
+            </svg>
+            <span class="hidden sm:inline">{{ isArabic ? 'أعمدة' : 'Bar' }}</span>
+          </div>
+        </button>
+        <button
+          [class]="membershipsChartType === 'doughnut' ? 'px-4 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all duration-300 transform scale-105' : 'px-4 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all duration-300'"
+          [style]="membershipsChartType === 'doughnut' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleMembershipsChartType('doughnut')"
+          [title]="isArabic ? 'رسم حلقي - رسم دائري مع فراغ في المنتصف' : 'Doughnut - Pie chart with hollow center'">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2" fill="currentColor" opacity="0.1" />
+              <path d="M12 2v4M12 18v4" stroke="currentColor" stroke-width="1" opacity="0.6" />
+            </svg>
+            <span class="hidden sm:inline">{{ isArabic ? 'حلقي' : 'Donut' }}</span>
+          </div>
+        </button>
+        <button
+          [class]="membershipsChartType === 'pie' ? 'px-4 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all duration-300 transform scale-105' : 'px-4 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all duration-300'"
+          [style]="membershipsChartType === 'pie' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleMembershipsChartType('pie')"
+          [title]="isArabic ? 'رسم دائري - يُظهر البيانات كقطع من الدائرة' : 'Pie Chart - Shows data as slices of a circle'">
+          <div class="flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+              <path d="M12 2v10l8.66-5" stroke="currentColor" stroke-width="2" fill="currentColor" opacity="0.3" />
+            </svg>
+            <span class="hidden sm:inline">{{ isArabic ? 'دائري' : 'Pie' }}</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters in Single Line -->
+    <div class="flex flex-wrap items-end justify-end gap-3">
+      <div class="flex flex-col">
+        <label for="LicenseCreationDateFromMem" class="text-sm font-semibold mb-1 whitespace-nowrap">{{ isArabic ?
+          'تاريخ إنشاء
+          العضوية من' : 'Membership Creation From' }}</label>
+        <input id="LicenseCreationDateFromMem" type="text" mwlFlatpickr [options]="basic"
+          class="border rounded-lg px-3 py-2 h-10 w-[150px]" [(ngModel)]="LicenseCreationDateFromMem">
+      </div>
+
+      <div class="flex flex-col">
+        <label for="LicenseCreationDateToMem" class="text-sm font-semibold mb-1 whitespace-nowrap">{{ isArabic ? 'تاريخ
+          إنشاء
+          العضوية إلى' : 'Membership Creation To' }}</label>
+        <input id="LicenseCreationDateToMem" type="text" mwlFlatpickr [options]="basic"
+          class="border rounded-lg px-3 py-2 h-10 w-[150px]" [(ngModel)]="LicenseCreationDateToMem">
+      </div>
+
+      <div class="flex flex-col">
+        <label for="LicenseExpirationDateFromMem" class="text-sm font-semibold mb-1 whitespace-nowrap">{{ isArabic ?
+          'تاريخ انتهاء
+          العضوية من' : 'Membership Expiry From' }}</label>
+        <input id="LicenseExpirationDateFromMem" type="text" mwlFlatpickr [options]="basic"
+          class="border rounded-lg px-3 py-2 h-10 w-[150px]" [(ngModel)]="LicenseExpirationDateFromMem">
+      </div>
+
+      <div class="flex flex-col">
+        <label for="LicenseExpirationDateToMem" class="text-sm font-semibold mb-1 whitespace-nowrap">{{ isArabic ?
+          'تاريخ انتهاء
+          العضوية إلى' : 'Membership Expiry To' }}</label>
+        <input id="LicenseExpirationDateToMem" type="text" mwlFlatpickr [options]="basic"
+          class="border rounded-lg px-3 py-2 h-10 w-[150px]" [(ngModel)]="LicenseExpirationDateToMem">
+      </div>
+
+      <button
+        class="px-4 py-2 h-10 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors whitespace-nowrap"
+        (click)="applyFilters()">
+        {{ translations()?.Apply?.label }}
+      </button>
+
+      <button
+        class="px-4 py-2 h-10 bg-[#60583d] text-white rounded-lg hover:bg-[#60583d]/90 transition-colors whitespace-nowrap"
+        (click)="resetFilters()">
+        {{ translations()?.Reset?.label }}
+      </button>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="flex justify-center items-center w-full">
+      <div [class]="getChartContainerClass('memberships')">
+        <!-- Background decoration for pie/doughnut -->
+        <div *ngIf="membershipsChartType !== 'bar'"
+          class="absolute inset-0 bg-gradient-to-br from-transparent via-indigo-50/30 to-purple-100/20 rounded-2xl">
+        </div>
+        <div *ngIf="membershipsChartType !== 'bar'"
+          class="absolute top-4 right-4 w-20 h-20 bg-gradient-to-br from-indigo-200/20 to-purple-200/20 rounded-full blur-xl">
+        </div>
+        <div *ngIf="membershipsChartType !== 'bar'"
+          class="absolute bottom-4 left-4 w-16 h-16 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-lg">
+        </div>
+
+        <!-- Chart container -->
+        <div class="relative z-10 w-full h-full flex justify-center items-center">
+          <canvas #donutMembershipsCanvas id="donutMemberships" role="img"
+            [attr.aria-label]="isArabic ? 'رسم العضويات' : 'Memberships Chart'"
+            class="drop-shadow-lg max-w-full max-h-full"></canvas>
+        </div>
+
+        <!-- Chart type indicator for pie/doughnut -->
+        <div *ngIf="membershipsChartType !== 'bar'"
+          class="absolute top-4 left-4 px-3 py-1 bg-white/80 backdrop-blur-sm rounded-full text-xs font-medium text-gray-600 shadow-sm">
+          {{
+          membershipsChartType === 'pie' ? (isArabic ? 'رسم دائري' : 'Pie Chart') :
+          (isArabic ? 'رسم حلقي' : 'Doughnut') }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

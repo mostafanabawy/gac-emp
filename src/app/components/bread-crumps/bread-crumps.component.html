@@ -1,0 +1,51 @@
+<div class="border-b-[1px] border-[#CDCDCD] pb-4">
+    <div class="flex justify-between mb-2 flex-col md:flex-row space-y-3 md:space-y-0">
+        <h2 class="text-3xl font-bold">{{ pageNameChange() || pageName() }}</h2>
+        <!-- <ul class="flex gap-6">
+            <li>
+                <a routerLink="/contact-us"
+                    class="text-[#545454] flex gap-2 items-center font-bold text-lg hover:text-primary transition-all">
+                    <img src="assets/images/icons/breadcrumb-tel.svg" class="h-4" alt="">
+                    {{ translations.breadCrumbLink3.label }}
+                </a>
+            </li>
+            <li>
+                <button
+                    class="text-[#545454] flex gap-2 items-center font-bold text-lg hover:text-primary transition-all"
+                    (click)="toggleHelpTutorialModal()"> <img src="assets/images/icons/video-file-2-svgrepo-com.svg"
+                        class="h-4" alt="help tutorial video icon">
+                    {{ translations.breadCrumbLink2.label }}
+                </button>
+                <app-help-tutorial-modal [isOpen]="isHelpTutorialModalOpen()"
+                    (closed)="toggleHelpTutorialModal($event)"></app-help-tutorial-modal>
+            </li>
+            <li>
+                <button
+                    class="text-[#545454] flex gap-2 items-center font-bold text-lg hover:text-primary transition-all"
+                    (click)="toggleUserGuideModal()"> <img src="assets/images/icons/book-open-svgrepo-com.svg"
+                        class="h-4" alt="users guide icon">
+                    {{ translations.breadCrumbLink1.label }}
+                </button>
+                <app-users-guide-modal [isOpen]="isUserGuideModalOpen()"
+                    (closed)="toggleUserGuideModal($event)"></app-users-guide-modal>
+            </li>
+        </ul> -->
+    </div>
+    <ul class="flex space-x-2 rtl:space-x-reverse">
+        <li *ngFor="let crumb of breadcrumbs(); let i = index; let last = last"
+            class="before:opacity-100 ltr:before:mr-2 rtl:before:ml-2"
+            [ngClass]="{'custom-arrow': i !== 0, 'flex items-center': store.locale === 'en'}">
+            <ng-container *ngIf="crumb.hasComponent; else noComponent">
+                <a [routerLink]="crumb.url" [ngClass]="{'text-primary': last}" class="text-lg hover:underline">
+                    {{ crumb.label }}
+
+                </a>
+            </ng-container>
+            <ng-template #noComponent>
+                <span [ngClass]="{'text-primary': last}" class="text-lg">
+                    {{ crumb.label }}
+                </span>
+            </ng-template>
+        </li>
+    </ul>
+</div>

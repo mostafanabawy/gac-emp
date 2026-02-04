@@ -1,0 +1,380 @@
+<div class="w-full p-4 space-y-8" [attr.dir]="isArabic ? 'rtl' : 'ltr'">
+
+  <!-- ================== HEADER ================== -->
+  <div class="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl p-8 text-white shadow-2xl">
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+      <div class="flex items-center gap-6">
+        <div class="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center">
+          <i class="fas fa-building text-3xl"></i>
+        </div>
+        <div>
+          <h1 class="text-3xl font-black mb-2">
+            {{ isArabic ? 'لوحة معلومات الأندية الرياضية' : 'Sports Clubs Dashboard' }}
+          </h1>
+          <p class="text-green-100 text-lg">
+            {{ isArabic ? 'تحليل شامل لأداء الأندية الرياضية والخدمات المقدمة' : 'Comprehensive analysis of sports clubs
+            performance and services' }}
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button type="button"
+          class="px-6 py-3 bg-white/20 hover:bg-white/30 text-white rounded-xl transition-all duration-300 flex items-center gap-3 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+          (click)="printAllCharts()">
+          <i class="fas fa-print text-lg"></i>
+          {{ isArabic ? 'طباعة جميع الرسوم البيانية' : 'Print All Charts' }}
+        </button>
+        <button type="button"
+          class="px-6 py-3 bg-white/20 hover:bg-white/30 text-white rounded-xl transition-all duration-300 flex items-center gap-3 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105"
+          (click)="exportToExcel('all', isArabic ? 'تقرير الأندية الشامل' : 'Complete Clubs Report')">
+          <i class="fas fa-file-excel text-lg"></i>
+          {{ isArabic ? 'تصدير إكسل شامل' : 'Export All to Excel' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== SUMMARY CARDS ================== -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+    <!-- Total Clubs Card -->
+    <div
+      class="bg-gradient-to-br from-green-400 to-emerald-600 text-white rounded-xl p-6 text-center shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+      <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-white/20 flex items-center justify-center">
+        <i class="fas fa-building text-xl"></i>
+      </div>
+      <p class="text-3xl font-bold">{{ animatedTotalClubs | numFormat }}</p>
+      <h3 class="mt-2 text-lg font-semibold">{{ isArabic ? 'إجمالي الأندية' : 'Total Clubs' }}</h3>
+    </div>
+
+    <!-- Total Fees Card -->
+    <div
+      [class]="animatedTotalFees > 0 ? 'bg-gradient-to-br from-blue-400 to-blue-600 text-white rounded-xl p-6 text-center shadow-lg cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300' : 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-600 rounded-xl p-6 text-center shadow-lg cursor-not-allowed opacity-60'"
+      (click)="animatedTotalFees > 0 ? navigateToClubsFeesDetails() : null">
+      <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-white/20 flex items-center justify-center">
+        <i class="fas fa-money-bill-wave text-xl"></i>
+      </div>
+      <p class="text-3xl font-bold">{{ animatedTotalFees | numFormat }}</p>
+      <h3 class="mt-2 text-lg font-semibold">{{ isArabic ? 'إجمالي الرسوم' : 'Total Fees' }}</h3>
+    </div>
+
+    <!-- Total Memberships Card -->
+    <div
+      [class]="animatedTotalMemberships > 0 ? 'bg-gradient-to-br from-purple-400 to-purple-600 text-white rounded-xl p-6 text-center shadow-lg cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300' : 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-600 rounded-xl p-6 text-center shadow-lg cursor-not-allowed opacity-60'"
+      (click)="animatedTotalMemberships > 0 ? navigateToClubsMembershipsDetails() : null">
+      <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-white/20 flex items-center justify-center">
+        <i class="fas fa-certificate text-xl"></i>
+      </div>
+      <p class="text-3xl font-bold">{{ animatedTotalMemberships | numFormat }}</p>
+      <h3 class="mt-2 text-lg font-semibold">{{ isArabic ? 'إجمالي العضويات' : 'Total Memberships' }}</h3>
+    </div>
+
+    <!-- Total Requests Card -->
+    <div
+      [class]="animatedTotalRequests > 0 ? 'bg-gradient-to-br from-orange-400 to-red-600 text-white rounded-xl p-6 text-center shadow-lg cursor-pointer hover:shadow-2xl hover:scale-105 transition-all duration-300' : 'bg-gradient-to-br from-gray-300 to-gray-400 text-gray-600 rounded-xl p-6 text-center shadow-lg cursor-not-allowed opacity-60'"
+      (click)="animatedTotalRequests > 0 ? navigateToClubsRequestsDetails() : null">
+      <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-white/20 flex items-center justify-center">
+        <i class="fas fa-file-alt text-xl"></i>
+      </div>
+      <p class="text-3xl font-bold">{{ animatedTotalRequests | numFormat }}</p>
+      <h3 class="mt-2 text-lg font-semibold">{{ isArabic ? 'إجمالي الطلبات' : 'Total Requests' }}</h3>
+    </div>
+
+  </div>
+
+  <!-- ================== CLUBS FEES CHART ================== -->
+  <div class="bg-white p-6 rounded-xl shadow-md space-y-6 chart-section">
+    <!-- Header -->
+    <div class="flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-xl font-bold whitespace-nowrap flex items-center gap-2 interactive-chart-title">
+          {{ isArabic ? 'رسوم الأندية' : 'Clubs Fees' }}
+          <i class="fas fa-mouse-pointer text-sm text-gray-500 click-icon" title="{{ isArabic ? 'قابل للنقر' : 'Clickable' }}"></i>
+        </h3>
+        <button
+          [class]="animatedTotalFees > 0 ? 'px-3 py-1.5 bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-medium flex items-center gap-2 cursor-pointer whitespace-nowrap' : 'px-3 py-1.5 bg-gray-200 text-gray-400 rounded-lg text-sm font-medium flex items-center gap-2 cursor-not-allowed opacity-60 whitespace-nowrap'"
+          (click)="animatedTotalFees > 0 ? navigateToClubsFeesDetails() : null" [disabled]="animatedTotalFees === 0">
+          <i class="fas fa-external-link-alt text-xs"></i>
+          {{ isArabic ? 'تفاصيل' : 'Details' }}
+        </button>
+        <button type="button"
+          class="px-3 py-1.5 text-white rounded-lg transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+          style="background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);"
+          (click)="printChart('fees', isArabic ? 'رسوم الأندية' : 'Clubs Fees')">
+          <i class="fas fa-print text-sm"></i>
+          {{ isArabic ? 'طباعة' : 'Print' }}
+        </button>
+        <button type="button"
+          class="px-3 py-1.5 text-white rounded-lg transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+          style="background: linear-gradient(135deg, #059669 0%, #10B981 100%);"
+          (click)="exportToExcel('fees', isArabic ? 'رسوم الأندية' : 'Clubs Fees')">
+          <i class="fas fa-file-excel text-sm"></i>
+          {{ isArabic ? 'إكسل' : 'Excel' }}
+        </button>
+      </div>
+
+      <!-- Chart Type Toggle -->
+      <div class="flex items-center gap-1 rounded-xl p-1.5 border"
+        style="background: rgba(138, 23, 62, 0.1); border-color: rgba(138, 23, 62, 0.2);">
+        <button
+          [class]="clubsFeesChartType === 'bar' ? 'px-3 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all' : 'px-3 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all'"
+          [style]="clubsFeesChartType === 'bar' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleClubsFeesChartType('bar')">
+          <i class="fas fa-chart-bar"></i>
+          <span class="hidden sm:inline ml-1">{{ isArabic ? 'أعمدة' : 'Bar' }}</span>
+        </button>
+        <button
+          [class]="clubsFeesChartType === 'pie' ? 'px-3 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all' : 'px-3 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all'"
+          [style]="clubsFeesChartType === 'pie' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleClubsFeesChartType('pie')">
+          <i class="fas fa-chart-pie"></i>
+          <span class="hidden sm:inline ml-1">{{ isArabic ? 'دائري' : 'Pie' }}</span>
+        </button>
+        <button
+          [class]="clubsFeesChartType === 'doughnut' ? 'px-3 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all' : 'px-3 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all'"
+          [style]="clubsFeesChartType === 'doughnut' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleClubsFeesChartType('doughnut')">
+          <i class="fas fa-dot-circle"></i>
+          <span class="hidden sm:inline ml-1">{{ isArabic ? 'حلقي' : 'Donut' }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-wrap items-end justify-end gap-3">
+      <div class="flex flex-col">
+        <label class="text-sm font-semibold mb-1 whitespace-nowrap">{{ isArabic ? 'تاريخ الرسوم من' : 'Fees Date From'
+          }}</label>
+        <input type="text" mwlFlatpickr [options]="basic" class="border rounded-lg px-3 py-2 h-10 w-[150px]"
+          [(ngModel)]="feesDateFrom">
+      </div>
+      <div class="flex flex-col">
+        <label class="text-sm font-semibold mb-1 whitespace-nowrap">{{ isArabic ? 'تاريخ الرسوم إلى' : 'Fees Date To'
+          }}</label>
+        <input type="text" mwlFlatpickr [options]="basic" class="border rounded-lg px-3 py-2 h-10 w-[150px]"
+          [(ngModel)]="feesDateTo">
+      </div>
+      <button
+        class="px-4 py-2 h-10 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors whitespace-nowrap"
+        (click)="applyFilters()">
+        {{ isArabic ? 'تطبيق' : 'Apply' }}
+      </button>
+      <button
+        class="px-4 py-2 h-10 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors whitespace-nowrap"
+        (click)="resetFilters()">
+        {{ isArabic ? 'إعادة تعيين' : 'Reset' }}
+      </button>
+    </div>
+
+    <!-- Chart -->
+    <div class="flex justify-center items-center w-full">
+      <div class="w-full h-[400px] relative group clickable-chart-container">
+        <canvas #clubsFeesCanvas class="cursor-pointer"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== Clubs Memberships CHART ================== -->
+  <div class="bg-white p-6 rounded-xl shadow-md space-y-6 chart-section">
+    <!-- Header -->
+    <div class="flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-xl font-bold whitespace-nowrap flex items-center gap-2 interactive-chart-title">
+          {{ isArabic ? 'عضويات الأندية' : 'Clubs Memberships' }}
+          <i class="fas fa-mouse-pointer text-sm text-gray-500 click-icon" title="{{ isArabic ? 'قابل للنقر' : 'Clickable' }}"></i>
+        </h3>
+        <button
+          [class]="animatedTotalMemberships > 0 ? 'px-3 py-1.5 bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-medium flex items-center gap-2 cursor-pointer whitespace-nowrap' : 'px-3 py-1.5 bg-gray-200 text-gray-400 rounded-lg text-sm font-medium flex items-center gap-2 cursor-not-allowed opacity-60 whitespace-nowrap'"
+          (click)="animatedTotalMemberships > 0 ? navigateToClubsMembershipsDetails() : null"
+          [disabled]="animatedTotalMemberships === 0">
+          <i class="fas fa-external-link-alt text-xs"></i>
+          {{ isArabic ? 'تفاصيل' : 'Details' }}
+        </button>
+        <button type="button"
+          class="px-3 py-1.5 text-white rounded-lg transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+          style="background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);"
+          (click)="printChart('memberships', isArabic ? 'عضويات الأندية' : 'Clubs Memberships')">
+          <i class="fas fa-print text-sm"></i>
+          {{ isArabic ? 'طباعة' : 'Print' }}
+        </button>
+        <button type="button"
+          class="px-3 py-1.5 text-white rounded-lg transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+          style="background: linear-gradient(135deg, #059669 0%, #10B981 100%);"
+          (click)="exportToExcel('memberships', isArabic ? 'عضويات الأندية' : 'Clubs Memberships')">
+          <i class="fas fa-file-excel text-sm"></i>
+          {{ isArabic ? 'إكسل' : 'Excel' }}
+        </button>
+      </div>
+
+      <!-- Chart Type Toggle -->
+      <div class="flex items-center gap-1 rounded-xl p-1.5 border"
+        style="background: rgba(138, 23, 62, 0.1); border-color: rgba(138, 23, 62, 0.2);">
+        <button
+          [class]="clubsMembershipsChartType === 'bar' ? 'px-3 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all' : 'px-3 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all'"
+          [style]="clubsMembershipsChartType === 'bar' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleClubsMembershipsChartType('bar')">
+          <i class="fas fa-chart-bar"></i>
+          <span class="hidden sm:inline ml-1">{{ isArabic ? 'أعمدة' : 'Bar' }}</span>
+        </button>
+        <button
+          [class]="clubsMembershipsChartType === 'pie' ? 'px-3 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all' : 'px-3 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all'"
+          [style]="clubsMembershipsChartType === 'pie' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleClubsMembershipsChartType('pie')">
+          <i class="fas fa-chart-pie"></i>
+          <span class="hidden sm:inline ml-1">{{ isArabic ? 'دائري' : 'Pie' }}</span>
+        </button>
+        <button
+          [class]="clubsMembershipsChartType === 'doughnut' ? 'px-3 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all' : 'px-3 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all'"
+          [style]="clubsMembershipsChartType === 'doughnut' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleClubsMembershipsChartType('doughnut')">
+          <i class="fas fa-dot-circle"></i>
+          <span class="hidden sm:inline ml-1">{{ isArabic ? 'حلقي' : 'Donut' }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-wrap items-end justify-end gap-3">
+     
+      <div class="flex flex-col">
+        <label class="text-sm font-semibold mb-1 whitespace-nowrap">{{ isArabic ? 'تاريخ العضوية من' : 'Membership Date From'
+          }}</label>
+        <input type="text" mwlFlatpickr [options]="basic" class="border rounded-lg px-3 py-2 h-10 w-[150px]"
+          [(ngModel)]="LicenseCreationDateFromMem">
+      </div>
+      <div class="flex flex-col">
+        <label class="text-sm font-semibold mb-1 whitespace-nowrap">{{ isArabic ? 'تاريخ العضوية إلى' : 'Membership Date To'
+          }}</label>
+        <input type="text" mwlFlatpickr [options]="basic" class="border rounded-lg px-3 py-2 h-10 w-[150px]"
+          [(ngModel)]="LicenseCreationDateToMem">
+      </div>
+      <div class="flex flex-col">
+        <label class="text-sm font-semibold mb-1 whitespace-nowrap">{{ isArabic ? 'انتهاء العضوية من' : 'Expiry Date From'
+          }}</label>
+        <input type="text" mwlFlatpickr [options]="basic" class="border rounded-lg px-3 py-2 h-10 w-[150px]"
+          [(ngModel)]="LicenseExpirationDateFromMem">
+      </div>
+      <div class="flex flex-col">
+        <label class="text-sm font-semibold mb-1 whitespace-nowrap">{{ isArabic ? 'انتهاء العضوية إلى' : 'Expiry Date To'
+          }}</label>
+        <input type="text" mwlFlatpickr [options]="basic" class="border rounded-lg px-3 py-2 h-10 w-[150px]"
+          [(ngModel)]="LicenseExpirationDateToMem">
+      </div>
+      <button
+        class="px-4 py-2 h-10 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors whitespace-nowrap"
+        (click)="applyFilters()">
+        {{ isArabic ? 'تطبيق' : 'Apply' }}
+      </button>
+      <button
+        class="px-4 py-2 h-10 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors whitespace-nowrap"
+        (click)="resetFilters()">
+        {{ isArabic ? 'إعادة تعيين' : 'Reset' }}
+      </button>
+    </div>
+
+    <!-- Chart -->
+    <div class="flex justify-center items-center w-full">
+      <div
+        class="w-full h-[500px] bg-gradient-to-br from-red-50 via-white to-rose-50 rounded-2xl shadow-inner border border-red-100 p-8 relative overflow-hidden group clickable-chart-container memberships-chart-wrapper">
+        <div class="absolute inset-0 bg-gradient-to-br from-transparent via-red-50/30 to-rose-100/20 rounded-2xl"></div>
+        <div class="relative z-10 w-full h-full flex justify-center items-center">
+          <canvas #clubsMembershipsCanvas class="drop-shadow-lg max-w-full max-h-full cursor-pointer"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== CLUBS REQUESTS CHART ================== -->
+  <div class="bg-white p-6 rounded-xl shadow-md space-y-6 chart-section">
+    <!-- Header -->
+    <div class="flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-xl font-bold whitespace-nowrap flex items-center gap-2 interactive-chart-title">
+          {{ isArabic ? 'طلبات الأندية' : 'Clubs Requests' }}
+          <i class="fas fa-mouse-pointer text-sm text-gray-500 click-icon" title="{{ isArabic ? 'قابل للنقر' : 'Clickable' }}"></i>
+        </h3>
+        <button
+          [class]="animatedTotalRequests > 0 ? 'px-3 py-1.5 bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-white transition-all text-sm font-medium flex items-center gap-2 cursor-pointer whitespace-nowrap' : 'px-3 py-1.5 bg-gray-200 text-gray-400 rounded-lg text-sm font-medium flex items-center gap-2 cursor-not-allowed opacity-60 whitespace-nowrap'"
+          (click)="animatedTotalRequests > 0 ? navigateToClubsRequestsDetails() : null"
+          [disabled]="animatedTotalRequests === 0">
+          <i class="fas fa-external-link-alt text-xs"></i>
+          {{ isArabic ? 'تفاصيل' : 'Details' }}
+        </button>
+        <button type="button"
+          class="px-3 py-1.5 text-white rounded-lg transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+          style="background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);"
+          (click)="printChart('requests', isArabic ? 'طلبات الأندية' : 'Clubs Requests')">
+          <i class="fas fa-print text-sm"></i>
+          {{ isArabic ? 'طباعة' : 'Print' }}
+        </button>
+        <button type="button"
+          class="px-3 py-1.5 text-white rounded-lg transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+          style="background: linear-gradient(135deg, #059669 0%, #10B981 100%);"
+          (click)="exportToExcel('requests', isArabic ? 'طلبات الأندية' : 'Clubs Requests')">
+          <i class="fas fa-file-excel text-sm"></i>
+          {{ isArabic ? 'إكسل' : 'Excel' }}
+        </button>
+      </div>
+
+      <!-- Chart Type Toggle -->
+      <div class="flex items-center gap-1 rounded-xl p-1.5 border"
+        style="background: rgba(138, 23, 62, 0.1); border-color: rgba(138, 23, 62, 0.2);">
+        <button
+          [class]="clubsRequestsChartType === 'bar' ? 'px-3 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all' : 'px-3 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all'"
+          [style]="clubsRequestsChartType === 'bar' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleClubsRequestsChartType('bar')">
+          <i class="fas fa-chart-bar"></i>
+          <span class="hidden sm:inline ml-1">{{ isArabic ? 'أعمدة' : 'Bar' }}</span>
+        </button>
+        <button
+          [class]="clubsRequestsChartType === 'line' ? 'px-3 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all' : 'px-3 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all'"
+          [style]="clubsRequestsChartType === 'line' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleClubsRequestsChartType('line')">
+          <i class="fas fa-chart-line"></i>
+          <span class="hidden sm:inline ml-1">{{ isArabic ? 'خطي' : 'Line' }}</span>
+        </button>
+        <button
+          [class]="clubsRequestsChartType === 'doughnut' ? 'px-3 py-2 text-white rounded-lg shadow-md text-sm font-medium transition-all' : 'px-3 py-2 hover:bg-white/50 rounded-lg text-sm font-medium transition-all'"
+          [style]="clubsRequestsChartType === 'doughnut' ? 'background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%);' : 'color: #8A173E;'"
+          (click)="toggleClubsRequestsChartType('doughnut')">
+          <i class="fas fa-dot-circle"></i>
+          <span class="hidden sm:inline ml-1">{{ isArabic ? 'حلقي' : 'Donut' }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="flex flex-wrap items-end justify-end gap-3">
+      <div class="flex flex-col">
+        <label class="text-sm font-semibold mb-1 whitespace-nowrap">{{ isArabic ? 'تاريخ الطلب من' : 'Request Date From'
+          }}</label>
+        <input type="text" mwlFlatpickr [options]="basic" class="border rounded-lg px-3 py-2 h-10 w-[150px]"
+          [(ngModel)]="reqDateFrom">
+      </div>
+      <div class="flex flex-col">
+        <label class="text-sm font-semibold mb-1 whitespace-nowrap">{{ isArabic ? 'تاريخ الطلب إلى' : 'Request Date To'
+          }}</label>
+        <input type="text" mwlFlatpickr [options]="basic" class="border rounded-lg px-3 py-2 h-10 w-[150px]"
+          [(ngModel)]="reqDateTo">
+      </div>
+      <button
+        class="px-4 py-2 h-10 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors whitespace-nowrap"
+        (click)="applyFilters()">
+        {{ isArabic ? 'تطبيق' : 'Apply' }}
+      </button>
+      <button
+        class="px-4 py-2 h-10 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors whitespace-nowrap"
+        (click)="resetFilters()">
+        {{ isArabic ? 'إعادة تعيين' : 'Reset' }}
+      </button>
+    </div>
+
+    <!-- Chart -->
+    <div class="flex justify-center items-center w-full">
+      <div class="w-full h-[400px] relative group clickable-chart-container">
+        <canvas #clubsRequestsCanvas class="cursor-pointer"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>

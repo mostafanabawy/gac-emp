@@ -1,0 +1,1030 @@
+<!-- <app-bread-crumps pageName="طلب ترخيص شؤون رياضية"></app-bread-crumps> -->
+
+<section class="min-h-screen bg-gray-100 font-sans text-gray-800 relative">
+    <!-- The main content takes 3/4 of the width, and the sidebar takes 1/4 -->
+    <!-- Sidebar Area -->
+    <div class="grid grid-cols-12 sm:grid-cols-4 gap-4 p-4 min-h-screen relative "
+     [class]="(sidebarCollapsed || isMobileScreen) ? '!grid-cols-12' : '!grid-cols-4'">
+        <aside class="col-span-1 bg-white shadow-md flex flex-col items-center rounded-t-lg h-fit md:sticky top-[140px] right-0
+            transition-all duration-300" role="complementary" aria-label="page sections"
+            [class]="(sidebarCollapsed || isMobileScreen) ? 'w-20 justify-center' : 'w-full'">
+            <div class="bg-[#60583d] flex items-center justify-between w-full p-4 rounded-t-lg">
+                <h2 class="text-xl font-semibold mb-1 text-white py-2 px-3 flex-1"
+                    [class]="sidebarCollapsed ? 'hidden' : 'block'">مراحل تقديم الطلب</h2>
+                <button type="button" (click)="toggleSidebar()" class="collapse-button-custom"
+                    [class]="(sidebarCollapsed || isMobileScreen) ? 'mx-auto' : ''"
+                    [title]="(sidebarCollapsed || isMobileScreen)? 'توسيع القائمة' : 'طي القائمة'">
+                    <img *ngIf="!sidebarCollapsed" src="/assets/images/r-side.svg" alt="طي القائمة"
+                        class="w-6 h-6 transition-all duration-300">
+                    <img *ngIf="sidebarCollapsed" src="/assets/images/l-slide.svg" alt="توسيع القائمة"
+                        class="w-4 h-4 transition-all duration-300">
+                </button>
+            </div>
+            <nav aria-label="page sections first list" class="w-full">
+                <ul class="mt-1 space-y-3 w-full px-3">
+                    <li>
+                        <a href="#attachments-section" (click)="scrollTo('attachments-section', $event)" [ngClass]="{
+    'text-primary font-semibold active-section': activeSection === 'attachments-section'
+  }" aria-label="attachments section" 
+  class="items-center p-3 duration-200 border-b-[1px] border-[#CDCDCD] text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2"
+                            [class.border-none]="sidebarCollapsed">
+                            <div [title]="sidebarCollapsed? 'المرفقات' : ''" class="border p-2 rounded-full border-gray-600"
+                                [class]="sidebarCollapsed ? 'mx-auto' : ''"
+                                [ngClass]="activeSection === 'attachments-section' ? 'border-primary': ''">
+                                <svg [title]="sidebarCollapsed? 'المرفقات' : ''" xmlns="http://www.w3.org/2000/svg" width="17" height="17"
+                                    viewBox="0 0 14.482 15.967">
+                                    <path id="paperclip-svgrepo-com"
+                                        d="M7.178,2.819a5.762,5.762,0,0,1,7.9,0,5.241,5.241,0,0,1,0,7.634L9.18,16.1a4.089,4.089,0,0,1-5.611,0,3.735,3.735,0,0,1,0-5.439L9.386,5.1a2.416,2.416,0,0,1,3.318,0,2.23,2.23,0,0,1,0,3.244l-5.86,5.61a.557.557,0,0,1-.77-.8l5.86-5.61a1.116,1.116,0,0,0,0-1.634,1.3,1.3,0,0,0-1.778,0L4.339,11.469a2.622,2.622,0,0,0,0,3.829,2.975,2.975,0,0,0,4.071,0l5.9-5.65a4.127,4.127,0,0,0,0-6.024,4.649,4.649,0,0,0-6.364,0L3.192,8.176a.557.557,0,0,1-.77-.8Z"
+                                        transform="translate(-2.25 -1.25)" fill-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <span [class]="sidebarCollapsed ? 'hidden' : 'flex-1'">
+                                المرفقات
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#application-activity-data-section"
+                            (click)="scrollTo('application-activity-data-section', $event)" 
+                            aria-label="application and activity details section"
+                            [ngClass]="{
+    'text-primary font-semibold active-section': activeSection === 'application-activity-data-section'
+  }" class="items-center p-3 duration-200 border-b-[1px] border-[#CDCDCD] text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2"
+                            [class.border-none]="sidebarCollapsed">
+                            <div [title]="sidebarCollapsed? 'بيانات الطلب والنشاط' : ''" class="border p-2 rounded-full border-gray-600"
+                                [class]="sidebarCollapsed ? 'mx-auto' : ''"
+                                [ngClass]="activeSection === 'application-activity-data-section' ? 'border-primary': ''">
+                                <svg [title]="sidebarCollapsed? 'بيانات الطلب والنشاط' : ''" xmlns="http://www.w3.org/2000/svg" width="17" height="17"
+                                    viewBox="0 0 15.235 15.979">
+                                    <path id="document-add-svgrepo-com_1_" data-name="document-add-svgrepo-com (1)"
+                                        d="M8.711,1.25h1.57a27.146,27.146,0,0,1,3.294.114,3.5,3.5,0,0,1,2.133.92.557.557,0,0,1-.788.788,2.413,2.413,0,0,0-1.493-.6,26.75,26.75,0,0,0-3.188-.1H8.753a26.749,26.749,0,0,0-3.188.1,2.413,2.413,0,0,0-1.493.6,2.413,2.413,0,0,0-.6,1.493,26.749,26.749,0,0,0-.1,3.188v2.973a26.75,26.75,0,0,0,.1,3.188,2.413,2.413,0,0,0,.6,1.493,2.413,2.413,0,0,0,1.493.6,26.743,26.743,0,0,0,3.188.1h1.486a26.744,26.744,0,0,0,3.188-.1,2.413,2.413,0,0,0,1.493-.6c.517-.517.674-1.321.7-3.2a.557.557,0,1,1,1.115.016c-.026,1.8-.143,3.09-1.027,3.975a3.5,3.5,0,0,1-2.133.92,27.161,27.161,0,0,1-3.294.114H8.711a27.161,27.161,0,0,1-3.294-.114,3.5,3.5,0,0,1-2.133-.92,3.5,3.5,0,0,1-.92-2.133,27.146,27.146,0,0,1-.114-3.294V7.711a27.146,27.146,0,0,1,.114-3.294,3.5,3.5,0,0,1,.92-2.133,3.5,3.5,0,0,1,2.133-.92A27.146,27.146,0,0,1,8.711,1.25Zm5.328,4.307a2.019,2.019,0,0,1,2.855,2.855L13.36,11.946a5.221,5.221,0,0,1-.468.436,3,3,0,0,1-.553.342,5.235,5.235,0,0,1-.6.224l-1.549.516a.951.951,0,0,1-1.2-1.2l.506-1.517.01-.031a5.253,5.253,0,0,1,.224-.6,3,3,0,0,1,.342-.553,5.221,5.221,0,0,1,.436-.468l.023-.023Zm2.067.788a.9.9,0,0,0-1.278,0l-.135.135c.007.025.016.051.025.079a1.928,1.928,0,0,0,1.174,1.174l.079.025.135-.135A.9.9,0,0,0,16.106,6.345ZM15.119,8.61a3.062,3.062,0,0,1-1.278-1.278L11.317,9.856a4.671,4.671,0,0,0-.369.389,1.882,1.882,0,0,0-.214.347,4.65,4.65,0,0,0-.183.5l-.3.892.21.21.892-.3a4.65,4.65,0,0,0,.5-.183,1.882,1.882,0,0,0,.347-.214,4.671,4.671,0,0,0,.389-.369ZM5.966,7.01a.557.557,0,0,1,.557-.557h4.831a.557.557,0,1,1,0,1.115H6.523A.557.557,0,0,1,5.966,7.01Zm0,2.973a.557.557,0,0,1,.557-.557H8.381a.557.557,0,1,1,0,1.115H6.523A.557.557,0,0,1,5.966,9.982Zm0,2.973a.557.557,0,0,1,.557-.557H7.638a.557.557,0,0,1,0,1.115H6.523A.557.557,0,0,1,5.966,12.955Z"
+                                        transform="translate(-2.25 -1.25)" fill-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <span [class]="sidebarCollapsed ? 'hidden' : 'flex-1'">
+                                بيانات الطلب والنشاط
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#applicant-manager-data-section"
+                        aria-label="applicant and manager details section"
+                            (click)="scrollTo('applicant-manager-data-section', $event)" [ngClass]="{
+    'text-primary font-semibold active-section': activeSection === 'applicant-manager-data-section'
+  }" class="p-3 duration-200 border-b-[1px] border-[#CDCDCD] text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex items-center gap-2"
+                            [class.border-none]="sidebarCollapsed">
+                            <div [title]="sidebarCollapsed? 'بيانات طالب الترخيص والمدير' : ''" class="border p-2 rounded-full border-gray-600"
+                                [class]="sidebarCollapsed ? 'mx-auto' : ''"
+                                [ngClass]="activeSection === 'applicant-manager-data-section' ? 'border-primary': ''">
+                                <svg [title]="sidebarCollapsed? 'بيانات طالب الترخيص والمدير' : ''" xmlns="http://www.w3.org/2000/svg" width="17" height="17"
+                                    viewBox="0 0 13.872 11.291">
+                                    <g id="user-id-svgrepo-com" transform="translate(-1.25 -3.25)">
+                                        <path id="Path_82734" data-name="Path 82734"
+                                            d="M8.024,6.25A1.774,1.774,0,1,0,9.8,8.024,1.774,1.774,0,0,0,8.024,6.25ZM7.218,8.024a.806.806,0,1,1,.806.806A.806.806,0,0,1,7.218,8.024Z"
+                                            transform="translate(-1.774 -1.064)" fill="#707070" fill-rule="evenodd" />
+                                        <path id="Path_82735" data-name="Path 82735"
+                                            d="M7.315,12.25a4.662,4.662,0,0,0-2.041.429A1.6,1.6,0,0,0,4.25,14.024v.04a1.4,1.4,0,0,0,.523,1.264,2.334,2.334,0,0,0,.964.361,9.15,9.15,0,0,0,1.578.109,9.15,9.15,0,0,0,1.578-.109,2.334,2.334,0,0,0,.964-.361,1.4,1.4,0,0,0,.523-1.264v-.04a1.6,1.6,0,0,0-1.023-1.345A4.662,4.662,0,0,0,7.315,12.25Zm-2.1,1.774c0-.074.073-.272.488-.48a3.709,3.709,0,0,1,1.608-.327,3.709,3.709,0,0,1,1.608.327c.416.208.488.405.488.48,0,.39-.025.45-.122.52a1.423,1.423,0,0,1-.568.192,8.234,8.234,0,0,1-1.406.094,8.234,8.234,0,0,1-1.406-.094,1.424,1.424,0,0,1-.568-.192C5.243,14.474,5.218,14.414,5.218,14.024Z"
+                                            transform="translate(-1.064 -3.193)" fill="#707070" fill-rule="evenodd" />
+                                        <path id="Path_82736" data-name="Path 82736"
+                                            d="M17.315,12.218a.484.484,0,1,0,0-.968H14.734a.484.484,0,0,0,0,.968Z"
+                                            transform="translate(-4.613 -2.838)" fill="#707070" />
+                                        <path id="Path_82737" data-name="Path 82737"
+                                            d="M17.444,8.734a.484.484,0,0,1-.484.484H13.734a.484.484,0,0,1,0-.968H16.96A.484.484,0,0,1,17.444,8.734Z"
+                                            transform="translate(-4.258 -1.774)" fill="#707070" />
+                                        <path id="Path_82738" data-name="Path 82738"
+                                            d="M17.669,15.218a.484.484,0,1,0,0-.968H15.734a.484.484,0,0,0,0,.968Z"
+                                            transform="translate(-4.967 -3.903)" fill="#707070" />
+                                        <path id="Path_82739" data-name="Path 82739"
+                                            d="M6.859,3.25H9.513a23.566,23.566,0,0,1,2.86.1,3.039,3.039,0,0,1,1.852.8A3.04,3.04,0,0,1,15.023,6a23.579,23.579,0,0,1,.1,2.86v.073a23.579,23.579,0,0,1-.1,2.86,3.04,3.04,0,0,1-.8,1.852,3.04,3.04,0,0,1-1.852.8,23.579,23.579,0,0,1-2.86.1H6.859a23.58,23.58,0,0,1-2.86-.1,3.04,3.04,0,0,1-1.852-.8,3.039,3.039,0,0,1-.8-1.852,23.566,23.566,0,0,1-.1-2.86V8.859A23.567,23.567,0,0,1,1.349,6a3.039,3.039,0,0,1,.8-1.852A3.039,3.039,0,0,1,4,3.349,23.567,23.567,0,0,1,6.859,3.25ZM4.128,4.308a2.1,2.1,0,0,0-1.3.524,2.1,2.1,0,0,0-.524,1.3A23.222,23.222,0,0,0,2.218,8.9a23.223,23.223,0,0,0,.09,2.767,2.1,2.1,0,0,0,.524,1.3,2.1,2.1,0,0,0,1.3.524,23.217,23.217,0,0,0,2.767.09H9.476a23.218,23.218,0,0,0,2.767-.09,2.1,2.1,0,0,0,1.3-.524,2.1,2.1,0,0,0,.524-1.3,23.218,23.218,0,0,0,.09-2.767,23.217,23.217,0,0,0-.09-2.767,2.1,2.1,0,0,0-.524-1.3,2.1,2.1,0,0,0-1.3-.524,23.223,23.223,0,0,0-2.767-.09H6.9A23.222,23.222,0,0,0,4.128,4.308Z"
+                                            fill-rule="evenodd" />
+                                    </g>
+                                </svg>
+                            </div>
+                            <span [class]="sidebarCollapsed ? 'hidden' : 'flex-1'">
+                                بيانات طالب الترخيص والمدير
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#company-hq-data-section" 
+                        aria-label="company and headquarters details section"
+                        (click)="scrollTo('company-hq-data-section', $event)"
+                            [ngClass]="{
+    'text-primary font-semibold active-section': activeSection === 'company-hq-data-section'
+  }" class="items-center p-3 duration-200 border-b-[1px] border-[#CDCDCD] text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2"
+                            [class.border-none]="sidebarCollapsed">
+                            <div [title]="sidebarCollapsed? 'بيانات الشركة والمقر' : ''" class="border p-2 rounded-full border-gray-600"
+                                [class]="sidebarCollapsed ? 'mx-auto' : ''"
+                                [ngClass]="activeSection === 'company-hq-data-section' ? 'border-primary': ''">
+                                <svg [title]="sidebarCollapsed? 'بيانات الشركة والمقر' : ''" xmlns="http://www.w3.org/2000/svg" width="17" height="17"
+                                    viewBox="0 0 12.494 12.494">
+                                    <path id="buildings-2-svgrepo-com"
+                                        d="M6.886,1.25H8.108a10.649,10.649,0,0,1,1.3.046,1.583,1.583,0,0,1,.959.422,1.583,1.583,0,0,1,.422.959,10.648,10.648,0,0,1,.046,1.3v.757c.335,0,.619,0,.854.027a1.616,1.616,0,0,1,.761.243,1.6,1.6,0,0,1,.441.441,1.616,1.616,0,0,1,.243.761c.027.263.027.588.027.977v5.688h.145a.436.436,0,0,1,0,.872H1.686a.436.436,0,1,1,0-.872h.145V7.184c0-.389,0-.714.027-.977A1.616,1.616,0,0,1,2.1,5.447a1.6,1.6,0,0,1,.441-.441A1.616,1.616,0,0,1,3.3,4.763c.235-.024.519-.026.854-.027V3.98a10.649,10.649,0,0,1,.046-1.3,1.583,1.583,0,0,1,.422-.959A1.583,1.583,0,0,1,5.583,1.3,10.648,10.648,0,0,1,6.886,1.25ZM4.156,5.608c-.339,0-.578,0-.765.022a.773.773,0,0,0-.365.1.726.726,0,0,0-.2.2.773.773,0,0,0-.1.365c-.022.213-.022.494-.022.911v5.666H4.156Zm.872,7.264H7.061V11.565a.436.436,0,0,1,.872,0v1.308H9.967V4.01a10.315,10.315,0,0,0-.039-1.217.735.735,0,0,0-.174-.459A.735.735,0,0,0,9.3,2.16a10.308,10.308,0,0,0-1.217-.039H6.916A10.308,10.308,0,0,0,5.7,2.16a.735.735,0,0,0-.459.174.735.735,0,0,0-.174.459A10.307,10.307,0,0,0,5.027,4.01Zm5.811,0h1.453V7.207c0-.417,0-.7-.022-.911a.773.773,0,0,0-.1-.365.727.727,0,0,0-.2-.2.773.773,0,0,0-.365-.1c-.188-.019-.427-.022-.765-.022ZM5.9,3.429a.436.436,0,0,1,.436-.436H8.659a.436.436,0,1,1,0,.872H6.335A.436.436,0,0,1,5.9,3.429Zm0,1.743a.436.436,0,0,1,.436-.436H8.659a.436.436,0,1,1,0,.872H6.335A.436.436,0,0,1,5.9,5.173Zm0,1.743a.436.436,0,0,1,.436-.436H8.659a.436.436,0,1,1,0,.872H6.335A.436.436,0,0,1,5.9,6.916Zm0,1.743a.436.436,0,0,1,.436-.436H8.659a.436.436,0,1,1,0,.872H6.335A.436.436,0,0,1,5.9,8.659Z"
+                                        transform="translate(-1.25 -1.25)" fill-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <span [class]="sidebarCollapsed ? 'hidden' : 'flex-1'">
+                                بيانات الشركة والمقر
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#trade-name-description-section"
+                        aria-label="trade name and description section"
+                            (click)="scrollTo('trade-name-description-section', $event)" [ngClass]="{
+    'text-primary font-semibold active-section': activeSection === 'trade-name-description-section'
+  }" class="items-center p-3 duration-200 border-b-[1px] border-[#CDCDCD] text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2"
+                            [class.border-none]="sidebarCollapsed">
+                            <div [title]="sidebarCollapsed? 'توصيف الاسم التجاري' : ''" class="border p-2 rounded-full border-gray-600"
+                                [class]="sidebarCollapsed ? 'mx-auto' : ''"
+                                [ngClass]="activeSection === 'trade-name-description-section' ? 'border-primary': ''">
+                                <svg [title]="sidebarCollapsed? 'توصيف الاسم التجاري' : ''" xmlns="http://www.w3.org/2000/svg" width="17" height="17"
+                                    viewBox="0 0 13.291 12.664">
+                                    <path id="garage-svgrepo-com"
+                                        d="M8.819,3.543a1.391,1.391,0,0,0-1.848,0l-3.709,3.3A1.391,1.391,0,0,0,2.8,7.879V14h.927V10.723a11.326,11.326,0,0,1,.049-1.386,1.684,1.684,0,0,1,.449-1.02,1.684,1.684,0,0,1,1.02-.448,11.325,11.325,0,0,1,1.386-.049H9.164a11.325,11.325,0,0,1,1.386.049,1.536,1.536,0,0,1,1.469,1.469,11.327,11.327,0,0,1,.049,1.386V14H13V7.879a1.391,1.391,0,0,0-.467-1.04ZM13.923,14V7.879a2.318,2.318,0,0,0-.778-1.733l-3.709-3.3a2.318,2.318,0,0,0-3.08,0l-3.709,3.3a2.318,2.318,0,0,0-.778,1.733V14H1.714a.464.464,0,1,0,0,.927H14.077a.464.464,0,0,0,0-.927Zm-2.782,0V10.755A10.973,10.973,0,0,0,11.1,9.46a.636.636,0,0,0-.673-.673,10.958,10.958,0,0,0-1.295-.041H6.659a10.959,10.959,0,0,0-1.295.041.782.782,0,0,0-.488.185.782.782,0,0,0-.185.488,10.965,10.965,0,0,0-.041,1.295V14ZM6.2,6.428a.464.464,0,0,1,.464-.464H9.132a.464.464,0,0,1,0,.927H6.659A.464.464,0,0,1,6.2,6.428Zm-.618,4.018a.464.464,0,0,1,.464-.464H9.75a.464.464,0,0,1,0,.927H6.041A.464.464,0,0,1,5.577,10.446Zm0,1.855a.464.464,0,0,1,.464-.464H9.75a.464.464,0,1,1,0,.927H6.041A.464.464,0,0,1,5.577,12.3Z"
+                                        transform="translate(-1.25 -2.264)" fill-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <span [class]="sidebarCollapsed ? 'hidden' : 'flex-1'">
+                                توصيف الاسم التجاري
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#terms-conditions-section" (click)="scrollTo('terms-conditions-section', $event)"
+                        aria-label="terms and conditions section"
+                            [ngClass]="{
+    'text-primary font-semibold active-section': activeSection === 'terms-conditions-section'
+  }" class="items-center p-3 duration-200 border-b-[1px] border-[#CDCDCD] text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2"
+                            [class.border-none]="sidebarCollapsed">
+                            <div [title]="sidebarCollapsed? 'ملاحظات' : ''" class="border p-2 rounded-full border-gray-600"
+                                [class]="sidebarCollapsed ? 'mx-auto' : ''"
+                                [ngClass]="activeSection === 'terms-conditions-section' ? 'border-primary': ''">
+                                <svg [title]="sidebarCollapsed? 'ملاحظات' : ''" xmlns="http://www.w3.org/2000/svg" width="17" height="17"
+                                    viewBox="0 0 12.042 13.277">
+                                    <g id="Group_57076" data-name="Group 57076" transform="translate(3485 22672)">
+                                        <path id="document-medicine-svgrepo-com"
+                                            d="M7.619,1.25h1.3a22.557,22.557,0,0,1,2.737.095,2.909,2.909,0,0,1,1.772.765A2.91,2.91,0,0,1,14.2,3.881a22.569,22.569,0,0,1,.095,2.737v2.54A22.569,22.569,0,0,1,14.2,11.9a2.91,2.91,0,0,1-.765,1.772,2.91,2.91,0,0,1-1.772.765,22.569,22.569,0,0,1-2.737.095h-1.3a22.57,22.57,0,0,1-2.737-.095,2.91,2.91,0,0,1-1.772-.765A2.909,2.909,0,0,1,2.345,11.9,22.557,22.557,0,0,1,2.25,9.159V6.619a22.557,22.557,0,0,1,.095-2.737,2.909,2.909,0,0,1,.765-1.772,2.909,2.909,0,0,1,1.772-.765A22.557,22.557,0,0,1,7.619,1.25ZM5,2.263a2.005,2.005,0,0,0-1.241.5A2.005,2.005,0,0,0,3.263,4a22.227,22.227,0,0,0-.086,2.649v2.47a22.228,22.228,0,0,0,.086,2.649,2.005,2.005,0,0,0,.5,1.241,2.005,2.005,0,0,0,1.241.5,22.222,22.222,0,0,0,2.649.086H8.889a22.223,22.223,0,0,0,2.649-.086,2.005,2.005,0,0,0,1.241-.5,2.005,2.005,0,0,0,.5-1.241,22.223,22.223,0,0,0,.086-2.649V6.654A22.222,22.222,0,0,0,13.28,4a2.005,2.005,0,0,0-.5-1.241,2.005,2.005,0,0,0-1.241-.5,22.228,22.228,0,0,0-2.649-.086H7.654A22.227,22.227,0,0,0,5,2.263Zm.333,6.861A.463.463,0,0,1,5.8,8.661h4.94a.463.463,0,0,1,0,.926H5.8A.463.463,0,0,1,5.338,9.124Zm.618,2.47a.463.463,0,0,1,.463-.463h3.705a.463.463,0,0,1,0,.926H6.418A.463.463,0,0,1,5.955,11.594Z"
+                                            transform="translate(-3487.25 -22673.25)" fill="#707070"
+                                            fill-rule="evenodd" />
+                                        <path id="Path_82744" data-name="Path 82744"
+                                            d="M8.491,14.367a.463.463,0,0,1,.038.654L6.883,16.874a.463.463,0,0,1-.692,0l-.823-.926a.463.463,0,1,1,.692-.615l.477.537,1.3-1.463A.463.463,0,0,1,8.491,14.367Z"
+                                            transform="translate(-3485.927 -22683.162)" fill-rule="evenodd" />
+                                    </g>
+                                </svg>
+                            </div>
+                            <span [class]="sidebarCollapsed ? 'hidden' : 'flex-1'">
+                                ملاحظات
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+
+        </aside>
+
+        <div aria-label="Primary Content Section" class="col-span-5 sm:col-span-3 rounded-lg px-6 pb-6 flex flex-col"
+            *ngIf="cardData()?.isStatus !== 'draft'"  [class]="(sidebarCollapsed || isMobileScreen) ? '!col-span-11' : '!col-span-3'">
+            <div>
+                <nav aria-label="إجراءات الطلب"
+                    class="w-full bg-white p-4 rounded border-[1px] border-[#7070706F] flex items-start gap-4">
+
+                    <div class="flex flex-wrap gap-4 flex-grow">
+                        <button type="button" aria-label="نسخ الطلب"
+                            class="font-bold flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary">
+                            <img src="/assets/images/icons/copy-com.svg" class="h-5" alt="copy icon">
+                            نسخ
+                        </button>
+
+                        <button type="button" aria-label="سحب الطلب"
+                            class="font-bold flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary">
+                            <img src="/assets/images/icons/revoke57187.svg" class="h-5" alt="revoke icon">
+                            سحب الطلب
+                        </button>
+
+                        <button type="button" aria-label="اضافة"
+                            class="font-bold flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary">
+                            <img src="/assets/images/icons/add-icon.svg" class="h-5" alt="add icon">
+                            اضافة
+                        </button>
+
+                        <button type="button" aria-label="تحديث بيانات"
+                            class="font-bold flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary">
+                            <img src="/assets/images/icons/update-icon.svg" class="h-5" alt="update icon">
+                            تحديث بيانات
+                        </button>
+
+                        <button type="button" aria-label="نقل ملكية"
+                            class="font-bold flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary">
+                            <img src="/assets/images/icons/property-transfer.svg" class="h-5"
+                                alt="property transfer icon">
+                            نقل ملكية
+                        </button>
+
+                        <button type="button" aria-label="تجديد"
+                            class="font-bold flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary">
+                            <img src="/assets/images/icons/Group 57145.svg" class="h-5" alt="renew icon">
+                            تجديد
+                        </button>
+
+                        <button type="button" aria-label="طباعة"
+                            class="font-bold flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary">
+                            <img src="/assets/images/icons/printer57135.svg" class="h-5" alt="printer icon">
+                            طباعة
+                        </button>
+                    </div>
+
+                    <a routerLink="applicationdetail" aria-label="قيم الخدمة"
+                        class="text-primary flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary sm:self-start sm:ml-auto rtl:sm:mr-auto rtl:sm:ml-0">
+                        <img src="/assets/images/icons/Star.svg" class="h-5" alt="star icon for rating">
+                        قيم الخدمة
+                    </a>
+                </nav>
+
+                <section id="application-details-section" tabindex="-1"
+                    class="w-full font-bold text-lg bg-white p-4 rounded border-[1px] border-[#7070706F] mt-4"
+                    aria-labelledby="application-details-heading">
+                    <header class="flex justify-between border-b-[1px] border-[#7070706F] pb-3 mb-3">
+                        <h2 id="application-details-heading" class="text-2xl font-bold">تفاصيل الطلب</h2>
+                        @if(cardData()?.isStatus == 'pending'){
+                        <span
+                            class="text-yellow-900 text-sm border-[#704d00] border bg-[#FEBC2E19] rounded-lg px-2 py-1">تحت
+                            المراجعة</span>
+                        }@else if (cardData()?.isStatus == 'accepted') {
+                        <span
+                            class="text-[#4CAF50] text-sm border-[#4CAF50] border bg-[#4CAF5019] rounded-lg px-2 py-1">مقبول</span>
+                        }@else if(cardData()?.isStatus == 'draft'){
+                        <span
+                            class="text-gray-700 text-sm border-[#707070] border bg-[#70707024] rounded-lg px-2 py-1">مسودة</span>
+
+                        }@else if (cardData()?.isStatus == 'payment') {
+                        <span
+                            class="text-blue-800 text-sm border-[#31CFFF] border bg-[#31CFFF19] rounded-lg px-2 py-1">منتظرة
+                            الدفع</span>
+
+                        }@else {
+                        <span
+                            class="text-red-800 text-sm border-[#F44336] border bg-[#F4433619] rounded-lg px-2 py-1">مرفوض</span>
+                        }
+                    </header>
+                    <app-application-details-section [dataToDisplay]="{
+                                'تاريخ التقديم': cardData()?.date,
+                                'رقم الطلب': cardData()?.stats?.['رقم الطلب'],
+                                'النوع': cardData()?.stats?.['النوع']
+                                }"></app-application-details-section>
+                </section>
+
+                <section id="attachments-section" tabindex="-1"
+                    class="w-full bg-white p-4 rounded border-[1px] border-[#7070706F] mt-4">
+                    <header>
+                        <h2 class="text-2xl font-bold"> المرفقات </h2>
+                    </header>
+                    <ul class="space-y-2 mt-2">
+                        <li class="flex gap-2">
+                            <img src="/assets/images/icons/file-text-svgrepo-com (3).svg" class="w-5" alt="file icon">
+                            <a class="text-base"> تصريح بالمستفيد الحقيقي </a>
+                        </li>
+                        <li class="flex gap-2">
+                            <img src="/assets/images/icons/file-text-svgrepo-com (3).svg" class="w-5" alt="file icon">
+                            <a class="text-base"> السيرة الذاتية والمؤهلات العلمية للمدير المسؤول </a>
+                        </li>
+                        <li class="flex gap-2">
+                            <img src="/assets/images/icons/file-text-svgrepo-com (3).svg" class="w-5" alt="file icon">
+                            <a class="text-base"> نسخة واضحة من شهادة حفظ الاسم التجاري </a>
+                        </li>
+                    </ul>
+
+                </section>
+
+                <section id="application-activity-data-section" tabindex="-1"
+                    class="w-full font-bold text-lg bg-white p-4 rounded border-[1px] border-[#7070706F] mt-4"
+                    aria-labelledby="application-personal-details-heading">
+                    <header class="border-b-[1px] border-[#7070706F] pb-3 mb-3">
+                        <h2 id="application-personal-details-heading" class="text-2xl font-bold"> بيانات الطلب </h2>
+
+                    </header>
+                    <app-application-details-section [dataToDisplay]="{
+                                'نوع الإجراء': 'طلب جديد',
+                                'الرقم الشخصي لمقدم الطلب': '29181804775',
+                                'اسم مقدم الطلب': 'عبداللطيف ياسر عبداللطيف ابوالعنين دسوقي',
+                                'رقم قيد المنشأة': '000',
+                                'إسم المنشأة': 'اسم'
+                                }"></app-application-details-section>
+                </section>
+
+                <section class="w-full font-bold text-lg bg-white p-4 rounded border-[1px] border-[#7070706F] mt-4"
+                    aria-labelledby="activity-details-heading">
+                    <header class="border-b-[1px] border-[#7070706F] pb-3 mb-3">
+                        <h2 id="activity-details-heading" class="text-2xl font-bold">بيانات النشاط</h2>
+                    </header>
+                    <app-application-details-section [dataToDisplay]="{
+        'النشاط الرياضي الرئيسي': 'كرة القدم',
+        'الفئة': 'محترفين',
+        'الفئة العمرية': 'الكبار (18 سنة فما فوق)',
+        'نوع النشاط': 'الأندية الرياضية',
+        'قيمة الرسوم بالريال القطري': 'بدون رسوم',
+        'الوصف التفصيلي للنشاط الرياضي ونطاقه': 'يهدف النادي إلى تطوير مهارات اللاعبين في كرة القدم ضمن الفئة العمرية للكبار مع تنظيم البطولات المحلية والدورات التدريبية المعتمدة في منطقة الدوحة والمناطق المجاورة.'
+    }"></app-application-details-section>
+                </section>
+
+                <section id="applicant-manager-data-section" tabindex="-1"
+                    class="w-full font-bold text-lg bg-white p-4 rounded border-[1px] border-[#7070706F] mt-4"
+                    aria-labelledby="applicant-details-heading">
+                    <header class="border-b-[1px] border-[#7070706F] pb-3 mb-3">
+                        <h2 id="applicant-details-heading" class="text-2xl font-bold">بيانات طالب الترخيص</h2>
+                    </header>
+                    <app-application-details-section [dataToDisplay]="{
+        'اسم طالب الترخيص': 'محمد سالم الكواري',
+        'نوع إثبات الشخصية': 'بطاقة شخصية قطرية',
+        'رقم بطاقة طالب الترخيص': '28976543210',
+        'جوال طالب الترخيص': '+974 5555 1234',
+        'البريد الإلكتروني لطالب الترخيص': 'mohammed.alkuwari@example.com',
+        'ص.ب': '12345 الدوحة، قطر'
+    }"></app-application-details-section>
+                </section>
+
+                <section class="w-full font-bold text-lg bg-white p-4 rounded border-[1px] border-[#7070706F] mt-4"
+                    aria-labelledby="manager-details-heading">
+                    <header class="border-b-[1px] border-[#7070706F] pb-3 mb-3">
+                        <h2 id="manager-details-heading" class="text-2xl font-bold">بيانات المدير المسؤول</h2>
+                    </header>
+                    <app-application-details-section [dataToDisplay]="{
+        'اسم المدير المسؤول': 'محمد سالم الكواري',
+        'نوع إثبات الشخصية': 'بطاقة شخصية قطرية',
+        'رقم بطاقة المدير المسؤول': '28976543210',
+        'جوال المدير المسؤول': '+974 5555 1234',
+        'البريد الإلكتروني للمدير المسؤول': 'mohammed.alkuwari@example.com'
+    }"></app-application-details-section>
+                </section>
+
+                <section id="company-hq-data-section" tabindex="-1"
+                    class="w-full font-bold text-lg bg-white p-4 rounded border-[1px] border-[#7070706F] mt-4"
+                    aria-labelledby="company-details-heading">
+                    <header class="border-b-[1px] border-[#7070706F] pb-3 mb-3">
+                        <h2 id="company-details-heading" class="text-2xl font-bold">بيانات الشركة الطالبة للترخيص</h2>
+                    </header>
+                    <app-application-details-section [dataToDisplay]="{
+                        'رقم السجل التجاري': '5678912345',
+                        'الإسم التجاري': 'الدوحة SC',
+                        'إسم الشركة': 'شركة الدوحة الرياضية ذ.م.م',
+                        'إسم الشركة بالإنجليزية': 'Doha Sports Company',
+                        'رقم الرخصة': 'QSC-2025-00123',
+                        'اسم الفرع': 'فرع اللؤلؤة',
+                        'رقم السجل التجاري الفرعي': 'QSC-2025-00123'
+                    }"></app-application-details-section>
+                </section>
+
+                <section class="w-full font-bold text-lg bg-white p-4 rounded border-[1px] border-[#7070706F] mt-4"
+                    aria-labelledby="hq-details-heading">
+                    <header class="border-b-[1px] border-[#7070706F] pb-3 mb-3">
+                        <h2 id="hq-details-heading" class="text-2xl font-bold">بيانات المقر</h2>
+                    </header>
+                    <app-application-details-section [dataToDisplay]="{
+                        'نوع المقر': 'تجاري',
+                        'حالة الملكية': 'تمليك',
+                        'المنطقة الجغرافية': 'الدوحة الجديدة',
+                        'البلدية': 'بلدية الدوحة',
+                        'المساحة الإجمالية بالمتر المربع': '250 متر مربع',
+                        'رقم العقار': '13',
+                        'رقم الطابق': '2',
+                        'رقم الشقة': '3',
+                        'اسم الشارع': 'شارع السد',
+                        'رقم الشارع': 'Doha Sports Company',
+                        '2رقم العقار': 'QSC-2025-00123'
+                    }"></app-application-details-section>
+                </section>
+
+
+
+                <section id="trade-name-description-section" tabindex="-1"
+                    class="w-full font-bold text-lg bg-white p-6 rounded border border-[#7070706F] mt-4"
+                    aria-labelledby="section-title">
+                    <h2 id="section-title" class="border-b border-[#7070706F] pb-3 mb-3 text-right text-2xl font-bold">
+                        توصيف الإسم التجاري
+                    </h2>
+
+                    <div class="space-y-6 text-right font-normal text-base leading-relaxed text-black">
+                        <section aria-labelledby="desc-1-title">
+                            <h3 id="desc-1-title" class="text-yellow-900 font-bold mb-1">الوصف العام للنشاط التجاري
+                                المطلوب الترخيص بمزاولته في الطلب:</h3>
+                            <p>
+                                هناك العديد من الشوارع المخصصة لترميم الإيسيم، ولكن التعديل على بعض العبارات أو الكلمات
+                                المتداولة إلى النص، إن كنت تريد أن ترميم إيسيم، فـ عليك أن تحقق أولاً إن كان لديك أي
+                                عبارات مكررة أو غير دقيقة. في هذا السياق، عندما تقوم بإعادة تكرار مقاطع من النص ترميم
+                                إيسيم نفسه عدة مرات بناءً على تلبية الحاجة، يقوم مُرخصًا منا باستخدام كلمات مثل قواميس
+                                مرجع بها أكثر من 200 كلمة تُنقح لها مجموعة من الجمل الموزعة لتكون نص ترميم إيسيم ذو شكل
+                                منطقي قريب، إلى النص الحقيقي. وبالتالي يكون النص الناتج خالي من التكرار، أو أي كلمات أو
+                                عبارات غير لائقة أو ما شابه، مما يجعله ترميم إيسيم حقيقي على الإنترنت.
+                            </p>
+                        </section>
+
+                        <section aria-labelledby="desc-2-title">
+                            <h3 id="desc-2-title" class="text-yellow-900 font-bold mb-1 ">توصيف الخدمات الرياضية المقترح
+                                تقديمها</h3>
+                            <p>
+                                هناك العديد من الشوارع المخصصة لترميم الإيسيم، ولكن التعديل على بعض العبارات أو الكلمات
+                                المتداولة إلى النص، إن كنت تريد أن ترميم إيسيم، فـ عليك أن تحقق أولاً إن كان لديك أي
+                                عبارات مكررة أو غير دقيقة. في هذا السياق، عندما تقوم بإعادة تكرار مقاطع من النص ترميم
+                                إيسيم نفسه عدة مرات بناءً على تلبية الحاجة، يقوم مُرخصًا منا باستخدام كلمات مثل قواميس
+                                مرجع بها أكثر من 200 كلمة تُنقح لها مجموعة من الجمل الموزعة لتكون نص ترميم إيسيم ذو شكل
+                                منطقي قريب، إلى النص الحقيقي. وبالتالي يكون النص الناتج خالي من التكرار، أو أي كلمات أو
+                                عبارات غير لائقة أو ما شابه، مما يجعله ترميم إيسيم حقيقي على الإنترنت.
+                            </p>
+                        </section>
+
+                        <section aria-labelledby="desc-3-title">
+                            <h3 id="desc-3-title" class="text-yellow-900 font-bold mb-1">
+                                خطة وبرنامج تأسيس الكيان التجاري (بما في ذلك السنة الأولى من التشغيل ومدة الترخيص
+                                للتجديد):
+                            </h3>
+                            <p>
+                                مرحلة ما قبل التشغيل للكيان التجاري: ٦ أشهر
+                            </p>
+                        </section>
+
+                        <section aria-labelledby="desc-4-title">
+                            <h3 id="desc-4-title" class="text-yellow-900 font-bold mb-1">وتتضمن الخطة البرامج التشغيلية
+                                والخدمات الداعمة</h3>
+                            <p>
+                                هناك العديد من الشوارع المخصصة لترميم الإيسيم، ولكن التعديل على بعض العبارات أو الكلمات
+                                المتداولة إلى النص، إن كنت تريد أن ترميم إيسيم، فـ عليك أن تحقق أولاً إن كان لديك أي
+                                عبارات مكررة أو غير دقيقة. في هذا السياق، عندما تقوم بإعادة تكرار مقاطع من النص ترميم
+                                إيسيم نفسه عدة مرات بناءً على تلبية الحاجة، يقوم مُرخصًا منا باستخدام كلمات مثل قواميس
+                                مرجع بها أكثر من 200 كلمة تُنقح لها مجموعة من الجمل الموزعة لتكون نص ترميم إيسيم ذو شكل
+                                منطقي قريب، إلى النص الحقيقي. وبالتالي يكون النص الناتج خالي من التكرار، أو أي كلمات أو
+                                عبارات غير لائقة أو ما شابه، مما يجعله ترميم إيسيم حقيقي على الإنترنت.
+                            </p>
+                        </section>
+                    </div>
+                </section>
+
+                <section id="terms-conditions-section" tabindex="-1"
+                    class="w-full font-bold text-lg bg-white p-4 rounded border border-[#7070706F] mt-4"
+                    aria-labelledby="notes-title">
+                    <h2 id="notes-title" class="border-b border-[#7070706F] pb-3 mb-3 text-right text-2xl font-bold">
+                        ملاحظات</h2>
+
+                    <div class="text-right space-y-2 font-normal text-base leading-relaxed text-black">
+                        <h3 class="text-red-800 font-bold">ملاحظات العميل</h3>
+                        <p class="border border-[#7070706F] rounded p-3 bg-[#F6F5F6]">
+                            هناك العديد من الأنواع المختلفة لنصوص لوريم إيبسوم، ولكن الغالبية تم تعديلها بشكل ما عبر
+                            إدخال بعض النوادر أو الكلمات العشوائية إلى النص. إن كنت تريد أن تستخدم نص لوريم إيبسوم، عليك
+                            أن تتحقق أولاً أن ليس هناك أي كلمات أو عبارات محرجة أو غير لائقة مخبأة في هذا النص. بينما
+                            تعمل جميع مولدات نصوص لوريم إيبسوم على الإنترنت على إعادة تكرار مقاطع من نص لوريم إيبسوم
+                            نفسه عدة مرات بما تقتضيه الحاجة، يقوم مولدنا باستخدام كلمات مثل قواميس مرجع بها أكثر من 200
+                            كلمة تُنقح لها مجموعة من الجمل الموزعة لتكون نص لوريم إيبسوم ذو شكل منطقي قريب، إلى النص
+                            الحقيقي.
+                        </p>
+                    </div>
+                </section>
+
+
+            </div>
+
+
+        </div>
+
+        <div aria-label="Primary Content Section" class="sm:col-span-3 rounded-lg px-6 pb-6 flex flex-col"
+            *ngIf="cardData()?.isStatus === 'draft'">
+            <section id="application-details-section" tabindex="-1"
+                class="w-full font-bold text-lg bg-white p-4 rounded border-[1px] border-[#7070706F] mt-4"
+                aria-labelledby="application-details-heading">
+                <header class="flex justify-between border-b-[1px] border-[#7070706F] pb-3 mb-3">
+                    <h2 id="application-details-heading" class="text-2xl font-bold">تفاصيل الطلب</h2>
+                    @if(cardData()?.isStatus == 'pending'){
+                    <span
+                        class="text-yellow-900 text-sm border-[#704d00] border bg-[#FEBC2E19] rounded-lg px-2 py-1">تحت
+                        المراجعة</span>
+                    }@else if (cardData()?.isStatus == 'accepted') {
+                    <span
+                        class="text-[#4CAF50] text-sm border-[#4CAF50] border bg-[#4CAF5019] rounded-lg px-2 py-1">مقبول</span>
+                    }@else if(cardData()?.isStatus == 'draft'){
+                    <span
+                        class="text-gray-700 text-sm border-[#707070] border bg-[#70707024] rounded-lg px-2 py-1">مسودة</span>
+
+                    }@else if (cardData()?.isStatus == 'payment') {
+                    <span
+                        class="text-blue-800 text-sm border-[#31CFFF] border bg-[#31CFFF19] rounded-lg px-2 py-1">منتظرة
+                        الدفع</span>
+
+                    }@else {
+                    <span
+                        class="text-red-800 text-sm border-[#F44336] border bg-[#F4433619] rounded-lg px-2 py-1">مرفوض</span>
+                    }
+                </header>
+                <app-application-details-section [dataToDisplay]="{
+                                'تاريخ التقديم': cardData()?.date,
+                                'رقم الطلب': cardData()?.stats?.['رقم الطلب'],
+                                'النوع': cardData()?.stats?.['النوع']
+                                }"></app-application-details-section>
+            </section>
+            <form class="mt-4" [formGroup]="applicationEditForm" (ngSubmit)="onEdit()">
+                <section id="attachments-section" class="w-full font-bold text-lg bg-white p-4 rounded border-[1px] border-[#7070706F] mt-4">
+                    <h2 class="pb-3 mb-3 text-2xl font-bold">المرفقات</h2>
+                    <app-file-upload title="السيرة الذاتية والمعلومات العلمية للمدير المسؤول" format="PDF"
+                        uploadId="fileInput1" acceptedTypes="*" [multiple]="true" formControlName="cvManager">
+                    </app-file-upload>
+                    <app-file-upload
+                        title="الرسم المساحي الهندسي لمكان مزاولة النشاط + الرسم المساحي بتوزيع الأجهزة الرياضية + صورة المنشاة من الداخل والخارج"
+                        format="PDF" uploadId="fileInput2" acceptedTypes="*" [multiple]="true"
+                        formControlName="EngineeringSurveyDrawing">
+                    </app-file-upload>
+                    <app-file-upload
+                        title="السيرة الذاتية والمؤهلات العلمية وشهادات التدريب التخصصي وشهادات الخبرة للمدربين والمختصين لكل نشاط فرعي بشكل منفصل"
+                        format="PDF" uploadId="fileInput3" acceptedTypes="*" [multiple]="true"
+                        formControlName="academicQualificationsTrainingCertificates">
+                    </app-file-upload>
+                    <app-file-upload title="قائمة بيانات واعداد وصور الأجهزة والمعدات المستخدمة داخل المركز"
+                        format="PDF" uploadId="fileInput4" acceptedTypes="*" [multiple]="true"
+                        formControlName="equipmentList">
+                    </app-file-upload>
+                </section>
+
+                <section id="application-activity-data-section"
+                    class="w-full font-bold text-lg bg-white p-4 rounded border-[1px] border-[#7070706F] mt-4 space-y-2">
+                    <h2 class="pb-3 mb-3 text-2xl font-bold">بيانات الطلب والنشاط</h2>
+                    <h3 class="pb-3 mb-3 text-xl font-bold">بيانات النشاط</h3>
+                    <div class="flex w-full gap-2">
+                        <div class="flex flex-col md:flex-row gap-2 w-full">
+                            <label class="w-[200px] text-base text-gray-600" for="mainSportActivity">النشاط
+                                الرياضي
+                                الرئيسي</label>
+                            <select class="form-select-inline border border-gray-300 rounded p-1 !w-full md:!w-[200px]"
+                                id="mainSportActivity" formControlName="mainSportActivity">
+                                <option value="">اختر</option>
+                                <option value="zzz">كرة قدم</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="">
+                            <div class="flex flex-col md:flex-row gap-2">
+                                <label class="w-[200px] text-base text-gray-600" for="theGroup">الفئة</label>
+                                <select
+                                    class="form-select-inline border border-gray-300 rounded p-1 !w-full md:!w-[200px]"
+                                    id="theGroup" formControlName="theGroup">
+                                    <option value="mmm">اختر</option>
+                                    <option value="zzz">هواة</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="my-2">
+                            <div class="flex flex-col md:flex-row gap-2">
+                                <label class="w-[200px] text-base text-gray-600" for="theAgeGroup">الفئة العمرية</label>
+                                <select
+                                    class="form-select-inline border border-gray-300 rounded p-1 !w-full md:!w-[200px]"
+                                    id="theAgeGroup" formControlName="theAgeGroup">
+                                    <option value="">اختر</option>
+                                    <option value="zzz">الشباب (14-17 سنة)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="flex gap-2">
+                        <div class="mt-3">
+                            <fieldset class="unset">
+                                <legend class="text-base my-5 text-gray-600">
+                                    نوع النشاط
+                                </legend>
+                                <div class="flex gap-4 flex-wrap" formGroupName="activities">
+                                    <label class="flex items-center gap-1 text-base"><input type="checkbox"
+                                            formControlName="football" id="football" class="form-checkbox"> كرة
+                                        القدم</label>
+                                    <label class="flex items-center gap-1 text-base"><input type="checkbox"
+                                            formControlName="basketball" id="basketball" class="form-checkbox"> كرة
+                                        السلة</label>
+                                    <label class="flex items-center gap-1 text-base"><input type="checkbox"
+                                            formControlName="handball" id="handball" class="form-checkbox"> كرة
+                                        اليد</label>
+                                    <label class="flex items-center gap-1 text-base"><input type="checkbox"
+                                            formControlName="trackAndField" id="trackAndField" class="form-checkbox">
+                                        ألعاب
+                                        القوى</label>
+                                </div>
+                            </fieldset>
+
+                        </div>
+                    </div>
+
+
+
+                    <div class="flex gap-2">
+                        <div class="w-full">
+                            <label class="text-base text-gray-600" for="sportActivityDescription">الوصف التفصيلى للنشاط
+                                الرياضى
+                                ونطاقه</label>
+                            <textarea class="form-textarea-inline w-full border border-gray-300 p-2 rounded-md" rows="4"
+                                placeholder="الوصف التفصيلى للنشاط الرياضى ونطاقه" id="sportActivityDescription"
+                                formControlName="sportActivityDescription"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <div class="w-full">
+                            <label class="text-base" for="sportActivityCost">قيمة الرسوم بالريال القطرى</label>
+                            <textarea class="form-textarea-inline border border-gray-300 w-full p-2 rounded-md"
+                                id="sportActivityCost" rows="4" placeholder="قيمة الرسوم بالريال القطرى"
+                                readonly></textarea>
+                        </div>
+                    </div>
+                </section>
+                <section id="applicant-manager-data-section" class="w-full font-bold text-lg bg-white p-4 rounded border-[1px] border-[#7070706F] mt-4">
+                    <div class="application-form-container">
+
+                        <div class="main-form space-y-4">
+                            <!-- first section -->
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <h2 class="col-span-2 text-2xl font-bold"> {{ 'بيانات طالب الترخيص والمدير' }}</h2>
+                                <h3 class="font-bold col-span-2 text-xl">بيانات طالب الترخيص</h3>
+                                <div class="form-group-inline col-span-2">
+                                    <label class="form-label-inline text-[#4B5563] text-sm" for="applicantName">اسم طالب
+                                        الترخيص</label>
+                                    <input type="text" class="form-input-inline" id="applicantName"
+                                        formControlName="applicantName">
+                                </div>
+
+                                <div class="form-group-inline">
+                                    <label class="form-label-inline text-[#4B5563] text-sm"
+                                        for="applicantIdentityTypeProof">نوع
+                                        إثبات الشخصية</label>
+                                    <input type="text" class="form-input-inline" id="applicantIdentityTypeProof"
+                                        formControlName="applicantIdentityTypeProof">
+                                </div>
+
+                                <div class="form-group-inline">
+                                    <label class="form-label-inline text-[#4B5563] text-sm" for="applicantNumber">رقم
+                                        بطاقه طالب
+                                        الترخيص</label>
+                                    <input type="number" class="form-input-inline" id="applicantNumber"
+                                        formControlName="applicantNumber">
+                                </div>
+
+                                <div class="form-group-inline">
+                                    <label class="form-label-inline text-[#4B5563] text-sm"
+                                        for="applicantPhoneNumber">جوال طالب
+                                        الترخيص</label>
+                                    <input type="tel" class="form-input-inline" id="applicantPhoneNumber"
+                                        formControlName="applicantPhoneNumber">
+                                </div>
+
+                                <div class="form-group-inline">
+                                    <label class="form-label-inline text-[#4B5563] text-sm" for="branchName1">اسم
+                                        الفرع</label>
+                                    <input type="text" class="form-input-inline" id="branchName1"
+                                        formControlName="branchName1">
+                                </div>
+                            </div>
+                            <!-- second section -->
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <h3 class="font-bold text-xl">بيانات المدير المسؤول</h3>
+                                <div class="form-group-inline col-span-2">
+                                    <label class="form-label-inline text-[#4B5563] text-sm" for="managerName">اسم المدير
+                                        المسؤول</label>
+                                    <input type="text" class="form-input-inline" id="managerName"
+                                        formControlName="managerName">
+                                </div>
+
+                                <div class="form-group-inline">
+                                    <label class="form-label-inline text-[#4B5563] text-sm"
+                                        for="managerIdentityTypeProof">نوع إثبات
+                                        الشخصية</label>
+                                    <input type="text" class="form-input-inline" id="managerIdentityTypeProof"
+                                        formControlName="managerIdentityTypeProof">
+                                </div>
+
+                                <div class="form-group-inline">
+                                    <label class="form-label-inline text-[#4B5563] text-sm" for="managerNumber">رقم
+                                        بطاقه المدير
+                                        المسؤول</label>
+                                    <input type="number" class="form-input-inline" id="managerNumber"
+                                        formControlName="managerNumber">
+                                </div>
+
+                                <div class="form-group-inline">
+                                    <label class="form-label-inline text-[#4B5563] text-sm"
+                                        for="managerPhoneNumber">جوال المدير
+                                        المسؤول</label>
+                                    <input type="tel" class="form-input-inline" id="managerPhoneNumber"
+                                        formControlName="managerPhoneNumber">
+                                </div>
+
+                                <div class="form-group-inline">
+                                    <label class="form-label-inline text-[#4B5563] text-sm" for="managerEmail">البريد
+                                        الإلكتروني
+                                        للمدير المسؤول</label>
+                                    <input type="email" class="form-input-inline" id="managerEmail"
+                                        formControlName="managerEmail">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section id="company-hq-data-section" class="w-full font-bold text-lg bg-white p-4 rounded border-[1px] border-[#7070706F] mt-4">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">{{ 'بيانات الشركة والمقر' }}</h2>
+                    <h3 class="font-bold mb-6 text-xl">{{ 'بيانات الشركة الطالبة للترخيص' }}</h3>
+
+                    <!-- 2 cols -->
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="form-group-inline">
+                            <label class="form-label-inline" for="businessRegistrationNumber">رقم السجل التجاري</label>
+                            <input type="text" class="form-input-inline" id="businessRegistrationNumber"
+                                formControlName="businessRegistrationNumber">
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="form-label-inline" for="businessLabel">الإسم التجاري</label>
+                            <input type="text" class="form-input-inline" id="businessLabel"
+                                formControlName="businessLabel">
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="form-label-inline" for="companyNameAr">إسم الشركة</label>
+                            <input type="text" class="form-input-inline" id="companyNameAr"
+                                formControlName="companyNameAr">
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="form-label-inline" for="companyNameEn">إسم الشركة بالإنجليزية</label>
+                            <input type="text" class="form-input-inline" id="companyNameEn"
+                                formControlName="companyNameEn">
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="form-label-inline" for="licenseNumber">رقم الرخصة</label>
+                            <input type="text" class="form-input-inline" id="licenseNumber"
+                                formControlName="licenseNumber">
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="form-label-inline" for="branchName2">اسم الفرع</label>
+                            <input type="text" class="form-input-inline" id="branchName2" formControlName="branchName2">
+                        </div>
+                    </div>
+                    <!-- 3 cols -->
+                    <h3 class="font-bold text-xl mt-5">بيانات المقر</h3>
+                    <div class="grid md:grid-cols-3 gap-4 my-4">
+                        <div class="form-group-inline">
+                            <label class="form-label-inline" for="quartersType">نوع المقر</label>
+                            <div class="relative">
+                                <select class="form-input-inline pe-3 appearance-none" id="quartersType"
+                                    formControlName="quartersType">
+                                    <option value="" selected disabled></option>
+                                    <option value="zzz">مقر محلي</option>
+                                </select>
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 ltr:right-0 rtl:left-0 flex items-center px-2 text-gray-700">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="form-label-inline" for="ownershipStatus">حالة الملكية</label>
+                            <div class="relative">
+                                <select class="appearance-none form-input-inline" id="ownershipStatus"
+                                    formControlName="ownershipStatus">
+                                    <option value="" selected disabled></option>
+                                    <option value="zzz">ملكية</option>
+                                </select>
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 ltr:right-0 rtl:left-0 flex items-center px-2 text-gray-700">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="form-label-inline" for="geographicalArea">المنطقة الجغرافية</label>
+                            <input type="text" class="form-input-inline" id="geographicalArea"
+                                formControlName="geographicalArea">
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="form-label-inline" for="locality">البلدية</label>
+                            <input type="text" class="form-input-inline" id="locality" formControlName="locality">
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="form-label-inline" for="totalArea">المساحة الإجمالية بالمتر المربع</label>
+                            <div class="relative">
+                                <select class="appearance-none form-input-inline" id="totalArea"
+                                    formControlName="totalArea">
+                                    <option value="" selected disabled></option>
+                                    <option value="zzz">
+                                        <span>اقل من 100 متر مربع</span>
+                                    </option>
+                                </select>
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 ltr:right-0 rtl:left-0 flex items-center px-2 text-gray-700">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="form-label-inline" for="propertyNumber">رقم العقار</label>
+                            <input type="number" class="form-input-inline" id="propertyNumber"
+                                formControlName="propertyNumber">
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="form-label-inline" for="apartmentNumber">رقم الشقة</label>
+                            <input type="number" class="form-input-inline" id="apartmentNumber"
+                                formControlName="apartmentNumber">
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="form-label-inline" for="areaNumber">رقم المنطقة</label>
+                            <div class="relative">
+                                <select class="appearance-none form-input-inline" id="areaNumber"
+                                    formControlName="areaNumber">
+                                    <option value="" selected disabled></option>
+                                    <option value="zzz">21</option>
+                                </select>
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 ltr:right-0 rtl:left-0 flex items-center px-2 text-gray-700">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path d="M19 9l-7 7-7-7" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-inline">
+                            <label class="form-label-inline" for="streetName">اسم الشارع</label>
+                            <input type="text" class="form-input-inline" id="streetName" formControlName="streetName">
+                        </div>
+                    </div>
+                </section>
+                <section id="trade-name-description-section" class="w-full font-bold text-lg bg-white p-6 rounded border border-[#7070706F] mt-4">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-3">{{ 'توصيف الاسم التجاري' }}</h2>
+                    <div class="space-y-4">
+                        <!-- With Tooltip -->
+                        <div class="panel w-full">
+                            <div class="mb-5 flex items-center justify-between">
+                                <h3 class="text-lg font-semibold">الوصف العام للنشاط التجاري المطلوب الترخيص بمزاولته في
+                                    الرياضة
+                                </h3>
+                            </div>
+                            <div class="mb-5">
+                                <quill-editor class="w-full" [modules]="modules2" placeholder=""
+                                    formControlName="commercialActivityGeneralDescription1"
+                                    id="commercialActivityGeneralDescription1"></quill-editor>
+                            </div>
+                        </div>
+                        <div class="panel w-full">
+                            <div class="mb-5 flex items-center justify-between">
+                                <h3 class="text-lg font-semibold">الوصف العام للنشاط التجاري المطلوب الترخيص بمزاولته في
+                                    الرياضة
+                                </h3>
+                            </div>
+                            <div class="mb-5">
+                                <quill-editor class="w-full" [modules]="modules2" placeholder=""
+                                    formControlName="commercialActivityGeneralDescription2"
+                                    id="commercialActivityGeneralDescription2"></quill-editor>
+                            </div>
+                        </div>
+                        <div formGroupName="medicalCheckUp">
+                            <h3 class="text-xl font-bold mb-1">إجراءات الفحص الطبي</h3>
+                            <div class="flex items-center mt-4">
+                                <input type="checkbox" id="specialTraining" class="form-checkbox"
+                                    formControlName="specialTraining">
+                                <label for="specialTraining" class="form-label text-[#4B5563]">يحصل جميع الكوادر الفنية
+                                    على دورات
+                                    متخصصة في الاسعافات
+                                    الأولية</label>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <input type="checkbox" id="medicalBagProvided" class="form-checkbox"
+                                    formControlName="medicalBagProvided">
+                                <label for="medicalBagProvided" class="form-label text-[#4B5563]">توفير حقيبة الاسعافات
+                                    الأولية
+                                    والمعتمدة
+                                    من وزارة
+                                    الصحة</label>
+                            </div>
+                            <div class="flex items-center mt-4">
+                                <input type="checkbox" id="examinedByDoctor" class="form-checkbox"
+                                    formControlName="examinedByDoctor">
+                                <label for="examinedByDoctor" class="form-label text-[#4B5563]">الفحص الطبى قبل الممارسة
+                                    الفعلية
+                                    عن
+                                    طريق الطبيب/ المركز
+                                    الصحى</label>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">خطة ومراحل تأسيس الكيان التجاري <span
+                                    class="text-primary">(لحين
+                                    انتهاء السنة
+                                    الاولى من التشغيل أو مدة الترخيص للتجديد):</span></h3>
+                            <div>
+                                <label class="text-[#4B5563]" for="monthsNumber">مرحلة ما قبل التشغيل الفعلي للكيان
+                                    التجاري
+                                    :</label>
+                                <div class="flex">
+                                    <input type="number" class="form-input" id="monthsNumber"
+                                        formControlName="monthsNumber"> <span class="ltr:ml-2 rtl:mr-2">شهر</span>
+                                </div>
+                            </div>
+                            <div class="panel w-full">
+                                <div class="mb-5 flex items-center justify-between">
+                                    <h4 class="font-semibold text-[#4B5563]"> وتتضمن القيام بتنفيذ الاجراءات والعمليات
+                                        التالية
+                                    </h4>
+                                </div>
+                                <div class="mb-5">
+                                    <quill-editor class="w-full" [modules]="modules2" placeholder=""
+                                        formControlName="procedures" id="procedures"></quill-editor>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section tabindex="-1"
+                    class="w-full font-bold text-lg bg-white p-6 rounded border border-[#7070706F] mt-4"
+                    aria-labelledby="section-title">
+                    <h2 id="section-title" class="border-b border-[#7070706F] pb-3 mb-3 text-right text-2xl font-bold">
+                        توصيف الإسم التجاري
+                    </h2>
+
+                    <div class="space-y-6 text-right font-normal text-base leading-relaxed text-black">
+                        <section aria-labelledby="desc-1-title">
+                            <h3 id="desc-1-title" class="text-yellow-900 font-bold mb-1">الوصف العام للنشاط التجاري
+                                المطلوب الترخيص بمزاولته في الطلب:</h3>
+                            <p>
+                                هناك العديد من الشوارع المخصصة لترميم الإيسيم، ولكن التعديل على بعض العبارات أو الكلمات
+                                المتداولة إلى النص، إن كنت تريد أن ترميم إيسيم، فـ عليك أن تحقق أولاً إن كان لديك أي
+                                عبارات مكررة أو غير دقيقة. في هذا السياق، عندما تقوم بإعادة تكرار مقاطع من النص ترميم
+                                إيسيم نفسه عدة مرات بناءً على تلبية الحاجة، يقوم مُرخصًا منا باستخدام كلمات مثل قواميس
+                                مرجع بها أكثر من 200 كلمة تُنقح لها مجموعة من الجمل الموزعة لتكون نص ترميم إيسيم ذو شكل
+                                منطقي قريب، إلى النص الحقيقي. وبالتالي يكون النص الناتج خالي من التكرار، أو أي كلمات أو
+                                عبارات غير لائقة أو ما شابه، مما يجعله ترميم إيسيم حقيقي على الإنترنت.
+                            </p>
+                        </section>
+
+                        <section aria-labelledby="desc-2-title">
+                            <h3 id="desc-2-title" class="text-yellow-900 font-bold mb-1 ">توصيف الخدمات الرياضية المقترح
+                                تقديمها</h3>
+                            <p>
+                                هناك العديد من الشوارع المخصصة لترميم الإيسيم، ولكن التعديل على بعض العبارات أو الكلمات
+                                المتداولة إلى النص، إن كنت تريد أن ترميم إيسيم، فـ عليك أن تحقق أولاً إن كان لديك أي
+                                عبارات مكررة أو غير دقيقة. في هذا السياق، عندما تقوم بإعادة تكرار مقاطع من النص ترميم
+                                إيسيم نفسه عدة مرات بناءً على تلبية الحاجة، يقوم مُرخصًا منا باستخدام كلمات مثل قواميس
+                                مرجع بها أكثر من 200 كلمة تُنقح لها مجموعة من الجمل الموزعة لتكون نص ترميم إيسيم ذو شكل
+                                منطقي قريب، إلى النص الحقيقي. وبالتالي يكون النص الناتج خالي من التكرار، أو أي كلمات أو
+                                عبارات غير لائقة أو ما شابه، مما يجعله ترميم إيسيم حقيقي على الإنترنت.
+                            </p>
+                        </section>
+
+                        <section aria-labelledby="desc-3-title">
+                            <h3 id="desc-3-title" class="text-yellow-900 font-bold mb-1">
+                                خطة وبرنامج تأسيس الكيان التجاري (بما في ذلك السنة الأولى من التشغيل ومدة الترخيص
+                                للتجديد):
+                            </h3>
+                            <p>
+                                مرحلة ما قبل التشغيل للكيان التجاري: ٦ أشهر
+                            </p>
+                        </section>
+
+                        <section aria-labelledby="desc-4-title">
+                            <h3 id="desc-4-title" class="text-yellow-900 font-bold mb-1">وتتضمن الخطة البرامج التشغيلية
+                                والخدمات الداعمة</h3>
+                            <p>
+                                هناك العديد من الشوارع المخصصة لترميم الإيسيم، ولكن التعديل على بعض العبارات أو الكلمات
+                                المتداولة إلى النص، إن كنت تريد أن ترميم إيسيم، فـ عليك أن تحقق أولاً إن كان لديك أي
+                                عبارات مكررة أو غير دقيقة. في هذا السياق، عندما تقوم بإعادة تكرار مقاطع من النص ترميم
+                                إيسيم نفسه عدة مرات بناءً على تلبية الحاجة، يقوم مُرخصًا منا باستخدام كلمات مثل قواميس
+                                مرجع بها أكثر من 200 كلمة تُنقح لها مجموعة من الجمل الموزعة لتكون نص ترميم إيسيم ذو شكل
+                                منطقي قريب، إلى النص الحقيقي. وبالتالي يكون النص الناتج خالي من التكرار، أو أي كلمات أو
+                                عبارات غير لائقة أو ما شابه، مما يجعله ترميم إيسيم حقيقي على الإنترنت.
+                            </p>
+                        </section>
+                    </div>
+                </section>
+
+                <section id="terms-conditions-section" tabindex="-1"
+                    class="w-full font-bold text-lg bg-white p-4 rounded border border-[#7070706F] mt-4"
+                    aria-labelledby="notes-title">
+                    <h2 id="notes-title" class="border-b border-[#7070706F] pb-3 mb-3 text-right text-2xl font-bold">
+                        ملاحظات</h2>
+
+                    <div class="text-right space-y-2 font-normal text-base leading-relaxed text-black">
+                        <h3 class="text-red-800 font-bold">ملاحظات العميل</h3>
+                        <p class="border border-[#7070706F] rounded p-3 bg-[#F6F5F6]">
+                            هناك العديد من الأنواع المختلفة لنصوص لوريم إيبسوم، ولكن الغالبية تم تعديلها بشكل ما عبر
+                            إدخال بعض النوادر أو الكلمات العشوائية إلى النص. إن كنت تريد أن تستخدم نص لوريم إيبسوم، عليك
+                            أن تتحقق أولاً أن ليس هناك أي كلمات أو عبارات محرجة أو غير لائقة مخبأة في هذا النص. بينما
+                            تعمل جميع مولدات نصوص لوريم إيبسوم على الإنترنت على إعادة تكرار مقاطع من نص لوريم إيبسوم
+                            نفسه عدة مرات بما تقتضيه الحاجة، يقوم مولدنا باستخدام كلمات مثل قواميس مرجع بها أكثر من 200
+                            كلمة تُنقح لها مجموعة من الجمل الموزعة لتكون نص لوريم إيبسوم ذو شكل منطقي قريب، إلى النص
+                            الحقيقي.
+                        </p>
+                    </div>
+                </section>
+            </form>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,23 @@
+@if(currentLink()){
+<app-bread-crumps [pageName]="store.locale === 'en'? currentLink().TitleEn: currentLink().TitleAr"
+    [url]="currentLink().ItemURL"></app-bread-crumps>
+}
+
+<section>
+    <app-applications-tabs></app-applications-tabs>
+
+    <!--    @if (submitted) {
+        <app-success-modal [isOpen]="successModalOpen()" title="تم تقديم الطلب بنجاح" subtext="رقم الطلب"
+            (closed)="onSuccessModalClosed()" [requestNumber]="'2025-SAL-002345'"></app-success-modal>
+    
+        <app-rating-modal [isOpen]="ratingModalOpen()" (submitted)="onRatingSubmitted()"></app-rating-modal>
+    
+        <ng-template #ratingSubtext>
+            <p class=" text-center text-gray-700 mt-3">نسعد برأيك، ونعمل دائمًا لنكون عند حسن ظنك.</p>
+        </ng-template>
+        <app-success-modal [isOpen]="ratingSubmittedModalOpen()" title="شكراً! تقييمك وصلنا بنجاح"
+            [subtextTpl]="ratingSubtext"></app-success-modal>
+
+        }
+        <app-procedures-completed-modal [isOpened]="true"></app-procedures-completed-modal> -->
+</section>

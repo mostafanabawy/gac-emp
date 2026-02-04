@@ -1,0 +1,36 @@
+<div cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
+    <ngx-custom-modal #modal21 class="modal-top large-modal overflow-auto z-[9999]" id="confirmModal">
+        <ng-template #modalHeader>
+            <div>
+                <h2 class="text-xl">{{ translations()?.termsConditionsModal.label }}</h2>
+            </div>
+        </ng-template>
+        <ng-template #modalBody>
+            <div #scrollContainer class="max-h-[calc(100vh-235.6px)] overflow-y-scroll custom-scrollbar h-full p-2" (scroll)="onScroll($event)">
+                <ng-content></ng-content>
+            </div>
+        </ng-template>
+        <ng-template #modalFooter>
+            <div class="flex gap-1">
+
+                @if(!termsConditionsService.fieldDim){
+                <button type="button" class="btn btn-success flex gap-1 items-center" [disabled]="!isScrolledToEnd()" (click)="onConfirm()">
+
+                    <icon-circle-check class="h-5 w-5"></icon-circle-check>
+
+                    {{translations()?.termsConditionsApproveBtn.label}}
+                </button>
+                <button type="button" class="btn btn-primary flex gap-1 items-center" (click)="onCancel()">
+                    <icon-x class="h-4 w-4"></icon-x>
+                    {{translations()?.termsConditionPopupRejectBtn.label}}
+                </button>
+                }@else {
+                    <button type="button" class="btn btn-primary flex gap-1 items-center" (click)="onCancel()">
+                        <icon-x class="h-4 w-4"></icon-x>
+                        {{translations()?.termsConditionPopupBtn.label}}
+                    </button>
+                }
+            </div>
+        </ng-template>
+    </ngx-custom-modal>
+</div>

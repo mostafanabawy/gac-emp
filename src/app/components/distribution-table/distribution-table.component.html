@@ -1,0 +1,692 @@
+<!-- <div>12
+    <div class="inset-0 p-5 static z-[9999]" id="applicationTableContainer">
+
+        <div class="panel mt-6 pb-0" [ngClass]="{ '!border-2 !border-gray-300': isWideScreen}">
+            <div class="mb-5">
+                <div class="flex justify-between">
+                    <div class="flex gap-3">
+                        <input type="text" [placeholder]="'applciationsPage.mainTabs.searchForm.exclude' | translate"
+                            class="border w-1/2 sm:w-auto border-[#70707076] p-2 rounded">
+                        <input type="text" [placeholder]="'applciationsPage.mainTabs.searchForm.order' | translate"
+                            class="border w-1/2 sm:w-auto border-[#70707076] p-2 rounded">
+                    </div>
+
+                    @if(rowsSelected().length > 0){
+                    <form (ngSubmit)="handleAllApps()" [formGroup]="appsToEmpList"
+                        class="flex flex-col lg:flex-row gap-2 my-3 lg:items-center">
+                        <div class="grow">
+                            @if(empLookup()){
+                            <ng-select type="text" name="users"
+                                class="border border-[#7070705D] custom-multiselect cursor-pointer" appendTo="body"
+                                [searchable]="true" (click)="$event.stopPropagation()" [clearable]="false"
+                                formControlName="users" [items]="empLookup() || []"
+                                [bindLabel]="store.index.locale == 'en'? 'NameEn': 'Name'"
+                                [placeholder]="translations()?.LookupDefault.label"></ng-select>
+                            }
+                        </div>
+                        <button class="btn btn-primary">
+                            تحويل لموظف
+                        </button>
+                    </form>
+                    }
+
+                    @if (!isWideScreen) {
+                    <a [routerLink]="'/allApplications'" (click)='preserveTabValue()'
+                        class="text-primary text-base flex items-center hover:underline gap-2">
+                        <img src="/assets/images/icons/fullscreen.svg" class="w-4 h-4" alt="fullscreen icon">
+
+                        <span>
+                            عرض بملء الشاشة
+                        </span>
+                    </a>
+                    }@else{
+                     <a [routerLink]="'/applications'"
+                        class="text-primary text-base flex items-center hover:underline gap-2"
+                        (click)='preserveTabValue()'>
+                        <img src="/assets/images/icons/not-fullscreen.svg" class="w-4 h-4" alt="exit fullscreen icon">
+                        <span>
+                            الخروج من وضع ملء الشاشة
+                        </span>
+                    </a>
+                    }
+
+                </div>
+            </div>
+
+            <div class="datatable">
+                <ng-datatable [rows]="rows()" [columns]="cols" [search]="search" [sortable]="true" [showPageSize]="true"
+                    [loading]="tableLoader" skin="whitespace-nowrap table-hover bh-cursor-pointer" [hasCheckbox]="true"
+                    (rowClick)="onRowClicked($event)" (rowSelect)="onRowSelectChange($event)" [isServerMode]="true"
+                    [loading]="allApplicationsService.tableLoader()" [totalRows]="TotalRows()" [pageSize]="PageSize()"
+                    (changeServer)="onServerChange($event)"
+                    firstArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
+                    lastArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg> '
+                    previousArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
+                    nextArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'>
+                    <ng-template slot="index" let-value="data">
+                        {{ (CurrentPage() - 1) * PageSize() + rows().indexOf(value) + 1 }}
+                    </ng-template>
+
+
+
+                    <ng-template slot="ApplicationNumber" let-value="data">
+                        <span #elementRef dir="ltr">
+                            {{value.ApplicationNumber}}
+                        </span>
+                    </ng-template>
+                    <ng-template slot="ApprovedLicense" let-value="data">
+                        <span #elementRef dir="ltr">
+                            {{value.ApprovedLicense}}
+                        </span>
+                    </ng-template>
+                    <ng-template slot="CreationDate" let-value="data">
+                        {{value.CreationDate | date: 'dd/MM/yyyy'}}
+                    </ng-template>
+                    <ng-template slot="ServiceID" let-value="data">
+                        @if(store.index.locale === 'en'){
+                        {{value.ServiceTitleEn}}
+                        }@else {
+                        {{value.ServiceTitleAr}}
+                        }
+                        <input type="checkbox" class="ml-2">
+                    </ng-template>
+                    <ng-template slot="FkProcessID" let-value="data">
+                        @if(store.index.locale === 'en'){
+                        {{value.FkProcessID_TitleEn}}
+                        }@else {
+                        {{value.FkProcessID_TitleAr}}
+                        }
+                    </ng-template>
+                    <ng-template slot="FkStatusID" let-value="data">
+                        @if(store.index.locale === 'en'){
+                        {{value.FkStatusID_TitleEn}}
+                        }@else {
+                        {{value.FkStatusID_TitleAr}}
+                        }
+                    </ng-template>
+                    <ng-template slot="Actions" let-value="data">
+                        <div hlMenu class="!block relative">
+                            <button class="font-bold text-black mx-1 flex gap-2 hover:bg-gray-200 px-2 py-2 rounded-md"
+                                [ngClass]="{' bg-gray-200': openMenus['actions'+ value.currentIndex],
+                            }" type="button"
+                                (click)="toggleMenu('actions'+ value.currentIndex); $event.stopPropagation()"
+                                hlMenuButton>
+                                إختر إجراء
+                                <span [@reverseChevron]="(!!openMenus['actions'+ value.currentIndex]).toString()">
+                                    <icon-chevron-down class="w-4 h-4"
+                                        [ngClass]="{'text-primary': !!openMenus['actions'+ value.currentIndex]}"></icon-chevron-down>
+                                </span>
+                            </button>
+                            <ul *hlMenuItems @toggleAnimation
+                                class="top-11 absolute w-[200px] !py-0 font-semibold shadow-sm shadow-primary bg-white text-dark ltr:right-0 rtl:left-0 z-[999] foc us:!outline-none">
+                                @for (action of value.Actions; track $index) {
+                                @if(action.ActionID !== 1877){
+                                <li *hlMenuItem="let menuItem">
+                                    <button (click)="handleAction(action, value); $event.stopPropagation()"
+                                        class="block w-full text-gray-600 hover:text-primary px-3 py-2 rounded-md xl:text-base ltr:text-left rtl:text-right">
+                                        {{store.index.locale === 'en'? action.TitleEN: action.TitleAR}}
+                                    </button>
+                                </li>
+                                }
+                                }
+                            </ul>
+                        </div>
+                    </ng-template>
+                    <ng-template slot="users" let-value="data">
+                        @if(empLookup()){
+                        <ng-select type="text" name="userName" id="userName" appendTo="body"
+                            class="border border-[#7070705D] custom-multiselect cursor-pointer !z-10"
+                            [searchable]="true" (click)="$event.stopPropagation()" [clearable]="false"
+                            [bindValue]="store.index.locale == 'en'? 'NameEn': 'Name'"
+                            (change)="addSelectedEmp(value, $event)" [items]="empLookup() || []"
+                            [bindLabel]="store.index.locale == 'en'? 'NameEn': 'Name'"
+                            [placeholder]="translations()?.LookupDefault.label" [dropdownPosition]="'auto'"></ng-select>
+                        }
+                    </ng-template>
+                </ng-datatable>
+            </div>
+        </div>
+        @if(rowsSelected().length > 0){
+        <form (ngSubmit)="handleAllApps()" [formGroup]="appsToEmpList"
+            class="flex flex-col lg:flex-row gap-2 my-3 lg:items-center">
+            <div class="grow">
+                @if(empLookup()){
+                <ng-select type="text" name="users" class="border border-[#7070705D] custom-multiselect cursor-pointer"
+                    appendTo="body" [searchable]="true" (click)="$event.stopPropagation()" [clearable]="false"
+                    formControlName="users" [items]="empLookup() || []"
+                    [bindLabel]="store.index.locale == 'en'? 'NameEn': 'Name'"
+                    [placeholder]="translations()?.LookupDefault.label"></ng-select>
+                }
+            </div>
+            <button class="btn btn-primary">
+                {{translations()?.transferToEmp.label}}
+            </button>
+        </form>
+        }
+    </div>
+
+</div> -->
+
+
+<div *ngIf="isAdvancedSearch">
+    <app-very-advanced-search [mainTabsData]="mainTabsData()" [isSearchCollapsed]="isSearchCollapsed"
+        [currentTabData]="tabData()" [pageSize]="PageSize()" [ServicesType]="ServicesType()"
+        (paginationInfo)="setPaginationInfo($event)" (onToggleSearch)="toggleSearchView()"
+        (onToggleAdvancedSearch)="toggleAdvancedSearch()" (onToggleGlobalSearch)="toggleGlobalSearch()"
+        [isGlobalSearchCollapsed]="isGlobalSearch" [normalLookupsServiceID]="normalLookupsServiceID()"
+        [lookupsData]="lookupsData()" [empLookup]="empLookup()"
+        [isAdvancedSearchCollapsed]="isAdvancedSearch"></app-very-advanced-search>
+</div>
+<div *ngIf="!isLoading && isGlobalSearch" class="p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="flex items-center gap-2">
+        <div class="relative flex-1">
+            <input type="text" [(ngModel)]="globalSearchTerm" [placeholder]="translations()?.searcall?.label"
+                class="form-input w-full ltr:pl-12 rtl:pr-12 ltr:pr-4 rtl:pl-4 text-lg" />
+            <div class="absolute top-1/2 -translate-y-1/2 ltr:left-4 rtl:right-4 text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- زر البحث -->
+        <button type="button" (click)="globalSearch()" class="btn btn-primary flex items-center gap-2 px-6"
+            [title]="translations()?.search?.label">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <span class="hidden sm:inline">{{ translations()?.search?.label }}</span>
+        </button>
+
+        <!-- زر إعادة تعيين Global Search -->
+        <button *ngIf="globalSearchTerm" type="button" (click)="resetGlobalSearch()"
+            class="btn btn-outline-secondary flex items-center gap-2" [title]="translations()?.Reset?.label">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <button (click)="toggleGlobalSearch()"
+            class="btn btn-outline-primary flex items-center gap-2 shadow-sm hover:shadow-md transition-all ltr:ml-auto rtl:mr-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            {{ isSearchCollapsed? translations()?.ShowSearch?.label : translations()?.HideSearch?.label}}
+        </button>
+    </div>
+
+      
+</div>
+<div *ngIf="!isLoading && !isSearchCollapsed" class="p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+    <app-advanced-search [mainTabsData]="mainTabsData()" [isSearchCollapsed]="isSearchCollapsed"
+        [currentTabData]="tabData()" [pageSize]="PageSize()" [ServicesType]="ServicesType()"
+        (onToggleSearch)="toggleSearchView()" (onToggleAdvancedSearch)="toggleAdvancedSearch()"
+        (paginationInfo)="setPaginationInfo($event)" (onToggleGlobalSearch)="toggleGlobalSearch()"
+        [isGlobalSearchCollapsed]="isGlobalSearch" [normalLookupsServiceID]="normalLookupsServiceID()"
+        [isAdvancedSearchCollapsed]="isAdvancedSearch"></app-advanced-search>
+</div>
+
+
+<div class="space-y-3 mb-4">
+    <!-- أزرار الأعمدة والترتيب والتقرير -->
+    <div class="flex justify-between items-center p-3 gap-3" *ngIf="rows().length > 0">
+        <!-- زر تحويل إلى تقرير -->
+        <button type="button" (click)="exportToExcel()" aria-label="translations()?.exportToExcel?.label"
+            class="btn btn-primary flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            {{ translations()?.ExportReport?.label }}
+        </button>
+
+        <!-- أزرار العرض والترتيب والأعمدة -->
+        <div class="flex gap-2">
+            <!-- أزرار تبديل العرض -->
+            <div class="flex gap-1 border border-gray-300 rounded-lg">
+                <button (click)="toggleViewMode('table')"
+                    [ngClass]="viewMode === 'table' ? 'bg-primary text-white' : 'bg-white text-gray-600 hover:bg-gray-100'"
+                    class="px-3 py-2 rounded transition-all flex items-center gap-2"
+                    [title]="translations()?.TableView?.label">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                </button>
+                <button (click)="toggleViewMode('cards')"
+                    [ngClass]="viewMode === 'cards' ? 'bg-primary text-white' : 'bg-white text-gray-600 hover:bg-gray-100'"
+                    class="px-3 py-2 rounded transition-all flex items-center gap-2"
+                    [title]="translations()?.CardsView?.label">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- زر الترتيب -->
+            <div class="relative hide-on-small-screen">
+                <button (click)="openDropdown('sort'); $event.stopPropagation()"
+                    class="btn flex items-center gap-2 relative toggle-sort-btn shadow-sm hover:shadow-md transition-shadow"
+                    [ngClass]="toggleSortDropdown ? 'btn-primary' : 'btn-outline-primary'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                    </svg>
+                    {{ translations()?.sort?.label }}
+                </button>
+
+                <!-- Dropdown للترتيب -->
+                <div *ngIf="toggleSortDropdown"
+                    class="absolute top-full mt-2 rtl:left-0 ltr:right-0 bg-white border border-gray-300 rounded-lg shadow-xl z-50 p-4 w-72 dropdown-container"
+                    (click)="$event.stopPropagation()">
+
+                    <!-- زر إعادة تعيين -->
+                    <div class="mb-3 pb-3 border-b border-gray-200">
+                        <button (click)="resetSort()"
+                            class="w-full px-3 py-2 text-sm font-medium text-white bg-primary rounded hover:bg-primary/90 transition flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            {{ translations()?.ResetSort?.label}}
+                        </button>
+                    </div>
+
+                    <!-- اختيار العمود -->
+                    <div class="mb-3">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ translations()?.SortBy?.label }}
+                        </label>
+                        <ng-select [items]="sortableColumns" bindLabel="title" [(ngModel)]="selectedSortColumn"
+                            (change)="onSortColumnChange($event)"
+                            [placeholder]="translations()?.SelectColumn?.placeholder" class="custom-multiselect"
+                            [clearable]="false">
+                        </ng-select>
+                    </div>
+
+                    <!-- اتجاه الترتيب -->
+                    <div class="border-t border-gray-200 pt-3">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ translations()?.Direction?.label }}
+                        </label>
+                        <div class="flex gap-2">
+                            <button (click)="setSortDirection(1)" [class.bg-primary]="currentSortDirection === 1"
+                                [class.text-white]="currentSortDirection === 1"
+                                [class.bg-gray-100]="currentSortDirection !== 1"
+                                [class.text-gray-700]="currentSortDirection !== 1"
+                                class="flex-1 px-3 py-2 text-sm font-medium rounded hover:opacity-90 transition flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 15l7-7 7 7" />
+                                </svg>
+                                {{ translations()?.Ascending?.label}}
+                            </button>
+                            <button (click)="setSortDirection(2)" [class.bg-primary]="currentSortDirection === 2"
+                                [class.text-white]="currentSortDirection === 2"
+                                [class.bg-gray-100]="currentSortDirection !== 2"
+                                [class.text-gray-700]="currentSortDirection !== 2"
+                                class="flex-1 px-3 py-2 text-sm font-medium rounded hover:opacity-90 transition flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                                {{ translations()?.Descending?.label }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- زر الأعمدة -->
+            <div class="relative hide-on-small-screen">
+                <button (click)="openDropdown('columns'); $event.stopPropagation()"
+                    class="btn flex items-center gap-2 relative toggle-columns-btn shadow-sm hover:shadow-md transition-shadow"
+                    [ngClass]="toggleColumnsDropdown ? 'btn-primary' : 'btn-outline-primary'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+                    </svg>
+                    {{ translations()?.columns?.label }}
+                </button>
+
+                <!-- Dropdown للتحكم في الأعمدة -->
+                <div *ngIf="toggleColumnsDropdown"
+                    class="absolute top-full mt-2 rtl:left-0 ltr:right-0 bg-white border border-gray-300 rounded-lg shadow-xl z-50 p-4 w-64 max-h-96 overflow-y-auto dropdown-container"
+                    (click)="$event.stopPropagation()">
+
+                    <!-- زر إعادة تعيين -->
+                    <div class="mb-3 pb-3 border-b border-gray-200">
+                        <button (click)="resetColumns()"
+                            class="w-full px-3 py-2 text-sm font-medium text-white bg-primary rounded hover:bg-primary/90 transition flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            {{ translations()?.Reset?.label }}
+                        </button>
+                    </div>
+
+                    <div class="flex gap-2 mb-3 pb-3 border-b border-gray-200">
+                        <button (click)="selectAllColumns()"
+                            [ngClass]="{'bg-primary text-white': areAllColumnsVisible, 'bg-gray-100 text-gray-700': !areAllColumnsVisible}"
+                            class="flex-1 px-3 py-1.5 text-xs font-medium rounded hover:opacity-90 transition">
+                            {{ translations()?.selectAll?.label }}
+                        </button>
+                        <button (click)="hideAllColumns()"
+                            [ngClass]="{'bg-primary text-white': areAllColumnsHidden, 'bg-gray-100 text-gray-700': !areAllColumnsHidden}"
+                            class="flex-1 px-3 py-1.5 text-xs font-medium rounded hover:opacity-90 transition">
+                            {{ translations()?.hideAll?.label }}
+                        </button>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label *ngFor="let col of getNonFixedColumns(); trackBy: trackByField"
+                            class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                            <input type="checkbox" [checked]="col.visible" (change)="toggleColumn(col.field)"
+                                class="w-4 h-4 text-primary rounded focus:ring-primary burgundy-checkbox">
+                            <span class="text-sm">{{ col.title }}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- No Data Message -->
+<div *ngIf="rows().length === 0 && !tableLoader"
+    class="mt-6 p-8 bg-white rounded-xl border-2 border-dashed border-gray-300 text-center">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+    </svg>
+    <h3 class="text-xl font-semibold text-gray-700 mb-2">
+        {{ store.index.locale === 'ae' ? 'لا توجد بيانات' : 'No Data Found' }}
+    </h3>
+    <p class="text-gray-500 mb-4">
+        {{ store.index.locale === 'ae' ? 'لم يتم العثور على نتائج. يرجى تعديل معايير البحث والمحاولة مرة أخرى.' : 'No
+        results found. Please adjust your search criteria and try again.' }}
+    </p>
+</div>
+
+<div class="appTables">
+    <!-- Table View -->
+    <app-fees-table *ngIf="viewMode === 'table' && (rows().length > 0 || tableLoader)" [rows]="rows()" [cols]="cols"
+        [isLoading]="tableLoader" [isArabic]="store.index.locale === 'ae'" [translations]="translations()"
+        [paginationInfo]="{
+            TotalPages: Math.ceil(this.TotalRows() / this.PageSize()),
+            CurrentPage: CurrentPage(),
+            PageSize: PageSize(),
+            TotalRows: TotalRows()
+        }" [currentSortField]="currentSortField" [currentSortDirection]="currentSortDirection"
+        [expandedRow]="expandedRow" [expandedRowDetails]="expandedRowDetails" [sortableColumns]="sortableColumns"
+        [hideExpandIconWhenLicenseEmpty]="true" [selectedSortColumn]="selectedSortColumn" [showPaymentLegend]="false"
+        [showStatusLegend]="false" [showSubmissionLegend]="false" [showDurationLegend]="false"
+        [showEscalationLegend]="false" [empLookup]="empLookup()" [rowIdentifierField]="'ApplicationNumber'"
+        (onSort)="onSortChange($event)" (onPageChange)="onPageChange($event)"
+        (onPageSizeChange)="onPageSizeChange($event)" (onActionClick)="onActionClick($event)"
+        (onRowExpand)="toggleRowExpand($event)" (onSelectionChange)="onRowSelectChange($event)"
+        (onAnalysis)="openRequestAnalysis($event)">
+    </app-fees-table>
+</div>
+
+
+
+@if(rowsSelected().length > 0){
+<form (ngSubmit)="handleAllApps()" [formGroup]="appsToEmpList"
+    class="flex flex-col lg:flex-row gap-2 my-6 lg:items-center">
+    <div class="grow">
+        @if(empLookup()){
+        <ng-select type="text" name="users" class="border border-[#7070705D] custom-multiselect cursor-pointer"
+            appendTo="body" [searchable]="true" (click)="$event.stopPropagation()" [clearable]="false"
+            formControlName="users" [items]="empLookup() || []"
+            [bindLabel]="store.index.locale == 'en'? 'NameEn': 'Name'"
+            [placeholder]="translations()?.LookupDefault.label"></ng-select>
+        }
+    </div>
+    <button class="btn btn-primary">
+        {{translations()?.transferToEmp.label}}
+    </button>
+</form>
+}
+
+
+<!-- Cards View -->
+<div *ngIf="viewMode === 'cards' && (rows().length > 0 || tableLoader)" class="mt-6 relative">
+    <!-- Loading Cards -->
+    <div *ngIf="tableLoader" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div *ngFor="let _ of [].constructor(6)" class="bg-white rounded-xl shadow-md p-6 animate-pulse">
+            <div class="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
+            <div class="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+            <div class="h-3 bg-gray-200 rounded w-2/3"></div>
+        </div>
+    </div>
+
+    <!-- Application Cards -->
+    <div *ngIf="!tableLoader" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-min">
+        <div *ngFor="let row of rows(); let i = index"
+            class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 border border-gray-200 hover:border-primary cursor-pointer grid grid-rows-subgrid row-span-3"
+            (click)="onRowClicked(row)">
+
+
+            <!-- Header -->
+            <div class="flex flex-col items-start mb-4 pb-3 border-b border-gray-200">
+                <div class="flex-1 flex justify-between items-start w-full">
+                    <h3 class="text-xl font-bold text-gray-800 mb-1">
+                        {{ store.index.locale === 'en' ? row.ServiceTitleEn : row.ServiceTitleAr }}
+                    </h3>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md"
+                        [ngClass]="getClassesByStatusId(row.FkStatusID)">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="currentColor"
+                            viewBox="0 0 24 24">
+                            <path
+                                d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        {{ store.index.locale === 'en' ? row.FkStatusID_TitleEn : row.FkStatusID_TitleAr }}
+                    </span>
+                </div>
+
+                <div class="flex gap-1 w-full justify-between">
+                    <p class="text-sm text-primary border border-primary p-1 rounded-lg flex items-center bg-gray-100">
+                        {{ store.index.locale === 'en' ? row.FkProcessID_TitleEn : row.FkProcessID_TitleAr }}
+                    </p>
+                    @if( ![7008, 7005, 5015].includes(row.ServiceID)){
+                    <button (click)="openRequestAnalysis(row)"
+                        class="ltr:ml-auto rtl:mr-auto flex items-center gap-2 btn btn-primary hover:shadow-none text-nowrap">
+                        <icon-stars class="w-5 h-5 self-start"></icon-stars>
+                        {{ translations()?.analysisBtnInTable.label }}
+                    </button>
+                    }
+                </div>
+            </div>
+
+            <!-- Details Grid -->
+            <div class="space-y-2.5">
+                <!-- Row 1: رقم الطلب ورقم الرخصة -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex flex-col">
+                        <span class="text-sm text-gray-500 mb-1">{{ translations()?.requestNumber?.label || 'رقم الطلب'
+                            }}</span>
+                        <span class="text-sm font-semibold text-gray-800 rtl:text-right ltr:text-left direction-ltr">{{
+                            row.ApplicationNumber || '-' }}</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-sm text-gray-500 mb-1">{{ translations()?.licenseNumber?.label || 'رقم الرخصة'
+                            }}</span>
+                        <span class="text-sm font-semibold text-gray-800 rtl:text-right ltr:text-left direction-ltr">{{
+                            row.ApprovedLicense || '-' }}</span>
+                    </div>
+                </div>
+
+                <!-- Row 2: التاريخ والحالة -->
+                <div class="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100">
+                    <div class="flex flex-col">
+                        <span class="text-sm text-gray-500 mb-1">{{ translations()?.creationDate?.label || 'تاريخ
+                            الإنشاء'
+                            }}</span>
+                        <span class="text-sm font-medium text-gray-800">{{ row.CreationDate | date: 'dd/MM/yyyy'
+                            }}</span>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <span class="text-sm text-gray-500 mb-1">{{ translations()?.ServiceType?.label || 'نوع الخدمة'
+                            }}</span>
+                        <span class="text-sm font-medium text-gray-800">{{ store.index.locale === 'en' ?
+                            row.ServiceTitleEn :
+                            row.ServiceTitleAr || '-' }}</span>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Footer with Actions -->
+            <div class="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center">
+                <div class="flex gap-2">
+                    <!-- Show first 2 actions as buttons -->
+                    <button *ngFor="let action of row.Actions?.slice(0, 2)"
+                        (click)="handleAction(action, row); $event.stopPropagation()"
+                        class="text-primary hover:text-primary/80 transition text-xs px-2 py-1 rounded border border-primary/20 hover:bg-primary/10 flex gap-2 items-center">
+                        @if(action.ActionID === 865 || action.ActionID === 1841){
+                        <img src="/assets/images/icons/clipboard-remove-svgrepo-com.svg" alt="remove icon" class="h-4">
+                        }@else if (action.ActionID === 1989 || action.ActionID === 1990 || action.ActionID === 1991 ||
+                        action.ActionID === 1723 || action.ActionID === 1992 || action.ActionID === 1848 ||
+                        action.ActionID === 1900){
+                        <img src="/assets/images/icons/revoke57187.svg" alt="cancel icon" class="h-4">
+                        }@else if(action.ActionID === 861 || action.ActionID === 1845){
+                        <img src="/assets/images/icons/edit-svgrepo-com.svg" alt="edit icon" class="h-4">
+                        }@else if (action.ActionID === 862) {
+                        <img src="/assets/images/icons/send-svgrepo-com.svg" alt="send icon" class="h-4">
+                        }@else if (action.ActionID === 1724) {
+                        <img src="/assets/images/icons/copy-com.svg" alt="copy icon" class="h-4">
+                        }@else if(action.ActionID === 1850 || action.ActionID === 1844 || action.ActionID === 1993 ||
+                        action.ActionID === 1996 || action.ActionID === 1869){
+                        <img src="/assets/images/icons/Group 57145.svg" alt="renew icon" class="h-4" />
+                        }@else if (action.ActionID === 1832){
+                        <img src="/assets/images/icons/credit-card-payment-svgrepo-com.svg" alt="pay icon"
+                            class="h-4" />
+                        }@else if (action.ActionID === 864){
+                        <icon-circle-check class="text-green-600 h-5"></icon-circle-check>
+                        }@else if ( action.ActionID === 1995){
+                        <img src="/assets/images/icons/add-icon.svg" alt="add icon" class="h-4">
+                        }@else if(action.ActionID === 1871){
+                        <img src="/assets/images/icons/property-transfer.svg" alt="property transfer icon" class="h-4">
+                        }@else if (action.ActionID === 1985 || action.ActionID === 1984) {
+                        <img src="/assets/images/icons/Star.svg" class="h-4" alt="star icon for rating">
+                        }@else if (action.ActionID === 1842 || action.ActionID === 1843 || action.ActionID === 1993 ||
+                        action.ActionID === 1852 || action.ActionID === 1901) {
+                        <img src="/assets/images/icons/printer57135.svg" alt="print icon">
+                        }@else if (action.ActionID === 1859 || action.ActionID === 1865) {
+                        <icon-history-clock class="h-5 text-primary"></icon-history-clock>
+                        }@else if (action.ActionID === 1877) {
+                        <icon-transfer-circle-horizontal class="h-5 text-primary"></icon-transfer-circle-horizontal>
+                        }
+                        {{ store.index.locale === 'en' ? action.TitleEN : action.TitleAR }}
+                    </button>
+
+                    <!-- Dropdown for more actions if there are more than 2 -->
+                    <div *ngIf="row.Actions?.length > 2" class="relative">
+                        <button (click)="toggleMenu('cardActions' + i); $event.stopPropagation()"
+                            class="text-primary hover:text-primary/80 transition p-1 rounded border border-primary/20 hover:bg-primary/10"
+                            [title]="store.index.locale === 'ar' ? 'المزيد' : 'More'">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                            </svg>
+                        </button>
+
+                        <!-- Actions dropdown menu -->
+                        <div *ngIf="openMenus['cardActions' + i]"
+                            class="absolute bottom-full mb-2 right-0 bg-white border border-gray-300 rounded-lg shadow-xl z-50 min-w-[150px]"
+                            (click)="$event.stopPropagation()">
+                            <button *ngFor="let action of row.Actions?.slice(2)"
+                                (click)="handleAction(action, row); toggleMenu('cardActions' + i); $event.stopPropagation()"
+                                class="block w-full text-right px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary transition">
+                                {{ store.index.locale === 'en' ? action.TitleEN : action.TitleAR }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cards Pagination -->
+    <div
+        class="mt-6 p-4 bg-white rounded-xl shadow-md flex flex-col sm:flex-row justify-between items-center gap-3 border border-gray-200">
+        <div class="text-sm text-gray-600">
+            {{ paginationInfoText() }}
+        </div>
+
+        <div class="flex items-center gap-2">
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="CurrentPage() === 1" (click)="onPageChange(1)">
+                «
+            </button>
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="CurrentPage() === 1" (click)="onPageChange(CurrentPage() - 1)">
+                ‹
+            </button>
+
+            <div class="flex gap-1">
+                <ng-container *ngFor="let page of getPageNumbers()">
+                    <span *ngIf="page === -1" class="px-2 text-gray-400">...</span>
+                    <button *ngIf="page !== -1"
+                        class="w-9 h-9 flex items-center justify-center rounded-full border transition font-medium"
+                        [ngClass]="{'bg-primary text-white border-primary': page === CurrentPage(), 'border-gray-300 text-gray-600 hover:bg-primary hover:text-white hover:border-primary': page !== CurrentPage()}"
+                        (click)="onPageChange(page)">
+                        {{ page }}
+                    </button>
+                </ng-container>
+            </div>
+
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="CurrentPage() === Math.ceil(TotalRows() / PageSize())"
+                (click)="onPageChange(CurrentPage() + 1)">
+                ›
+            </button>
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="CurrentPage() === Math.ceil(TotalRows() / PageSize())"
+                (click)="onPageChange(Math.ceil(TotalRows() / PageSize()))">
+                »
+            </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <label for="cardPageSize" class="text-sm text-gray-600 whitespace-nowrap">
+                {{ translations()?.rowsPerPage?.label || (store.index.locale === 'ae' ? 'عدد الصفوف:' : 'Rows:') }}
+            </label>
+            <select id="cardPageSize"
+                class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-primary focus:border-primary bg-white"
+                [value]="PageSize()" (change)="onPageSizeChange($event)">
+                <option [value]="10">10</option>
+                <option [value]="20">20</option>
+                <option [value]="50">50</option>
+                <option [value]="100">100</option>
+            </select>
+        </div>
+    </div>
+</div>
+<app-employee-select-modal [employees]="empLookup()!" [title]="clickedActionTitle()"
+    [confirmBtnName]="translations()?.validationMsgBtn.label"></app-employee-select-modal>

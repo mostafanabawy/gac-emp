@@ -1,0 +1,47 @@
+<div cdkTrapFocus [cdkTrapFocusAutoCapture]="true" class="licenses-modal">
+    <!-- Modal -->
+    <ngx-custom-modal #modal10 class="modal-top z-[9999] large-modal" [closeOnOutsideClick]="false">
+        <ng-template #modalHeader>
+            <h2 class="text-3xl p-2 flex items-center"> تنبيه</h2>
+        </ng-template>
+        <ng-template #modalBody>
+            <p class="text-2xl font-bold text-center mb-3">
+                @if (status() == 'pending') {
+                لديك عدد {{ number() }} رخص مطلوب تجديدها
+                }@else {
+                لديك عدد {{ number() }} رخصة منتظرة الدفع
+                }
+            </p>
+            <div>
+
+                <article class="flex gap-4 items-center border-t border-gray-300 pt-2 mt-5" [ngClass]="status() == 'pending' ? '' : 'justify-between'">
+                    <dl class="flex justify-between grow gap-1" [ngClass]="status() == 'pending' ? '' : '!grow-0 !gap-24'">
+                        <div>
+                            <dt class="text-gray-600 ">رقم الرخصة</dt>
+                            <dd class="text-primary">{{ licenseNumber() }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-gray-600 "> نوع الطلب</dt>
+                            <dd class="">{{ applicationType() }}</dd>
+                        </div>
+                        @if (status() == 'pending') {
+                            <div>
+                                <dt class="text-gray-600 "> تاريخ النهاية</dt>
+                                <dd>{{ expiryDate() }}</dd>
+                            </div>
+                        }
+                    </dl>
+                    <button class="bg-primary text-white px-6 py-1 rounded-md hover:bg-primary/90">
+                        @if (status() == 'pending') {
+                            تجديد
+                        }@else {
+                            طلبات منتظرة الدفع
+                        }
+                    </button>
+                </article>
+            </div>
+
+
+        </ng-template>
+    </ngx-custom-modal>
+</div>

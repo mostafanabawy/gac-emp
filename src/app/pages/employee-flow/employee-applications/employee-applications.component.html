@@ -1,0 +1,256 @@
+<!-- <app-bread-crumps pageName="breadCrumb.pageName.myApplications"></app-bread-crumps> -->
+
+<section class="mb-5 bg-white border-[#B1AAB1] border rounded-t-lg p-2 mt-8">
+    <!-- links -->
+    <nav class="mt-3 mb-5 flex flex-wrap border-b border-white-light dark:border-[#191e3a] tab-talabat" role="tablist">
+
+        @if (this.allApplicationsService.tabsData()) {
+        @for (item of allApplicationsService.tabsData().children; track $index) {
+        <button [id]="'tab-' + item.TitleEn" role="tab" [attr.aria-selected]="tab8 === item.TitleEn"
+            class="-mb-[1px] flex items-center gap-2 border-transparent text-gray-600 p-5 py-3 !outline-none transition duration-300 hover:border-b-[3px] hover:!border-primary hover:text-primary font-bold text-base"
+            [ngClass]="{ 'active-tab': tab8 === item.TitleEn }" (click)="tab8 = item.TitleEn">
+            <svg id="document-svgrepo-com_1_" data-name="document-svgrepo-com (1)" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" viewBox="0 0 26.863 32.534">
+                <path id="Path_78196" data-name="Path 78196"
+                    d="M24.356,32.246H9.006A5.763,5.763,0,0,1,3.25,26.49V5h2.3v.384h18.8a5.763,5.763,0,0,1,5.756,5.756V26.49A5.763,5.763,0,0,1,24.356,32.246ZM5.553,7.686v18.8a3.458,3.458,0,0,0,3.454,3.454h15.35A3.458,3.458,0,0,0,27.81,26.49V11.14a3.458,3.458,0,0,0-3.454-3.454Z"
+                    transform="translate(-3.25 0.287)" />
+                <path id="Path_78197" data-name="Path 78197"
+                    d="M25.891,8.378V9.529h1.151V8.378Zm-3.5-5.639L22.224,1.6ZM5.813,5.106,5.65,3.967h0Zm.233,4.423H25.891v-2.3H6.045Zm21-1.151v-2.6h-2.3v2.6ZM22.224,1.6,5.65,3.967l.326,2.279L22.55,3.878ZM5.65,3.967a2.8,2.8,0,0,0-2.4,2.767h2.3a.493.493,0,0,1,.423-.488ZM27.043,5.778A4.221,4.221,0,0,0,22.224,1.6l.326,2.279a1.919,1.919,0,0,1,2.19,1.9Zm-21,1.449a.493.493,0,0,1-.493-.493H3.25a2.8,2.8,0,0,0,2.8,2.8Z"
+                    transform="translate(-3.25 -1.556)" />
+                <path id="Path_78198" data-name="Path 78198"
+                    d="M20.681,13.553H8.4a1.151,1.151,0,1,1,0-2.3h12.28a1.151,1.151,0,1,1,0,2.3Z"
+                    transform="translate(-1.11 3.631)" opacity="0.5" />
+                <path id="Path_78199" data-name="Path 78199"
+                    d="M16.844,17.053H8.4a1.151,1.151,0,1,1,0-2.3h8.443a1.151,1.151,0,1,1,0,2.3Z"
+                    transform="translate(-1.11 5.504)" opacity="0.5" />
+            </svg>
+
+            @if (store.index.locale === 'en') {
+            {{item.TitleEn}}
+            }@else {
+            {{item.TitleAr}}
+            }
+        </button>
+        }
+        }
+
+        <!-- <button id="tab-PENDINGREQUESTS" role="tab" [attr.aria-selected]="tab8() === 'PENDINGREQUESTS'"
+            class="-mb-[1px] flex items-center gap-2 border-transparent text-gray-600 p-5 py-3 !outline-none transition duration-300 hover:border-b-[3px] hover:!border-primary hover:text-primary font-bold text-base"
+            [ngClass]="{ 'active-tab': tab8() === 'PENDINGREQUESTS' }"
+            (click)="tab8.set('PENDINGREQUESTS'); getPendingReq()">
+
+            <svg id="document-add-svgrepo-com" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 29.933 33.003">
+                <path id="Path_78192" data-name="Path 78192"
+                    d="M12.239,14.553H8.4a1.151,1.151,0,1,1,0-2.3h3.838a1.151,1.151,0,1,1,0,2.3Z"
+                    transform="translate(1.576 4.635)" />
+                <path id="Path_78193" data-name="Path 78193"
+                    d="M18.379,10.553H8.4a1.151,1.151,0,1,1,0-2.3h9.978a1.151,1.151,0,0,1,0,2.3Z"
+                    transform="translate(1.576 2.495)" />
+                <path id="Path_78194" data-name="Path 78194"
+                    d="M10.7,18.553H8.4a1.151,1.151,0,1,1,0-2.3h2.3a1.151,1.151,0,1,1,0,2.3Z"
+                    transform="translate(1.576 6.775)" />
+                <path id="Path_78195" data-name="Path 78195"
+                    d="M15.681,1.25h3.07c6.1,0,9.16,0,11.3,2.136s2.136,5.2,2.136,11.3v6.14c0,6.1,0,9.16-2.136,11.3s-5.2,2.136-11.3,2.136h-3.07c-6.1,0-9.16,0-11.3-2.136s-2.136-5.2-2.136-11.3v-6.14c0-6.1,0-9.16,2.136-11.3S9.582,1.25,15.681,1.25Zm3.07,30.7c5.464,0,8.206,0,9.668-1.461s1.461-4.2,1.461-9.668v-6.14c0-5.464,0-8.206-1.461-9.668s-4.2-1.461-9.668-1.461h-3.07c-5.464,0-8.206,0-9.668,1.461s-1.461,4.2-1.461,9.668v6.14c0,5.464,0,8.206,1.461,9.668s4.2,1.461,9.668,1.461Z"
+                    transform="translate(-2.25 -1.25)" opacity="0.5" />
+            </svg>
+            {{ 'pendingApps' | translate }}
+        </button>
+        <button id="tab-licenses" role="tab" [attr.aria-selected]="tab8().toLowerCase() === 'licenses'"
+            class="-mb-[1px] flex items-center gap-2 border-transparent text-gray-600 p-5 py-3 !outline-none transition duration-300 hover:border-b-[3px] hover:!border-primary hover:text-primary font-bold text-base"
+            [ngClass]="{ 'active-tab': tab8().toLowerCase() === 'licenses' }" (click)="tab8.set('licenses')">
+            <svg id="passport-svgrepo-com" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 26.863 32.534">
+                <path id="Path_78200" data-name="Path 78200"
+                    d="M24.356,32.246H9.006A5.763,5.763,0,0,1,3.25,26.49V5h2.3v.384h18.8a5.763,5.763,0,0,1,5.756,5.756V26.49A5.763,5.763,0,0,1,24.356,32.246ZM5.553,7.686v18.8a3.458,3.458,0,0,0,3.454,3.454h15.35A3.458,3.458,0,0,0,27.81,26.49V11.14a3.458,3.458,0,0,0-3.454-3.454Z"
+                    transform="translate(-3.25 0.287)" fill="#707070" />
+                <path id="Ellipse_30" data-name="Ellipse 30"
+                    d="M5.006-.75A5.756,5.756,0,1,1-.75,5.006,5.763,5.763,0,0,1,5.006-.75Zm0,9.21A3.454,3.454,0,1,0,1.553,5.006,3.458,3.458,0,0,0,5.006,8.46Z"
+                    transform="translate(8.425 12.561)" fill="#707070" opacity="0.5" />
+                <path id="Path_78201" data-name="Path 78201"
+                    d="M25.891,8.378V9.529h1.151V8.378Zm-3.5-5.639L22.224,1.6ZM5.813,5.106,5.65,3.967h0Zm.233,4.423H25.891v-2.3H6.045Zm21-1.151v-2.6h-2.3v2.6ZM22.224,1.6,5.65,3.967l.326,2.279L22.55,3.878ZM5.65,3.967a2.8,2.8,0,0,0-2.4,2.767h2.3a.493.493,0,0,1,.423-.488ZM27.043,5.778A4.221,4.221,0,0,0,22.224,1.6l.326,2.279a1.919,1.919,0,0,1,2.19,1.9Zm-21,1.449a.493.493,0,0,1-.493-.493H3.25a2.8,2.8,0,0,0,2.8,2.8Z"
+                    transform="translate(-3.25 -1.556)" fill="#707070" />
+                <path id="Path_78202" data-name="Path 78202"
+                    d="M16.541,20.553H10.4a1.151,1.151,0,1,1,0-2.3h6.14a1.151,1.151,0,0,1,0,2.3Z"
+                    transform="translate(-0.04 7.376)" fill="#707070" opacity="0.5" />
+            </svg>
+
+            {{ 'applciationsPage.mainTabs.myLicenses' | translate }}
+        </button> -->
+
+    </nav>
+    <div class="flex-1 text-sm mt-4">
+        @if(this.allApplicationsService.tabsData()){
+        @for (item2 of this.allApplicationsService.tabsData().children | sortByOrder: 'ItemOrderID'; track $index) {
+
+        <div *ngIf="tab8() === item2.TitleEn" [attr.aria-labelledby]="'tab-'+ item2.TitleEn" role="tabpanel">
+            @if(!cardLoader()){
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 px-10">
+                @if(cardsData().length > 0){
+                @for (card of paginatedApplications(); track $index) {
+                <app-single-application-card [allData]="card" [singleApplicationCardData]="{
+                        isStatus: store.index.locale === 'en'? card.FkStatusID_TitleEn: card.FkStatusID_TitleAr,
+                        date: '20/10/2024',
+                        applicationType: store.index.locale === 'en'? card.ServiceTitleEn: card.ServiceTitleAr,
+                        type: store.index.locale === 'en'? card.FkProcessID_TitleEn: card.FkProcessID_TitleAr,
+                        stats: {
+                            'رقم الطلب': card.ApplicationNumber,
+                            'رقم الرخصة': card.ApprovedLicense
+                        },
+                        actions:{
+                            names: ['نسخ', 'سحب الطلب'],
+                            icons: [
+                                'assets/images/icons/copy-com.svg', 
+                                'assets/images/icons/revoke57187.svg'
+                            ]
+                        }
+                    }"></app-single-application-card>
+                }
+                }
+            </div>
+
+            @if (pageNumbers.length > 0) {
+
+            <div class="panel my-5 !shadow-none border border-[#B1AAB1] !p-2 ">
+                <div class="grid md:grid-cols-2 gap-2 md:gap-0">
+                    <div class="flex gap-3 justify-center md:justify-start">
+                        <div
+                            class="flex items-center relative pr-5 before:content-[''] before:absolute before:w-3 before:h-3 before:bg-[#28C840] before:right-0 before:top-1/2 before:-translate-y-1/2">
+                            <span class="text-green-800">
+                                {{ 'applciationsPage.categories.active' | translate}}
+                            </span>
+                        </div>
+                        <div
+                            class="flex items-center relative pr-5 before:content-[''] before:absolute before:w-3 before:h-3 before:bg-[#FEBC2E] before:right-0 before:top-1/2 before:-translate-y-1/2">
+                            <span class="text-yellow-900">
+                                {{ 'applciationsPage.categories.pendingRenewal' | translate}}
+                            </span>
+                        </div>
+                        <div
+                            class="flex items-center relative pr-5 before:content-[''] before:absolute before:w-3 before:h-3 before:bg-[#707070A7] before:right-0 before:top-1/2 before:-translate-y-1/2">
+                            <span class="text-gray-700">
+                                {{ 'applciationsPage.categories.expired' | translate}}
+                            </span>
+                        </div>
+                        <div
+                            class="flex items-center relative pr-5 before:content-[''] before:absolute before:w-3 before:h-3 before:bg-[#FE6058] before:right-0 before:top-1/2 before:-translate-y-1/2">
+                            <span class="text-red-800">
+                                {{ 'applciationsPage.categories.rejected' | translate}}
+                            </span>
+                        </div>
+                        <div
+                            class="flex items-center relative pr-5 before:content-[''] before:absolute before:w-3 before:h-3 before:bg-[#000000] before:right-0 before:top-1/2 before:-translate-y-1/2">
+                            <span class="text-[#000000]">
+                                {{ 'applciationsPage.categories.revoked' | translate}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex items-center w-full flex-col justify-center">
+                        <ul
+                            class="mx-auto md:ms-auto md:me-0 inline-flex rtl: items-center space-x-1 rtl:space-x-reverse">
+                            <li>
+                                <button type="button" (click)="goToFirstPage()" [disabled]="currentPage() === 1"
+                                    class="flex cursor-pointer justify-center rounded bg-white-light px-3.5 py-2 font-semibold text-dark transition hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary"
+                                    aria-label="first page button"
+                                    [ngClass]="{'opacity-90 !cursor-not-allowed': currentPage() === 1}">
+                                    <icon-carets-down class="rotate-90 rtl:-rotate-90" />
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" (click)="goToPreviousPage()" [disabled]="currentPage() === 1"
+                                    class="flex justify-center rounded bg-white-light px-3.5 py-2 font-semibold text-dark transition cursor-pointer hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary"
+                                    aria-label="previous page button"
+                                    [ngClass]="{'opacity-90 !cursor-not-allowed': currentPage() === 1}">
+                                    <icon-caret-down class="h-5 w-5 rotate-90 rtl:-rotate-90" />
+                                </button>
+                            </li>
+                            <li class="flex">
+                                <ul
+                                    class="m-auto inline-flex gap-x-1 items-center space-x-1 flex-row rtl:space-x-reverse">
+                                    @for (page of displayedPages(); track $index) {
+                                    <li>
+                                        @if (page === 0) {
+                                        <span
+                                            class="flex justify-center rounded px-3.5 py-2 font-semibold text-gray-400">...</span>
+                                        } @else {
+                                        <button type="button"
+                                            class="flex justify-center rounded px-3.5 py-2 font-semibold transition"
+                                            [ngClass]="{
+                                                        'bg-primary text-white dark:bg-primary dark:text-white-light': page === currentPage(),
+                                                        'bg-white-light text-dark hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary': page !== currentPage()
+                                                        }" (click)="goToPage(page)">
+                                            {{ page }}
+                                        </button>
+                                        }
+                                    </li>
+                                    }
+                                    <!--  <li>
+                                                    <button type="button"
+                                                        class="flex justify-center rounded bg-primary px-3.5 py-2 font-semibold text-white transition dark:bg-primary dark:text-white-light">
+                                                        2
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button type="button"
+                                                        class="flex justify-center rounded bg-white-light px-3.5 py-2 font-semibold text-dark transition hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary">
+                                                        3
+                                                    </button>
+                                                </li> -->
+                                </ul>
+
+                            </li>
+                            <li>
+                                <button type="button" (click)="goToNextPage()"
+                                    [disabled]="currentPage() === totalPages()"
+                                    class="flex justify-center rounded bg-white-light px-3.5 py-2 font-semibold text-dark transition cursor-pointer hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary"
+                                    aria-label="next page button"
+                                    [ngClass]="{'opacity-90 !cursor-not-allowed': currentPage() === totalPages()}">
+                                    <icon-caret-down class="h-5 w-5 -rotate-90 rtl:rotate-90" />
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" (click)="goToLastPage()"
+                                    [disabled]="currentPage() === totalPages()"
+                                    class="flex justify-center rounded bg-white-light px-3.5 py-2 font-semibold text-dark transition cursor-pointer hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary"
+                                    aria-label="last page button"
+                                    [ngClass]="{'opacity-90 !cursor-not-allowed': currentPage() === totalPages()}">
+                                    <icon-carets-down class="-rotate-90 rtl:rotate-90" />
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            }
+            }@else{
+            <div class="col-span-full flex justify-center">
+                <span
+                    class="animate-spin border-4 border-black border-l-transparent rounded-full w-12 h-12 inline-block align-middle m-auto mb-10"></span>
+            </div>
+            }
+
+        </div>
+
+       <!--  @if (item2.TabStyle === 'LicenseCard') {
+        <div *ngIf="tab8() === item2.TitleEn">
+            <app-my-licenses-types-tabs [tabData]="item2.children" [attr.aria-labelledby]="'tab-' + item2.TitleEn"
+                role="tabpanel"></app-my-licenses-types-tabs>
+        </div>
+        }
+        @if (item2.TabStyle === 'RequestCard') {
+        <div *ngIf="tab8 === item2.TitleEn" [attr.aria-labelledby]="'tab-' + item2.TitleEn" role="tabpanel">
+            <app-application-types [tabData]="item2.children"></app-application-types>
+        </div>
+        } -->
+        }
+        }
+        <!--  <div *ngIf="tab8() === 'ALLREQUESTS'">
+            <app-advanced-search></app-advanced-search>
+            <app-all-applications-table></app-all-applications-table>
+        </div>
+        <div *ngIf="tab8().toLowerCase() === 'licenses'">
+            <app-my-licenses-types-tabs></app-my-licenses-types-tabs>
+        </div> -->
+    </div>
+
+</section>

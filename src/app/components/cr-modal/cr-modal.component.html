@@ -1,0 +1,223 @@
+<div id="crModal" #crModal>
+    <!-- Modal -->
+    <ngx-custom-modal #modal21 class="modal-top z-[9999] large-modal" [hideCloseButton]="true"
+        [closeOnOutsideClick]="true">
+
+        <ng-template #modalBody>
+            <div class="p-2 border-b border-gray-200 flex justify-between">
+                <h2 class="text-lg text-primary min-[340px]:text-xl sm:text-2xl md:text-3xl p-2 flex items-center ps-2">
+                    بيانات السجل التجاري
+                </h2>
+                <button (click)="onUserClose('no')">
+                    <icon-x class="h-6 text-primary cursor-pointer hover:opacity-90"></icon-x>
+                </button>
+            </div>
+            @if(!statusMessage()){
+            <div class="p-4 space-y-8">
+
+                <!-- Simple Fields (CR Header Section) -->
+                <section class="border-b border-gray-300 pb-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Row 1 -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">رقم السجل التجاري</label>
+                            <input type="text" [value]="crSimpleFields().commercialRegistrationCode" readonly
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none h-[40px]">
+                        </div>
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">الحالة</label>
+                            <input type="text" [value]="crSimpleFields().companyStatus" readonly
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none h-[40px]">
+                        </div>
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">الموقع</label>
+                            <input type="text" [value]="crSimpleFields().location" readonly
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none h-[40px]">
+                        </div>
+
+                        <!-- Row 2 -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">تاريخ البداية</label>
+                            <input type="text" [value]="crSimpleFields().creationDate" readonly
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none h-[40px]">
+                        </div>
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">تاريخ الإنتهاء</label>
+                            <input type="text" [value]="crSimpleFields().expiryDate" readonly
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none h-[40px]">
+                        </div>
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">النوع</label>
+                            <input type="text" [value]="crSimpleFields().commercialRegistrationEntityType" readonly
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none h-[40px]">
+                        </div>
+
+                        <!-- Row 3 -->
+                        <div class="flex flex-col text-right lg:col-span-2">
+                            <label class="text-sm font-medium text-gray-700">الإسم التجاري</label>
+                            <input type="text" [value]="crSimpleFields().arabicCommercialName" readonly
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none h-[40px]">
+                        </div>
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">عدد الفروع</label>
+                            <input type="text" [value]="crSimpleFields().branchesCount" readonly
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none h-[40px]">
+                        </div>
+
+                        <!-- Row 4 -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">رأس المال</label>
+                            <input type="text" [value]="crSimpleFields().companyCapital" readonly
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none h-[40px]">
+                        </div>
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">صندوق البريد</label>
+                            <input type="text" [value]="crSimpleFields().addressPOBox" readonly
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none h-[40px]">
+                        </div>
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">العنوان (الشارع/المنطقة)</label>
+                            <input type="text"
+                                [value]="crSimpleFields().addressStreet + ' - ' + crSimpleFields().addressArea" readonly
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none h-[40px]">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Partners (الشركاء والمساهمين) -->
+                <section class="space-y-4">
+                    <h3 class="text-xl font-bold text-right border-b-2 border-red-700 inline-block pb-1 text-gray-700">
+                        الشركاء و المؤسسين</h3>
+                    <div class="table-container">
+                        @if (crPartners().length > 0) {
+                        <table class="w-full data-table text-sm">
+                            <thead>
+                                <tr>
+                                    <th class="w-10">م</th>
+                                    <th>الإسم</th>
+                                    <th>نوع إثبات الشخصية</th>
+                                    <th>الرقم الشخصي</th>
+                                    <th>النسبة</th>
+                                    <th>النوع</th>
+                                    <th>الجنسية</th>
+                                    <th>الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (partner of crPartners(); track $index) {
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ partner.nameAr }}</td>
+                                    <td>{{ partner.nINType.description }}</td>
+                                    <td>{{ partner.nIN }}</td>
+                                    <td>{{ partner.percentage || 'N/A' }}</td>
+                                    <td>{{ partner.partnerType.description }}</td>
+                                    <td>{{ partner.nationality }}</td>
+                                    <td>{{ partner.partnerStatus?.description || 'N/A' }}</td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                        } @else {
+                        <p class="p-4 text-center text-gray-500">لا يوجد شركاء لعرضهم.</p>
+                        }
+                    </div>
+                </section>
+
+                <!-- Signatories (المخولون بالتوقيع) -->
+                <section class="space-y-4 pt-4">
+                    <h3 class="text-xl font-bold text-right border-b-2 border-red-700 inline-block pb-1 text-gray-700">
+                        المخولون بالتوقيع</h3>
+                    <div class="table-container">
+                        @if (crSignatories().length > 0) {
+                        <table class="w-full data-table text-sm">
+                            <thead>
+                                <tr>
+                                    <th class="w-10">م</th>
+                                    <th>الإسم</th>
+                                    <th>الرقم الشخصي</th>
+                                    <th>النوع</th>
+                                    <th>الجنسية</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (signatory of crSignatories(); track $index) {
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ signatory.nameAr }}</td>
+                                    <td>{{ signatory.nIN }}</td>
+                                    <td>{{ signatory.partnerType.description }}</td>
+                                    <td>{{ signatory.nationality }}</td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                        } @else {
+                        <p class="p-4 text-center text-gray-500">لا يوجد مخولون بالتوقيع لعرضهم.</p>
+                        }
+                    </div>
+                </section>
+
+                <!-- Activities (الأنشطة) -->
+                <section class="space-y-4 pt-4">
+                    <h3 class="text-xl font-bold text-right border-b-2 border-red-700 inline-block pb-1 text-gray-700">
+                        الأنشطة</h3>
+                    <div class="table-container">
+                        @if (crActivities().length > 0) {
+                        <table class="w-full data-table text-sm">
+                            <thead>
+                                <tr>
+                                    <th class="w-10">م</th>
+                                    <th>الإسم</th>
+                                    <th>الرقم التسلسلي</th>
+                                    <th>التكلفة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (activity of crActivities(); track $index) {
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ activity.title }}</td>
+                                    <td>{{ activity.activitySerial }}</td>
+                                    <td>{{ activity.cost }} ريال قطري</td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                        } @else {
+                        <p class="p-4 text-center text-gray-500">لا توجد أنشطة لعرضها.</p>
+                        }
+                    </div>
+                </section>
+
+            </div>
+            }@else {
+            <p class="text-center font-bold">{{ statusMessage() }}</p>
+            }
+        </ng-template>
+        <ng-template #modalFooter>
+            <div class="flex flex-row gap-4 w-full justify-end items-center p-3 border-t border-gray-200">
+                <button [disabled]="loader()" [ngClass]="{'bg-opacity-85 cursor-not-allowed': loader()}"
+                    class="bg-primary text-white font-bold py-2 px-6 rounded-md flex items-center gap-2 transition duration-150"
+                    (click)="printData()">
+                    @if(loader()){
+                        <span
+                            class="animate-spin border-2 border-white border-l-transparent rounded-full w-5 h-5 inline-block align-middle mx-1"></span>
+                    }
+                    <icon-printer class="h-4 text-white"></icon-printer> طباعة
+                </button>
+                <button [disabled]="loader()" [ngClass]="{'cursor-not-allowed': loader()}"
+                    class="bg-primary text-white font-bold py-2 px-6 rounded-md flex items-center gap-2 transition duration-150"
+                    (click)="autoCompleteData('yes')">
+                    إنعكاس على الطلب
+                    <icon-pencil class="h-4 text-white"></icon-pencil>
+                </button>
+                <button [disabled]="loader()" [ngClass]="{'cursor-not-allowed': loader()}"
+                    class="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-6 rounded-md flex items-center gap-2 transition duration-150"
+                    (click)="onUserClose('no')">
+                    <icon-x class="h-4 text-white"></icon-x> إغلاق
+                </button>
+            </div>
+        </ng-template>
+    </ngx-custom-modal>
+</div>

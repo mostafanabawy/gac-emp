@@ -1,0 +1,224 @@
+<div id="cpPopup" #cpPopup>
+    <ngx-custom-modal #modal20 class="modal-top z-[9999] large-modal" [hideCloseButton]="true"
+        [closeOnOutsideClick]="true">
+
+
+
+        <ng-template #modalBody>
+            <div class="p-2 border-b border-gray-200 flex justify-between">
+                <h2 class="text-xl text-primary sm:text-2xl font-semibold text-right w-full">
+                    بيانات الرخصة التجارية
+                </h2>
+                <button (click)="onUserClose('no')">
+                    <icon-x class="h-6 text-primary cursor-pointer hover:opacity-90"></icon-x>
+                </button>
+            </div>
+            @if(!statusMessage()){
+            <form [formGroup]="permitForm" class="p-4 space-y-6">
+                <!-- Commercial License Data (بيانات الرخصة التجارية) -->
+                <section class="border-b border-gray-300 pb-4">
+                    <h3
+                        class="text-xl font-bold mb-4 text-right border-b-2 border-red-700 inline-block pb-1 text-gray-700">
+                        بيانات الرخصة التجارية</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- رقم الرخصة التجارية -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">رقم الرخصة التجارية</label>
+                            <input formControlName="commercialPermitID" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                        <!-- رقم السجل التجاري -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">رقم السجل التجاري</label>
+                            <input formControlName="ID" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                        <!-- النوع -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">النوع</label>
+                            <input formControlName="licenseType" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+
+                        <!-- حالة الرخصة -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">حالة الرخصة</label>
+                            <input formControlName="commercialPermitStatus" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                        <!-- عدد الفروع -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">عدد الفروع</label>
+                            <input formControlName="branchNumber" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                        <!-- الإسم التجاري -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">الإسم التجاري</label>
+                            <input formControlName="establishmentCommercialName" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+
+                        <!-- تاريخ الإصدار -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">تاريخ الإصدار</label>
+                            <input formControlName="issueDate" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                        <!-- تاريخ الإنتهاء -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">تاريخ الإنتهاء</label>
+                            <input formControlName="expiryDate" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                        <!-- إسم النشاط -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">إسم النشاط</label>
+                            <input formControlName="companyActivity" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+
+                        <!-- عقار ملك -->
+                        <div class="flex flex-col text-right lg:col-span-3">
+                            <label class="text-sm font-medium text-gray-700">عقار ملك</label>
+                            <input formControlName="buildingOwner" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Applicant Data (بيانات طالب الترخيص) -->
+                <section class="border-b border-gray-300 pb-4 pt-4">
+                    <h3
+                        class="text-xl font-bold mb-4 text-right border-b-2 border-red-700 inline-block pb-1 text-gray-700">
+                        بيانات طالب الترخيص</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <!-- الرقم الشخصي لطالب الترخيص -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">الرقم الشخصي لطالب الترخيص</label>
+                            <input formControlName="licenseeQID" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                        <!-- إسم طالب الترخيص -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">إسم طالب الترخيص</label>
+                            <input formControlName="licenseeName" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                        <!-- جنسية طالب الترخيص -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">جنسية طالب الترخيص</label>
+                            <input formControlName="licenseeNationality" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Responsible Manager Data (بيانات المدير المسؤول) -->
+                <section class="border-b border-gray-300 pb-4 pt-4">
+                    <h3
+                        class="text-xl font-bold mb-4 text-right border-b-2 border-red-700 inline-block pb-1 text-gray-700">
+                        بيانات المدير المسؤول</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <!-- الرقم الشخصي للمدير المسؤول -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">الرقم الشخصي للمدير المسؤول</label>
+                            <input formControlName="managerQID" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                        <!-- إسم المدير المسؤول -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">إسم المدير المسؤول</label>
+                            <input formControlName="managerName" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                        <!-- جنسية المدير المسؤول -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">جنسية المدير المسؤول</label>
+                            <input formControlName="managerNationality" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Address (العنوان) -->
+                <section class="pt-4">
+                    <h3
+                        class="text-xl font-bold mb-4 text-right border-b-2 border-red-700 inline-block pb-1 text-gray-700">
+                        العنوان</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <!-- البلدية -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">البلدية</label>
+                            <input formControlName="municipalityName" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                        <!-- رقم المبنى -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">رقم المبنى</label>
+                            <input formControlName="buildingNumber" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                        <!-- رقم الشارع -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">رقم الشارع</label>
+                            <input formControlName="streetNumber" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+
+                        <!-- إسم الشارع -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">إسم الشارع</label>
+                            <input formControlName="streetName" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                        <!-- رقم المنطقة -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">رقم المنطقة</label>
+                            <input formControlName="zoneNumber" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                        <!-- إسم المنطقة -->
+                        <div class="flex flex-col text-right">
+                            <label class="text-sm font-medium text-gray-700">إسم المنطقة</label>
+                            <input formControlName="zoneName" type="text" [readonly]="true"
+                                class="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-right focus:outline-none">
+                        </div>
+                    </div>
+                </section>
+            </form>
+            }@else {
+            <p class="text-center font-bold p-6">
+                {{statusMessage()}}
+            </p>
+            }
+        </ng-template>
+
+        <ng-template #modalFooter>
+            <div class="flex flex-row gap-4 w-full justify-end items-center p-3 border-t border-gray-200">
+                <button [disabled]="loader()" [ngClass]="{'bg-opacity-85 cursor-not-allowed': loader()}"
+                    class="bg-primary text-white font-bold py-2 px-6 rounded-md flex items-center gap-2 transition duration-150"
+                    (click)="printData()">
+                    @if(loader()){
+                    <span
+                        class="animate-spin border-2 border-white border-l-transparent rounded-full w-5 h-5 inline-block align-middle mx-1"></span>
+                    }
+                    <icon-printer class="h-4 text-white"></icon-printer> طباعة
+                </button>
+                <button [disabled]="loader()" [ngClass]="{'cursor-not-allowed': loader()}"
+                    class="bg-primary text-white font-bold py-2 px-6 rounded-md flex items-center gap-2 transition duration-150"
+                    (click)="autoCompleteData('yes')">
+                    إنعكاس على الطلب
+                    <icon-pencil class="h-4 text-white"></icon-pencil>
+                </button>
+                <button [disabled]="loader()" [ngClass]="{'cursor-not-allowed': loader()}"
+                    class="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-6 rounded-md flex items-center gap-2 transition duration-150"
+                    (click)="onUserClose('no')">
+                    <icon-x class="h-4 text-white"></icon-x> إغلاق
+                </button>
+
+            </div>
+        </ng-template>
+
+    </ngx-custom-modal>
+</div>

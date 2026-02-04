@@ -1,0 +1,116 @@
+<div id="usersGuideModal" cdkTrapFocus [cdkTrapFocusAutoCapture]="true" *ngIf="isOpen()">
+    <ngx-custom-modal #modal7 class="modal-top large-modal overflow-auto !z-[9999]" id="appModal">
+        <ng-template #modalHeader>
+            <div>
+                <h2 class="text-xl">
+                    {{translations()?.userGuideTitle.label}}
+                </h2>
+            </div>
+        </ng-template>
+        <ng-template #modalBody>
+            <section class=" bg-white">
+                <!-- links -->
+                <nav class="mt-3 mb-5 flex flex-wrap dark:border-[#191e3a] tab-talabat" role="tablist">
+                    <button id="tab-service-desc" role="tab"
+                        [attr.aria-selected]="tab9.toLowerCase() === 'service-desc'"
+                        class="-mb-[1px] text-lg flex items-center gap-2 border-transparent rounded-t-md hover:border-gray-300 text-gray-600 p-5 py-3 !outline-none transition duration-300 hover:border hover:underline hover:border-b-white hover:text-[#333333] font-bold"
+                        [ngClass]="{ 'active-tab': tab9.toLowerCase() === 'service-desc' }"
+                        (click)="tab9 = 'service-desc'">
+
+
+                        {{ translations()?.usersGuideExplainTab.label}}
+                    </button>
+
+                    <button id="tab-payment" role="tab" [attr.aria-selected]="tab9.toLowerCase() === 'payment'"
+                        class="-mb-[1px] text-lg flex items-center gap-2 border-transparent rounded-t-md hover:border-gray-300 text-gray-600 p-5 py-3 !outline-none transition duration-300 hover:border hover:underline hover:border-b-white hover:text-[#333333] font-bold"
+                        [ngClass]="{ 'active-tab': tab9.toLowerCase() === 'payment' }" (click)="tab9 = 'payment'">
+
+
+                        {{ translations()?.usersGuideFeesTab.label}}
+                    </button>
+
+                    <button id="tab-conditions" role="tab" [attr.aria-selected]="tab9.toLowerCase() === 'conditions'"
+                        class="-mb-[1px] text-lg flex items-center gap-2 border-transparent rounded-t-md hover:border-gray-300 text-gray-600 p-5 py-3 !outline-none transition duration-300 hover:border hover:underline hover:border-b-white hover:text-[#333333] font-bold"
+                        [ngClass]="{ 'active-tab': tab9.toLowerCase() === 'conditions' }" (click)="tab9 = 'conditions'">
+
+
+                        {{ translations()?.usersGuideConditionsTab.label}}
+                    </button>
+                    <button id="tab-attachments" role="tab" [attr.aria-selected]="tab9.toLowerCase() === 'attachments'"
+                        class="-mb-[1px] text-lg flex items-center gap-2 border-transparent rounded-t-md hover:border-gray-300 text-gray-600 p-5 py-3 !outline-none transition duration-300 hover:border hover:underline hover:border-b-white hover:text-[#333333] font-bold"
+                        [ngClass]="{ 'active-tab': tab9.toLowerCase() === 'attachments' }"
+                        (click)="tab9 = 'attachments'">
+
+
+                        {{ translations()?.usersGuideAttachmentTab.label}}
+                    </button>
+                    <button id="tab-guides" role="tab" [attr.aria-selected]="tab9.toLowerCase() === 'guides'"
+                        class="-mb-[1px] text-lg flex items-center gap-2 border-transparent rounded-t-md hover:border-gray-300 text-gray-600 p-5 py-3 !outline-none transition duration-300 hover:border hover:underline hover:border-b-white hover:text-[#333333] font-bold"
+                        [ngClass]="{ 'active-tab': tab9.toLowerCase() === 'guides' }" (click)="tab9 = 'guides'">
+
+
+                        {{ translations()?.userGuideGuidanceTab.label}}
+                    </button>
+
+                </nav>
+                <!-- content -->
+
+                <div class="flex-1 text-sm mt-4">
+                    <section *ngIf="tab9.toLowerCase() === 'service-desc'" aria-labelledby="tab-service-desc"
+                        role="tabpanel">
+                        @if(userGuide()){
+                        <p class="text-gray-600 text-lg"
+                            [innerHTML]="store.index.locale === 'en'? userGuide().ServiceDescEn.split('\n').join('<br>'): userGuide().ServiceDescAr.split('\n').join('<br>')">
+                        </p>
+                        }@else{
+                        <div class="col-span-full flex justify-center">
+                            <span
+                                class="animate-spin border-4 border-black border-l-transparent rounded-full w-6 h-6 inline-block align-middle m-auto mb-10"></span>
+                        </div>
+                        }
+                    </section>
+                    <div *ngIf="tab9.toLowerCase() === 'payment'" aria-labelledby="tab-payment" role="tabpanel">
+                        @if(userGuide()){
+                        <p class="text-gray-600 text-lg"
+                            [innerHTML]="store.index.locale === 'en'? userGuide().ServiceFeeEn.split('\n').join('<br>'): userGuide().ServiceFeeAr.split('\n').join('<br>')">
+
+                        </p>
+                        }@else{
+                        <div class="col-span-full flex justify-center">
+                            <span
+                                class="animate-spin border-4 border-black border-l-transparent rounded-full w-6 h-6 inline-block align-middle m-auto mb-10"></span>
+                        </div>
+                        }
+                    </div>
+                    <div *ngIf="tab9.toLowerCase() === 'conditions'" aria-labelledby="tab-conditions" role="tabpanel">
+                        @if(userGuide()){
+                        <p class="text-gray-600 text-lg"
+                            [innerHTML]="store.index.locale === 'en'? userGuide().ServiceTermsEn.split('\n').join('<br>'): userGuide().ServiceTermsAr.split('\n').join('<br>')">
+
+                        </p>
+                        }@else{
+                        <div class="col-span-full flex justify-center">
+                            <span
+                                class="animate-spin border-4 border-black border-l-transparent rounded-full w-6 h-6 inline-block align-middle m-auto mb-10"></span>
+                        </div>
+                        }
+
+                    </div>
+                    <div *ngIf="tab9.toLowerCase() === 'attachments'" aria-labelledby="tab-attachments" role="tabpanel">
+                        <p class="text-gray-600 text-lg"
+                            [innerHTML]="store.index.locale === 'en'? userGuide().ServiceAttEn.split('\n').join('<br>'): userGuide().ServiceAttAr.split('\n').join('<br>')">
+                    </div>
+                    <div *ngIf="tab9.toLowerCase() === 'guides'" aria-labelledby="tab-guides" role="tabpanel">
+                        <p class="text-gray-600 text-lg"><a
+                                href="https://eservices.msy.gov.qa/Content/InstructionManuals/YouthActivites/YouthActivites_App.pdf"
+                                target="_blank" rel="noopener" class="hover:underline hover:text-primary pb-2">
+                                {{translations()?.userGuideLink.label}}
+                            </a></p>
+                    </div>
+                </div>
+            </section>
+
+
+        </ng-template>
+    </ngx-custom-modal>
+</div>

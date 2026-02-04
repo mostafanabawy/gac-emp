@@ -1,0 +1,10 @@
+<article class="bg-white shadow-md rounded-md space-y-4 h-[261px] py-4 overflow-hidden flex flex-col items-center justify-between hover:border hover:border-black">
+    <div class="mx-auto flex justify-center items-center w-60 h-28">
+        <img class="max-w-full max-h-full object-contain" [src]="icon()" alt="club icon">
+    </div>
+    <h3 class="text-center text-gray-600 text-lg">{{ title() }}</h3>
+    <a [href]="link()" target="_blank" class="text-base text-center rounded px-8 py-2 border border-black hover:underline hover:text-white hover:bg-gray-600 transition-all">
+        {{ 'serviceCard.button1' | translate }}
+    </a>
+
+</article>

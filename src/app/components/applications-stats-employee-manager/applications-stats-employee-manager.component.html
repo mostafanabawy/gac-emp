@@ -1,0 +1,11 @@
+<div>
+    <dl class="flex flex-wrap gap-4">
+        <ng-container *ngFor="let item of dataToDisplay() | keyvalue : preserveOrder">
+            <div 
+            [ngClass]="getGradientClass(item.key)" class="px-4 py-2 rounded-lg grow">
+                <dt class="font-medium text-white mb-1 text-[17px] text-center"> {{ item.key }} </dt>
+                <dd class="text-wrap break-all text-white text-center font-bold text-3xl"> {{ item.value }} </dd>
+            </div>
+        </ng-container>
+    </dl>
+</div>

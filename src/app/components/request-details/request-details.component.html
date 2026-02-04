@@ -1,0 +1,829 @@
+<app-bread-crumps [pageName]="pageName" [url]="itemURL"></app-bread-crumps>
+
+<div *ngIf="isSearchCollapsed && rows.length > 0" class="mb-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+  <div class="flex flex-wrap items-center gap-3">
+    <div *ngIf="searchCriteria.length > 0" class="flex flex-wrap items-center gap-2 flex-1">
+      <span class="text-sm font-semibold text-gray-700">
+        {{ translations()?.SearchResultFor?.label }}
+      </span>
+      <div class="flex flex-wrap gap-2">
+        <div *ngFor="let criteria of searchCriteria"
+          class="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
+          <span class="font-semibold">{{ criteria.label }}:</span>
+          <span>{{ criteria.value }}</span>
+          <button (click)="removeCriteria(criteria.key)" class="hover:bg-primary/20 rounded-full p-0.5 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button (click)="toggleSearchView()"
+      class="btn btn-outline-primary flex items-center gap-2 shadow-sm hover:shadow-md transition-all">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+      </svg>
+      {{ translations()?.ShowSearch?.label }}
+    </button>
+  </div>
+</div>
+
+
+
+<div class="panel" *ngIf="!isSearchCollapsed">
+  <div class="mb-5">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
+      <h2 class="text-lg font-bold flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        {{ isAdvancedSearch ? translations()?.AdvancedSearch?.label : translations()?.search?.label }}
+
+      </h2>
+
+      <button type="button" (click)="toggleAdvancedSearch()"
+        class="btn flex items-center gap-2 shadow-sm hover:shadow-md transition-all"
+        [ngClass]="isAdvancedSearch ? 'btn-outline-primary' : 'btn-primary'">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+        </svg>
+        {{ isAdvancedSearch ? translations()?.search?.label : translations()?.AdvancedSearch?.label }}
+
+      </button>
+    </div>
+
+    <form [formGroup]="searchForm" (ngSubmit)="search()">
+      <!-- البحث البسيط -->
+      <div *ngIf="!isAdvancedSearch" class="space-y-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <!-- نوع الخدمة -->
+          <div>
+            <label for="service" class="font-semibold">{{ translations()?.ServiceType?.label }}</label>
+            <ng-select [multiple]="true" [items]="services" [bindLabel]="isArabic ? 'ServiceTitleAr' : 'ServiceTitleEn'"
+              bindValue="ServiceID" formControlName="ServiceID" [placeholder]="getPlaceholderText('ServiceID')"
+              class="custom-multiselect" appendTo="body" [clearable]="shouldShowClearButton('ServiceID')">
+            </ng-select>
+          </div>
+          <div>
+            <label for="applicationNumber">{{ translations()?.requestNumber?.label }}</label>
+            <div class="relative">
+              <input id="applicationNumber" type="text" formControlName="ApplicationNumber"
+                [placeholder]="translations()?.requestNumberPlaceholder?.label || (isArabic ? 'أدخل رقم الطلب' : 'Enter request number')"
+                class="form-input ltr:pr-8 rtl:pl-8" />
+              <div class="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-gray-400">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- الحالة -->
+          <div>
+            <label for="status" class="font-semibold">{{ translations()?.Status?.label }}</label>
+            <ng-select [multiple]="true" [items]="requestStatuses" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+              bindValue="LookupID" formControlName="FkStatusID" [placeholder]="getPlaceholderText('FkStatusID')"
+              class="custom-multiselect" appendTo="body" [clearable]="shouldShowClearButton('FkStatusID')">
+            </ng-select>
+          </div>
+
+          <!-- الإجراء -->
+          <div>
+            <label for="process" class="font-semibold">{{ translations()?.ProcessID?.label }}</label>
+            <ng-select [multiple]="true" [items]="procedures" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+              bindValue="LookupID" formControlName="FkProcessID" [placeholder]="getPlaceholderText('FkProcessID')"
+              class="custom-multiselect" appendTo="body" [clearable]="shouldShowClearButton('FkProcessID')">
+            </ng-select>
+          </div>
+
+          <!-- النادي -->
+          <div>
+            <label for="club" class="font-semibold">{{ translations()?.Club?.label }}</label>
+            <ng-select [multiple]="true" [items]="clubNames" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+              bindValue="LookupID" formControlName="FkClubID" [placeholder]="getPlaceholderText('FkClubID')"
+              class="custom-multiselect" appendTo="body" [clearable]="shouldShowClearButton('FkClubID')">
+            </ng-select>
+          </div>
+
+          <!-- تصنيف الطلبات -->
+          <div>
+            <label for="requestCategory" class="font-semibold">{{ isArabic ? 'تصنيف الطلبات' : 'Request Category'
+              }}</label>
+            <ng-select [multiple]="true" [items]="requestCategories" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+              bindValue="LookupID" formControlName="RequestCategory"
+              [placeholder]="getPlaceholderText('RequestCategory')" class="custom-multiselect" appendTo="body"
+              [clearable]="shouldShowClearButton('RequestCategory')">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <!-- البحث المتقدم -->
+      <div *ngIf="isAdvancedSearch" class="space-y-4">
+        <!-- Row 1 -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+          <div>
+            <label for="department">{{ translations()?.DepartmentID?.label }}</label>
+            <ng-select [multiple]="true" [items]="departments" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+              bindValue="ID" formControlName="DepartmentID" [placeholder]="getPlaceholderText('DepartmentID')"
+              class="custom-multiselect" appendTo="body" (change)="getSection($event)"
+              [clearable]="shouldShowClearButton('DepartmentID')">
+            </ng-select>
+          </div>
+          <div>
+            <label for="administration">{{ translations()?.Section?.label }}</label>
+            <ng-select [multiple]="true" [items]="administrations" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+              bindValue="LookupID" formControlName="SectionID" [placeholder]="getPlaceholderText('SectionID')"
+              class="custom-multiselect" appendTo="body" (change)="getServices($event)"
+              [clearable]="shouldShowClearButton('SectionID')">
+            </ng-select>
+          </div>
+          <div>
+            <label for="requestType">{{ translations()?.RequestTypeID?.label }}</label>
+            <ng-select [multiple]="true" [items]="Requests" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+              bindValue="ID" formControlName="RequestTypeID" [placeholder]="getPlaceholderText('RequestTypeID')"
+              class="custom-multiselect" appendTo="body" [clearable]="shouldShowClearButton('RequestTypeID')">
+            </ng-select>
+          </div>
+          <div>
+            <label for="service">{{ translations()?.ServiceType?.label }}</label>
+            <ng-select [multiple]="true" [items]="services" [bindLabel]="isArabic ? 'ServiceTitleAr' : 'ServiceTitleEn'"
+              bindValue="ServiceID" formControlName="ServiceID" [placeholder]="getPlaceholderText('ServiceID')"
+              class="custom-multiselect" appendTo="body" (change)="getRequests($event)"
+              [clearable]="shouldShowClearButton('ServiceID')">
+            </ng-select>
+          </div>
+
+
+        </div>
+
+        <!-- Row 4: Other Date Fields -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+          <!-- تصنيف الطلبات -->
+          <div>
+            <label for="requestCategory" class="font-semibold">{{ isArabic ? 'تصنيف الطلبات' : 'Request Category'
+              }}</label>
+            <ng-select [multiple]="true" [items]="requestCategories" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+              bindValue="LookupID" formControlName="RequestCategory"
+              [placeholder]="getPlaceholderText('RequestCategory')" class="custom-multiselect" appendTo="body"
+              [clearable]="shouldShowClearButton('RequestCategory')">
+            </ng-select>
+          </div>
+          <div>
+            <label for="requestStatus">{{ translations()?.Status?.label }}</label>
+            <ng-select [multiple]="true" [items]="requestStatuses" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+              bindValue="LookupID" formControlName="FkStatusID" [placeholder]="getPlaceholderText('FkStatusID')"
+              class="custom-multiselect" appendTo="body" [clearable]="shouldShowClearButton('FkStatusID')">
+            </ng-select>
+          </div>
+          <div>
+            <label for="procedure">{{ translations()?.ProcessID?.label }}</label>
+            <ng-select [multiple]="true" [items]="procedures" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+              bindValue="LookupID" formControlName="FkProcessID" [placeholder]="getPlaceholderText('FkProcessID')"
+              class="custom-multiselect" appendTo="body" [clearable]="shouldShowClearButton('FkProcessID')">
+            </ng-select>
+          </div>
+
+          <div>
+            <label for="club">{{ translations()?.Club?.label }}</label>
+            <ng-select [multiple]="true" [items]="clubNames" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+              bindValue="LookupID" formControlName="FkClubID" [placeholder]="getPlaceholderText('FkClubID')"
+              class="custom-multiselect" appendTo="body" [clearable]="shouldShowClearButton('FkClubID')">
+            </ng-select>
+          </div>
+
+          <div>
+            <label for="submissionWay">{{ translations()?.submissionWay?.label || (isArabic ? 'طريقة التقديم' :
+              'Submission Method') }}</label>
+            <ng-select [multiple]="true" [items]="submissionMethods" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+              bindValue="LookupID" formControlName="SubmissionWay" [placeholder]="getPlaceholderText('SubmissionWay')"
+              class="custom-multiselect" appendTo="body" [clearable]="shouldShowClearButton('SubmissionWay')">
+            </ng-select>
+          </div>
+
+          <div>
+            <label for="HeadquarterGeographicalArea">{{ isArabic ? 'المنطقة الجغرافية' : 'Geographical Area' }}</label>
+            <input id="HeadquarterGeographicalArea" type="text" formControlName="HeadquarterGeographicalArea"
+              [placeholder]="getPlaceholderText('HeadquarterGeographicalArea')" class="form-input" />
+          </div>
+
+          <div>
+            <label for="applicationNumber" class="font-semibold">{{ translations()?.requestNumber?.label }}</label>
+            <div class="relative">
+              <input id="applicationNumber" type="text" formControlName="ApplicationNumber"
+                [placeholder]="translations()?.requestNumberPlaceholder?.label || (isArabic ? 'أدخل رقم الطلب' : 'Enter request number')"
+                class="form-input ltr:pr-8 rtl:pl-8" />
+              <div class="absolute top-1/2 -translate-y-1/2 ltr:right-2 rtl:left-2 text-gray-400">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label for="licenseNumber" class="font-semibold">{{ translations()?.licenseNumber?.label
+              }}</label>
+            <div class="relative">
+              <input id="licenseNumber" type="text" formControlName="ApprovedLicense"
+                [placeholder]="translations()?.licenseNumberPlaceholder?.label || (isArabic ? 'أدخل رقم الرخصة' : 'Enter License Number')"
+                class="form-input ltr:pr-10 rtl:pl-10" />
+              <div class="absolute top-1/2 -translate-y-1/2 ltr:right-3 rtl:left-3 text-gray-400">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- Row 4: تواريخ الرخصة -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+          <!-- تاريخ أول إصدار للرخصة -->
+          <div>
+            <label class="mb-2 block font-bold">{{ translations()?.licenseFirstIssueDate?.label || (isArabic ? 'تاريخ
+              أول إصدار للرخصة' : 'License First Issue Date') }}</label>
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center gap-2">
+                <label class="text-sm font-semibold w-10">{{ translations()?.from?.label }}</label>
+                <input type="text" mwlFlatpickr [options]="basic" class="form-input"
+                  formControlName="LicenseFirstIssueDateFrom"
+                  [attr.aria-label]="(translations()?.licenseFirstIssueDate?.label || 'تاريخ أول إصدار للرخصة') + ' - ' + (translations()?.from?.label || 'من')" />
+              </div>
+              <div class="flex items-center gap-2">
+                <label class="text-sm font-semibold w-10">{{ translations()?.to?.label }}</label>
+                <input type="text" mwlFlatpickr [options]="basic" class="form-input"
+                  formControlName="LicenseFirstIssueDateTo"
+                  [attr.aria-label]="(translations()?.licenseFirstIssueDate?.label || 'تاريخ أول إصدار للرخصة') + ' - ' + (translations()?.to?.label || 'إلى')" />
+              </div>
+            </div>
+          </div>
+
+          <!-- تاريخ بداية الرخصة -->
+          <div>
+            <label class="mb-2 block font-bold">{{ translations()?.licenseStartDate?.label || (isArabic ? 'تاريخ بداية
+              الرخصة' : 'License Start Date') }}</label>
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center gap-2">
+                <label class="text-sm font-semibold w-10">{{ translations()?.from?.label }}</label>
+                <input type="text" mwlFlatpickr [options]="basic" class="form-input"
+                  formControlName="LicenseStartDateFrom"
+                  [attr.aria-label]="(translations()?.licenseStartDate?.label || 'تاريخ بداية الرخصة') + ' - ' + (translations()?.from?.label || 'من')" />
+              </div>
+              <div class="flex items-center gap-2">
+                <label class="text-sm font-semibold w-10">{{ translations()?.to?.label }}</label>
+                <input type="text" mwlFlatpickr [options]="basic" class="form-input"
+                  formControlName="LicenseStartDateTo"
+                  [attr.aria-label]="(translations()?.licenseStartDate?.label || 'تاريخ بداية الرخصة') + ' - ' + (translations()?.to?.label || 'إلى')" />
+              </div>
+            </div>
+          </div>
+
+
+          <div>
+            <label class="mb-2 block font-bold">{{ translations()?.licenseEndDate?.label || (isArabic ? 'تاريخ نهاية
+              الرخصة' : 'License End Date') }}</label>
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center gap-2">
+                <label class="text-sm font-semibold w-10">{{ translations()?.from?.label }}</label>
+                <input type="text" mwlFlatpickr [options]="basic" class="form-input"
+                  formControlName="LicenseEndDateFrom"
+                  [attr.aria-label]="(translations()?.licenseEndDate?.label || 'تاريخ نهاية الرخصة') + ' - ' + (translations()?.from?.label || 'من')" />
+              </div>
+              <div class="flex items-center gap-2">
+                <label class="text-sm font-semibold w-10">{{ translations()?.to?.label }}</label>
+                <input type="text" mwlFlatpickr [options]="basic" class="form-input" formControlName="LicenseEndDateTo"
+                  [attr.aria-label]="(translations()?.licenseEndDate?.label || 'تاريخ نهاية الرخصة') + ' - ' + (translations()?.to?.label || 'إلى')" />
+              </div>
+            </div>
+          </div>
+
+          <!-- تاريخ التقديم -->
+          <div>
+            <label class="mb-2 block font-bold">{{ translations()?.requestDate?.label || (isArabic ? 'تاريخ التقديم' :
+              'Request Date') }}</label>
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center gap-2">
+                <label class="text-sm font-semibold w-10">{{ translations()?.from?.label }}</label>
+                <input type="text" mwlFlatpickr [options]="basic" class="form-input" formControlName="RequestDateFrom"
+                  [attr.aria-label]="(translations()?.requestDate?.label || 'تاريخ التقديم') + ' - ' + (translations()?.from?.label || 'من')" />
+              </div>
+              <div class="flex items-center gap-2">
+                <label class="text-sm font-semibold w-10">{{ translations()?.to?.label }}</label>
+                <input type="text" mwlFlatpickr [options]="basic" class="form-input" formControlName="RequestDateTo"
+                  [attr.aria-label]="(translations()?.requestDate?.label || 'تاريخ التقديم') + ' - ' + (translations()?.to?.label || 'إلى')" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 5: تواريخ الموافقة والرفض -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+          <!-- تاريخ الموافقة -->
+          <div>
+            <label class="mb-2 block font-bold">{{ isArabic ? 'تاريخ الموافقة' : 'Approval Date' }}</label>
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center gap-2">
+                <label class="text-sm font-semibold w-10">{{ translations()?.from?.label }}</label>
+                <input type="text" mwlFlatpickr [options]="basic" class="form-input" formControlName="ApprovalDateFrom"
+                  [attr.aria-label]="(isArabic ? 'تاريخ الموافقة' : 'Approval Date') + ' - ' + (translations()?.from?.label || 'من')" />
+              </div>
+              <div class="flex items-center gap-2">
+                <label class="text-sm font-semibold w-10">{{ translations()?.to?.label }}</label>
+                <input type="text" mwlFlatpickr [options]="basic" class="form-input" formControlName="ApprovalDateTo"
+                  [attr.aria-label]="(isArabic ? 'تاريخ الموافقة' : 'Approval Date') + ' - ' + (translations()?.to?.label || 'إلى')" />
+              </div>
+            </div>
+          </div>
+
+          <!-- تاريخ الرفض -->
+          <div>
+            <label class="mb-2 block font-bold">{{ isArabic ? 'تاريخ الرفض' : 'Rejection Date' }}</label>
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center gap-2">
+                <label class="text-sm font-semibold w-10">{{ translations()?.from?.label }}</label>
+                <input type="text" mwlFlatpickr [options]="basic" class="form-input" formControlName="RejectDateFrom"
+                  [attr.aria-label]="(isArabic ? 'تاريخ الرفض' : 'Rejection Date') + ' - ' + (translations()?.from?.label || 'من')" />
+              </div>
+              <div class="flex items-center gap-2">
+                <label class="text-sm font-semibold w-10">{{ translations()?.to?.label }}</label>
+                <input type="text" mwlFlatpickr [options]="basic" class="form-input" formControlName="RejectDateTo"
+                  [attr.aria-label]="(isArabic ? 'تاريخ الرفض' : 'Rejection Date') + ' - ' + (translations()?.to?.label || 'إلى')" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- أزرار البحث -->
+      <div class="flex flex-wrap justify-between items-center gap-3 mt-6 pt-4 border-t border-gray-200">
+
+
+        <!-- زر تغيير الوضع على اليمين - يظهر دائماً في نموذج البحث -->
+        <button type="button" (click)="toggleSearchView()"
+          class="btn btn-outline-primary flex items-center gap-2 shadow-sm hover:shadow-md transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+          </svg>
+          {{ translations()?.HideSearch?.label }}
+        </button>
+        <!-- الأزرار على الشمال -->
+        <div class="flex gap-3">
+          <button type="submit" class="btn btn-primary flex items-center gap-2"
+            aria-label="translations()?.search?.label">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            {{ translations()?.search?.label }}
+          </button>
+          <button type="button" (click)="resetForm()" aria-label="translations()?.Reset?.label"
+            class="btn btn-outline-secondary flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            {{ translations()?.Reset?.label }}
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<div class="space-y-3 mb-4">
+  <!-- Global Search Bar -->
+  <div *ngIf="!isLoading && isSearchCollapsed" class="p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="flex items-center gap-2">
+      <div class="relative flex-1">
+        <input type="text" [(ngModel)]="globalSearchTerm" [placeholder]="translations()?.searcall?.label"
+          class="form-input w-full ltr:pl-12 rtl:pr-12 ltr:pr-4 rtl:pl-4 text-lg" />
+        <div class="absolute top-1/2 -translate-y-1/2 ltr:left-4 rtl:right-4 text-gray-400">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- زر البحث -->
+      <button type="button" (click)="globalSearch()" class="btn btn-primary flex items-center gap-2 px-6"
+        [title]="translations()?.search?.label">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <span class="hidden sm:inline">{{ translations()?.search?.label }}</span>
+      </button>
+
+      <!-- زر إعادة تعيين Global Search -->
+      <button *ngIf="globalSearchTerm" type="button" (click)="resetGlobalSearch()"
+        class="btn btn-outline-secondary flex items-center gap-2" [title]="translations()?.Reset?.label">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- أزرار الأعمدة والترتيب والتقرير -->
+  <div class="flex justify-between items-center p-3 gap-3" *ngIf="rows.length > 0 && !isLoading">
+    <!-- زر تحويل إلى تقرير -->
+    <button type="button" (click)="exportToExcel()" aria-label="translations()?.exportToExcel?.label"
+      class="btn btn-primary flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      {{ translations()?.ExportReport?.label }}
+    </button>
+
+    <!-- أزرار العرض والترتيب والأعمدة -->
+    <div class="flex gap-2">
+      <!-- أزرار تبديل العرض -->
+      <div class="flex gap-1 border border-gray-300 rounded-lg">
+        <button (click)="toggleViewMode('table')"
+          [ngClass]="viewMode === 'table' ? 'bg-primary text-white' : 'bg-white text-gray-600 hover:bg-gray-100'"
+          class="px-3 py-2 rounded transition-all flex items-center gap-2" [title]="translations()?.TableView?.label">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+        </button>
+        <button (click)="toggleViewMode('cards')"
+          [ngClass]="viewMode === 'cards' ? 'bg-primary text-white' : 'bg-white text-gray-600 hover:bg-gray-100'"
+          class="px-3 py-2 rounded transition-all flex items-center gap-2" [title]="translations()?.CardsView?.label">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- زر الترتيب -->
+      <div class="relative hide-on-small-screen">
+        <button (click)="openDropdown('sort'); $event.stopPropagation()"
+          class="btn flex items-center gap-2 relative toggle-sort-btn shadow-sm hover:shadow-md transition-shadow"
+          [ngClass]="toggleSortDropdown ? 'btn-primary' : 'btn-outline-primary'">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+          </svg>
+          {{ translations()?.sort?.label }}
+        </button>
+
+        <!-- Dropdown للترتيب -->
+        <div *ngIf="toggleSortDropdown"
+          class="absolute top-full mt-2 rtl:left-0 ltr:right-0 bg-white border border-gray-300 rounded-lg shadow-xl z-50 p-4 w-72 dropdown-container"
+          (click)="$event.stopPropagation()">
+
+          <!-- زر إعادة تعيين -->
+          <div class="mb-3 pb-3 border-b border-gray-200">
+            <button (click)="resetSort()"
+              class="w-full px-3 py-2 text-sm font-medium text-white bg-primary rounded hover:bg-primary/90 transition flex items-center justify-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              {{ translations()?.ResetSort?.label}}
+            </button>
+          </div>
+
+          <!-- اختيار العمود -->
+          <div class="mb-3">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              {{ translations()?.SortBy?.label }}
+            </label>
+            <ng-select [items]="sortableColumns" bindLabel="title" [(ngModel)]="selectedSortColumn"
+              (change)="onSortColumnChange($event)" [placeholder]="translations()?.SelectColumn?.placeholder"
+              class="custom-multiselect" [clearable]="false">
+            </ng-select>
+          </div>
+
+          <!-- اتجاه الترتيب -->
+          <div class="border-t border-gray-200 pt-3">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              {{ translations()?.Direction?.label }}
+            </label>
+            <div class="flex gap-2">
+              <button (click)="setSortDirection(1)" [class.bg-primary]="currentSortDirection === 1"
+                [class.text-white]="currentSortDirection === 1" [class.bg-gray-100]="currentSortDirection !== 1"
+                [class.text-gray-700]="currentSortDirection !== 1"
+                class="flex-1 px-3 py-2 text-sm font-medium rounded hover:opacity-90 transition flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                </svg>
+                {{ translations()?.Ascending?.label}}
+              </button>
+              <button (click)="setSortDirection(2)" [class.bg-primary]="currentSortDirection === 2"
+                [class.text-white]="currentSortDirection === 2" [class.bg-gray-100]="currentSortDirection !== 2"
+                [class.text-gray-700]="currentSortDirection !== 2"
+                class="flex-1 px-3 py-2 text-sm font-medium rounded hover:opacity-90 transition flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+                {{ translations()?.Descending?.label }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- زر الأعمدة -->
+      <div class="relative hide-on-small-screen">
+        <button (click)="openDropdown('columns'); $event.stopPropagation()"
+          class="btn flex items-center gap-2 relative toggle-columns-btn shadow-sm hover:shadow-md transition-shadow"
+          [ngClass]="toggleColumnsDropdown ? 'btn-primary' : 'btn-outline-primary'">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+          </svg>
+          {{ translations()?.columns?.label }}
+        </button>
+
+        <!-- Dropdown للتحكم في الأعمدة -->
+        <div *ngIf="toggleColumnsDropdown"
+          class="absolute top-full mt-2 rtl:left-0 ltr:right-0 bg-white border border-gray-300 rounded-lg shadow-xl z-50 p-4 w-64 max-h-96 overflow-y-auto dropdown-container"
+          (click)="$event.stopPropagation()">
+
+          <!-- زر إعادة تعيين -->
+          <div class="mb-3 pb-3 border-b border-gray-200">
+            <button (click)="resetColumns()"
+              class="w-full px-3 py-2 text-sm font-medium text-white bg-primary rounded hover:bg-primary/90 transition flex items-center justify-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              {{ translations()?.Reset?.label }}
+            </button>
+          </div>
+
+          <div class="flex gap-2 mb-3 pb-3 border-b border-gray-200">
+            <button (click)="selectAllColumns()"
+              [ngClass]="{'bg-primary text-white': areAllColumnsVisible, 'bg-gray-100 text-gray-700': !areAllColumnsVisible}"
+              class="flex-1 px-3 py-1.5 text-xs font-medium rounded hover:opacity-90 transition">
+              {{ translations()?.selectAll?.label }}
+            </button>
+            <button (click)="hideAllColumns()"
+              [ngClass]="{'bg-primary text-white': areAllColumnsHidden, 'bg-gray-100 text-gray-700': !areAllColumnsHidden}"
+              class="flex-1 px-3 py-1.5 text-xs font-medium rounded hover:opacity-90 transition">
+              {{ translations()?.hideAll?.label }}
+            </button>
+          </div>
+
+          <div class="space-y-2">
+            <label *ngFor="let col of allColumns"
+              class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1 rounded">
+              <input type="checkbox" [checked]="col.visible" (change)="toggleColumn(col.field)"
+                class="w-4 h-4 text-primary rounded focus:ring-primary burgundy-checkbox">
+              <span class="text-sm">{{ col.title }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="rows.length === 0 && !isLoading"
+  class="mt-6 p-8 bg-white rounded-xl border-2 border-dashed border-gray-300 text-center">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24"
+    stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+      d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+  </svg>
+  <h3 class="text-xl font-semibold text-gray-700 mb-2">
+    {{ isArabic ? 'لا توجد بيانات' : 'No Data Found' }}
+  </h3>
+  <p class="text-gray-500 mb-4">
+    {{ isArabic ? 'لم يتم العثور على نتائج. يرجى تعديل معايير البحث والمحاولة مرة أخرى.' : 'No results found. Please
+    adjust your search criteria and try again.' }}
+  </p>
+
+</div>
+
+
+
+<app-fees-table *ngIf="viewMode === 'table'" #feesTable [rows]="rows" [cols]="cols" [isLoading]="isLoading"
+  [isArabic]="isArabic" [translations]="translations()" [paginationInfo]="paginationInfo"
+  [currentSortField]="currentSortField" [currentSortDirection]="currentSortDirection" [expandedRow]="expandedRow"
+  [expandedRowDetails]="expandedRowDetails" [sortableColumns]="sortableColumns"
+  [selectedSortColumn]="selectedSortColumn" [showPaymentLegend]="false" [showStatusLegend]="false"
+  [showSubmissionLegend]="true" [rowIdentifierField]="'RequestID'" (onSort)="onSortChange($event)"
+  (onPageChange)="onPageChange($event)" (onPageSizeChange)="onPageSizeChange($event)"
+  (onActionClick)="handleSpanClick($event.row.RequestID)" (onRowExpand)="toggleRowExpand($event)"
+  (onResetColumns)="onTableReset()">
+</app-fees-table>
+
+<div *ngIf="viewMode === 'cards' && (rows.length > 0 || isLoading)" class="mt-6">
+  <!-- Submission Methods Legend for Cards View -->
+  <div
+    class="mb-6 px-6 py-4 bg-gradient-to-r from-primary/5 via-white to-primary/5 border-2 border-primary/20 rounded-xl shadow-md">
+    <div class="flex items-center justify-center gap-3 flex-wrap">
+      <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-md border-2 border-primary/30">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <span class="font-bold text-gray-800 text-sm">{{ isArabic ? 'طرق التقديم' : 'Submission Methods' }}</span>
+      </div>
+
+      <div
+        class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-green-50 to-green-100 text-green-800 border-2 border-green-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+        </svg>
+        <span class="font-bold text-sm">{{ isArabic ? 'اونلاين' : 'Online' }}</span>
+      </div>
+
+      <div
+        class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-blue-50 to-blue-100 text-blue-800 border-2 border-blue-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+        </svg>
+        <span class="font-bold text-sm">{{ isArabic ? 'موظف' : 'Employee' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div *ngFor="let _ of [].constructor(6)" class="bg-white rounded-xl shadow-md p-6 animate-pulse">
+      <div class="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
+      <div class="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+      <div class="h-3 bg-gray-200 rounded w-2/3"></div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div *ngFor="let row of rows; let i = index"
+      class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 border border-gray-200 hover:border-primary cursor-pointer"
+      (click)="handleSpanClick(row.RequestID)">
+
+      <!-- Header -->
+      <div class="flex justify-between items-start mb-4 pb-3 border-b border-gray-200">
+        <div class="flex-1">
+          <h3 class="text-lg font-bold text-gray-800 mb-1">
+            {{ isArabic ? row.ServiceTitleAr : row.ServiceTitleEn }}
+          </h3>
+          <p class="text-sm text-gray-500">
+            {{ isArabic ? row.DeptAr : row.DeptEn }}
+          </p>
+        </div>
+        <div class="flex flex-col gap-1 items-end">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md"
+            [ngClass]="getSubmissionBadgeClass(row)">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            {{ isArabic ? row.SubmissionWayAr : row.SubmissionWayEn || '-' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Details Grid -->
+      <div class="space-y-3">
+        <!-- Row 1: رقم الطلب والحالة -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="flex flex-col space-y-1">
+            <span class="text-xs font-medium text-gray-500">{{ translations()?.requestNumber?.label }}</span>
+            <span class="text-sm font-semibold text-gray-800 rtl:text-right ltr:text-left force-ltr">{{
+              row.ApplicationNumber || '-' }}</span>
+          </div>
+          <div class="flex flex-col space-y-1">
+            <span class="text-xs font-medium text-gray-500">{{ translations()?.Status?.label }}</span>
+            <span class="text-sm font-medium text-gray-800">
+              {{ isArabic ? row.StatusAr : row.StatusEn || '-' }}
+            </span>
+          </div>
+        </div>
+
+
+
+        <!-- Row 3: تاريخ تقديم الطلب والقسم -->
+        <div class="grid grid-cols-2 gap-4 pt-3 border-t border-gray-100">
+          <div class="flex flex-col space-y-1">
+            <span class="text-xs font-medium text-gray-500">{{ translations()?.creationDate?.label || (isArabic ? 'تاريخ
+              تقديم الطلب' : 'Request Creation Date') }}</span>
+            <span class="text-sm font-medium text-gray-800">{{ row.CreationDate || '-' }}</span>
+          </div>
+          <div class="flex flex-col space-y-1">
+            <span class="text-xs font-medium text-gray-500">{{ translations()?.Section?.label }}</span>
+            <span class="text-sm font-medium text-gray-800">{{ isArabic ? row.SectionAr : row.SectionEn || '-' }}</span>
+          </div>
+        </div>
+
+        <!-- Row 4: نوع الطلب (إذا كان موجود) -->
+        <div *ngIf="row.ReqTypeAr || row.ReqTypeEn" class="grid grid-cols-1 gap-4 pt-3 border-t border-gray-100">
+          <div class="flex flex-col space-y-1">
+            <span class="text-xs font-medium text-gray-500">{{ translations()?.RequestTypeID?.label }}</span>
+            <span class="text-sm font-medium text-gray-800">{{ isArabic ? row.ReqTypeAr : row.ReqTypeEn || '-' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center">
+        <span class="text-xs text-gray-500">
+          {{ isArabic ? row.ProcessAr : row.ProcessEn }}
+        </span>
+        <button class="text-primary hover:text-primary/80 transition">
+          <svg _ngcontent-ng-c1015478722="" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" class="w-4 h-4">
+            <path _ngcontent-ng-c1015478722="" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path _ngcontent-ng-c1015478722="" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+            </path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="mt-6 p-4 bg-white rounded-xl shadow-md flex flex-col sm:flex-row justify-between items-center gap-3 border border-gray-200">
+    <div class="text-sm text-gray-600">
+      {{ paginationInfoText }}
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button
+        class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+        [disabled]="paginationInfo.CurrentPage === 1" (click)="onPageChange(1)">
+        «
+      </button>
+      <button
+        class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+        [disabled]="paginationInfo.CurrentPage === 1" (click)="onPageChange(paginationInfo.CurrentPage - 1)">
+        ‹
+      </button>
+
+      <div class="flex gap-1">
+        <ng-container *ngFor="let page of getPageNumbers()">
+          <span *ngIf="page === -1" class="px-2 text-gray-400">...</span>
+          <button *ngIf="page !== -1"
+            class="w-9 h-9 flex items-center justify-center rounded-full border transition font-medium"
+            [ngClass]="{'bg-primary text-white border-primary': page === paginationInfo.CurrentPage, 'border-gray-300 text-gray-600 hover:bg-primary hover:text-white hover:border-primary': page !== paginationInfo.CurrentPage}"
+            (click)="onPageChange(page)">
+            {{ page }}
+          </button>
+        </ng-container>
+      </div>
+
+      <button
+        class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+        [disabled]="paginationInfo.CurrentPage === paginationInfo.TotalPages"
+        (click)="onPageChange(paginationInfo.CurrentPage + 1)">
+        ›
+      </button>
+      <button
+        class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+        [disabled]="paginationInfo.CurrentPage === paginationInfo.TotalPages"
+        (click)="onPageChange(paginationInfo.TotalPages)">
+        »
+      </button>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <label for="cardPageSize" class="text-sm text-gray-600 whitespace-nowrap">
+        {{ translations()?.rowsPerPage?.label || (isArabic ? 'عدد الصفوف:' : 'Rows:') }}
+      </label>
+      <select id="cardPageSize"
+        class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-primary focus:border-primary bg-white"
+        [(ngModel)]="paginationInfo.PageSize" (ngModelChange)="onPageSizeChange($event)">
+        <option [value]="10">10</option>
+        <option [value]="20">20</option>
+        <option [value]="50">50</option>
+        <option [value]="100">100</option>
+      </select>
+    </div>
+  </div>
+</div>

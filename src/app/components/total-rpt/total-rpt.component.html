@@ -1,0 +1,1869 @@
+<div class="min-h-screen p-6 relative overflow-hidden">
+
+    <!-- Background Decorations -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div
+            class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-900/20 to-red-900/20 rounded-full blur-3xl animate-pulse">
+        </div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-red-900/20 to-purple-900/20 rounded-full blur-3xl animate-pulse"
+            style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-red-900/10 to-purple-900/10 rounded-full blur-2xl animate-spin"
+            style="animation-duration: 20s;"></div>
+    </div>
+
+    <div class="header-section mb-12 relative z-10">
+        <div
+            class="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 hover:shadow-3xl transition-all duration-500 group">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+                <div class="flex items-center gap-6">
+                    <div
+                        class="w-20 h-20 rounded-2xl burgundy-gradient flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 relative overflow-hidden">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        </div>
+                        <i
+                            class="fas fa-chart-line text-white text-3xl relative z-10 group-hover:scale-110 transition-transform duration-300"></i>
+                    </div>
+                    <div class="group-hover:translate-x-2 transition-transform duration-300">
+                        <h1
+                            class="text-4xl font-black text-gray-900 mb-2 bg-gradient-to-r from-gray-900 via-red-800 to-rose-800 bg-clip-text text-transparent">
+                            {{ isArabic ? 'تقرير الخدمات الإجمالي' : 'Total Services Report' }}
+                        </h1>
+                        <p
+                            class="text-gray-600 text-lg font-medium opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+                            {{ isArabic ? 'تحليل شامل لأداء الخدمات والرسوم المالية' : 'Comprehensive analysis of
+                            service performance and financial revenue' }}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex gap-3 flex-wrap">
+                    <button (click)="exportToExcel()" *ngIf="rows.length > 0 || totals || clubsData.length > 0"
+                        class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 flex items-center gap-3">
+                        <i class="fas fa-file-excel text-lg"></i>
+                        <span>{{ isArabic ? 'تصدير شامل Excel' : 'Export All Excel' }}</span>
+                    </button>
+
+                    <button (click)="printReport()" *ngIf="rows.length > 0 || totals || clubsData.length > 0"
+                        class="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 flex items-center gap-3">
+                        <i class="fas fa-print text-lg"></i>
+                        <span>{{ isArabic ? 'طباعة التقرير' : 'Print Report' }}</span>
+                    </button>
+                    <button (click)="toggleSearch()"
+                        class="burgundy-btn burgundy-button btn-burgundy text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 flex items-center gap-3 relative overflow-hidden"
+                        style="background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%) !important; border: none !important;">
+                        <i class="fas text-lg transition-transform duration-300"
+                            [ngClass]="isSearchCollapsed ? 'fa-eye' : 'fa-eye-slash'"></i>
+                        <span class="relative z-10">{{ isSearchCollapsed ? (isArabic ? 'إظهار الفلاتر' : 'Show Filters')
+                            : (isArabic ? 'إخفاء
+                            الفلاتر' : 'Hide Filters') }}</span>
+                        <div
+                            class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700">
+                        </div>
+                    </button>
+                    <button (click)="resetForm()"
+                        class="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 flex items-center gap-3">
+                        <i class="fas fa-redo text-lg"></i>
+                        <span>{{ isArabic ? 'إعادة تعيين' : 'Reset All' }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Panel -->
+    <div class="overflow-hidden transition-all duration-700 ease-in-out rounded-3xl bg-white/95 backdrop-blur-xl shadow-2xl border border-white/40 relative z-10 mb-8"
+        [ngClass]="isSearchCollapsed ? 'max-h-0 opacity-0 mb-0 transform scale-95' : 'max-h-[2000px] opacity-100 transform scale-100'">
+
+        <!-- Decorative Background Elements -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div
+                class="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-purple-900/10 to-red-900/10 rounded-full blur-2xl">
+            </div>
+            <div
+                class="absolute -bottom-20 -left-20 w-48 h-48 bg-gradient-to-tr from-red-900/10 to-purple-900/10 rounded-full blur-2xl">
+            </div>
+        </div>
+
+        <div class="p-8 relative z-10">
+            <div
+                class="flex items-center gap-4 mb-8 border-b border-gradient-to-r from-burgundy/20 via-burgundy/10 to-transparent pb-6">
+                <div
+                    class="burgundy-icon w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-300 relative overflow-hidden">
+                    <i class="fas fa-filter text-xl relative z-10"></i>
+                    <div
+                        class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300">
+                    </div>
+                </div>
+                <div>
+                    <h2
+                        class="text-3xl font-black text-gray-800 bg-gradient-to-r from-gray-800 via-red-800 to-rose-800 bg-clip-text text-transparent mb-2">
+                        {{ isArabic ? 'تصفية النتائج المتقدمة' : 'Advanced Search Filters' }}
+                    </h2>
+                    <p class="text-gray-600 font-medium">
+                        {{ isArabic ? 'استخدم الفلاتر أدناه للحصول على نتائج دقيقة ومخصصة' : 'Use the filters below to
+                        get precise and customized results' }}
+                    </p>
+                </div>
+            </div>
+
+            <form [formGroup]="searchForm" (ngSubmit)="search()" class="space-y-10">
+                <!-- Group 1: Basic Information -->
+                <div
+                    class="space-y-6 bg-gradient-to-br from-white to-gray-50/50 rounded-2xl p-6 border border-gray-200/50 shadow-sm hover:shadow-md transition-all duration-300">
+                    <div class="flex items-center gap-3">
+                        <span
+                            class="w-10 h-10 rounded-xl bg-burgundy/15 flex items-center justify-center text-burgundy text-sm font-black shadow-sm">01</span>
+                        <div>
+                            <h3 class="text-lg font-black text-gray-900 uppercase tracking-wider">
+                                {{ isArabic ? 'معلومات الخدمة الأساسية' : 'Basic Service Info' }}
+                            </h3>
+                            <p class="text-sm text-gray-600 font-medium">
+                                {{ isArabic ? 'اختر الإدارة والقسم والخدمة ونوع الطلب' : 'Select department, section,
+                                service and request type' }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="input-group">
+                            <label for="DepartmentID"
+                                class="text-[11px] font-bold text-burgundy/60 mb-2 block uppercase tracking-wider">{{
+                                isArabic ? 'الإدارة' : 'Department' }}</label>
+                            <ng-select [items]="departments" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+                                bindValue="ID" formControlName="DepartmentID"
+                                [placeholder]="getPlaceholderText('DepartmentID')" [multiple]="true"
+                                [closeOnSelect]="false" [clearable]="shouldShowClearButton('DepartmentID')"
+                                class="custom-multiselect" id="DepartmentID">
+                            </ng-select>
+                        </div>
+                        <div class="input-group">
+                            <label for="SectionID"
+                                class="text-[11px] font-bold text-burgundy/60 mb-2 block uppercase tracking-wider">{{
+                                isArabic ? 'القسم' : 'Section' }}</label>
+                            <ng-select [items]="sections" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+                                bindValue="LookupID" formControlName="SectionID"
+                                [placeholder]="getPlaceholderText('SectionID')" [multiple]="true"
+                                [closeOnSelect]="false" [clearable]="shouldShowClearButton('SectionID')"
+                                class="custom-multiselect" id="SectionID">
+                            </ng-select>
+                        </div>
+                        <div class="input-group">
+                            <label for="ServiceID"
+                                class="text-[11px] font-bold text-burgundy/60 mb-2 block uppercase tracking-wider">{{
+                                isArabic ? 'الخدمة' : 'Service' }}</label>
+                            <ng-select [items]="services" [bindLabel]="isArabic ? 'ServiceTitleAr' : 'ServiceTitleEn'"
+                                bindValue="ServiceID" formControlName="ServiceID"
+                                [placeholder]="getPlaceholderText('ServiceID')" [multiple]="true"
+                                [closeOnSelect]="false" [clearable]="true" class="custom-multiselect" id="ServiceID">
+                            </ng-select>
+                        </div>
+                        <div class="input-group">
+                            <label for="RequestTypeID"
+                                class="text-[11px] font-bold text-burgundy/60 mb-2 block uppercase tracking-wider">{{
+                                isArabic ? 'نوع الطلب' : 'Request Type' }}</label>
+                            <ng-select [items]="requestTypes" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+                                bindValue="ID" formControlName="RequestTypeID"
+                                [placeholder]="getPlaceholderText('RequestTypeID')" [multiple]="true"
+                                [closeOnSelect]="false" [clearable]="true" class="custom-multiselect"
+                                id="RequestTypeID">
+                            </ng-select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group 2: Categorization & Status -->
+                <div
+                    class="space-y-6 bg-gradient-to-br from-white to-blue-50/30 rounded-2xl p-6 border border-blue-200/30 shadow-sm hover:shadow-md transition-all duration-300">
+                    <div class="flex items-center gap-3">
+                        <span
+                            class="w-10 h-10 rounded-xl bg-burgundy/20 flex items-center justify-center text-burgundy text-sm font-black shadow-sm">02</span>
+                        <div>
+                            <h3 class="text-lg font-black text-gray-900 uppercase tracking-wider">
+                                {{ isArabic ? 'التصنيف والتحصيل' : 'Category & Payment' }}
+                            </h3>
+                            <p class="text-sm text-gray-600 font-medium">
+                                {{ isArabic ? 'حدد طريقة الدفع والتقديم والنادي والنشاط والحالة' : 'Select payment
+                                method, submission way, club, activity and status' }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="input-group">
+                            <label for="PaymentWay"
+                                class="text-[11px] font-bold text-burgundy/60 mb-2 block uppercase tracking-wider">{{
+                                isArabic ? 'طريقة الدفع' : 'Payment Way' }}</label>
+                            <ng-select [items]="paymentWays" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+                                bindValue="LookupID" formControlName="PaymentWay"
+                                [placeholder]="getPlaceholderText('PaymentWay')" [multiple]="true"
+                                [closeOnSelect]="false" [clearable]="true" class="custom-multiselect" id="PaymentWay">
+                            </ng-select>
+                        </div>
+                        <div class="input-group">
+                            <label for="SubmissionWay"
+                                class="text-[11px] font-bold text-burgundy/60 mb-2 block uppercase tracking-wider">{{
+                                isArabic ? 'طريقة التقديم' : 'Submission Way' }}</label>
+                            <ng-select [items]="submissionWays" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+                                bindValue="LookupID" formControlName="SubmissionWay"
+                                [placeholder]="getPlaceholderText('SubmissionWay')" [multiple]="true"
+                                [closeOnSelect]="false" [clearable]="true" class="custom-multiselect"
+                                id="SubmissionWay">
+                            </ng-select>
+                        </div>
+                        <div class="input-group">
+                            <label for="FkClubID"
+                                class="text-[11px] font-bold text-burgundy/60 mb-2 block uppercase tracking-wider">{{
+                                isArabic ? 'النادي' : 'Club' }}</label>
+                            <ng-select [items]="clubs" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+                                bindValue="LookupID" formControlName="FkClubID"
+                                [placeholder]="getPlaceholderText('FkClubID')" [multiple]="true" [closeOnSelect]="false"
+                                [clearable]="true" class="custom-multiselect" id="FkClubID">
+                            </ng-select>
+                        </div>
+                        <div class="input-group">
+                            <label for="FkSecondaryActivityID"
+                                class="text-[11px] font-bold text-burgundy/60 mb-2 block uppercase tracking-wider">{{
+                                isArabic ? 'نوع النشاط' : 'Secondary Activity' }}</label>
+                            <ng-select [items]="secondaryActivities" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+                                bindValue="LookupID" formControlName="FkSecondaryActivityID"
+                                [placeholder]="getPlaceholderText('FkSecondaryActivityID')" [multiple]="true"
+                                [closeOnSelect]="false" [clearable]="true" class="custom-multiselect"
+                                id="FkSecondaryActivityID">
+                            </ng-select>
+                        </div>
+                        <div class="input-group">
+                            <label for="FkStatusID"
+                                class="text-[11px] font-bold text-burgundy/60 mb-2 block uppercase tracking-wider">{{
+                                isArabic ? 'حالة الطلب' : 'Status' }}</label>
+                            <ng-select [items]="statuses" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+                                bindValue="StatusID" formControlName="FkStatusID"
+                                [placeholder]="getPlaceholderText('FkStatusID')" [multiple]="true"
+                                [closeOnSelect]="false" [clearable]="true" class="custom-multiselect" id="FkStatusID">
+                            </ng-select>
+                        </div>
+                        <div class="input-group">
+                            <label for="FkProcessID"
+                                class="text-[11px] font-bold text-burgundy/60 mb-2 block uppercase tracking-wider">{{
+                                isArabic ? 'الإجراء' : 'Process' }}</label>
+                            <ng-select [items]="processes" [bindLabel]="isArabic ? 'TitleAr' : 'TitleEn'"
+                                bindValue="LookupID" formControlName="FkProcessID"
+                                [placeholder]="getPlaceholderText('FkProcessID')" [multiple]="true"
+                                [closeOnSelect]="false" [clearable]="true" class="custom-multiselect" id="FkProcessID">
+                            </ng-select>
+                        </div>
+                        <div class="input-group">
+                            <label for="FeesValue"
+                                class="text-[11px] font-bold text-burgundy/60 mb-2 block uppercase tracking-wider">{{
+                                isArabic ? 'قيمة الرسوم' : 'Fees Value' }}</label>
+                            <input type="number" formControlName="FeesValue"
+                                class="form-input-premium-burgundy w-full pl-4"
+                                [placeholder]="isArabic ? 'أدخل القيمة' : 'Enter Value'" id="FeesValue">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group 3: Date Filters -->
+                <div
+                    class="space-y-6 bg-gradient-to-br from-white to-green-50/30 rounded-2xl p-6 border border-green-200/30 shadow-sm hover:shadow-md transition-all duration-300">
+                    <div class="flex items-center gap-3">
+                        <span
+                            class="w-10 h-10 rounded-xl bg-burgundy/25 flex items-center justify-center text-burgundy text-sm font-black shadow-sm">03</span>
+                        <div>
+                            <h3 class="text-lg font-black text-gray-900 uppercase tracking-wider">
+                                {{ isArabic ? 'فلاتر النطاق الزمني' : 'Date Range Filters' }}
+                            </h3>
+                            <p class="text-sm text-gray-600 font-medium">
+                                {{ isArabic ? 'حدد النطاق الزمني للبحث في التواريخ المختلفة' : 'Set date ranges for
+                                different time periods' }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Creation Date -->
+                        <div class="input-group lg:col-span-2">
+                            <label for="CreationDateFrom"
+                                class="text-[11px] font-bold text-burgundy/60 mb-2 block uppercase tracking-wider">{{
+                                isArabic ? 'تاريخ طلب الخدمة' : 'Service Request Date'
+                                }}</label>
+                            <div class="flex gap-2">
+                                <input type="text" mwlFlatpickr [options]="basic" formControlName="CreationDateFrom"
+                                    class="form-input-premium-burgundy flex-1" [placeholder]="isArabic ? 'من' : 'From'"
+                                    id="CreationDateFrom"
+                                    [attr.aria-label]="(isArabic ? 'تاريخ طلب الخدمة من' : 'Service Request Date From')">
+                                <input type="text" mwlFlatpickr [options]="basic" formControlName="CreationDateTo"
+                                    class="form-input-premium-burgundy flex-1" [placeholder]="isArabic ? 'إلى' : 'To'"
+                                    id="CreationDateTo"
+                                    [attr.aria-label]="(isArabic ? 'تاريخ طلب الخدمة إلى' : 'Service Request Date To')">
+                            </div>
+                        </div>
+                        <!-- Fees Payment Date -->
+                        <div class="input-group lg:col-span-2">
+                            <label for="FeesPaymentDateFrom"
+                                class="text-[11px] font-bold text-burgundy/60 mb-2 block uppercase tracking-wider">{{
+                                isArabic ? 'تاريخ دفع الرسوم' : 'Fees Payment Date'
+                                }}</label>
+                            <div class="flex gap-2">
+                                <input type="text" mwlFlatpickr [options]="basic" formControlName="FeesPaymentDateFrom"
+                                    class="form-input-premium-burgundy flex-1" [placeholder]="isArabic ? 'من' : 'From'"
+                                    id="FeesPaymentDateFrom"
+                                    [attr.aria-label]="(isArabic ? 'تاريخ دفع الرسوم من' : 'Fees Payment Date From')">
+                                <input type="text" mwlFlatpickr [options]="basic" formControlName="FeesPaymentDateTo"
+                                    class="form-input-premium-burgundy flex-1" [placeholder]="isArabic ? 'إلى' : 'To'"
+                                    id="FeesPaymentDateTo"
+                                    [attr.aria-label]="(isArabic ? 'تاريخ دفع الرسوم إلى' : 'Fees Payment Date To')">
+                            </div>
+                        </div>
+                        <!-- License Creation Date -->
+                        <div class="input-group lg:col-span-2">
+                            <label for="LicenseCreationDateFrom"
+                                class="text-[11px] font-bold text-burgundy/60 mb-2 block uppercase tracking-wider">{{
+                                isArabic ? 'تاريخ إصدار الترخيص' : 'License Issuance Date'
+                                }}</label>
+                            <div class="flex gap-2">
+                                <input type="text" mwlFlatpickr [options]="basic"
+                                    formControlName="LicenseCreationDateFrom" class="form-input-premium-burgundy flex-1"
+                                    [placeholder]="isArabic ? 'من' : 'From'" id="LicenseCreationDateFrom"
+                                    [attr.aria-label]="(isArabic ? 'تاريخ إصدار الترخيص من' : 'License Issuance Date From')">
+                                <input type="text" mwlFlatpickr [options]="basic"
+                                    formControlName="LicenseCreationDateTo" class="form-input-premium-burgundy flex-1"
+                                    [placeholder]="isArabic ? 'إلى' : 'To'" id="LicenseCreationDateTo"
+                                    [attr.aria-label]="(isArabic ? 'تاريخ إصدار الترخيص إلى' : 'License Issuance Date To')">
+                            </div>
+                        </div>
+                        <!-- License Expiration Date -->
+                        <div class="input-group lg:col-span-2">
+                            <label for="LicenseExpirationDateFrom"
+                                class="text-[11px] font-bold text-burgundy/60 mb-2 block uppercase tracking-wider">{{
+                                isArabic ? 'تاريخ انتهاء الترخيص' : 'License Expiry Date'
+                                }}</label>
+                            <div class="flex gap-2">
+                                <input type="text" mwlFlatpickr [options]="basic"
+                                    formControlName="LicenseExpirationDateFrom"
+                                    class="form-input-premium-burgundy flex-1" [placeholder]="isArabic ? 'من' : 'From'"
+                                    id="LicenseExpirationDateFrom"
+                                    [attr.aria-label]="(isArabic ? 'تاريخ انتهاء الترخيص من' : 'License Expiry Date From')">
+                                <input type="text" mwlFlatpickr [options]="basic"
+                                    formControlName="LicenseExpirationDateTo" class="form-input-premium-burgundy flex-1"
+                                    [placeholder]="isArabic ? 'إلى' : 'To'" id="LicenseExpirationDateTo"
+                                    [attr.aria-label]="(isArabic ? 'تاريخ انتهاء الترخيص إلى' : 'License Expiry Date To')">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="flex justify-end pt-8 border-t border-gradient-to-r from-burgundy/20 via-burgundy/10 to-transparent">
+                    <button type="submit" [disabled]="isLoading"
+                        class="btn-primary-premium-burgundy burgundy-button btn-burgundy flex items-center gap-4 px-16 py-4 rounded-2xl shadow-xl shadow-burgundy/30 transition-all font-black text-lg group relative overflow-hidden"
+                        style="background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%) !important; border: none !important; color: white !important;">
+                        <i class="fas fa-search group-hover:scale-125 transition-transform duration-300 relative z-10"
+                            *ngIf="!isLoading"></i>
+                        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-white relative z-10"
+                            *ngIf="isLoading"></div>
+                        <span class="relative z-10">{{ isArabic ? 'عرض التقرير المحدث' : 'Generate Updated Report'
+                            }}</span>
+                        <div
+                            class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700">
+                        </div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Container -->
+    <div class="results-container" *ngIf="totals || rows.length > 0 || clubsData.length > 0;">
+
+        <!-- 3 Navigation Cards (Tab Headers) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6 mb-8"
+            [@listAnimation]>
+
+            <!-- Card 1: Statistics Tab -->
+            <div class="bg-gradient-to-br from-purple-900 to-red-900 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 cursor-pointer print:bg-white print:text-black print:border-2 print:border-black"
+                [ngClass]="expandedSections.totals ? 'ring-4 ring-white ring-opacity-50' : ''"
+                (click)="openTabSection('totals')"
+                style="background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%) !important;">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center print:bg-gray-200">
+                        <i class="fas fa-chart-bar text-xl print:text-black"></i>
+                    </div>
+                    <div class="text-right" [class.text-left]="isArabic">
+                        <div class="text-2xl font-black">{{ totals?.TotalFees | number }}</div>
+                        <div class="text-xs opacity-80">{{ isArabic ? 'ريال قطري' : 'QAR' }}</div>
+                    </div>
+                </div>
+                <div class="text-sm font-bold opacity-90">{{ isArabic ? 'الإحصائيات الإجمالية' : 'Total Statistics' }}
+                </div>
+                <div class="text-xs opacity-70 mt-1">{{ isArabic ? 'اضغط لعرض جميع الإحصائيات' : 'Click to view all
+                    statistics' }}</div>
+            </div>
+
+            <!-- Card 2: Services Tab -->
+            <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 cursor-pointer print:bg-white print:text-black print:border-2 print:border-black"
+                [ngClass]="expandedSections.services ? 'ring-4 ring-white ring-opacity-50' : ''"
+                (click)="openTabSection('services')">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center print:bg-gray-200">
+                        <i class="fas fa-concierge-bell text-xl print:text-black"></i>
+                    </div>
+                    <div class="text-right" [class.text-left]="isArabic">
+                        <div class="text-2xl font-black">{{ rows.length }}</div>
+                        <div class="text-xs opacity-80">{{ isArabic ? 'خدمة' : 'Services' }}</div>
+                    </div>
+                </div>
+                <div class="text-sm font-bold opacity-90">{{ isArabic ? 'تفاصيل الخدمات' : 'Services Details' }}</div>
+                <div class="text-xs opacity-70 mt-1">{{ isArabic ? 'اضغط لعرض تفاصيل الخدمات' : 'Click to view services
+                    details' }}</div>
+            </div>
+
+            <!-- Card 3: Clubs Tab -->
+            <div *ngIf="hasMembershipsData"
+                class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 cursor-pointer print:bg-white print:text-black print:border-2 print:border-black"
+                [ngClass]="expandedSections.clubs ? 'ring-4 ring-white ring-opacity-50' : ''"
+                (click)="openTabSection('clubs')">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center print:bg-gray-200">
+                        <i class="fas fa-building text-xl print:text-black"></i>
+                    </div>
+                    <div class="text-right" [class.text-left]="isArabic">
+                        <div class="text-2xl font-black">{{ clubsData.length }}</div>
+                        <div class="text-xs opacity-80">{{ isArabic ? 'نادي' : 'Clubs' }}</div>
+                    </div>
+                </div>
+                <div class="text-sm font-bold opacity-90">{{ isArabic ? 'الأندية الرياضية' : 'Sports Clubs' }}</div>
+                <div class="text-xs opacity-70 mt-1">{{ isArabic ? 'اضغط لعرض تفاصيل الأندية' : 'Click to view clubs
+                    details' }}</div>
+            </div>
+
+        </div>
+
+        <!-- 3 Expandable Tables (Each in separate row) -->
+        <div class="space-y-6">
+
+            <!-- Table 1: Summary Statistics (الإجماليات) -->
+            <div id="totals-section"
+                class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden print:shadow-none print:border-2 print:border-black">
+                <div class="bg-gradient-to-r from-purple-900 to-red-900 p-4 cursor-pointer hover:from-purple-800 hover:to-red-800 transition-all duration-300 print:bg-white print:border-b-2 print:border-black"
+                    (click)="toggleSection('totals')"
+                    style="background: linear-gradient(135deg, #8A173E 0%, #A91E4A 100%) !important;">>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center print:bg-gray-200">
+                                <i class="fas fa-chart-bar text-white text-lg print:text-black"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-black text-white print:text-black">
+                                    {{ isArabic ? 'الإحصائيات الإجمالية' : 'Summary Statistics' }}
+                                </h3>
+                                <p class="text-purple-100 text-sm print:text-gray-600">
+                                    {{ isArabic ? 'جميع الإحصائيات المجمعة' : 'All aggregated statistics' }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="text-white print:text-black">
+                            <i class="fas text-2xl transition-transform duration-300"
+                                [ngClass]="expandedSections.totals ? 'fa-chevron-up' : 'fa-chevron-down'"
+                                [style.transform]="expandedSections.totals ? 'rotate(180deg)' : 'rotate(0deg)'"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden transition-all duration-500 ease-in-out"
+                    [ngClass]="expandedSections.totals ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'">
+
+                    <!-- Action Bar for Totals -->
+                    <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-end gap-2">
+                        <button (click)="exportSectionToExcel('totals')"
+                            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+                            <i class="fas fa-file-excel"></i>
+                            <span class="hidden sm:inline">{{ isArabic ? 'تصدير Excel' : 'Excel' }}</span>
+                        </button>
+                        <button (click)="printSection('totals')"
+                            class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+                            <i class="fas fa-print"></i>
+                            <span class="hidden sm:inline">{{ isArabic ? 'طباعة' : 'Print' }}</span>
+                        </button>
+                    </div>
+
+                    <div class="p-6">
+                        <!-- عرض الإحصائيات مقسمة حسب الفئات مع إمكانية الطي والتوسيع -->
+                        <div *ngIf="hasTotalsData; else noTotalsData" class="space-y-6">
+
+                            <!-- قسم الرسوم -->
+                            <div *ngIf="totalsDataByCategory.fees.length > 0"
+                                class="bg-gradient-to-r from-purple-50 to-red-50 rounded-xl border border-purple-200 overflow-hidden">
+
+                                <div class="overflow-hidden transition-all duration-500 ease-in-out"
+                                    [ngClass]="expandedSections.totals ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'">
+
+
+
+                                    <div class="p-6">
+                                        <!-- عرض الإحصائيات مقسمة حسب الفئات مع إمكانية الطي والتوسيع -->
+                                        <div *ngIf="hasTotalsData; else noTotalsData" class="space-y-6">
+
+                                            <!-- قسم الرسوم -->
+                                            <div *ngIf="totalsDataByCategory.fees.length > 0"
+                                                class="bg-gradient-to-r from-purple-50 to-red-50 rounded-xl border border-purple-200 overflow-hidden">
+                                                <div class="p-4 cursor-pointer hover:bg-purple-100 transition-colors"
+                                                    (click)="toggleTotalsCategory('fees')">
+                                                    <div class="flex items-center justify-between">
+                                                        <h4
+                                                            class="text-lg font-bold text-purple-800 flex items-center gap-2">
+                                                            <i class="fas fa-money-bill-wave"></i>
+                                                            {{ isArabic ? 'الرسوم' : 'Fees' }}
+                                                        </h4>
+                                                        <i class="fas text-purple-600 transition-transform duration-300"
+                                                            [ngClass]="expandedTotalsCategories.fees ? 'fa-chevron-up' : 'fa-chevron-down'"
+                                                            [style.transform]="expandedTotalsCategories.fees ? 'rotate(180deg)' : 'rotate(0deg)'"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="overflow-hidden transition-all duration-500 ease-in-out"
+                                                    [ngClass]="expandedTotalsCategories.fees ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'">
+                                                    <div class="p-4 pt-0">
+                                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                            <!-- إجمالي الرسوم -->
+                                                            <div class="bg-white rounded-lg p-3 shadow-sm border border-purple-100 transition-all duration-200"
+                                                                [ngClass]="(totals?.TotalFees || 0) > 0 ? 'cursor-pointer hover:shadow-md hover:scale-105' : 'cursor-default'"
+                                                                (click)="(totals?.TotalFees || 0) > 0 ? navigateToFeesDetails() : null"
+                                                                [title]="(totals?.TotalFees || 0) > 0 ? (isArabic ? 'انقر لعرض تقرير الرسوم' : 'Click to view fees report') : ''">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'اجمالى الرسوم' : 'Total Fees' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-purple-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalFees | number }}
+                                                                    <i *ngIf="(totals?.TotalFees || 0) > 0"
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- الكترونى -->
+                                                            <div class="bg-white rounded-lg p-3 shadow-sm border border-purple-100 transition-all duration-200"
+                                                                [ngClass]="(totals?.TotalElectronicFees || 0) > 0 ? 'cursor-pointer hover:shadow-md hover:scale-105' : 'cursor-default'"
+                                                                (click)="(totals?.TotalElectronicFees || 0) > 0 ? navigateToElectronicFeesReport() : null"
+                                                                [title]="(totals?.TotalElectronicFees || 0) > 0 ? (isArabic ? 'انقر لعرض الرسوم الإلكترونية' : 'Click to view electronic fees') : ''">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'الكترونى' : 'Electronic Fees' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-purple-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalElectronicFees | number }}
+                                                                    <i *ngIf="(totals?.TotalElectronicFees || 0) > 0"
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- يدوى -->
+                                                            <div class="bg-white rounded-lg p-3 shadow-sm border border-purple-100 transition-all duration-200"
+                                                                [ngClass]="(totals?.TotalManualFees || 0) > 0 ? 'cursor-pointer hover:shadow-md hover:scale-105' : 'cursor-default'"
+                                                                (click)="(totals?.TotalManualFees || 0) > 0 ? navigateToManualFeesReport() : null"
+                                                                [title]="(totals?.TotalManualFees || 0) > 0 ? (isArabic ? 'انقر لعرض الرسوم اليدوية' : 'Click to view manual fees') : ''">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'يدوى' : 'Manual Fees' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-purple-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalManualFees | number }}
+                                                                    <i *ngIf="(totals?.TotalManualFees || 0) > 0"
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- قسم الطلبات -->
+                                            <div *ngIf="totalsDataByCategory.requests.length > 0"
+                                                class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 overflow-hidden">
+                                                <div class="p-4 cursor-pointer hover:bg-blue-100 transition-colors"
+                                                    (click)="toggleTotalsCategory('requests')">
+                                                    <div class="flex items-center justify-between">
+                                                        <h4
+                                                            class="text-lg font-bold text-blue-800 flex items-center gap-2">
+                                                            <i class="fas fa-file-alt"></i>
+                                                            {{ isArabic ? 'الطلبات' : 'Requests' }}
+                                                        </h4>
+                                                        <i class="fas text-blue-600 transition-transform duration-300"
+                                                            [ngClass]="expandedTotalsCategories.requests ? 'fa-chevron-up' : 'fa-chevron-down'"
+                                                            [style.transform]="expandedTotalsCategories.requests ? 'rotate(180deg)' : 'rotate(0deg)'"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="overflow-hidden transition-all duration-500 ease-in-out"
+                                                    [ngClass]="expandedTotalsCategories.requests ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'">
+                                                    <div class="p-4 pt-0">
+                                                        <div
+                                                            class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                                                            <!-- إجمالي الطلبات -->
+                                                            <div class="bg-white rounded-lg p-3 shadow-sm border border-blue-100 transition-all duration-200"
+                                                                [ngClass]="(totals?.TotalRequests || 0) > 0 ? 'cursor-pointer hover:shadow-md hover:scale-105' : 'cursor-default'"
+                                                                (click)="(totals?.TotalRequests || 0) > 0 ? navigateToRequestsReport() : null"
+                                                                [title]="(totals?.TotalRequests || 0) > 0 ? (isArabic ? 'انقر لعرض تقرير الطلبات' : 'Click to view requests report') : ''">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'اجمالى الطلبات' : 'Total Requests' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-blue-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalRequests | number }}
+                                                                    <i *ngIf="(totals?.TotalRequests || 0) > 0"
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- اونلاين -->
+                                                            <div class="bg-white rounded-lg p-3 shadow-sm border border-blue-100 transition-all duration-200"
+                                                                [ngClass]="(totals?.TotalOnlineRequests || 0) > 0 ? 'cursor-pointer hover:shadow-md hover:scale-105' : 'cursor-default'"
+                                                                (click)="(totals?.TotalOnlineRequests || 0) > 0 ? navigateToOnlineRequestsReport() : null"
+                                                                [title]="(totals?.TotalOnlineRequests || 0) > 0 ? (isArabic ? 'انقر لعرض الطلبات الأونلاين' : 'Click to view online requests') : ''">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'اونلاين' : 'Online Requests' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-blue-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalOnlineRequests | number }}
+                                                                    <i *ngIf="(totals?.TotalOnlineRequests || 0) > 0"
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- موظف -->
+                                                            <div class="bg-white rounded-lg p-3 shadow-sm border border-blue-100 transition-all duration-200"
+                                                                [ngClass]="(totals?.TotalEmpRequests || 0) > 0 ? 'cursor-pointer hover:shadow-md hover:scale-105' : 'cursor-default'"
+                                                                (click)="(totals?.TotalEmpRequests || 0) > 0 ? navigateToEmployeeRequestsReport() : null"
+                                                                [title]="(totals?.TotalEmpRequests || 0) > 0 ? (isArabic ? 'انقر لعرض طلبات الموظفين' : 'Click to view employee requests') : ''">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'موظف' : 'Employee Requests' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-blue-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalEmpRequests | number }}
+                                                                    <i *ngIf="(totals?.TotalEmpRequests || 0) > 0"
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- تم الموافقة -->
+                                                            <div class="bg-white rounded-lg p-3 shadow-sm border border-blue-100 transition-all duration-200"
+                                                                [ngClass]="(totals?.TotalApprovedRequests || 0) > 0 ? 'cursor-pointer hover:shadow-md hover:scale-105' : 'cursor-default'"
+                                                                (click)="(totals?.TotalApprovedRequests || 0) > 0 ? navigateToApprovedRequestsReport() : null"
+                                                                [title]="(totals?.TotalApprovedRequests || 0) > 0 ? (isArabic ? 'انقر لعرض الطلبات الموافق عليها' : 'Click to view approved requests') : ''">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'تم الموافقة' : 'Approved Requests' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-blue-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalApprovedRequests | number }}
+                                                                    <i *ngIf="(totals?.TotalApprovedRequests || 0) > 0"
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- تم الرفض -->
+                                                            <div class="bg-white rounded-lg p-3 shadow-sm border border-blue-100 transition-all duration-200"
+                                                                [ngClass]="(totals?.TotalRejectedRequests || 0) > 0 ? 'cursor-pointer hover:shadow-md hover:scale-105' : 'cursor-default'"
+                                                                (click)="(totals?.TotalRejectedRequests || 0) > 0 ? navigateToRejectedRequestsReport() : null"
+                                                                [title]="(totals?.TotalRejectedRequests || 0) > 0 ? (isArabic ? 'انقر لعرض الطلبات المرفوضة' : 'Click to view rejected requests') : ''">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'تم الرفض' : 'Rejected Requests' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-blue-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalRejectedRequests | number }}
+                                                                    <i *ngIf="(totals?.TotalRejectedRequests || 0) > 0"
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- اجراءات الطلبات (مدمجة مع الطلبات) -->
+                                                        <div class="mt-4 pt-4 border-t border-blue-200">
+                                                            <h5
+                                                                class="text-sm font-bold text-blue-800 mb-3 flex items-center gap-2">
+                                                                <i class="fas fa-tasks"></i>
+                                                                {{ isArabic ? 'اجراءات الطلبات' : 'Request Types' }}
+                                                            </h5>
+                                                            <div
+                                                                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                                                                <!-- طلب جديد -->
+                                                                <div *ngIf="totals?.TotalNewRequests > 0"
+                                                                    class="bg-white rounded-lg p-3 shadow-sm border border-blue-100 cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200"
+                                                                    (click)="navigateToRequestsDetailsWithProcess(40)"
+                                                                    title="{{ isArabic ? 'انقر لعرض الطلبات الجديدة' : 'Click to view new requests' }}">
+                                                                    <div class="text-xs text-gray-600 mb-1">{{ isArabic
+                                                                        ? 'طلب جديد' : 'New Requests' }}</div>
+                                                                    <div
+                                                                        class="text-lg font-bold text-blue-700 flex items-center gap-1">
+                                                                        {{ totals?.TotalNewRequests | number }}
+                                                                        <i
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- طلب تعديل بيانات -->
+                                                                <div *ngIf="totals?.TotalEditRequests > 0"
+                                                                    class="bg-white rounded-lg p-3 shadow-sm border border-blue-100 cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200"
+                                                                    (click)="navigateToRequestsDetailsWithProcess(41)"
+                                                                    title="{{ isArabic ? 'انقر لعرض طلبات التعديل' : 'Click to view edit requests' }}">
+                                                                    <div class="text-xs text-gray-600 mb-1">{{ isArabic
+                                                                        ? 'طلب تعديل بيانات' : 'Edit Requests' }}</div>
+                                                                    <div
+                                                                        class="text-lg font-bold text-blue-700 flex items-center gap-1">
+                                                                        {{ totals?.TotalEditRequests | number }}
+                                                                        <i
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- طلب تجديد -->
+                                                                <div *ngIf="totals?.TotalRenewRequests > 0"
+                                                                    class="bg-white rounded-lg p-3 shadow-sm border border-blue-100 cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200"
+                                                                    (click)="navigateToRequestsDetailsWithProcess(42)"
+                                                                    title="{{ isArabic ? 'انقر لعرض طلبات التجديد' : 'Click to view renew requests' }}">
+                                                                    <div class="text-xs text-gray-600 mb-1">{{ isArabic
+                                                                        ? 'طلب تجديد' : 'Renew Requests' }}</div>
+                                                                    <div
+                                                                        class="text-lg font-bold text-blue-700 flex items-center gap-1">
+                                                                        {{ totals?.TotalRenewRequests | number }}
+                                                                        <i
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- طلب إلغاء -->
+                                                                <div *ngIf="totals?.TotalCancelRequests > 0"
+                                                                    class="bg-white rounded-lg p-3 shadow-sm border border-blue-100 cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200"
+                                                                    (click)="navigateToRequestsDetailsWithProcess(43)"
+                                                                    title="{{ isArabic ? 'انقر لعرض طلبات الإلغاء' : 'Click to view cancel requests' }}">
+                                                                    <div class="text-xs text-gray-600 mb-1">{{ isArabic
+                                                                        ? 'طلب إلغاء' : 'Cancel Requests' }}</div>
+                                                                    <div
+                                                                        class="text-lg font-bold text-blue-700 flex items-center gap-1">
+                                                                        {{ totals?.TotalCancelRequests | number }}
+                                                                        <i
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- قسم التراخيص -->
+                                            <div *ngIf="totalsDataByCategory.licenses.length > 0"
+                                                class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 overflow-hidden">
+                                                <div class="p-4 cursor-pointer hover:bg-green-100 transition-colors"
+                                                    (click)="toggleTotalsCategory('licenses')">
+                                                    <div class="flex items-center justify-between">
+                                                        <h4
+                                                            class="text-lg font-bold text-green-800 flex items-center gap-2">
+                                                            <i class="fas fa-certificate"></i>
+                                                            {{ isArabic ? 'التراخيص' : 'Licenses' }}
+                                                        </h4>
+                                                        <i class="fas text-green-600 transition-transform duration-300"
+                                                            [ngClass]="expandedTotalsCategories.licenses ? 'fa-chevron-up' : 'fa-chevron-down'"
+                                                            [style.transform]="expandedTotalsCategories.licenses ? 'rotate(180deg)' : 'rotate(0deg)'"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="overflow-hidden transition-all duration-500 ease-in-out"
+                                                    [ngClass]="expandedTotalsCategories.licenses ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'">
+                                                    <div class="p-4 pt-0">
+                                                        <div
+                                                            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                                            <!-- اجمالى التراخيص -->
+                                                            <div class="bg-white rounded-lg p-3 shadow-sm border border-green-100 transition-all duration-200"
+                                                                [ngClass]="(totals?.TotalLicenses || 0) > 0 ? 'cursor-pointer hover:shadow-md hover:scale-105' : 'cursor-default'"
+                                                                (click)="(totals?.TotalLicenses || 0) > 0 ? navigateToLicensesDetails() : null"
+                                                                [title]="(totals?.TotalLicenses || 0) > 0 ? (isArabic ? 'انقر لعرض جميع التراخيص' : 'Click to view all licenses') : ''">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'اجمالى التراخيص' : 'Total Licenses' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-green-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalLicenses | number }}
+                                                                    <i *ngIf="(totals?.TotalLicenses || 0) > 0"
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- رخصة سارية -->
+                                                            <div class="bg-white rounded-lg p-3 shadow-sm border border-green-100 transition-all duration-200"
+                                                                [ngClass]="(totals?.TotalValidLicenses || 0) > 0 ? 'cursor-pointer hover:shadow-md hover:scale-105' : 'cursor-default'"
+                                                                (click)="(totals?.TotalValidLicenses || 0) > 0 ? navigateToLicensesDetailsWithStatus(10) : null"
+                                                                [title]="(totals?.TotalValidLicenses || 0) > 0 ? (isArabic ? 'انقر لعرض التراخيص السارية' : 'Click to view valid licenses') : ''">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'رخصة سارية' : 'Valid Licenses' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-green-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalValidLicenses | number }}
+                                                                    <i *ngIf="(totals?.TotalValidLicenses || 0) > 0"
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- رخصة مسحوبة -->
+                                                            <div *ngIf="totals?.TotalWithdrawnLicenses > 0"
+                                                                class="bg-white rounded-lg p-3 shadow-sm border border-green-100 cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200"
+                                                                (click)="navigateToLicensesDetailsWithStatus(623)"
+                                                                title="{{ isArabic ? 'انقر لعرض التراخيص المسحوبة' : 'Click to view withdrawn licenses' }}">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'رخصة مسحوبة' : 'Withdrawn Licenses' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-green-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalWithdrawnLicenses | number }}
+                                                                    <i
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- رخصة منتهية -->
+                                                            <div *ngIf="totals?.TotalExpiredLicenses > 0"
+                                                                class="bg-white rounded-lg p-3 shadow-sm border border-green-100 cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200"
+                                                                (click)="navigateToLicensesDetailsWithStatus(624)"
+                                                                title="{{ isArabic ? 'انقر لعرض التراخيص المنتهية' : 'Click to view expired licenses' }}">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'رخصة منتهية' : 'Expired Licenses' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-green-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalExpiredLicenses | number }}
+                                                                    <i
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- رخصة ملغية -->
+                                                            <div *ngIf="totals?.TotalCanceledLicenses > 0"
+                                                                class="bg-white rounded-lg p-3 shadow-sm border border-green-100 cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200"
+                                                                (click)="navigateToLicensesDetailsWithStatus(630)"
+                                                                title="{{ isArabic ? 'انقر لعرض التراخيص الملغية' : 'Click to view canceled licenses' }}">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'رخصة ملغية' : 'Canceled Licenses' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-green-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalCanceledLicenses | number }}
+                                                                    <i
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- تم الإخلاء -->
+                                                            <div *ngIf="totals?.TotalClearanceLicenses > 0"
+                                                                class="bg-white rounded-lg p-3 shadow-sm border border-green-100 cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200"
+                                                                (click)="navigateToLicensesDetailsWithStatus(1899)"
+                                                                title="{{ isArabic ? 'انقر لعرض تراخيص الإخلاء' : 'Click to view clearance licenses' }}">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'تم الإخلاء' : 'Clearance Completed' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-green-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalClearanceLicenses | number }}
+                                                                    <i
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- رخصة ملغية -->
+                                                            <div *ngIf="totals?.TotalCanceledLicenses > 0"
+                                                                class="bg-white rounded-lg p-3 shadow-sm border border-green-100 cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200"
+                                                                (click)="navigateToLicensesDetailsWithStatus(2101)"
+                                                                title="{{ isArabic ? 'انقر لعرض التراخيص الملغية' : 'Click to view canceled licenses' }}">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'رخصة ملغية' : 'Canceled Licenses' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-green-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalCanceledLicenses | number }}
+                                                                    <i
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- تم الإخلاء -->
+                                                            <div *ngIf="totals?.TotalClearanceLicenses > 0"
+                                                                class="bg-white rounded-lg p-3 shadow-sm border border-green-100 cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200"
+                                                                (click)="navigateToLicensesDetailsWithStatus(2102)"
+                                                                title="{{ isArabic ? 'انقر لعرض تراخيص الإخلاء' : 'Click to view clearance licenses' }}">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'تم الإخلاء' : 'Clearance Licenses' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-green-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalClearanceLicenses | number }}
+                                                                    <i
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- قسم العضويات -->
+                                            <div *ngIf="totalsDataByCategory.membership.length > 0 && hasMembershipsData"
+                                                class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200 overflow-hidden">
+                                                <div class="p-4 cursor-pointer hover:bg-orange-100 transition-colors"
+                                                    (click)="toggleTotalsCategory('membership')">
+                                                    <div class="flex items-center justify-between">
+                                                        <h4
+                                                            class="text-lg font-bold text-orange-800 flex items-center gap-2">
+                                                            <i class="fas fa-users"></i>
+                                                            {{ isArabic ? 'العضويات' : 'Memberships' }}
+                                                        </h4>
+                                                        <i class="fas text-orange-600 transition-transform duration-300"
+                                                            [ngClass]="expandedTotalsCategories.membership ? 'fa-chevron-up' : 'fa-chevron-down'"
+                                                            [style.transform]="expandedTotalsCategories.membership ? 'rotate(180deg)' : 'rotate(0deg)'"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="overflow-hidden transition-all duration-500 ease-in-out"
+                                                    [ngClass]="expandedTotalsCategories.membership ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'">
+                                                    <div class="p-4 pt-0">
+                                                        <div
+                                                            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                                            <!-- عضوية سارية -->
+                                                            <div *ngIf="totals?.TotalValidMembership > 0"
+                                                                class="bg-white rounded-lg p-3 shadow-sm border border-orange-100 cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200"
+                                                                (click)="navigateToMembershipDetails(2098)"
+                                                                title="{{ isArabic ? 'انقر لعرض العضويات السارية' : 'Click to view valid memberships' }}">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'عضوية سارية' : 'Valid Membership' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-orange-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalValidMembership | number }}
+                                                                    <i
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- عضوية منتهية -->
+                                                            <div *ngIf="totals?.TotalFinishedMembership > 0"
+                                                                class="bg-white rounded-lg p-3 shadow-sm border border-orange-100 cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200"
+                                                                (click)="navigateToMembershipDetails(2099)"
+                                                                title="{{ isArabic ? 'انقر لعرض العضويات المنتهية' : 'Click to view finished memberships' }}">
+
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'عضوية منتهية' : 'Finished Membership' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-orange-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalFinishedMembership | number }}
+                                                                    <i
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- عضوية معلقة -->
+                                                            <div *ngIf="totals?.TotalSuspendedMembership > 0"
+                                                                class="bg-white rounded-lg p-3 shadow-sm border border-orange-100 cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200"
+                                                                (click)="navigateToMembershipDetails(2100)"
+                                                                title="{{ isArabic ? 'انقر لعرض العضويات المعلقة' : 'Click to view suspended memberships' }}">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'عضوية معلقة' : 'Suspended Membership' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-orange-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalSuspendedMembership | number }}
+                                                                    <i
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- عضوية ساقطة -->
+                                                            <div *ngIf="totals?.TotalVoidedMembership > 0"
+                                                                class="bg-white rounded-lg p-3 shadow-sm border border-orange-100 cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200"
+                                                                (click)="navigateToMembershipDetails(2101)"
+                                                                title="{{ isArabic ? 'انقر لعرض العضويات الساقطة' : 'Click to view voided memberships' }}">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'عضوية ساقطة' : 'Voided Membership' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-orange-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalVoidedMembership | number }}
+                                                                    <i
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- عضو مستقيل -->
+                                                            <div *ngIf="totals?.TotalResignedMembership > 0"
+                                                                class="bg-white rounded-lg p-3 shadow-sm border border-orange-100 cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200"
+                                                                (click)="navigateToMembershipDetails(2105)"
+                                                                title="{{ isArabic ? 'انقر لعرض الأعضاء المستقيلين' : 'Click to view resigned memberships' }}">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'عضو مستقيل' : 'Resigned Membership' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-orange-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalResignedMembership | number }}
+                                                                    <i
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                            <!-- عضوية مسحوبة -->
+                                                            <div *ngIf="totals?.TotalWithdrawedMembership > 0"
+                                                                class="bg-white rounded-lg p-3 shadow-sm border border-orange-100 cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-200"
+                                                                (click)="navigateToMembershipDetails(2106)"
+                                                                title="{{ isArabic ? 'انقر لعرض العضويات المسحوبة' : 'Click to view withdrawed memberships' }}">
+                                                                <div class="text-sm text-gray-600 mb-1">{{ isArabic ?
+                                                                    'عضوية مسحوبة' : 'Withdrawed Membership' }}</div>
+                                                                <div
+                                                                    class="text-xl font-bold text-orange-700 flex items-center gap-2">
+                                                                    {{ totals?.TotalWithdrawedMembership | number }}
+                                                                    <i
+                                                                        class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <!-- رسالة في حالة عدم وجود بيانات -->
+                                        <ng-template #noTotalsData>
+                                            <div class="flex flex-col items-center justify-center py-12 text-gray-500">
+                                                <i class="fas fa-chart-bar text-4xl mb-4 opacity-50"></i>
+                                                <p class="text-lg font-medium">{{ isArabic ? 'لا توجد إحصائيات متاحة' :
+                                                    'No statistics available' }}</p>
+                                                <p class="text-sm">{{ isArabic ? 'قم بتشغيل البحث للحصول على البيانات' :
+                                                    'Run a search to get data' }}</p>
+                                            </div>
+                                        </ng-template>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- رسالة في حالة عدم وجود بيانات -->
+                        <ng-template #noTotalsData>
+                            <div class="flex flex-col items-center justify-center py-12 text-gray-500">
+                                <i class="fas fa-chart-bar text-4xl mb-4 opacity-50"></i>
+                                <p class="text-lg font-medium">{{ isArabic ? 'لا توجد إحصائيات متاحة' : 'No statistics
+                                    available' }}</p>
+                                <p class="text-sm">{{ isArabic ? 'قم بتشغيل البحث للحصول على البيانات' : 'Run a search
+                                    to get data' }}</p>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table 2: Services Details (تفاصيل الخدمات) -->
+            <div id="services-section"
+                class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden print:shadow-none print:border-2 print:border-black">
+                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 cursor-pointer hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 print:bg-white print:border-b-2 print:border-black"
+                    (click)="toggleSection('services')">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center print:bg-gray-200">
+                                <i class="fas fa-concierge-bell text-white text-lg print:text-black"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-black text-white print:text-black">
+                                    {{ isArabic ? 'تفاصيل الخدمات' : 'Services Details' }}
+                                </h3>
+                                <p class="text-blue-100 text-sm print:text-gray-600">
+                                    {{ isArabic ? rows.length + ' خدمة' : rows.length + ' Services' }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="text-white print:text-black">
+                            <i class="fas text-2xl transition-transform duration-300"
+                                [ngClass]="expandedSections.services ? 'fa-chevron-up' : 'fa-chevron-down'"
+                                [style.transform]="expandedSections.services ? 'rotate(180deg)' : 'rotate(0deg)'"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden transition-all duration-500 ease-in-out"
+                    [ngClass]="expandedSections.services ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'">
+
+                    <div class="p-6">
+                        <!-- Custom Services Table with Organized Details -->
+                        <div *ngIf="rows.length > 0" class="overflow-x-auto">
+                            <table class="w-full border-collapse">
+                                <thead>
+                                    <tr class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+                                        <th class="p-3 text-center border border-blue-400 w-12">
+                                            <span class="text-lg">⇅</span>
+                                        </th>
+                                        <th class="p-3 text-center border border-blue-400 min-w-[100px]">
+                                            {{ isArabic ? 'رقم الخدمة' : 'Service ID' }}
+                                        </th>
+                                        <th class="p-3 text-right border border-blue-400 min-w-[300px]">
+                                            {{ isArabic ? 'اسم الخدمة' : 'Service Name' }}
+                                        </th>
+                                        <th class="p-3 text-center border border-blue-400 min-w-[130px]">
+                                            {{ isArabic ? 'إجمالي الرسوم' : 'Total Fees' }}
+                                        </th>
+                                        <th class="p-3 text-center border border-blue-400 min-w-[100px]">
+                                            {{ isArabic ? 'الكترونى' : 'Electronic' }}
+                                        </th>
+                                        <th class="p-3 text-center border border-blue-400 min-w-[100px]">
+                                            {{ isArabic ? 'يدوى' : 'Manual' }}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ng-container
+                                        *ngFor="let service of currentServicesTableData; trackBy: trackByServiceId">
+                                        <!-- Main Row -->
+                                        <tr class="hover:bg-gray-50 border-b border-gray-200">
+                                            <td class="p-3 text-center border border-gray-200">
+                                                <button (click)="onServiceRowExpand(service.ServiceID)"
+                                                    class="w-8 h-8 rounded-full border border-gray-300 text-gray-600 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-200 flex items-center justify-center">
+                                                    <span class="text-sm font-bold">
+                                                        {{ expandedServiceRow?.ServiceID === service.ServiceID ? '▲' :
+                                                        '▼' }}
+                                                    </span>
+                                                </button>
+                                            </td>
+                                            <td class="p-3 text-center border border-gray-200 font-mono">
+                                                {{ service.ServiceID }}
+                                            </td>
+                                            <td class="p-3 text-right border border-gray-200 font-medium">
+                                                {{ service.serviceName }}
+                                            </td>
+                                            <td class="p-3 text-center border border-gray-200 font-bold text-purple-600"
+                                                [ngClass]="(service.totalFees || 0) > 0 ? 'cursor-pointer hover:bg-purple-50 transition-colors' : 'cursor-default'"
+                                                (click)="(service.totalFees || 0) > 0 ? navigateToFeesDetails(undefined, service.ServiceID) : null"
+                                                [title]="(service.totalFees || 0) > 0 ? (isArabic ? 'انقر لعرض تفاصيل رسوم الخدمة' : 'Click to view service fees details') : ''">
+                                                <span
+                                                    [ngClass]="(service.totalFees || 0) > 0 ? 'hover:underline' : ''">{{
+                                                    service.totalFees | number }}</span>
+                                                <i *ngIf="(service.totalFees || 0) > 0"
+                                                    class="fas fa-external-link-alt text-xs ml-1 opacity-60"></i>
+                                            </td>
+                                            <td class="p-3 text-center border border-gray-200 text-green-600"
+                                                [ngClass]="(service.electronicFees || 0) > 0 ? 'cursor-pointer hover:bg-green-50 transition-colors' : 'cursor-default'"
+                                                (click)="(service.electronicFees || 0) > 0 ? navigateToFeesDetails(2820, service.ServiceID) : null"
+                                                [title]="(service.electronicFees || 0) > 0 ? (isArabic ? 'انقر لعرض الرسوم الإلكترونية للخدمة' : 'Click to view electronic fees for service') : ''">
+                                                <span
+                                                    [ngClass]="(service.electronicFees || 0) > 0 ? 'hover:underline' : ''">{{
+                                                    service.electronicFees | number }}</span>
+                                                <i *ngIf="(service.electronicFees || 0) > 0"
+                                                    class="fas fa-external-link-alt text-xs ml-1 opacity-60"></i>
+                                            </td>
+                                            <td class="p-3 text-center border border-gray-200 text-blue-600"
+                                                [ngClass]="(service.manualFees || 0) > 0 ? 'cursor-pointer hover:bg-blue-50 transition-colors' : 'cursor-default'"
+                                                (click)="(service.manualFees || 0) > 0 ? navigateToFeesDetails(2821, service.ServiceID) : null"
+                                                [title]="(service.manualFees || 0) > 0 ? (isArabic ? 'انقر لعرض الرسوم اليدوية للخدمة' : 'Click to view manual fees for service') : ''">
+                                                <span
+                                                    [ngClass]="(service.manualFees || 0) > 0 ? 'hover:underline' : ''">{{
+                                                    service.manualFees | number }}</span>
+                                                <i *ngIf="(service.manualFees || 0) > 0"
+                                                    class="fas fa-external-link-alt text-xs ml-1 opacity-60"></i>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Expanded Details Row -->
+                                        <tr *ngIf="expandedServiceRow?.ServiceID === service.ServiceID"
+                                            class="bg-gradient-to-r from-gray-50 to-blue-50">
+                                            <td colspan="6" class="p-0 border border-gray-200">
+                                                <div class="p-6">
+                                                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                                                        <!-- قسم التراخيص -->
+                                                        <div
+                                                            class="bg-white rounded-lg border border-green-200 overflow-hidden">
+                                                            <div
+                                                                class="bg-gradient-to-r from-green-500 to-emerald-600 p-3 text-white">
+                                                                <h4 class="font-bold flex items-center gap-2">
+                                                                    <i class="fas fa-certificate"></i>
+                                                                    {{ isArabic ? 'التراخيص' : 'Licenses' }}
+                                                                </h4>
+                                                            </div>
+                                                            <div class="p-4 space-y-3">
+                                                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded"
+                                                                    [ngClass]="(service.licenses || 0) > 0 ? 'cursor-pointer hover:bg-gray-100 transition-colors' : 'cursor-default'"
+                                                                    (click)="(service.licenses || 0) > 0 ? navigateToLicensesDetails(undefined, service.ServiceID) : null"
+                                                                    [title]="(service.licenses || 0) > 0 ? (isArabic ? 'انقر لعرض تفاصيل التراخيص' : 'Click to view licenses details') : ''">
+                                                                    <span class="text-sm text-gray-600">{{ isArabic ?
+                                                                        'إجمالي التراخيص' : 'Total Licenses' }}</span>
+                                                                    <span
+                                                                        class="font-bold text-green-600 flex items-center gap-1">
+                                                                        {{ service.licenses | number }}
+                                                                        <i *ngIf="(service.licenses || 0) > 0"
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="flex justify-between items-center p-2 bg-green-50 rounded"
+                                                                    [ngClass]="(service.validLicenses || 0) > 0 ? 'cursor-pointer hover:bg-green-100 transition-colors' : 'cursor-default'"
+                                                                    (click)="(service.validLicenses || 0) > 0 ? navigateToLicensesDetails(10, service.ServiceID) : null"
+                                                                    [title]="(service.validLicenses || 0) > 0 ? (isArabic ? 'انقر لعرض التراخيص السارية' : 'Click to view valid licenses') : ''">
+                                                                    <span class="text-sm text-gray-600">{{ isArabic ?
+                                                                        'رخصة سارية' : 'Valid' }}</span>
+                                                                    <span
+                                                                        class="font-bold text-green-700 flex items-center gap-1">
+                                                                        {{ service.validLicenses | number }}
+                                                                        <i *ngIf="(service.validLicenses || 0) > 0"
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <div *ngIf="(service.withdrawnLicenses || 0) > 0"
+                                                                    class="flex justify-between items-center p-2 bg-orange-50 rounded cursor-pointer hover:bg-orange-100 transition-colors"
+                                                                    (click)="navigateToLicensesDetails(623, service.ServiceID)"
+                                                                    title="{{ isArabic ? 'انقر لعرض التراخيص المسحوبة' : 'Click to view withdrawn licenses' }}">
+                                                                    <span class="text-sm text-gray-600">{{ isArabic ?
+                                                                        'رخصة مسحوبة' : 'Withdrawn' }}</span>
+                                                                    <span
+                                                                        class="font-bold text-orange-600 flex items-center gap-1">
+                                                                        {{ service.withdrawnLicenses | number }}
+                                                                        <i
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <div *ngIf="(service.expiredLicenses || 0) > 0"
+                                                                    class="flex justify-between items-center p-2 bg-purple-50 rounded cursor-pointer hover:bg-purple-100 transition-colors"
+                                                                    (click)="navigateToLicensesDetails(624, service.ServiceID)"
+                                                                    title="{{ isArabic ? 'انقر لعرض التراخيص المنتهية' : 'Click to view expired licenses' }}">
+                                                                    <span class="text-sm text-gray-600">{{ isArabic ?
+                                                                        'رخصة منتهية' : 'Expired' }}</span>
+                                                                    <span
+                                                                        class="font-bold text-purple-600 flex items-center gap-1">
+                                                                        {{ service.expiredLicenses | number }}
+                                                                        <i
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <div *ngIf="(service.canceledLicenses || 0) > 0"
+                                                                    class="flex justify-between items-center p-2 bg-purple-50 rounded cursor-pointer hover:bg-purple-100 transition-colors"
+                                                                    (click)="navigateToLicensesDetails(630, service.ServiceID)"
+                                                                    title="{{ isArabic ? 'انقر لعرض التراخيص الملغية' : 'Click to view canceled licenses' }}">
+                                                                    <span class="text-sm text-gray-600">{{ isArabic ?
+                                                                        'رخصة ملغية' : 'Canceled' }}</span>
+                                                                    <span
+                                                                        class="font-bold text-purple-600 flex items-center gap-1">
+                                                                        {{ service.canceledLicenses | number }}
+                                                                        <i
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <div *ngIf="(service.clearanceLicenses || 0) > 0"
+                                                                    class="flex justify-between items-center p-2 bg-blue-50 rounded cursor-pointer hover:bg-blue-100 transition-colors"
+                                                                    (click)="navigateToLicensesDetails(1899, service.ServiceID)"
+                                                                    title="{{ isArabic ? 'انقر لعرض تراخيص الإخلاء' : 'Click to view clearance licenses' }}">
+                                                                    <span class="text-sm text-gray-600">{{ isArabic ?
+                                                                        'تم الإخلاء' : 'Clearance' }}</span>
+                                                                    <span
+                                                                        class="font-bold text-blue-600 flex items-center gap-1">
+                                                                        {{ service.clearanceLicenses | number }}
+                                                                        <i
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- قسم الطلبات -->
+                                                        <div
+                                                            class="bg-white rounded-lg border border-blue-200 overflow-hidden">
+                                                            <div
+                                                                class="bg-gradient-to-r from-blue-500 to-indigo-600 p-3 text-white">
+                                                                <h4 class="font-bold flex items-center gap-2">
+                                                                    <i class="fas fa-file-alt"></i>
+                                                                    {{ isArabic ? 'الطلبات' : 'Requests' }}
+                                                                </h4>
+                                                            </div>
+                                                            <div class="p-4 space-y-3">
+                                                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded"
+                                                                    [ngClass]="(service.totalRequests || 0) > 0 ? 'cursor-pointer hover:bg-gray-100 transition-colors' : 'cursor-default'"
+                                                                    (click)="(service.totalRequests || 0) > 0 ? navigateToRequestsDetails(undefined, service.ServiceID) : null"
+                                                                    [title]="(service.totalRequests || 0) > 0 ? (isArabic ? 'انقر لعرض تفاصيل الطلبات' : 'Click to view requests details') : ''">
+                                                                    <span class="text-sm text-gray-600">{{ isArabic ?
+                                                                        'إجمالي الطلبات' : 'Total Requests' }}</span>
+                                                                    <span
+                                                                        class="font-bold text-blue-600 flex items-center gap-1">
+                                                                        {{ service.totalRequests | number }}
+                                                                        <i *ngIf="(service.totalRequests || 0) > 0"
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <div *ngIf="(service.onlineRequests || 0) > 0"
+                                                                    class="flex justify-between items-center p-2 bg-green-50 rounded cursor-pointer hover:bg-green-100 transition-colors"
+                                                                    (click)="navigateToRequestsDetails(2820, service.ServiceID)"
+                                                                    title="{{ isArabic ? 'انقر لعرض الطلبات الأونلاين' : 'Click to view online requests' }}">
+                                                                    <span class="text-sm text-gray-600">{{ isArabic ?
+                                                                        'اونلاين' : 'Online' }}</span>
+                                                                    <span
+                                                                        class="font-bold text-green-600 flex items-center gap-1">
+                                                                        {{ service.onlineRequests | number }}
+                                                                        <i
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <div *ngIf="(service.employeeRequests || 0) > 0"
+                                                                    class="flex justify-between items-center p-2 bg-purple-50 rounded cursor-pointer hover:bg-purple-100 transition-colors"
+                                                                    (click)="navigateToRequestsDetails(2897, service.ServiceID)"
+                                                                    title="{{ isArabic ? 'انقر لعرض طلبات الموظفين' : 'Click to view employee requests' }}">
+                                                                    <span class="text-sm text-gray-600">{{ isArabic ?
+                                                                        'موظف' : 'Employee' }}</span>
+                                                                    <span
+                                                                        class="font-bold text-purple-600 flex items-center gap-1">
+                                                                        {{ service.employeeRequests | number }}
+                                                                        <i
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <div *ngIf="(service.approvedRequests || 0) > 0"
+                                                                    class="flex justify-between items-center p-2 bg-green-50 rounded cursor-pointer hover:bg-green-100 transition-colors"
+                                                                    (click)="navigateToApprovedRequestsReport()"
+                                                                    title="{{ isArabic ? 'انقر لعرض الطلبات الموافق عليها' : 'Click to view approved requests' }}">
+                                                                    <span class="text-sm text-gray-600">{{ isArabic ?
+                                                                        'تم الموافقة' : 'Approved' }}</span>
+                                                                    <span
+                                                                        class="font-bold text-green-700 flex items-center gap-1">
+                                                                        {{ service.approvedRequests | number }}
+                                                                        <i
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <div *ngIf="(service.rejectedRequests || 0) > 0"
+                                                                    class="flex justify-between items-center p-2 bg-purple-50 rounded cursor-pointer hover:bg-purple-100 transition-colors"
+                                                                    (click)="navigateToRejectedRequestsReport()"
+                                                                    title="{{ isArabic ? 'انقر لعرض الطلبات المرفوضة' : 'Click to view rejected requests' }}">
+                                                                    <span class="text-sm text-gray-600">{{ isArabic ?
+                                                                        'تم الرفض' : 'Rejected' }}</span>
+                                                                    <span
+                                                                        class="font-bold text-purple-600 flex items-center gap-1">
+                                                                        {{ service.rejectedRequests | number }}
+                                                                        <i
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- قسم الإجراءات (العمليات) -->
+                                                        <div
+                                                            class="bg-white rounded-lg border border-purple-200 overflow-hidden">
+                                                            <div
+                                                                class="bg-gradient-to-r from-purple-500 to-indigo-600 p-3 text-white">
+                                                                <h4 class="font-bold flex items-center gap-2">
+                                                                    <i class="fas fa-tasks"></i>
+                                                                    {{ isArabic ? 'الإجراءات' : 'Procedures' }}
+                                                                </h4>
+                                                            </div>
+                                                            <div class="p-4 space-y-3">
+                                                                <div *ngIf="(service.newRequests || 0) > 0"
+                                                                    class="flex justify-between items-center p-2 bg-blue-50 rounded cursor-pointer hover:bg-blue-100 transition-colors"
+                                                                    (click)="navigateToRequestsDetailsWithProcess(40, undefined, service.ServiceID)"
+                                                                    title="{{ isArabic ? 'انقر لعرض الطلبات الجديدة' : 'Click to view new requests' }}">
+                                                                    <span class="text-sm text-gray-600">{{ isArabic ?
+                                                                        'طلب جديد' : 'New Request' }}</span>
+                                                                    <span
+                                                                        class="font-bold text-blue-600 flex items-center gap-1">
+                                                                        {{ service.newRequests | number }}
+                                                                        <i
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <div *ngIf="(service.renewRequests || 0) > 0"
+                                                                    class="flex justify-between items-center p-2 bg-green-50 rounded cursor-pointer hover:bg-green-100 transition-colors"
+                                                                    (click)="navigateToRequestsDetailsWithProcess(42, undefined, service.ServiceID)"
+                                                                    title="{{ isArabic ? 'انقر لعرض طلبات التجديد' : 'Click to view renew requests' }}">
+                                                                    <span class="text-sm text-gray-600">{{ isArabic ?
+                                                                        'طلب تجديد' : 'Renew Request' }}</span>
+                                                                    <span
+                                                                        class="font-bold text-green-600 flex items-center gap-1">
+                                                                        {{ service.renewRequests | number }}
+                                                                        <i
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <div *ngIf="(service.editRequests || 0) > 0"
+                                                                    class="flex justify-between items-center p-2 bg-orange-50 rounded cursor-pointer hover:bg-orange-100 transition-colors"
+                                                                    (click)="navigateToRequestsDetailsWithProcess(41, undefined, service.ServiceID)"
+                                                                    title="{{ isArabic ? 'انقر لعرض طلبات التعديل' : 'Click to view edit requests' }}">
+                                                                    <span class="text-sm text-gray-600">{{ isArabic ?
+                                                                        'تعديل بيانات' : 'Edit Request' }}</span>
+                                                                    <span
+                                                                        class="font-bold text-orange-600 flex items-center gap-1">
+                                                                        {{ service.editRequests | number }}
+                                                                        <i
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <div *ngIf="(service.cancelRequests || 0) > 0"
+                                                                    class="flex justify-between items-center p-2 bg-red-50 rounded cursor-pointer hover:bg-red-100 transition-colors"
+                                                                    (click)="navigateToRequestsDetailsWithProcess(43, undefined, service.ServiceID)"
+                                                                    title="{{ isArabic ? 'انقر لعرض طلبات الإلغاء' : 'Click to view cancel requests' }}">
+                                                                    <span class="text-sm text-gray-600">{{ isArabic ?
+                                                                        'طلب إلغاء' : 'Cancel Request' }}</span>
+                                                                    <span
+                                                                        class="font-bold text-red-600 flex items-center gap-1">
+                                                                        {{ service.cancelRequests | number }}
+                                                                        <i
+                                                                            class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                    </span>
+                                                                </div>
+                                                                <div *ngIf="(service.newRequests || 0) === 0 && (service.renewRequests || 0) === 0 && (service.editRequests || 0) === 0 && (service.cancelRequests || 0) === 0"
+                                                                    class="text-center py-4 text-gray-400 italic text-sm">
+                                                                    {{ isArabic ? 'لا توجد إجراءات مسجلة' : 'No
+                                                                    procedures
+                                                                    recorded' }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- قسم العضويات (إذا كانت موجودة) -->
+
+                                                        <div *ngIf="hasValidMembership(service) && hasMembershipsData"
+                                                            class="bg-white rounded-lg border border-orange-200 overflow-hidden lg:col-span-3">
+                                                            <div
+                                                                class="bg-gradient-to-r from-orange-500 to-amber-600 p-3 text-white">
+                                                                <h4 class="font-bold flex items-center gap-2">
+                                                                    <i class="fas fa-users"></i>
+                                                                    {{ isArabic ? 'العضويات' : 'Memberships' }}
+                                                                </h4>
+                                                            </div>
+                                                            <div class="p-4">
+                                                                <div
+                                                                    class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                                                                    <div *ngIf="(service.validMembership || 0) > 0"
+                                                                        class="flex justify-between items-center p-2 bg-green-50 rounded cursor-pointer hover:bg-green-100 transition-colors"
+                                                                        (click)="navigateToMembershipDetails(2098, service.ServiceID)">
+                                                                        <span class="text-sm text-gray-600">{{ isArabic
+                                                                            ? 'سارية' : 'Valid' }}</span>
+                                                                        <span class="font-bold text-green-600">{{
+                                                                            service.validMembership | number }}</span>
+                                                                    </div>
+                                                                    <div *ngIf="(service.finishedMembership || 0) > 0"
+                                                                        class="flex justify-between items-center p-2 bg-gray-50 rounded cursor-pointer hover:bg-gray-100 transition-colors"
+                                                                        (click)="navigateToMembershipDetails(2099, service.ServiceID)">
+                                                                        <span class="text-sm text-gray-600">{{ isArabic
+                                                                            ? 'منتهية' : 'Finished' }}</span>
+                                                                        <span class="font-bold text-gray-600">{{
+                                                                            service.finishedMembership | number
+                                                                            }}</span>
+                                                                    </div>
+                                                                    <div *ngIf="(service.suspendedMembership || 0) > 0"
+                                                                        class="flex justify-between items-center p-2 bg-yellow-50 rounded cursor-pointer hover:bg-yellow-100 transition-colors"
+                                                                        (click)="navigateToMembershipDetails(2100, service.ServiceID)">
+                                                                        <span class="text-sm text-gray-600">{{ isArabic
+                                                                            ? 'معلقة' : 'Suspended' }}</span>
+                                                                        <span class="font-bold text-yellow-600">{{
+                                                                            service.suspendedMembership | number
+                                                                            }}</span>
+                                                                    </div>
+                                                                    <div *ngIf="(service.voidedMembership || 0) > 0"
+                                                                        class="flex justify-between items-center p-2 bg-purple-50 rounded cursor-pointer hover:bg-purple-100 transition-colors"
+                                                                        (click)="navigateToMembershipDetails(2101, service.ServiceID)">
+                                                                        <span class="text-sm text-gray-600">{{ isArabic
+                                                                            ? 'ساقطة' : 'Voided' }}</span>
+                                                                        <span class="font-bold text-purple-600">{{
+                                                                            service.voidedMembership | number }}</span>
+                                                                    </div>
+                                                                    <div *ngIf="(service.resignedMembership || 0) > 0"
+                                                                        class="flex justify-between items-center p-2 bg-orange-50 rounded cursor-pointer hover:bg-orange-100 transition-colors"
+                                                                        (click)="navigateToMembershipDetails(2105, service.ServiceID)">
+                                                                        <span class="text-sm text-gray-600">{{ isArabic
+                                                                            ? 'مستقيل' : 'Resigned' }}</span>
+                                                                        <span class="font-bold text-orange-600">{{
+                                                                            service.resignedMembership | number
+                                                                            }}</span>
+                                                                    </div>
+                                                                    <div *ngIf="(service.withdrawedMembership || 0) > 0"
+                                                                        class="flex justify-between items-center p-2 bg-purple-50 rounded cursor-pointer hover:bg-purple-100 transition-colors"
+                                                                        (click)="navigateToMembershipDetails(2106, service.ServiceID)">
+                                                                        <span class="text-sm text-gray-600">{{ isArabic
+                                                                            ? 'مسحوبة' : 'Withdrawed' }}</span>
+                                                                        <span class="font-bold text-purple-600">{{
+                                                                            service.withdrawedMembership | number
+                                                                            }}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table 3: Sports Clubs (الأندية الرياضية) -->
+            <div *ngIf="hasMembershipsData" id="clubs-section"
+                class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden print:shadow-none print:border-2 print:border-black">
+                <div class="bg-gradient-to-r from-green-500 to-emerald-600 p-4 cursor-pointer hover:from-green-600 hover:to-emerald-700 transition-all duration-300 print:bg-white print:border-b-2 print:border-black"
+                    (click)="toggleSection('clubs')">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center print:bg-gray-200">
+                                <i class="fas fa-building text-white text-lg print:text-black"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-black text-white print:text-black">
+                                    {{ isArabic ? 'الأندية الرياضية' : 'Sports Clubs' }}
+                                </h3>
+                                <p class="text-green-100 text-sm print:text-gray-600">
+                                    {{ isArabic ? clubsData.length + ' نادي' : clubsData.length + ' Clubs' }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="text-white print:text-black">
+                            <i class="fas text-2xl transition-transform duration-300"
+                                [ngClass]="expandedSections.clubs ? 'fa-chevron-up' : 'fa-chevron-down'"
+                                [style.transform]="expandedSections.clubs ? 'rotate(180deg)' : 'rotate(0deg)'"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden transition-all duration-500 ease-in-out"
+                    [ngClass]="expandedSections.clubs ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'">
+
+                    <div class="p-8">
+                        <!-- جدول الأندية مع الإجماليات -->
+                        <div *ngIf="clubsData.length > 0; else noClubsData">
+                            <div class="overflow-x-auto">
+                                <table class="w-full border-collapse">
+                                    <thead>
+                                        <tr class="bg-gradient-to-r from-green-500 to-emerald-600 text-white">
+                                            <th class="p-3 text-center border border-green-400 w-12">
+                                                <span class="text-lg">⇅</span>
+                                            </th>
+                                            <th class="p-3 text-right border border-green-400 min-w-[300px]">
+                                                {{ isArabic ? 'اسم النادي' : 'Club Name' }}
+                                            </th>
+                                            <th class="p-3 text-center border border-green-400 min-w-[130px]">
+                                                {{ isArabic ? 'اجماليات الرسوم' : 'Total Fees' }}
+                                            </th>
+                                            <th class="p-3 text-center border border-green-400 min-w-[100px]">
+                                                {{ isArabic ? 'الكترونى' : 'Electronic' }}
+                                            </th>
+                                            <th class="p-3 text-center border border-green-400 min-w-[100px]">
+                                                {{ isArabic ? 'يدوى' : 'Manual' }}
+                                            </th>
+                                            <th class="p-3 text-center border border-green-400 min-w-[100px]">
+                                                {{ isArabic ? 'العضويات' : 'Memberships' }}
+                                            </th>
+                                            <th class="p-3 text-center border border-green-400 min-w-[100px]">
+                                                {{ isArabic ? 'الطلبات' : 'Requests' }}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- صفوف الأندية العادية -->
+                                        <ng-container *ngFor="let club of clubsTableData; trackBy: trackByClubId">
+                                            <!-- Main Row -->
+                                            <tr class="hover:bg-gray-50 border-b border-gray-200">
+                                                <td class="p-3 text-center border border-gray-200">
+                                                    <button (click)="onClubRowExpand(club.id)"
+                                                        class="w-8 h-8 rounded-full border border-gray-300 text-gray-600 hover:bg-green-500 hover:text-white hover:border-green-500 transition-all duration-200 flex items-center justify-center">
+                                                        <span class="text-sm font-bold">
+                                                            {{ expandedClubRow?.id === club.id ? '▲' : '▼' }}
+                                                        </span>
+                                                    </button>
+                                                </td>
+                                                <td class="p-3 text-right border border-gray-200 font-medium cursor-pointer hover:text-blue-600 hover:underline"
+                                                    (click)="navigateToLicensesDetails(undefined, undefined, club.FkClubID)">
+                                                    {{ club.clubName }}
+                                                </td>
+                                                <td class="p-3 text-center border border-gray-200 font-bold text-purple-600"
+                                                    [ngClass]="(club.totalFeesClub || 0) > 0 ? 'cursor-pointer hover:bg-purple-50 transition-colors' : 'cursor-default'"
+                                                    (click)="(club.totalFeesClub || 0) > 0 ? navigateToFeesDetails(undefined, undefined, club.FkClubID) : null"
+                                                    [title]="(club.totalFeesClub || 0) > 0 ? (isArabic ? 'انقر لعرض تفاصيل رسوم النادي' : 'Click to view club fees details') : ''">
+                                                    <span
+                                                        [ngClass]="(club.totalFeesClub || 0) > 0 ? 'hover:underline' : ''">{{
+                                                        club.totalFeesClub | number }}</span>
+                                                    <i *ngIf="(club.totalFeesClub || 0) > 0"
+                                                        class="fas fa-external-link-alt text-xs ml-1 opacity-60"></i>
+                                                </td>
+                                                <td class="p-3 text-center border border-gray-200 text-green-600"
+                                                    [ngClass]="(club.totalElectronicFeesClub || 0) > 0 ? 'cursor-pointer hover:bg-green-50 transition-colors' : 'cursor-default'"
+                                                    (click)="(club.totalElectronicFeesClub || 0) > 0 ? navigateToFeesDetails(2820, undefined, club.FkClubID) : null"
+                                                    [title]="(club.totalElectronicFeesClub || 0) > 0 ? (isArabic ? 'انقر لعرض الرسوم الإلكترونية للنادي' : 'Click to view club electronic fees') : ''">
+                                                    <span
+                                                        [ngClass]="(club.totalElectronicFeesClub || 0) > 0 ? 'hover:underline' : ''">{{
+                                                        club.totalElectronicFeesClub | number }}</span>
+                                                    <i *ngIf="(club.totalElectronicFeesClub || 0) > 0"
+                                                        class="fas fa-external-link-alt text-xs ml-1 opacity-60"></i>
+                                                </td>
+                                                <td class="p-3 text-center border border-gray-200 text-blue-600"
+                                                    [ngClass]="(club.totalManualFeesClub || 0) > 0 ? 'cursor-pointer hover:bg-blue-50 transition-colors' : 'cursor-default'"
+                                                    (click)="(club.totalManualFeesClub || 0) > 0 ? navigateToFeesDetails(2821, undefined, club.FkClubID) : null"
+                                                    [title]="(club.totalManualFeesClub || 0) > 0 ? (isArabic ? 'انقر لعرض الرسوم اليدوية للنادي' : 'Click to view club manual fees') : ''">
+                                                    <span
+                                                        [ngClass]="(club.totalManualFeesClub || 0) > 0 ? 'hover:underline' : ''">{{
+                                                        club.totalManualFeesClub | number }}</span>
+                                                    <i *ngIf="(club.totalManualFeesClub || 0) > 0"
+                                                        class="fas fa-external-link-alt text-xs ml-1 opacity-60"></i>
+                                                </td>
+                                                <td class="p-3 text-center border border-gray-200 text-purple-600"
+                                                    [ngClass]="(club.totalClubLicenses || 0) > 0 ? 'cursor-pointer hover:bg-purple-50 transition-colors' : 'cursor-default'"
+                                                    (click)="(club.totalClubLicenses || 0) > 0 ? navigateToLicensesDetails(undefined, undefined, club.FkClubID) : null"
+                                                    [title]="(club.totalClubLicenses || 0) > 0 ? (isArabic ? 'انقر لعرض تراخيص النادي' : 'Click to view club licenses') : ''">
+                                                    <span
+                                                        [ngClass]="(club.totalClubLicenses || 0) > 0 ? 'hover:underline' : ''">{{
+                                                        club.totalClubLicenses | number }}</span>
+                                                    <i *ngIf="(club.totalClubLicenses || 0) > 0"
+                                                        class="fas fa-external-link-alt text-xs ml-1 opacity-60"></i>
+                                                </td>
+                                                <td class="p-3 text-center border border-gray-200 text-indigo-600"
+                                                    [ngClass]="(club.totalRequestsClub || 0) > 0 ? 'cursor-pointer hover:bg-indigo-50 transition-colors' : 'cursor-default'"
+                                                    (click)="(club.totalRequestsClub || 0) > 0 ? navigateToRequestsDetails(undefined, undefined, club.FkClubID) : null"
+                                                    [title]="(club.totalRequestsClub || 0) > 0 ? (isArabic ? 'انقر لعرض طلبات النادي' : 'Click to view club requests') : ''">
+                                                    <span
+                                                        [ngClass]="(club.totalRequestsClub || 0) > 0 ? 'hover:underline' : ''">{{
+                                                        club.totalRequestsClub | number }}</span>
+                                                    <i *ngIf="(club.totalRequestsClub || 0) > 0"
+                                                        class="fas fa-external-link-alt text-xs ml-1 opacity-60"></i>
+                                                </td>
+                                            </tr>
+
+                                            <!-- Expanded Details Row -->
+                                            <tr *ngIf="expandedClubRow?.id === club.id"
+                                                class="bg-gradient-to-r from-gray-50 to-green-50">
+                                                <td colspan="7" class="p-0 border border-gray-200">
+                                                    <div class="p-6">
+                                                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                                                            <!-- قسم العضويات -->
+                                                            <div *ngIf="hasValidClubMembership(club) && hasMembershipsData"
+                                                                class="bg-white rounded-lg border border-orange-200 overflow-hidden">
+                                                                <div
+                                                                    class="bg-gradient-to-r from-orange-500 to-amber-600 p-3 text-white">
+                                                                    <h4 class="font-bold flex items-center gap-2">
+                                                                        <i class="fas fa-users"></i>
+                                                                        {{ isArabic ? 'العضويات' : 'Memberships' }}
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="p-4 space-y-3">
+                                                                    <div *ngIf="club.totalValidMembershipClub > 0"
+                                                                        class="flex justify-between items-center p-2 bg-green-50 rounded cursor-pointer hover:bg-green-100 transition-colors"
+                                                                        (click)="navigateToMembershipDetails(2098, undefined, club.FkClubID)"
+                                                                        title="{{ isArabic ? 'انقر لعرض العضويات السارية للنادي' : 'Click to view club valid memberships' }}">
+                                                                        <span class="text-sm text-gray-600">{{ isArabic
+                                                                            ? 'عضوية سارية' : 'Valid Membership'
+                                                                            }}</span>
+                                                                        <span
+                                                                            class="font-bold text-green-700 flex items-center gap-1">
+                                                                            {{ club.totalValidMembershipClub | number }}
+                                                                            <i
+                                                                                class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                    <div *ngIf="club.totalFinishedMembershipClub > 0"
+                                                                        class="flex justify-between items-center p-2 bg-gray-50 rounded cursor-pointer hover:bg-gray-100 transition-colors"
+                                                                        (click)="navigateToMembershipDetails(2099, undefined, club.FkClubID)"
+                                                                        title="{{ isArabic ? 'انقر لعرض العضويات المنتهية للنادي' : 'Click to view club finished memberships' }}">
+                                                                        <span class="text-sm text-gray-600">{{ isArabic
+                                                                            ? 'عضوية منتهية' : 'Finished Membership'
+                                                                            }}</span>
+                                                                        <span
+                                                                            class="font-bold text-gray-600 flex items-center gap-1">
+                                                                            {{ club.totalFinishedMembershipClub | number
+                                                                            }}
+                                                                            <i
+                                                                                class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                    <div *ngIf="club.totalSuspendedMembershipClub > 0"
+                                                                        class="flex justify-between items-center p-2 bg-yellow-50 rounded cursor-pointer hover:bg-yellow-100 transition-colors"
+                                                                        (click)="navigateToMembershipDetails(2100, undefined, club.FkClubID)"
+                                                                        title="{{ isArabic ? 'انقر لعرض العضويات المعلقة للنادي' : 'Click to view club suspended memberships' }}">
+                                                                        <span class="text-sm text-gray-600">{{ isArabic
+                                                                            ? 'عضوية معلقة' : 'Suspended Membership'
+                                                                            }}</span>
+                                                                        <span
+                                                                            class="font-bold text-yellow-600 flex items-center gap-1">
+                                                                            {{ club.totalSuspendedMembershipClub |
+                                                                            number }}
+                                                                            <i
+                                                                                class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- قسم الطلبات -->
+                                                            <div
+                                                                class="bg-white rounded-lg border border-blue-200 overflow-hidden">
+                                                                <div
+                                                                    class="bg-gradient-to-r from-blue-500 to-indigo-600 p-3 text-white">
+                                                                    <h4 class="font-bold flex items-center gap-2">
+                                                                        <i class="fas fa-file-alt"></i>
+                                                                        {{ isArabic ? 'الطلبات' : 'Requests' }}
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="p-4 space-y-3">
+                                                                    <div *ngIf="club.totalOnlineRequestsClub > 0"
+                                                                        class="flex justify-between items-center p-2 bg-green-50 rounded cursor-pointer hover:bg-green-100 transition-colors"
+                                                                        (click)="navigateToRequestsDetails(2820, undefined, club.FkClubID)"
+                                                                        title="{{ isArabic ? 'انقر لعرض الطلبات الأونلاين للنادي' : 'Click to view club online requests' }}">
+                                                                        <span class="text-sm text-gray-600">{{ isArabic
+                                                                            ? 'الطلبات الاونلاين' : 'Online Requests'
+                                                                            }}</span>
+                                                                        <span
+                                                                            class="font-bold text-green-700 flex items-center gap-1">
+                                                                            {{ club.totalOnlineRequestsClub | number }}
+                                                                            <i
+                                                                                class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                    <div *ngIf="club.totalEmpRequestsClub > 0"
+                                                                        class="flex justify-between items-center p-2 bg-purple-50 rounded cursor-pointer hover:bg-purple-100 transition-colors"
+                                                                        (click)="navigateToRequestsDetails(2897, undefined, club.FkClubID)"
+                                                                        title="{{ isArabic ? 'انقر لعرض طلبات الموظفين للنادي' : 'Click to view club employee requests' }}">
+                                                                        <span class="text-sm text-gray-600">{{ isArabic
+                                                                            ? 'الموظف' : 'Employee Requests' }}</span>
+                                                                        <span
+                                                                            class="font-bold text-purple-600 flex items-center gap-1">
+                                                                            {{ club.totalEmpRequestsClub | number }}
+                                                                            <i
+                                                                                class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                    <div *ngIf="club.totalApprovedRequestsClub > 0"
+                                                                        class="flex justify-between items-center p-2 bg-green-50 rounded cursor-pointer hover:bg-green-100 transition-colors"
+                                                                        (click)="navigateToApprovedRequestsReport(club.FkClubID)"
+                                                                        title="{{ isArabic ? 'انقر لعرض الطلبات الموافق عليها للنادي' : 'Click to view club approved requests' }}">
+                                                                        <span class="text-sm text-gray-600">{{ isArabic
+                                                                            ? 'تم الموافقة' : 'Approved Requests'
+                                                                            }}</span>
+                                                                        <span
+                                                                            class="font-bold text-green-700 flex items-center gap-1">
+                                                                            {{ club.totalApprovedRequestsClub | number
+                                                                            }}
+                                                                            <i
+                                                                                class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                    <div *ngIf="club.totalRejectedRequestsClub > 0"
+                                                                        class="flex justify-between items-center p-2 bg-purple-50 rounded cursor-pointer hover:bg-purple-100 transition-colors"
+                                                                        (click)="navigateToRejectedRequestsReport(club.FkClubID)"
+                                                                        title="{{ isArabic ? 'انقر لعرض الطلبات المرفوضة للنادي' : 'Click to view club rejected requests' }}">
+                                                                        <span class="text-sm text-gray-600">{{ isArabic
+                                                                            ? 'تم الرفض' : 'Rejected Requests' }}</span>
+                                                                        <span
+                                                                            class="font-bold text-purple-600 flex items-center gap-1">
+                                                                            {{ club.totalRejectedRequestsClub | number
+                                                                            }}
+                                                                            <i
+                                                                                class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- قسم اجراءات الطلبات -->
+                                                            <div
+                                                                class="bg-white rounded-lg border border-purple-200 overflow-hidden">
+                                                                <div
+                                                                    class="bg-gradient-to-r from-purple-500 to-violet-600 p-3 text-white">
+                                                                    <h4 class="font-bold flex items-center gap-2">
+                                                                        <i class="fas fa-tasks"></i>
+                                                                        {{ isArabic ? 'اجراءات الطلبات' : 'Request
+                                                                        Types' }}
+                                                                    </h4>
+                                                                </div>
+                                                                <div class="p-4 space-y-3">
+                                                                    <div *ngIf="club.totalNewRequestsClub > 0"
+                                                                        class="flex justify-between items-center p-2 bg-green-50 rounded cursor-pointer hover:bg-green-100 transition-colors"
+                                                                        (click)="navigateToRequestsDetailsWithProcess(40, club.FkClubID)"
+                                                                        title="{{ isArabic ? 'انقر لعرض الطلبات الجديدة للنادي' : 'Click to view club new requests' }}">
+                                                                        <span class="text-sm text-gray-600">{{ isArabic
+                                                                            ? 'طلب جديد' : 'New Requests' }}</span>
+                                                                        <span
+                                                                            class="font-bold text-green-600 flex items-center gap-1">
+                                                                            {{ club.totalNewRequestsClub | number }}
+                                                                            <i
+                                                                                class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                    <div *ngIf="club.totalEditRequestsClub > 0"
+                                                                        class="flex justify-between items-center p-2 bg-yellow-50 rounded cursor-pointer hover:bg-yellow-100 transition-colors"
+                                                                        (click)="navigateToRequestsDetailsWithProcess(41, club.FkClubID)"
+                                                                        title="{{ isArabic ? 'انقر لعرض طلبات التعديل للنادي' : 'Click to view club edit requests' }}">
+                                                                        <span class="text-sm text-gray-600">{{ isArabic
+                                                                            ? 'طلب تعديل بيانات' : 'Edit Requests'
+                                                                            }}</span>
+                                                                        <span
+                                                                            class="font-bold text-yellow-600 flex items-center gap-1">
+                                                                            {{ club.totalEditRequestsClub | number }}
+                                                                            <i
+                                                                                class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                    <div *ngIf="club.totalRenewRequestsClub > 0"
+                                                                        class="flex justify-between items-center p-2 bg-blue-50 rounded cursor-pointer hover:bg-blue-100 transition-colors"
+                                                                        (click)="navigateToRequestsDetailsWithProcess(42, club.FkClubID)"
+                                                                        title="{{ isArabic ? 'انقر لعرض طلبات التجديد للنادي' : 'Click to view club renew requests' }}">
+                                                                        <span class="text-sm text-gray-600">{{ isArabic
+                                                                            ? 'طلب تجديد' : 'Renew Requests' }}</span>
+                                                                        <span
+                                                                            class="font-bold text-blue-600 flex items-center gap-1">
+                                                                            {{ club.totalRenewRequestsClub | number }}
+                                                                            <i
+                                                                                class="fas fa-external-link-alt text-xs opacity-60"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+
+                                        <!-- صف الإجماليات في النهاية -->
+                                        <tr
+                                            class="bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-300 font-bold">
+                                            <td class="p-4 text-center border border-green-300">
+                                                <button (click)="navigateToClubsDashboard()"
+                                                    class="w-10 h-10 rounded-full bg-green-500 text-white hover:bg-green-600 transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-110"
+                                                    title="{{ isArabic ? 'انقر للذهاب إلى إحصائيات الأندية' : 'Click to go to clubs statistics' }}">
+                                                    <i class="fas fa-chart-line text-sm"></i>
+                                                </button>
+                                            </td>
+                                            <td
+                                                class="p-4 text-right border border-green-300 text-green-800 font-black text-lg">
+                                                <div class="flex items-center justify-between">
+                                                    <span>{{ isArabic ? 'الإجماليات' : 'TOTALS' }}</span>
+                                                    <button (click)="navigateToClubsDashboard()"
+                                                        class="text-green-600 hover:text-green-800 transition-colors flex items-center gap-2 text-sm font-medium"
+                                                        title="{{ isArabic ? 'انقر للذهاب إلى إحصائيات الأندية' : 'Click to go to clubs statistics' }}">
+                                                        <span>{{ isArabic ? 'إحصائيات تفصيلية' : 'Detailed Statistics'
+                                                            }}</span>
+                                                        <i class="fas fa-external-link-alt"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td class="p-4 text-center border border-green-300 text-purple-700 font-black text-xl"
+                                                [ngClass]="(totalClubFees || 0) > 0 ? 'cursor-pointer hover:bg-purple-50 transition-colors' : 'cursor-default'"
+                                                (click)="(totalClubFees || 0) > 0 ? navigateToFeesDetails() : null"
+                                                [title]="(totalClubFees || 0) > 0 ? (isArabic ? 'انقر لعرض تفاصيل رسوم الأندية' : 'Click to view clubs fees details') : ''">
+                                                <span [ngClass]="(totalClubFees || 0) > 0 ? 'hover:underline' : ''">{{
+                                                    totalClubFees | number }}</span>
+                                                <i *ngIf="(totalClubFees || 0) > 0"
+                                                    class="fas fa-external-link-alt text-xs ml-1 opacity-60"></i>
+                                            </td>
+                                            <td
+                                                class="p-4 text-center border border-green-300 text-green-700 font-black text-xl">
+                                                {{ totalElectronicFeesClubs | number }}
+                                            </td>
+                                            <td
+                                                class="p-4 text-center border border-green-300 text-blue-700 font-black text-xl">
+                                                {{ totalManualFeesClubs | number }}
+                                            </td>
+                                            <td class="p-4 text-center border border-green-300 text-purple-700 font-black text-xl"
+                                                [ngClass]="(totalClubLicenses || 0) > 0 ? 'cursor-pointer hover:bg-purple-50 transition-colors' : 'cursor-default'"
+                                                (click)="(totalClubLicenses || 0) > 0 ? navigateToLicensesDetails() : null"
+                                                [title]="(totalClubLicenses || 0) > 0 ? (isArabic ? 'انقر لعرض تراخيص الأندية' : 'Click to view clubs licenses') : ''">
+                                                <span
+                                                    [ngClass]="(totalClubLicenses || 0) > 0 ? 'hover:underline' : ''">{{
+                                                    totalClubLicenses | number }}</span>
+                                                <i *ngIf="(totalClubLicenses || 0) > 0"
+                                                    class="fas fa-external-link-alt text-xs ml-1 opacity-60"></i>
+                                            </td>
+                                            <td class="p-4 text-center border border-green-300 text-indigo-700 font-black text-xl"
+                                                [ngClass]="(totalClubRequests || 0) > 0 ? 'cursor-pointer hover:bg-indigo-50 transition-colors' : 'cursor-default'"
+                                                (click)="(totalClubRequests || 0) > 0 ? navigateToRequestsDetails() : null"
+                                                [title]="(totalClubRequests || 0) > 0 ? (isArabic ? 'انقر لعرض طلبات الأندية' : 'Click to view clubs requests') : ''">
+                                                <span
+                                                    [ngClass]="(totalClubRequests || 0) > 0 ? 'hover:underline' : ''">{{
+                                                    totalClubRequests | number }}</span>
+                                                <i *ngIf="(totalClubRequests || 0) > 0"
+                                                    class="fas fa-external-link-alt text-xs ml-1 opacity-60"></i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- رسالة في حالة عدم وجود أندية -->
+                        <ng-template #noClubsData>
+                            <div class="flex flex-col items-center justify-center py-12 text-gray-500">
+                                <i class="fas fa-building text-4xl mb-4 opacity-50"></i>
+                                <p class="text-lg font-medium">{{ isArabic ? 'لا توجد أندية متاحة' : 'No clubs
+                                    available' }}</p>
+                                <p class="text-sm">{{ isArabic ? 'قم بتشغيل البحث للحصول على البيانات' : 'Run a search
+                                    to get data' }}</p>
+                            </div>
+                        </ng-template>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

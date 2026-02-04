@@ -1,0 +1,61 @@
+<div hlMenu class="!block relative" #menuWrapper [attr.data-menu]="item.TitleEn">
+    <button
+        class="text-gray-600 hover:bg-gray-200 px-3 py-2 w-full ltr:text-left rtl:text-right flex items-center justify-between  border-transparent hover:border-primary xl:text-base"
+        [ngClass]="{'!border-primary bg-gray-200':  openMenus[item.TitleEn],
+        '!border-b-0 !border-r-4': !!isNestedMenu(),
+        'text-primary': isRouteActive()
+    }" type="button" (click)="toggleMenu(item.TitleEn)" hlMenuButton>
+        {{ store.locale === 'en' ? item.TitleEn : item.TitleAr }}
+        <span [@reverseChevron]="(!!openMenus[item.TitleEn]).toString()">
+            <icon-chevron-down class="w-4 h-4"></icon-chevron-down>
+        </span>
+    </button>
+    <ul *hlMenuItems @toggleAnimation
+        class="top-11 absolute w-[200px] !py-0 font-semibold shadow-sm shadow-primary bg-white text-dark ltr:right-0 rtl:right-0 z-[999] focus:!outline-none"
+        [ngClass]="{'ltr:left-full rtl:right-full': !!isNestedMenu()}">
+        @for (item2 of item.children; track $index) {
+        <li aria-hidden="false" class="border-r-4 border-transparent">
+
+            @if (item2.children && item2.children.length > 0) {
+            <app-menu-item [item]="item2" [isNestedMenu]="true"></app-menu-item>
+            }@else if (item2.ItemURL.includes('ServiceID') && !item2.ItemURL.includes('Complaints')) {
+
+            <a routerLink="/Services/NewRequest" routerLinkActive="active !text-primary font-bold !border-primary !bg-primary/5" class="block w-full text-gray-600 hover:text-primary px-3 py-2 rounded-md xl:text-base"
+                *hlMenuItem="let menuItem" (click)="navigateToDetails(item2, $event)">
+                <span class="text-nowrap px-0 xl:px-1 2xl:px-2 xl:text-base">
+                    @if (store.locale === 'en') {
+                    {{ item2.TitleEn }}
+                    }@else {
+                    {{ item2.TitleAr }}
+                    }
+                </span>
+            </a>
+
+            }@else if (item2.ItemURL.includes('ServiceID') && item2.ItemURL.includes('Complaints')) {
+
+            <a routerLink="/Complaints/NewRequest" routerLinkActive="active !text-primary font-bold !border-primary !bg-primary/5" class="block w-full text-gray-600 hover:text-primary px-3 py-2 rounded-md xl:text-base"
+                *hlMenuItem="let menuItem" (click)="navigateToDetails(item2, $event)">
+                <span class="text-nowrap px-0 xl:px-1 2xl:px-2 xl:text-base">
+                    @if (store.locale === 'en') {
+                    {{ item2.TitleEn }}
+                    }@else {
+                    {{ item2.TitleAr }}
+                    }
+                </span>
+            </a>
+
+            }@else {
+            <a class="block w-full text-gray-600 hover:text-primary px-3 py-2 rounded-md xl:text-base"
+                *hlMenuItem="let menuItem" (click)="selectedLink(item2, $event)"
+                routerLinkActive="active !text-primary font-bold !border-primary !bg-primary/5"
+                [routerLink]="item2.ItemURL">
+                {{ store.locale === 'en' ? item2.TitleEn : item2.TitleAr }}
+            </a>
+            }
+
+
+
+        </li>
+        }
+    </ul>
+</div>

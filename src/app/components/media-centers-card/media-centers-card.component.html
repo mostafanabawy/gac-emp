@@ -1,0 +1,10 @@
+<article class="py-3 flex flex-col gap-2 items-center">
+    <div class="w-full">
+        <img [src]="imageLink()" class="w-full h-96 object-contain ltr:mr-auto rtl:ml-auto" alt="image">
+    </div>
+    <span class="text-[#59523a] text-lg"> {{ createdAt() }} </span>
+    <h3 class="text-xl text-[#59523a]">{{ title() }}</h3>
+    <a [href]="link()" target="_blank" class="text-base text-center rounded px-8 py-2 border border-black hover:underline hover:text-white hover:bg-gray-600 transition-all">
+        {{ 'serviceCard.button1' | translate }}
+    </a>
+</article>

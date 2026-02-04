@@ -1,0 +1,49 @@
+<div id="aiPopup">
+    <!-- Modal -->
+    <ngx-custom-modal #modal4 class="modal-top z-[9999] large-modal" [closeOnOutsideClick]="false">
+        <ng-template #modalHeader>
+            <div>
+                <h2 class="text-lg min-[340px]:text-xl sm:text-2xl md:text-3xl p-2 flex items-center ps-2">
+                    @if(translations()?.aiPopupTitle?.label){
+                    {{translations()?.aiPopupTitle?.label}}
+                    }
+                </h2>
+            </div>
+        </ng-template>
+        <ng-template #modalBody>
+            <p class="text-center text-base min-[340px]:text-lg sm:text-xl md:text-2xl font-bold ltr:text-left rtl:text-right mb-3">
+                @if(translations()?.aiPopupQuestion?.label){
+                {{translations()?.aiPopupQuestion?.label}}
+                }
+            </p>
+            <ng-container *ngIf="subtextTpl; else defaultSubtext">
+                <ng-container *ngTemplateOutlet="subtextTpl"></ng-container>
+            </ng-container>
+            <ng-template #defaultSubtext>
+                <p class="text-gray-600">
+                    @if(translations()?.aiPopupInstructions?.label){
+                    {{translations()?.aiPopupInstruction?.label}}
+                    }
+                </p>
+            </ng-template>
+
+
+        </ng-template>
+        <ng-template #modalFooter>
+            <div class="flex flex-col sm:flex-row gap-1 w-full justify-end items-start">
+                <button type="button" (click)="onUserClose('yes')"
+                    class="btn btn-primary mx-1 px-3 sm:px-5 md:px-8 lg:px-10">
+                    @if(translations()?.aiPopupYesBtn?.label){
+                    {{translations()?.aiPopupYesBtn?.label}}
+                    }
+                </button>
+                <button type="button" (click)="onUserClose('no')"
+                    class="btn btn-outline-dark px-5 sm:px-5 md:px-8 lg:px-12 hover:bg-primary hover:text-white ">
+                    @if (translations()?.aiPopupNoBtn?.label) {
+                    {{translations()?.aiPopupNoBtn?.label}}
+                    }
+                </button>
+            </div>
+        </ng-template>
+    </ngx-custom-modal>
+</div>

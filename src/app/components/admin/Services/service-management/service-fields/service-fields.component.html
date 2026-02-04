@@ -1,0 +1,721 @@
+<!-- Add and Update -->
+<div *ngIf="showAddAttachmentModal" class="mt-3">
+
+  <div class="flex justify-between items-center">
+    <h3 class="text-xl font-bold mb-6" id="addAttachmentModalLabel">
+      {{ isEditMode ? translations?.edit?.label : translations?.add?.label }}
+    </h3>
+    <button type="button" (click)="closeAddUserModal()" class="bg-primary text-white">
+      <icon-x></icon-x>
+    </button>
+
+  </div>
+
+  <form [formGroup]="AddserviceproceduresForm" (ngSubmit)="onAddAttachmentSubmit()">
+    <!-- Form Inputs Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+
+
+      <div>
+        <label for="ServiceID">{{ translations?.ServiceType?.label }}
+        </label>
+
+        <input type="text" class="form-input" [disabled]="true" id="ServiceID" formControlName="ServiceName" readonly>
+
+      </div>
+      <div>
+        <label for="InternalFieldName">{{ translations?.InternalFieldName?.label }}
+          <span *ngIf="InternalFieldName?.invalid && (InternalFieldName?.dirty || InternalFieldName?.touched)"
+            class="text-red-500 font-bold">*</span>
+        </label>
+        <input type="text" [readonly]="isEditMode" class="form-input"
+          [placeholder]="translations?.InternalFieldName?.label"
+          [ngClass]="{'is-invalid': InternalFieldName?.invalid && (InternalFieldName?.dirty || InternalFieldName?.touched)}"
+          id="InternalFieldName" formControlName="InternalFieldName" />
+        <div *ngIf="InternalFieldName?.invalid && (InternalFieldName?.dirty || InternalFieldName?.touched)"
+          class="text-red-500 text-sm mt-1">
+          {{ translations?.InternalFieldName?.validation }}
+        </div>
+      </div>
+
+
+
+      <div>
+        <label for="MAX_Length">{{ translations?.MAX_Length?.label }}</label>
+        <input type="number" class="form-input" [placeholder]="translations?.MAX_Length?.label" id="MAX_Length"
+          formControlName="MAX_Length" />
+      </div>
+      <div>
+        <label for="FieldType">{{ translations?.FieldType?.label }}
+          <span *ngIf="FieldType?.invalid && (FieldType?.dirty || FieldType?.touched)"
+            class="text-red-500 font-bold">*</span>
+        </label>
+        <ng-select (change)="onSouresTable($event)" formControlName="FieldType" [placeholder]="translations?.FieldType?.label"
+          [ngClass]="{'is-invalid': FieldType?.invalid && (FieldType?.dirty || FieldType?.touched)}"
+          [items]="ServiceTypes" id="FieldType" bindLabel="TypeID" bindValue="TypeID" [searchable]="true"
+          [searchFn]="customSearchFn" aria-labelledby="FieldType-label">
+          <span id="FieldType-label" class="sr-only">{{ translations?.FieldType?.label }}</span>
+          <ng-template ng-label-tmp let-item="item">
+            {{ translate.currentLang === 'ae' ? item.TypeAr : item.TitleEn }}
+          </ng-template>
+          <ng-template ng-option-tmp let-item="item">
+            {{ translate.currentLang === 'ae' ? item.TypeAr : item.TitleEn }}
+          </ng-template>
+        </ng-select>
+        <div *ngIf="FieldType?.invalid && (FieldType?.dirty || FieldType?.touched)" class="text-red-500 text-sm mt-1">
+          {{ translations?.FieldType?.validation }}
+        </div>
+      </div>
+      <div>
+        <label for="TitleAr">{{ translations?.Title?.label }}
+          <span *ngIf="Name?.invalid && (Name?.dirty || Name?.touched)" class="text-red-500 font-bold">*</span>
+        </label>
+        <input *ngIf="FieldType?.value !== 18" type="text" class="form-input" [placeholder]="translations?.Title?.label"
+          [ngClass]="{'is-invalid': Name?.invalid && (Name?.dirty || Name?.touched)}" id="Name"
+          formControlName="Name" />
+        <textarea rows="4" *ngIf="FieldType?.value === 18" class="form-input" [placeholder]="translations?.Title?.label"
+          [ngClass]="{'is-invalid': Name?.invalid && (Name?.dirty || Name?.touched)}" id="Name"
+          formControlName="Name"></textarea>
+          <div *ngIf="Name?.invalid && (Name?.dirty || Name?.touched)" class="text-red-500 text-sm mt-1">
+            {{ translations?.Title?.validation }}
+          </div>
+      </div>
+      <div>
+        <label for="NameEN">{{ translations?.NameEN?.label }}
+          <span *ngIf="NameEN?.invalid && (NameEN?.dirty || NameEN?.touched)" class="text-red-500 font-bold">*</span>
+        </label>
+        <input type="text" *ngIf="FieldType?.value !== 18" class="form-input" [placeholder]="translations?.NameEN?.label" [ngClass]="{'is-invalid': NameEN?.invalid && (NameEN?.dirty || NameEN?.touched)}"
+          id="TitleEn" formControlName="NameEN" />
+        <textarea rows="4" *ngIf="FieldType?.value === 18" class="form-input" [placeholder]="translations?.NameEN?.label" [ngClass]="{'is-invalid': NameEN?.invalid && (NameEN?.dirty || NameEN?.touched)}"
+          id="TitleEn" formControlName="NameEN">
+
+          </textarea>
+          <div *ngIf="NameEN?.invalid && (NameEN?.dirty || NameEN?.touched)" class="text-red-500 text-sm mt-1">
+            {{ translations?.NameEN?.validation }}
+          </div>
+      </div>
+      <div>
+        <label for="Status">{{ translations?.Activited?.label }}</label>
+        <select id="Status" formControlName="IsActive" class="form-select text-white-dark"
+          aria-label="Activited">
+          <option [ngValue]="true">{{ translations?.Active?.label }}</option>
+          <option [ngValue]="false">{{ translations?.NotActive?.label }}</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="IsSystemField">{{ translations?.IsSystemField?.label }}</label>
+        <div *ngIf="isEditMode" class="form-input bg-gray-100 text-gray-600 rounded-md px-3 py-2">
+          {{ AddserviceproceduresForm.get('IsSystemField')?.value ? translations?.Yes?.label :
+          translations?.No?.label }}
+        </div>
+        <select *ngIf="!isEditMode" id="IsSystemField" formControlName="IsSystemField" class="form-select text-white-dark"
+          aria-labelledby="IsSystemField-label">
+          <span id="IsSystemField-label" class="sr-only">{{ translations?.IsSystemField?.label }}</span>
+          <option [ngValue]="true">{{ translations?.Yes?.label }}</option>
+          <option [ngValue]="false">{{ translations?.No?.label }}</option>
+        </select>
+      </div>
+      <div>
+        <label for="ValidationMsgAr">{{ translations?.ValidationMsgAr?.label }}</label>
+        <input type="text" class="form-input" [placeholder]="translations?.ValidationMsgAr?.label" id="ValidationMsgAr"
+          formControlName="ValidationMsgAr" />
+      </div>
+      <div>
+        <label for="ValidationMsgEn">{{ translations?.ValidationMsgEn?.label }}</label>
+        <input type="text" class="form-input" [placeholder]="translations?.ValidationMsgEn?.label" id="ValidationMsgEn"
+          formControlName="ValidationMsgEn" />
+      </div>
+      <div>
+        <label for="RelevantInternalName">{{ translations?.RelevantInternalName?.label }}</label>
+        <input type="text" class="form-input" [placeholder]="translations?.RelevantInternalName?.label"
+          id="RelevantInternalName" formControlName="RelevantInternalName" />
+      </div>
+      <div>
+        <label for="RelevantVisibleValue">{{ translations?.RelevantVisibleValue?.label }}</label>
+        <input type="text" class="form-input" [placeholder]="translations?.RelevantVisibleValue?.label"
+          id="RelevantVisibleValue" formControlName="RelevantVisibleValue" />
+      </div>
+      <div>
+        <label for="RelevantVisibleOperator">{{ translations?.RelevantVisibleOperator?.label }}</label>
+        <input type="text" class="form-input" [placeholder]="translations?.RelevantVisibleOperator?.label"
+          id="RelevantVisibleOperator" formControlName="RelevantVisibleOperator" />
+      </div>
+
+      <div>
+        <label for="RelevantServiceFieldID">{{ translations?.RelevantServiceFieldID?.label }}</label>
+        <ng-select formControlName="RelevantServiceFieldID" [placeholder]="translations?.RelevantServiceFieldID?.label"
+          [items]="RelevantServiceFieldID" id="RelevantServiceFieldID" bindLabel="ServiceFieldID"
+          bindValue="ServiceFieldID" [searchable]="true" [searchFn]="customSearchFn"
+          aria-labelledby="RelevantServiceFieldID-label">
+          <span id="RelevantServiceFieldID-label" class="sr-only">{{ translations?.RelevantServiceFieldID?.label
+            }}</span>
+          <ng-template ng-label-tmp let-item="item">
+            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+          </ng-template>
+          <ng-template ng-option-tmp let-item="item">
+            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+          </ng-template>
+        </ng-select>
+
+      </div>
+      <div *ngIf="showSouresTableID">
+        <label for="SourceTableID">{{ translations?.SourceTableID?.label }}</label>
+        <ng-select formControlName="SourceTableID" [placeholder]="translations?.SourceTableID?.label"
+          [items]="SourceTableID" id="SourceTableID" bindLabel="ServiceFieldID" bindValue="ServiceFieldID"
+          [searchable]="true" [searchFn]="customSearchFn" aria-labelledby="SourceTableID-label">
+          <span id="SourceTableID-label" class="sr-only">{{ translations?.SourceTableID?.label }}</span>
+          <ng-template ng-label-tmp let-item="item">
+            {{ translate.currentLang === 'ae' ? item.FieldTypeAr : item.FieldTypeEn }}
+          </ng-template>
+          <ng-template ng-option-tmp let-item="item">
+            {{ translate.currentLang === 'ae' ? item.FieldTypeAr : item.FieldTypeEn }}
+          </ng-template>
+        </ng-select>
+
+      </div>
+      <div>
+        <label for="MaxAttachmentSizeKB">{{ translations?.MaxAttachmentSizeKB?.label }}</label>
+        <input type="number" class="form-input" [placeholder]="translations?.MaxAttachmentSizeKB?.label"
+          id="MaxAttachmentSizeKB" formControlName="MaxAttachmentSizeKB" />
+      </div>
+      <div>
+        <label for="AllowedFileTypes">{{ translations?.AllowedFileTypes?.label }}</label>
+        <input type="text" class="form-input" [placeholder]="translations?.AllowedFileTypes?.label"
+          id="AllowedFileTypes" formControlName="AllowedFileTypes" />
+      </div>
+      <div>
+        <label for="ValidMsgArAllowedFile">{{ translations?.ValidMsgArAllowedFile?.label }}</label>
+        <input type="text" class="form-input" [placeholder]="translations?.ValidMsgArAllowedFile?.label"
+          id="ValidMsgArAllowedFile" formControlName="ValidMsgArAllowedFile" />
+      </div>
+      <div>
+        <label for="ValidMsgEnAllowedFile">{{ translations?.ValidMsgEnAllowedFile?.label }}</label>
+        <input type="text" class="form-input" [placeholder]="translations?.ValidMsgEnAllowedFile?.label"
+          id="ValidMsgEnAllowedFile" formControlName="ValidMsgEnAllowedFile" />
+      </div>
+      <div>
+        <label for="ValidMsgArMaxSize">{{ translations?.ValidMsgArMaxSize?.label }}</label>
+        <input type="text" class="form-input" [placeholder]="translations?.ValidMsgArMaxSize?.label"
+          id="ValidMsgArMaxSize" formControlName="ValidMsgArMaxSize" />
+      </div>
+      <div>
+        <label for="ValidMsgEnMaxSize">{{ translations?.ValidMsgEnMaxSize?.label }}</label>
+        <input type="text" class="form-input" [placeholder]="translations?.ValidMsgEnMaxSize?.label"
+          id="ValidMsgEnMaxSize" formControlName="ValidMsgEnMaxSize" />
+      </div>
+
+    </div>
+
+
+
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end gap-2 pt-6">
+      <button type="submit" class="btn btn-primary">
+        <icon-plus *ngIf="!isEditMode"></icon-plus>
+        <icon-edit *ngIf="isEditMode"></icon-edit>
+        <span class="m-1">{{ isEditMode ? translations?.edit?.label : translations?.add?.label }}</span>
+      </button>
+      <button type="button" class="btn btn-primary" (click)="closeAddUserModal()">
+        <icon-x></icon-x>
+        <span class="m-1">{{ translations?.close?.label }}</span></button>
+    </div>
+  </form>
+</div>
+
+
+<ng-container *ngIf="hide">
+  
+  <!-- Serach -->
+  <form class="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-[#0e1726]"
+    [formGroup]="serachForm" (ngSubmit)="onSubmit()">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
+      <h2 class="text-lg font-bold">
+        {{ translations?.search?.label }}
+      </h2>
+      <button type="button" class="btn btn-primary" (click)="showAddAttachmentModal = true; hide = false">
+        <i class="fa fa-plus me-2"></i>
+        {{ translations?.add?.label }}
+      </button>
+    </div>
+
+
+    <!-- Form Inputs Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+
+      <div>
+        <label for="InternalFieldName">{{ translations?.InternalFieldName?.label }}</label>
+        <input type="text" class="form-input" [placeholder]="translations?.InternalFieldName?.label"
+          id="InternalFieldName" formControlName="InternalFieldName" />
+      </div>
+      <div>
+        <label for="TitleAr">{{ translations?.Name?.label }}</label>
+        <input type="text" class="form-input" [placeholder]="translations?.Name?.label" id="TitleAr"
+          formControlName="TitleAr" />
+      </div>
+      <div>
+        <label for="TitleEn">{{ translations?.NameEN?.label }}</label>
+        <input type="text" class="form-input" [placeholder]="translations?.NameEN?.label" id="TitleEn"
+          formControlName="TitleEn" />
+      </div>
+      <div>
+        <label for="MAX_Length">{{ translations?.MAX_Length?.label }}</label>
+        <input type="number" class="form-input" [placeholder]="translations?.MAX_Length?.label" id="MAX_Length"
+          formControlName="MAX_Length" />
+      </div>
+      <div>
+        <label for="FieldType">{{ translations?.FieldType?.label }}
+
+        </label>
+        <ng-select formControlName="FieldType" [items]="ServiceTypes" id="FieldType" bindLabel="TypeID"
+          bindValue="TypeID" [searchable]="true" [searchFn]="customSearchFn" aria-labelledby="FieldSource-label">
+          <span id="FieldType-label" class="sr-only">{{ translations?.FieldType?.label }}</span>
+          <ng-template ng-label-tmp let-item="item">
+            {{ translate.currentLang === 'ae' ? item.TypeAr : item.TitleEn }}
+          </ng-template>
+          <ng-template ng-option-tmp let-item="item">
+            {{ translate.currentLang === 'ae' ? item.TypeAr : item.TitleEn }}
+          </ng-template>
+        </ng-select>
+
+      </div>
+
+      <div>
+        <label for="Status">{{ translations?.Activited?.label }}</label>
+        <select id="Status" formControlName="IsActive" class="form-select text-white-dark"
+          aria-labelledby="Status-label">
+          <span id="Status-label" class="sr-only">{{ translations?.Activited?.label }}</span>
+          <option [ngValue]="null">{{ translations?.AllStatus?.label }}</option>
+          <option [ngValue]="true">{{ translations?.Active?.label }}</option>
+          <option [ngValue]="false">{{ translations?.NotActive?.label }}</option>
+        </select>
+      </div>
+    </div>
+
+
+
+    <!-- Action Buttons -->
+    <div class="flex flex-wrap justify-center gap-3 mt-6">
+      <!-- Search -->
+      <button type="submit" class="btn btn-primary" title="{{ translations?.Search?.label  }}">
+        <icon-search class="me-2"></icon-search>
+        <span>{{ translations?.search?.label }}</span>
+      </button>
+
+      <!-- Reset -->
+      <button type="button" class="btn btn-primary" (click)="onReset()" title="{{ translations?.Reset?.label  }}">
+        <icon-restore class="me-2"></icon-restore>
+        {{ translations?.Reset?.label }}
+      </button>
+
+      <!-- Export -->
+      <button type="button" class="btn btn-primary" (click)="exportTOExcel()"
+        title="{{ translations?.ExportReport?.label }}">
+        <icon-file class="me-2"></icon-file>
+        {{ translations?.ExportReport?.label }}
+      </button>
+    </div>
+  </form>
+  <!-- View -->
+  <!-- أزرار الأعمدة والترتيب -->
+<div class="space-y-3 mb-4">
+    <div *ngIf="rows.length > 0 && !isLoading" class="flex justify-between items-center p-3 gap-3 bg-white rounded-lg shadow-sm border border-gray-200">
+        <div></div>
+
+        <div class="flex gap-2">
+            <!-- أزرار تبديل العرض -->
+            <div class="flex gap-1 border border-gray-300 rounded-lg">
+                <button (click)="toggleViewMode('table')"
+                    [ngClass]="viewMode === 'table' ? 'bg-primary text-white' : 'bg-white text-gray-600 hover:bg-gray-100'"
+                    class="px-3 py-2 rounded transition-all flex items-center gap-2"
+                    [title]="translations?.TableView?.label || 'عرض الجدول'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                </button>
+                <button (click)="toggleViewMode('cards')"
+                    [ngClass]="viewMode === 'cards' ? 'bg-primary text-white' : 'bg-white text-gray-600 hover:bg-gray-100'"
+                    class="px-3 py-2 rounded transition-all flex items-center gap-2"
+                    [title]="translations?.CardsView?.label || 'عرض الكروت'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- زر الترتيب -->
+            <div class="relative hide-on-small-screen">
+                <button (click)="openDropdown('sort'); $event.stopPropagation()"
+                    class="btn flex items-center gap-2 relative toggle-sort-btn shadow-sm hover:shadow-md transition-shadow"
+                    [ngClass]="toggleSortDropdown ? 'btn-primary' : 'btn-outline-primary'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                    </svg>
+                    {{ translations?.sort?.label || 'ترتيب' }}
+                </button>
+
+                <div *ngIf="toggleSortDropdown"
+                    class="absolute top-full mt-2 rtl:left-0 ltr:right-0 bg-white border border-gray-300 rounded-lg shadow-xl z-50 p-4 w-72 dropdown-container"
+                    (click)="$event.stopPropagation()">
+
+                    <div class="mb-3 pb-3 border-b border-gray-200">
+                        <button (click)="resetSort()"
+                            class="w-full px-3 py-2 text-sm font-medium text-white bg-primary rounded hover:bg-primary/90 transition flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            {{ translations?.ResetSort?.label || 'إعادة تعيين الترتيب' }}
+                        </button>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ translations?.SortBy?.label || 'ترتيب حسب' }}
+                        </label>
+                        <ng-select [items]="sortableColumns" bindLabel="title" [(ngModel)]="selectedSortColumn"
+                            (change)="onSortColumnChange($event)"
+                            [placeholder]="translations?.SelectColumn?.placeholder || 'اختر عمود'" class="custom-multiselect"
+                            [clearable]="false" [ngModelOptions]="{standalone: true}">
+                        </ng-select>
+                    </div>
+
+                    <div class="border-t border-gray-200 pt-3">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ translations?.Direction?.label || 'الاتجاه' }}
+                        </label>
+                        <div class="flex gap-2">
+                            <button (click)="setSortDirection(1)"
+                                [class.bg-primary]="currentSortDirection === 1"
+                                [class.text-white]="currentSortDirection === 1"
+                                [class.bg-gray-100]="currentSortDirection !== 1"
+                                [class.text-gray-700]="currentSortDirection !== 1"
+                                class="flex-1 px-3 py-2 text-sm font-medium rounded hover:opacity-90 transition flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                                </svg>
+                                {{ translations?.Ascending?.label || 'تصاعدي' }}
+                            </button>
+                            <button (click)="setSortDirection(2)"
+                                [class.bg-primary]="currentSortDirection === 2"
+                                [class.text-white]="currentSortDirection === 2"
+                                [class.bg-gray-100]="currentSortDirection !== 2"
+                                [class.text-gray-700]="currentSortDirection !== 2"
+                                class="flex-1 px-3 py-2 text-sm font-medium rounded hover:opacity-90 transition flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                                {{ translations?.Descending?.label || 'تنازلي' }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- زر الأعمدة -->
+            <div class="relative hide-on-small-screen">
+                <button (click)="openDropdown('columns'); $event.stopPropagation()"
+                    class="btn flex items-center gap-2 relative toggle-columns-btn shadow-sm hover:shadow-md transition-shadow"
+                    [ngClass]="toggleColumnsDropdown ? 'btn-primary' : 'btn-outline-primary'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+                    </svg>
+                    {{ translations?.columns?.label || 'أعمدة' }}
+                </button>
+
+                <div *ngIf="toggleColumnsDropdown"
+                    class="absolute top-full mt-2 rtl:left-0 ltr:right-0 bg-white border border-gray-300 rounded-lg shadow-xl z-50 p-4 w-64 max-h-96 overflow-y-auto dropdown-container"
+                    (click)="$event.stopPropagation()">
+
+                    <div class="mb-3 pb-3 border-b border-gray-200">
+                        <button (click)="resetColumns()"
+                            class="w-full px-3 py-2 text-sm font-medium text-white bg-primary rounded hover:bg-primary/90 transition flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            {{ translations?.Reset?.label || 'إعادة تعيين' }}
+                        </button>
+                    </div>
+
+                    <div class="flex gap-2 mb-3 pb-3 border-b border-gray-200">
+                        <button (click)="selectAllColumns()"
+                            [ngClass]="{'bg-primary text-white': areAllColumnsVisible, 'bg-gray-100 text-gray-700': !areAllColumnsVisible}"
+                            class="flex-1 px-3 py-1.5 text-xs font-medium rounded hover:opacity-90 transition">
+                            {{ translations?.selectAll?.label || 'تحديد الكل' }}
+                        </button>
+                        <button (click)="hideAllColumns()"
+                            [ngClass]="{'bg-primary text-white': areAllColumnsHidden, 'bg-gray-100 text-gray-700': !areAllColumnsHidden}"
+                            class="flex-1 px-3 py-1.5 text-xs font-medium rounded hover:opacity-90 transition">
+                            {{ translations?.hideAll?.label || 'إخفاء الكل' }}
+                        </button>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label *ngFor="let col of allColumns"
+                            class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                            <input type="checkbox" [checked]="col.visible" (change)="toggleColumn(col.field)"
+                                class="w-4 h-4 text-primary rounded focus:ring-primary burgundy-checkbox">
+                            <span class="text-sm">{{ col.title }}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Table View -->
+<app-fees-table *ngIf="viewMode === 'table'" 
+    [rows]="rows" 
+    [cols]="cols" 
+    [isLoading]="isLoading"
+    [isArabic]="isArabic" 
+    [translations]="translations" 
+    [paginationInfo]="paginationInfo"
+    [currentSortField]="currentSortField" 
+    [currentSortDirection]="currentSortDirection" 
+    [expandedRow]="expandedRow"
+    [expandedRowDetails]="expandedRowDetails" 
+    [sortableColumns]="sortableColumns"
+    [selectedSortColumn]="selectedSortColumn"
+    [showPaymentLegend]="false"
+    [showStatusLegend]="false"
+    [showSubmissionLegend]="false"
+    [showDurationLegend]="false"
+    [showEscalationLegend]="false"
+    [showDutyFreeLegend]="false"
+    [showLateRoleLegend]="false"
+    [dutyFreeTypes]="[]"
+    [lateRoles]="[]"
+    [rowIdentifierField]="'ServiceFieldID'"
+    [hideExpandIconWhenLicenseEmpty]="false"
+    [featuredFields]="['IsActive']"
+    (onSort)="onSortChange($event)" 
+    (onPageChange)="onPageChange($event)"
+    (onPageSizeChange)="onPageSizeChange($event)" 
+    (onActionClick)="handleActionClick($event)"
+    (onRowExpand)="toggleRowExpand($event)">
+</app-fees-table>
+
+<!-- Cards View -->
+<div *ngIf="viewMode === 'cards' && (rows.length > 0 || isLoading)" class="mt-6">
+    <!-- Loading Skeleton -->
+    <div *ngIf="isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div *ngFor="let _ of [].constructor(6)" class="bg-white rounded-xl shadow-md p-6 animate-pulse">
+            <div class="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
+            <div class="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+            <div class="h-3 bg-gray-200 rounded w-2/3"></div>
+        </div>
+    </div>
+
+    <!-- Cards Grid -->
+    <div *ngIf="!isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div *ngFor="let row of rows; let i = index"
+            class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 border border-gray-200 hover:border-primary">
+
+            <!-- Header -->
+            <div class="flex justify-between items-start mb-4 pb-3 border-b border-gray-200">
+                <div class="flex-1">
+                    <h3 class="text-lg font-bold text-gray-800 mb-1">
+                        {{ isArabic ? row.TitleAr : row.TitleEn }}
+                    </h3>
+                    <p class="text-sm text-gray-500">
+                        {{ row.InternalFieldName }}
+                    </p>
+                </div>
+                <div class="flex flex-col gap-1 items-end">
+                    <!-- Status Badge -->
+                    <span *ngIf="row.IsActive" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-bold shadow-md bg-gradient-to-br from-green-50 to-green-100 text-green-800 border-2 border-green-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        {{ translations?.Active?.label }}
+                    </span>
+                    <span *ngIf="!row.IsActive" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-bold shadow-md bg-gradient-to-br from-red-50 to-red-100 text-red-800 border-2 border-red-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                        </svg>
+                        {{ translations?.NotActive?.label }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Details Grid -->
+            <div class="space-y-2.5">
+                <!-- Row 1: Field Type & Max Length -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex flex-col">
+                        <span class="text-xs text-gray-500 mb-1">{{ translations?.FieldType?.label }}</span>
+                        <span class="text-sm font-semibold text-gray-800">{{ row.FieldType || '-' }}</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xs text-gray-500 mb-1">{{ translations?.MAX_Length?.label }}</span>
+                        <span class="text-sm font-semibold text-gray-800">{{ row.MAX_Length || '-' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center">
+                <span class="text-xs text-gray-500">
+                    {{ translations?.Serial?.label }}: {{ row.Serial }}
+                </span>
+                <button class="text-primary hover:text-primary/80 transition" (click)="edit(row.ServiceFieldID); $event.stopPropagation()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination for Cards View -->
+    <div class="mt-6 p-4 bg-white rounded-xl shadow-md flex flex-col sm:flex-row justify-between items-center gap-3 border border-gray-200">
+        <div class="text-sm text-gray-600">
+            {{ paginationInfoText }}
+        </div>
+
+        <div class="flex items-center gap-2">
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === 1" (click)="onPageChange(1)">
+                «
+            </button>
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === 1" (click)="onPageChange(paginationInfo.CurrentPage - 1)">
+                ‹
+            </button>
+
+            <div class="flex gap-1">
+                <ng-container *ngFor="let page of getPageNumbers()">
+                    <span *ngIf="page === -1" class="px-2 text-gray-400">...</span>
+                    <button *ngIf="page !== -1"
+                        class="w-9 h-9 flex items-center justify-center rounded-full border transition font-medium"
+                        [ngClass]="{'bg-primary text-white border-primary': page === paginationInfo.CurrentPage, 'border-gray-300 text-gray-600 hover:bg-primary hover:text-white hover:border-primary': page !== paginationInfo.CurrentPage}"
+                        (click)="onPageChange(page)">
+                        {{ page }}
+                    </button>
+                </ng-container>
+            </div>
+
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === paginationInfo.TotalPages"
+                (click)="onPageChange(paginationInfo.CurrentPage + 1)">
+                ›
+            </button>
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === paginationInfo.TotalPages"
+                (click)="onPageChange(paginationInfo.TotalPages)">
+                »
+            </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <label for="cardPageSize" class="text-sm text-gray-600 whitespace-nowrap">
+                {{ translations?.rowsPerPage?.label || (isArabic ? 'عدد الصفوف:' : 'Rows:') }}
+            </label>
+            <select id="cardPageSize"
+                class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-primary focus:border-primary bg-white"
+                [(ngModel)]="paginationInfo.PageSize" (ngModelChange)="onPageSizeChange($event)" [ngModelOptions]="{standalone: true}">
+                <option [value]="10">10</option>
+                <option [value]="20">20</option>
+                <option [value]="50">50</option>
+                <option [value]="100">100</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- No Data Message -->
+<div *ngIf="rows.length === 0 && !isLoading"
+    class="mt-6 p-8 bg-white rounded-xl border-2 border-dashed border-gray-300 text-center">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+    </svg>
+    <h3 class="text-xl font-semibold text-gray-700 mb-2">
+        {{ isArabic ? 'لا توجد بيانات' : 'No Data Found' }}
+    </h3>
+    <p class="text-gray-500 mb-4">
+        {{ isArabic ? 'لم يتم العثور على نتائج. يرجى تعديل معايير البحث والمحاولة مرة أخرى.' : 'No results found. Please adjust your search criteria and try again.' }}
+    </p>
+</div>
+
+</ng-container>
+
+
+<div *ngIf="showTermsModal" class="fixed zindex-88 inset-0 z-50 flex items-center justify-center bg-black/50">
+  <div class="bg-white dark:bg-[#0e1726] rounded-2xl shadow-xl w-full max-w-2xl p-6 relative animate-fadeIn">
+    <div class="flex justify-between items-center">
+
+
+      <!-- Title -->
+      <h3 class="text-xl font-bold">
+        {{ 'الشروط والأحكام' }}
+      </h3>
+      <!-- Close Button -->
+      <button (click)="closeTerms()" class="bg-primary text-white">
+        <icon-x></icon-x>
+      </button>
+
+
+
+
+
+    </div>
+
+    <!-- Content -->
+    <div class="max-h-[400px] overflow-y-auto text-gray-700 dark:text-gray-200 leading-relaxed">
+      <p [innerHTML]="oldTitleAr"></p>
+
+
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end mt-6">
+      <button (click)="closeTerms()" class="btn btn-primary">
+        {{ 'إغلاق' }}
+      </button>
+    </div>
+  </div>
+</div>
+<div *ngIf="showTermsModalEn" class="fixed zindex-88 inset-0 z-50 flex items-center justify-center bg-black/50">
+  <div class="bg-white dark:bg-[#0e1726] rounded-2xl shadow-xl w-full max-w-2xl p-6 relative animate-fadeIn">
+    <div class="flex justify-between items-center">
+
+
+      <!-- Close Button -->
+      <button (click)="closeTermsEn()" class="bg-primary text-white">
+        <icon-x></icon-x>
+      </button>
+      <!-- Title -->
+      <h3 class="text-xl font-bold mb-6">
+        {{ 'Terms & Conditions' }}
+      </h3>
+
+
+
+
+
+    </div>
+
+    <!-- Content -->
+    <div class="max-h-[400px] overflow-y-auto text-gray-700 dark:text-gray-200 leading-relaxed">
+      <p [innerHTML]="oldTitleEn"></p>
+
+
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end">
+      <button (click)="closeTermsEn()" class="btn btn-primary">
+        {{ 'Close' }}
+      </button>
+    </div>
+  </div>
+</div>

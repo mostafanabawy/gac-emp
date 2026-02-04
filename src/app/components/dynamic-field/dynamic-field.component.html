@@ -1,0 +1,1172 @@
+<div [formGroup]="form" *ngIf="field && field.FieldVisible === true" class="mb-4 w-full"
+    [ngClass]="{'!hidden': shouldBeHidden(field)}">
+    <ng-container *ngIf="field.FieldType === 18">
+
+        <app-long-text-popup>
+            <p class="text-wrap" [innerHTML]="sanitizedHtml">
+            </p>
+
+        </app-long-text-popup>
+        <!-- <div class="bg-gray-50 w-full p-3 rounded-md shadow-md">
+            <div [innerHTML]="sanitizedHtml" class="text-wrap w-full" [ngClass]="{'line-clamp-2': !seeMore}"
+                role="paragraph"></div>
+        </div> -->
+    </ng-container>
+
+    @if (field.FieldType !== 18 && field.FieldType !== 16 && field.FieldType !== 9 && field.FieldType !== 8) {
+    <div class="flex gap-2 items-center relative">
+        <label
+            [for]="field.FieldType === 19 || field.FieldType === 6? 'select-input-' + field.ServiceFieldID : field.InternalFieldName"
+            class="flex text-sm font-medium text-gray-700">
+            @if(store.index.locale == 'en' && field.FieldType !== 18){
+            {{ field.TitleEn || "No Value"}}
+            }@else {
+            {{ field.TitleAr || "لا يوجد قيمة"}}
+            }
+            <span
+                *ngIf="control?.hasError('required') || control?.hasError('noNegativeOne') || control?.hasError('requiredArray')"
+                class="text-red-500">*</span>
+        </label>
+        @if(field.hasHistory){
+        <button class="text-primary underline ltr:-ml-1 rtl:-mr-1 transform -translate-y-1"
+            (click)="openHistoryModal()">
+            <icon-history-clock class="h-4 text-primary"></icon-history-clock>
+        </button>
+        }
+        @if (field.ApiFieldAddress.includes('cp=') && field.InternalFieldName === 'CommercialLicenseNumber' &&
+        control?.value) {
+        <button class="text-primary underline" (click)="openCpModal()" [title]="translations()?.CommercialPermitOpenBtn.label"
+            [attr.aria-label]="translations()?.CommercialPermitOpenBtn.label">
+            <icon-eye class="h-6 text-primary"></icon-eye>
+        </button>
+        <app-cp-modal [isOpened]="cpModalVisible" (closed)="closeCpModal()" (isPrint)="exportDashboard($event)"
+            [cpURL]=" field.ApiFieldAddress + (control?.value)" [loader]="exportPDFBtnLoader()"></app-cp-modal>
+        }
+
+        @if(field.ApiFieldAddress.includes('cr=') && field.InternalFieldName === 'CommercialRegistrationNo' &&
+        control?.value) {
+        <button class="text-primary underline" (click)="openCrModal()" [title]="translations()?.CommercialRegOpenBtn.label"
+            [attr.aria-label]="translations()?.CommercialRegOpenBtn.label">
+
+            <icon-eye class="h-6 text-primary"></icon-eye>
+        </button>
+        <app-cr-modal [isOpened]="crModalVisible" [loader]="exportPDFBtnLoader()" (closed)="closeCrModal()"
+            (isPrint)="exportDashboard($event)" [crURL]=" field.ApiFieldAddress + (control?.value)"></app-cr-modal>
+        }
+
+        @if(field.FieldType === 10 && field.HasModel){
+        <span class="text-primary flex gap-1">
+            <icon-stars class="w-5 h-5"></icon-stars> {{translations()?.aiFileLabel.label}}
+        </span>
+        }
+
+        <!--  @if (field.ApiFieldAddress.includes('cr=')) {
+        <span class="text-primary flex gap-1 absolute inset-0 justify-end pointer-events-none" [title]="translations()?.aiFieldLabel.label">
+            <icon-bolt-circle class="w-5 h-5"></icon-bolt-circle>
+        </span>
+        }
+        @if (field.ApiFieldAddress.includes('cp=')) {
+        <span class="text-primary flex gap-1 absolute inset-0 justify-end pointer-events-none" [title]="translations()?.aiFieldLabel.label">
+            <icon-bolt class="w-5 h-5"></icon-bolt>
+        </span>
+        } -->
+    </div>
+    }
+
+    <!--  @if (field.FieldType !== 18 && field.FieldType !== 16 && field.FieldType !== 9 && field.FieldType !== 8) {
+    <label
+        [for]="field.FieldType === 19 || field.FieldType === 6? 'select-input-' + field.ServiceFieldID : field.InternalFieldName"
+        class="flex text-sm font-medium text-gray-700">
+        @if(store.index.locale == 'en' && field.FieldType !== 18){
+        {{ field.TitleEn || "No Value"}}
+        }@else {
+        {{ field.TitleAr || "لا يوجد قيمة"}}
+        }
+        <span
+            *ngIf="control?.hasError('required') || control?.hasError('noNegativeOne') || control?.hasError('requiredArray')"
+            class="text-red-500">*</span>
+    </label>
+    } -->
+    <!-- [readonly]="shouldBeDim() ? true : null" -->
+    <ng-container
+        *ngIf="field.FieldType === 1 || field.FieldType === 12 || field.FieldType === 15 || field.FieldType === 11 || field.FieldType === 20 || field.FieldType === 21 || field.FieldType === 24 || field.FieldType === 22">
+        @if(field.FieldAddress === 'Fee_Calculation' && control?.value === 0){
+        <p class="form-input text-primary" [ngClass]="{'bg-gray-100 !cursor-not-allowed md:col-span-2': shouldBeDim()}">
+            {{ translations()?.AdminFeesNoValue.label }}
+        </p>
+        }@else if((field.FieldAddress === 'Fee_Calculation' && control?.value !== 0) || field.InternalFieldName !==
+        'Fee_Calculation'){
+        <input [type]="getInputType()" [id]="field.InternalFieldName" [formControlName]="field.InternalFieldName"
+            [placeholder]="store.index.locale == 'en'? field.DescriptionEn: field.DescriptionAr"
+            [readonly]="shouldBeDim() ? true : null" (input)="checkDirection($event); enforceMaxLength($event, field.MAX_Length); 
+            ((field.FieldType === 12 || field.FieldType === 15 || field.FieldType === 20) ? enforcePositiveNumber($event) : '');
+             (field.FieldType === 24? enforceCompoundNumber($event) : '')" class="form-input" [ngClass]="{'bg-gray-100 !cursor-not-allowed md:col-span-2': shouldBeDim(),
+            'direction-ltr': !isArabic, 'direction-rtl': isArabic, '!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en',
+            '!border-2 rounded-md !border-red-500': control?.invalid && control?.touched
+            }">
+        }
+    </ng-container>
+
+    <ng-container *ngIf="field.FieldType === 2">
+        <textarea [id]="field.InternalFieldName" [formControlName]="field.InternalFieldName"
+            [readonly]="shouldBeDim() ? true : null" (keyup)="enforceMaxLength($event, field.MAX_Length)"
+            [readonly]="shouldBeDim() ? true : null" rows="3" class="form-input"
+            [ngClass]="{'bg-gray-100 !cursor-not-allowed md:col-span-2': shouldBeDim(), 'border-red-500': control?.invalid && control?.touched,
+            'direction-ltr': !isArabic, 'direction-rtl': isArabic, '!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en'}"></textarea>
+    </ng-container>
+
+    <ng-container *ngIf="field.FieldType === 3">
+        <input type="text" [id]="field.InternalFieldName" mwlFlatpickr [options]="basic"
+            [readonly]="shouldBeDim() ? true : null" [formControlName]="field.InternalFieldName" class="form-input"
+            [ngClass]="{'!border-2 rounded-md !border-red-500': control?.invalid && control?.touched,
+                'bg-gray-100 !cursor-not-allowed md:col-span-2': shouldBeDim()
+            }">
+    </ng-container>
+    <ng-container *ngIf="field.FieldType === 23">
+        <input type="text" [id]="field.InternalFieldName" mwlFlatpickr [options]="dateTime"
+            [readonly]="shouldBeDim() ? true : null" [formControlName]="field.InternalFieldName"
+            class="form-input direction-ltr ltr:text-left rtl:text-right" [ngClass]="{'!border-2 rounded-md !border-red-500': control?.invalid && control?.touched,
+                'bg-gray-100 !cursor-not-allowed md:col-span-2': shouldBeDim()
+            }">
+    </ng-container>
+
+    <ng-container *ngIf="field.FieldType === 7">
+        <input type="time" [id]="field.InternalFieldName" [formControlName]="field.InternalFieldName"
+            [readonly]="shouldBeDim() ? true : null"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm cursor-pointer" [ngClass]="{'bg-gray-100 !cursor-not-allowed md:col-span-2': shouldBeDim(), 'border-red-500': control?.invalid && control?.touched
+            }">
+    </ng-container>
+
+    <ng-container *ngIf="field.FieldType === 4">
+        <div class="mt-1 flex flex-wrap gap-2 items-center space-y-2 w-full">
+            <ng-container
+                *ngFor="let lookup of filteredLookupValues() | availableItems: field : newApplicationService.requestData()">
+                <div *ngIf="lookup.LookupID !== -1" class="flex items-center gap-2">
+                    <label class="ml-2 block text-sm text-gray-900 cursor-pointer hover:text-primary">
+                        <input type="checkbox" [name]="field.InternalFieldName" [value]="lookup.LookupID"
+                            [checked]="isCheckboxChecked(lookup.LookupID, lookup.disabled)"
+                            (change)="onMultiCheckboxChange($event, lookup.LookupID, lookup.disabled)"
+                            class="form-checkbox" [ngClass]="{'bg-gray-100 !cursor-not-allowed': shouldBeDim()}"
+                            [disabled]="shouldBeDim()">
+                        @if(store.index.locale == 'en'){
+                        {{ lookup.TitleEn }}
+                        }@else {
+                        {{ lookup.TitleAr }}
+                        }
+                    </label>
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="field.FieldType === 16">
+        <div class="mt-1 flex flex-wrap gap-2 items-center space-y-2 w-full">
+            <ng-container>
+                @if(field.FieldAddress === 'TechnicalApprovalFile'){
+                <div class="mb-3 w-full">
+                    @for (item of techFiles(); track $index) {
+                    <div>
+                        <a [href]="newApplicationService.baseUrl + item.TechnicalApprovalFile" target="_blank"
+                            class="w-full flex flex-wrap gap-1 items-center cursor-pointer underline text-primary mb-3"
+                            (click)="clickItem(item)">
+                            <img src="/assets\images\icons\Group 56880.svg" alt="file icon" class="h-8">
+                            <span class="text-lg">
+                                @if (store.index.locale === 'en') {
+                                {{translations()?.technicalApprovalTitle.label +' '+ item.TitleEn }}
+                                }@else {
+                                {{translations()?.technicalApprovalTitle.label + item.TitleAr }}
+                                }
+                            </span>
+
+                            @if(TechnicalApprovalFileClickedMap[item.TechnicalApprovalFile]){
+                            <icon-circle-check class="text-green-800 h-7"></icon-circle-check>
+                            }
+
+                        </a>
+                    </div>
+
+                    }
+                </div>
+                }
+                <div class="flex items-center gap-2">
+                    @if(field.FieldAddress === 'TechnicalApprovalFile'){
+                    <label class="ml-2 block text-sm text-gray-900 cursor-pointer hover:text-primary">
+                        <input #techCheckbox type="checkbox" [name]="field.InternalFieldName" [value]="field.TitleEn"
+                            [checked]="isCheckboxChecked(field.TitleEn)" [disabled]="shouldBeDim()"
+                            (click)="onSingleCheckboxClick($event, field.InternalFieldName)" class="form-checkbox"
+                            [ngClass]="{'bg-gray-100 !cursor-not-allowed': shouldBeDim()}">
+                        @if(store.index.locale == 'en'){
+                        {{ field.TitleEn }}
+                        }@else {
+                        {{ field.TitleAr }}
+                        }
+                        <span
+                            *ngIf="(field.FieldDefaultRequired || control?.hasError('required')) && (control?.invalid)"
+                            class="text-red-500">*</span>
+                    </label>
+                    }@else if(field.FieldAddress === 'TermsConditions'){
+                    <label class="ml-2 block text-sm underline font-[600] cursor-pointer text-primary">
+                        <input type="checkbox" [name]="field.InternalFieldName" [value]="field.TitleEn"
+                            [checked]="isCheckboxChecked(field.TitleEn)" [disabled]="shouldBeDim()"
+                            (click)="onSingleCheckboxClick($event, field.InternalFieldName)" class="form-checkbox"
+                            [ngClass]="{'bg-gray-100 !cursor-not-allowed': shouldBeDim()}">
+                        @if(store.index.locale == 'en'){
+                        {{ field.TitleEn }}
+                        }@else {
+                        {{ field.TitleAr }}
+                        }
+                        <span
+                            *ngIf="(field.FieldDefaultRequired || control?.hasError('required')) && (control?.invalid)"
+                            class="text-red-500">*</span>
+                    </label>
+                    }@else {
+                    <label class="ml-2 block text-sm font-[600] cursor-pointer hover:text-primary">
+                        <input type="checkbox" [name]="field.InternalFieldName" [value]="field.TitleEn"
+                            [checked]="isCheckboxChecked(field.TitleEn)" [disabled]="shouldBeDim()"
+                            (click)="onSingleCheckboxClick($event, field.InternalFieldName)" class="form-checkbox"
+                            [ngClass]="{'bg-gray-100 !cursor-not-allowed': shouldBeDim()}">
+                        @if(store.index.locale == 'en'){
+                        {{ field.TitleEn }}
+                        }@else {
+                        {{ field.TitleAr }}
+                        }
+                        <span
+                            *ngIf="(field.FieldDefaultRequired || control?.hasError('required')) && (control?.invalid)"
+                            class="text-red-500">*</span>
+                    </label>
+                    }
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
+
+
+
+    <ng-container *ngIf="field.FieldType === 5 && field.LookupValues">
+        <div class="mt-1 w-full flex gap-2">
+            <ng-container
+                *ngFor="let lookup of filteredLookupValues() | availableItems: field : newApplicationService.requestData()">
+                <div *ngIf="lookup.LookupID !== -1" class="">
+                    <label class="flex items-center cursor-pointer text-sm text-gray-900 hover:text-primary">
+                        <input type="radio" [attr.name]="field.InternalFieldName" [value]="lookup.LookupID"
+                            [formControlName]="field.InternalFieldName" (change)="onLookupChange(lookup)"
+                            class="h-4 w-4 border-gray-300 form-radio" [ngClass]="{'bg-gray-100 !cursor-not-allowed md:col-span-2': shouldBeDim()
+                        }">
+                        @if(store.index.locale == 'en'){
+                        {{ lookup.TitleEn }}
+                        }@else {
+                        {{ lookup.TitleAr }}
+                        }
+                    </label>
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="(field.FieldType === 6 && field.LookupValues)">
+        <ng-select [formControlName]="field.InternalFieldName" [id]="field.InternalFieldName"
+            [notFoundText]="translations()?.ngSelectSearchErr.label"
+            [appIdSetter]="'select-input-' + field.ServiceFieldID" [readonly]="shouldBeDim() ? true : null"
+            (change)="onLookupChange($event)" [clearable]="false"
+            [items]="filteredLookupValues() | availableItems: field : newApplicationService.requestData()"
+            (open)="onOpen(field.InternalFieldName)" (close)="onClose(field.InternalFieldName)"
+            [readonly]="shouldBeDim() ? true : null" [bindLabel]="store.index.locale == 'en'? 'TitleEn': 'TitleAr'"
+            bindValue="LookupID" [searchable]="true" class="w-full block custom-multiselect z-10 cursor-pointer"
+            [ngClass]="{
+                    'disabled': shouldBeDim(),
+                    'z-[11]': openSelect === field.InternalFieldName,
+                    '!border-2 rounded-md !border-red-500': control?.invalid && control?.touched
+                }">
+        </ng-select>
+    </ng-container>
+    <ng-container *ngIf="field.FieldType === 8">
+        <div [formArrayName]="field.InternalFieldName" [id]="field.InternalFieldName">
+            @if (getFormArray(field.InternalFieldName)?.controls!.length > 0 && (!shouldBeDim() || (shouldBeDim() &&
+            field.GDXDim))) {
+            @for (formGroup of getFormArray(field.InternalFieldName)?.controls; track $index) {
+            @if ($index === getFormArray(field.InternalFieldName)?.controls!.length - 1) {
+            <div [formGroupName]="$index" class="border border-gray-300 rounded-lg p-4 mb-4 max-w-full" [ngClass]="{'hidden': (shouldBeDim() &&
+            field.GDXDim && !editFlag())}">
+
+                @for (row of groupTableServiceFieldsByRow(field.TableServiceFields!); track $index) {
+                <div class="flex flex-wrap gap-6 mb-4 w-full items-start">
+                    @for (tableField of row | sortByOrder: 'OrderID'; track tableField.ServiceTableFieldID) {
+                    <div class="flex flex-col flex-1" [ngClass]="{'hidden': shouldBeHiddenTableField(tableField)}">
+                        <!-- Label for most field types -->
+                        <div class="flex gap-1">
+                            @if (tableField.FieldType !== 14 && tableField.FieldType !== 16 && tableField.FieldType !==
+                            9 &&
+                            !tableField.IsSystemField) {
+                            <label [for]="tableField.InternalFieldName" class="flex text-sm font-medium text-gray-700">
+                                @if(store.index.locale == 'en'){
+                                {{ tableField.TitleEn || "No Value"}}
+                                }@else {
+                                {{ tableField.TitleAr || "لا يوجد قيمة"}}
+                                }
+                                <span
+                                    *ngIf="tableField.Required && (getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required') || getControlFromGroup(formGroup, tableField.InternalFieldName)?.invalid)"
+                                    class="text-red-500">*</span>
+                            </label>
+                            }
+
+                            @if(tableField.FieldType === 10 && tableField.HasModel){
+                            <span class="text-primary flex gap-1">
+                                <icon-stars class="w-5 h-5"></icon-stars> {{translations()?.aiFileLabel.label}}
+                            </span>
+                            }
+                        </div>
+
+                        <!-- TextBox, Number, Float, UniqueIdentifier, Phone, Email -->
+                        <ng-container
+                            *ngIf="(tableField.FieldType === 1 || tableField.FieldType === 12 || tableField.FieldType === 15 || tableField.FieldType === 11 || tableField.FieldType === 20 || tableField.FieldType === 21 || tableField.FieldType === 22 || tableField.FieldType === 24) && !tableField.IsSystemField">
+                            <input [type]="getTableFieldInputType(tableField.FieldType)"
+                                (input)="checkDirection($event); enforceMaxLength($event, tableField.MAX_Length, tableField); 
+            ((tableField.FieldType === 12 || tableField.FieldType === 15 || tableField.FieldType === 20) ? enforcePositiveNumberForTable($event, tableField) : '');
+            ((tableField.FieldType === 11 || tableField.FieldType === 24) ? enforceCompoundNumber($event, tableField) : '');" [id]="tableField.InternalFieldName"
+                                [readonly]="(shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || (this.shouldBeDim() && !field.isGDXVal)"
+                                [formControlName]="tableField.InternalFieldName" class="form-input flex-1" [ngClass]="{'!border-2 rounded-md !border-red-500': getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required') && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched, 'direction-ltr': !isArabic, 'direction-rtl': isArabic, '!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en',
+                                    'bg-gray-100 !cursor-not-allowed md:col-span-2': (shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || this.shouldBeDim()
+                                }">
+                        </ng-container>
+
+                        <!-- TextArea -->
+                        <ng-container *ngIf="tableField.FieldType === 2 && !tableField.IsSystemField">
+                            <textarea [id]="tableField.InternalFieldName"
+                                [formControlName]="tableField.InternalFieldName" rows="3" class="form-input w-full"
+                                [readonly]="(shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || (this.shouldBeDim() && !field.isGDXVal)"
+                                (keyup)="enforceMaxLength($event, field.MAX_Length)" [ngClass]="{'!border-2 rounded-md !border-red-500': getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required') && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched,
+                                    'bg-gray-100 !cursor-not-allowed md:col-span-2': (shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || (this.shouldBeDim() && !field.isGDXVal)
+                                }">
+                                    </textarea>
+                        </ng-container>
+
+                        <!-- Date -->
+                        <ng-container *ngIf="tableField.FieldType === 3 && !tableField.IsSystemField">
+                            <input type="text" [id]="tableField.InternalFieldName" mwlFlatpickr [options]="basic"
+                                [formControlName]="tableField.InternalFieldName" class="form-input" [ngClass]="{'!border-2 rounded-md !border-red-500': getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required') && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched,
+                                    'bg-gray-100 !cursor-not-allowed md:col-span-2': (shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || (this.shouldBeDim() && !field.isGDXVal)
+                                }">
+                        </ng-container>
+                        <!-- Date time -->
+                        <ng-container *ngIf="tableField.FieldType === 23 && !tableField.IsSystemField">
+                            <input type="text" [id]="tableField.InternalFieldName" mwlFlatpickr [options]="dateTime"
+                                [readonly]="(shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || this.shouldBeDim() ? true : null"
+                                [formControlName]="tableField.InternalFieldName"
+                                class="form-input direction-ltr ltr:text-left rtl:text-right"
+                                [ngClass]="{'!border-2 rounded-md !border-red-500': getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required') && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched,
+                                'bg-gray-100 !cursor-not-allowed md:col-span-2':(shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || (this.shouldBeDim() && !field.isGDXVal)}">
+                        </ng-container>
+
+                        <!-- Multi-Checkbox -->
+                        <ng-container *ngIf="tableField.FieldType === 4 && !tableField.IsSystemField">
+                            <div class="mt-1 flex flex-wrap gap-2 items-center space-y-2 w-full">
+                                <ng-container
+                                    *ngFor="let lookup of filteredLookupValues(tableField) | availableItems: tableField : newApplicationService.requestData()">
+                                    <div *ngIf="lookup.LookupID !== -1" class="flex items-center gap-2">
+                                        <label
+                                            class="ml-2 block text-sm text-gray-900 cursor-pointer hover:text-primary">
+                                            <input type="checkbox" [name]="tableField.InternalFieldName"
+                                                [disabled]="shouldBeDim()" [value]="lookup.LookupID"
+                                                [checked]="isCheckboxChecked(lookup.LookupID, lookup.disabled)"
+                                                (change)="onMultiCheckboxChange($event, lookup.LookupID, lookup.disabled)"
+                                                class="form-checkbox" [ngClass]="{
+                                        'pointer-events-none': shouldBeDim()
+                                    }">
+                                            @if(store.index.locale == 'en'){
+                                            {{ lookup.TitleEn }}
+                                            }@else {
+                                            {{ lookup.TitleAr }}
+                                            }
+                                        </label>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </ng-container>
+
+                        <!-- Radio Button -->
+                        <ng-container
+                            *ngIf="tableField.FieldType === 5 && !tableField.IsSystemField && tableField.LookupValues">
+                            <div class="mt-1 w-full">
+                                <div *ngFor="let lookup of field.LookupValues"
+                                    class="flex items-center mb-2 cursor-pointer">
+                                    <input type="radio" [id]="tableField.InternalFieldName + '-' + lookup.LookupID"
+                                        [name]="tableField.InternalFieldName" [value]="lookup.LookupID"
+                                        [disabled]="shouldBeDim()" [formControlName]="tableField.InternalFieldName"
+                                        (change)="onLookupChange($event)" class="h-4 w-4 border-gray-300">
+                                    <label [for]="tableField.InternalFieldName + '-' + lookup.LookupID"
+                                        class="ml-3 block text-sm font-medium text-gray-700">
+                                        {{ lookup.TitleAr }}
+                                    </label>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <!-- DropDown -->
+                        <ng-container
+                            *ngIf="tableField.FieldType === 6 && tableField.LookupValues && !tableField.IsSystemField">
+                            <div class="flex-1">
+                                <ng-select [formControlName]="tableField.InternalFieldName"
+                                    [notFoundText]="translations()?.ngSelectSearchErr.label"
+                                    [id]="tableField.InternalFieldName"
+                                    [readonly]="(shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || (this.shouldBeDim() && !field.isGDXVal)"
+                                    [appIdSetter]="'select-input-' + tableField.ServiceTableFieldID"
+                                    (change)="onLookupChange($event, getControlFromGroup(formGroup, tableField.InternalFieldName), tableField)"
+                                    [clearable]="false"
+                                    [items]="filteredLookupValues(tableField) | availableItems: tableField : newApplicationService.requestData()"
+                                    (open)="onOpen(tableField.InternalFieldName)"
+                                    (close)="onClose(tableField.InternalFieldName)"
+                                    [bindLabel]="store.index.locale == 'en'? 'TitleEn': 'TitleAr'" bindValue="LookupID"
+                                    [searchable]="true" class="custom-multiselect z-10 w-full !cursor-pointer"
+                                    [ngClass]="{'!border-2 rounded-md !border-red-500': getControlFromGroup(formGroup, tableField.InternalFieldName)?.invalid && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched,
+                                    'z-[11]': openSelect === tableField.InternalFieldName,
+                                    'disabled': (shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || (this.shouldBeDim() && !field.isGDXVal)
+                                    }">
+                                </ng-select>
+                            </div>
+                        </ng-container>
+
+                        <!-- Time -->
+                        <ng-container *ngIf="tableField.FieldType === 7 && !tableField.IsSystemField">
+                            <input type="time" [id]="tableField.InternalFieldName"
+                                [readonly]="(shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || this.shouldBeDim() ? true : null"
+                                [formControlName]="tableField.InternalFieldName" class="form-input" [ngClass]="{'!border-2 rounded-md !border-red-500': getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required') && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched,
+                                    'bg-gray-100 !cursor-not-allowed md:col-span-2': (shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || this.shouldBeDim()
+                                }">
+                        </ng-container>
+
+                        <ng-container *ngIf="tableField.FieldType === 10">
+                            <div
+                                class="flex flex-col ltr:lg:flex-row rtl:lg:flex-row-reverse justify-between items-center bg-gray-100 p-0 ltr:lg:pe-2 rtl:lg:ps-2">
+                                <input type="file" (change)="onFileSelected($event, formGroup, tableField)"
+                                    class="hidden" [id]="tableField.InternalFieldName">
+
+                                <button type="button"
+                                    [disabled]="(shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && field.GDXDim) || (this.shouldBeDim() && !field.GDXDim) || isFileLoading(getFileKey(tableField))"
+                                    class="cursor-pointer text-white bg-primary p-2 rounded-lg hover:underline text-center ltr:lg:text-left rtl:lg:text-right text-base shrink-0 w-full lg:w-fit mx-auto lg:mx-0"
+                                    [ngClass]="{'bg-opacity-80 !cursor-not-allowed pointer-events-none': (shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && field.GDXDim) || (this.shouldBeDim() && !field.GDXDim) || isFileLoading(getFileKey(tableField))}"
+                                    (click)="triggerFileInput(tableField)">
+                                    @if (isFileLoading(getFileKey(tableField))) {
+                                    <span
+                                        class="animate-spin border-2 border-white border-l-transparent rounded-full w-5 h-5 inline-block align-middle"></span>
+                                    <span [innerHTML]=" this.translations()?.fileLoaderMsg.label"></span>
+
+                                    }@else {
+                                    {{translations()?.fileInputBtn.label}}
+                                    }
+                                </button>
+
+                                @if (selectedFile()[tableField.InternalFieldName] ||
+                                selectedFile()[tableField.InternalFieldName + (tableFileIndex -1)]) {
+                                <div class="flex justify-between grow">
+                                    <button class="line-clamp-1 underline text-primary"
+                                        (click)="openFile(tableField, tableFileIndex -1)">
+                                        {{ selectedFile()[tableField.InternalFieldName] ||
+                                        selectedFile()[tableField.InternalFieldName + (tableFileIndex -1)] }}
+                                    </button>
+                                    @if (aiPercent()[tableField.InternalFieldName]) {
+                                    <div class="flex justify-between">
+                                        <span class="flex items-center"><ai-completion-bar
+                                                [percentage]="aiPercent()[tableField.InternalFieldName]"></ai-completion-bar></span>
+                                    </div>
+                                    }
+
+                                    <button aria-label="clear" class="text-primary" (click)="deleteFile(tableField)">
+                                        <icon-x></icon-x>
+                                    </button>
+                                </div>
+                                }@else {
+                                <span class="hidden md:inline">
+                                    {{translations()?.fileInputPlaceholder.label}}
+                                </span>
+                                }
+                            </div>
+                            <div class="flex flex-wrap gap-2 justify-start items-start">
+
+                                <div class="relative">
+                                    <span class="flex gap-1 cursor-pointer text-sm mt-1 text-primary underline"
+                                        [ngxTippy]="tableField.AllowedFileTypes!.split(',').join(', ')">
+                                        <icon-file class="h-5 w-5 text-primary"></icon-file>
+                                        {{translations()?.fileFormat?.label}}
+                                    </span>
+                                </div>
+
+
+                                <div class="relative">
+                                    <span
+                                        class="flex gap-1 cursor-pointer text-sm mt-1 text-primary underline separator"
+                                        [ngxTippy]="(tableField.MaxAttachmentSizeKB!/ 1024 | number:'1.0-2')?.split(',')?.join('') + 'MB'">
+                                        {{translations()?.fileMaxSizeInForm?.label.replace(':', '')}}
+                                    </span>
+                                </div>
+
+                            </div>
+                        </ng-container>
+
+                        <!-- Single Checkbox -->
+                        <ng-container *ngIf="tableField.FieldType === 16 && !tableField.IsSystemField">
+                            <div class="mt-1 flex items-center gap-2">
+                                <label class="ml-2 block text-sm text-gray-900 cursor-pointer hover:text-primary">
+                                    <input type="checkbox" [name]="tableField.InternalFieldName"
+                                        [disabled]="shouldBeDim()" [value]="tableField.TitleEn"
+                                        [formControlName]="tableField.InternalFieldName" class="form-checkbox"
+                                        [ngClass]="{'bg-gray-100 !cursor-not-allowed md:col-span-2': (shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || this.shouldBeDim()}">>
+                                    @if(store.index.locale == 'en'){
+                                    {{ tableField.TitleEn }}
+                                    }@else {
+                                    {{ tableField.TitleAr }}
+                                    }
+                                    <span
+                                        *ngIf="tableField.Required && getControlFromGroup(formGroup, tableField.InternalFieldName)?.invalid && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched"
+                                        class="text-red-500">*</span>
+                                </label>
+                            </div>
+                        </ng-container>
+                        <!-- Button -->
+                        <ng-container
+                            *ngIf="tableField.FieldType === 14 && tableField.InternalFieldName.toLocaleLowerCase().includes('add') && !editFlag() && !closeAddRow">
+                            <div class="flex-1">
+                                <button type="button" [id]="tableField.InternalFieldName" [disabled]="fileLoading()"
+                                    [ngClass]="{'cursor-not-allowed bg-opacity-80': fileLoading()}"
+                                    class="btn btn-primary cursor-pointer" (click)="onAddButtonClick()">
+                                    <icon-plus class="w-5 h-5"></icon-plus>
+                                    @if(store.index.locale == 'en'){
+                                    {{ tableField.TitleEn }}
+                                    }@else {
+                                    {{ tableField.TitleAr }}
+                                    }
+                                </button>
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="editFlag() && tableField.FieldType === 14 
+                        && tableField.InternalFieldName.toLocaleLowerCase().includes('edit')">
+                            <div class="flex-1">
+                                <button type="button" [id]="tableField.InternalFieldName" [disabled]="fileLoading()"
+                                    [ngClass]="{'cursor-not-allowed bg-opacity-80': fileLoading()}"
+                                    class="btn btn-primary cursor-pointer flex gap-2" (click)="applyEdit()">
+                                    <icon-edit class="w-5 h-5 text-white"></icon-edit>
+                                    @if(store.index.locale == 'en'){
+                                    {{ tableField.TitleEn }}
+                                    }@else {
+                                    {{ tableField.TitleAr }}
+                                    }
+                                </button>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="tableField.FieldType === 17">
+                            <!--  <quill-editor [modules]="modules2" [formControlName]="field.InternalFieldName"
+            [placeholder]="store.index.locale == 'en'? field.DescriptionEn: field.DescriptionAr"
+            [id]="field.InternalFieldName" [attr.disabled]="shouldBeDim() ? true : null" class="w-full h-40" [ngClass]="{'bg-gray-100 !cursor-not-allowed md:col-span-2': shouldBeDim(), 'border-red-500': control?.invalid && control?.touched
+            }"></quill-editor> -->
+                            <div>
+                                <app-my-editor [formControlName]="tableField.InternalFieldName"
+                                    [quillID]="tableField.InternalFieldName"
+                                    [placeHolder]="store.index.locale == 'en'? tableField.DescriptionEn: tableField.DescriptionAr"
+                                    [isDisabled]="shouldBeDim()"
+                                    [ngClass]="{'direction-ltr': !isArabic, 'direction-rtl': isArabic, '!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en'}"></app-my-editor>
+                            </div>
+                        </ng-container>
+
+                        <!-- Multi-Select -->
+                        <ng-container
+                            *ngIf="tableField.FieldType === 19 && !tableField.IsSystemField && tableField.LookupValues">
+                            <div class="flex-1">
+                                <ng-container #selectRef2>
+                                    <ng-select [formControlName]="tableField.InternalFieldName"
+                                        [notFoundText]="translations()?.ngSelectSearchErr.label"
+                                        [id]="tableField.InternalFieldName"
+                                        [readonly]="(shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || this.shouldBeDim() ? true : null"
+                                        [appIdSetter]="'select-input-' + tableField.ServiceTableFieldID"
+                                        (change)="onLookupChange($event)" [clearable]="false" [multiple]="true"
+                                        [placeholder]="getLocalizedPlaceholder(tableField)"
+                                        [items]="filteredLookupValues(tableField) | availableItems: tableField : newApplicationService.requestData()"
+                                        [bindLabel]="store.index.locale == 'en'? 'TitleEn': 'TitleAr'"
+                                        bindValue="LookupID" [searchable]="true"
+                                        class="w-full cursor-pointer custom-multiselect placeholder:text-black z-10"
+                                        [ngClass]="{
+                                            '!border-2 rounded-md !border-red-500': getControlFromGroup(formGroup, tableField.InternalFieldName)?.invalid && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched,
+                                            'bg-gray-100 !cursor-not-allowed md:col-span-2': (shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || this.shouldBeDim()
+                                        }">
+                                        <ng-template ng-option-tmp let-item="item" let-index="index">
+                                            <div class="flex items-center justify-between w-full">
+                                                <span class="!break-words">
+                                                    @if (store.index.locale == 'en') {
+                                                    {{ item.TitleEn }}
+                                                    }@else {
+                                                    {{ item.TitleAr }}
+                                                    }
+                                                </span>
+
+                                                <a *ngIf="item.TechnicalApprovalFile"
+                                                    [href]="newApplicationService.baseUrl + item.TechnicalApprovalFile"
+                                                    class="ml-2 text-blue-500 hover:underline" target="_blank"
+                                                    (click)="$event.stopPropagation()"
+                                                    [attr.aria-label]="store.index.locale === 'en'? item.TitleEn: item.TitleAr"
+                                                    [title]="store.index.locale === 'en'? item.TitleEn: item.TitleAr">
+                                                    <icon-file class="text-black w-5 h-5"></icon-file>
+                                                </a>
+                                            </div>
+                                        </ng-template>
+                                        <ng-template ng-label-tmp let-item="item" let-clear="clear">
+                                            <div class="flex items-center gap-1 justify-between w-full">
+                                                <span class="p-1 ps-2">
+                                                    @if (store.index.locale == 'en') {
+                                                    {{ item.TitleEn }}
+                                                    }@else {
+                                                    {{ item.TitleAr }}
+                                                    }
+                                                </span>
+
+                                                <a *ngIf="item.TechnicalApprovalFile"
+                                                    [href]="newApplicationService.baseUrl + item.TechnicalApprovalFile"
+                                                    class="ml-2 text-blue-500 hover:underline" target="_blank"
+                                                    (click)="$event.stopPropagation()"
+                                                    [attr.aria-label]="store.index.locale === 'en'? item.TitleEn: item.TitleAr"
+                                                    [title]="store.index.locale === 'en'? item.TitleEn: item.TitleAr">
+                                                    <icon-file class="text-white w-5 h-5"></icon-file>
+                                                </a>
+                                                <span class="ng-value-icon right" (click)="clear(item)">×</span>
+                                            </div>
+                                        </ng-template>
+                                    </ng-select>
+                                </ng-container>
+                            </div>
+                        </ng-container>
+
+                        @let topError = getHighestPriorityError(getControlFromGroup(formGroup,
+                        tableField.InternalFieldName) || null);
+
+                        @if (topError && getControlFromGroup(formGroup, tableField.InternalFieldName)?.invalid &&
+                        getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched) {
+                        <div class="text-red-500 text-xs mt-1">
+
+                            @switch (topError.key) {
+
+                            @case ('required') {
+                            @if (store.index.locale === 'en') {
+                            {{ tableField.ValidationMsgEn || 'This field is required.' }}
+                            } @else {
+                            {{ tableField.ValidationMsgAr || 'هذا الحقل مطلوب.' }}
+                            }
+                            }
+
+                            @case ('noNegativeOne') {
+                            @if (store.index.locale === 'en') {
+                            {{ tableField.ValidationMsgEn || 'This field is required.' }}
+                            } @else {
+                            {{ tableField.ValidationMsgAr || 'هذا الحقل مطلوب.' }}
+                            }
+                            }
+
+                            @case ('numberMinLength') {
+                            {{ translations()?.minLengthErr1.label + ' ' + tableField.MIN_Length + ' ' +
+                            translations()?.minLengthErr2.label }}
+                            }
+
+                            @case ('email') {
+                            {{ translations()?.emailErrMsg.label }}
+                            }
+                            @case ('pattern') {
+                            {{ translations()?.linksErrMsg.label }}
+                            }
+
+
+                            @default {
+                            @if (store.index.locale === 'en') {
+                            {{ tableField.ExtraValidationMsgEn}}
+                            } @else {
+                            {{ tableField.ExtraValidationMsgAr}}
+                            }
+                            }
+                            }
+                        </div>
+                        }
+
+                        <!-- <div *ngIf="tableField.FieldType !== 14 && getControlFromGroup(formGroup, tableField.InternalFieldName)?.invalid &&
+                                getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched &&
+                                (getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required') ||
+                                getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('noNegativeOne'))"
+                            class="text-red-500 text-xs mt-1">
+                            @if(store.index.locale == 'en'){
+                            {{tableField.ValidationMsgEn}}
+                            }@else {
+                            {{tableField.ValidationMsgAr}}
+                            }
+                        </div>
+                        <span class="text-red-500 text-xs mt-1" *ngIf="getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('numberMinLength') 
+                        && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched && 
+                            !( getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required'))">
+
+                            {{ translations()?.minLengthErr1.label+ ' ' + tableField.MIN_Length + ' ' +
+                            translations()?.minLengthErr2.label}}
+                        </span>
+                        <span class="text-red-500 text-xs mt-1" *ngIf="getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('email') 
+                        && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched && 
+                            !( getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required'))">
+
+                            {{ translations()?.emailErrMsg.label}}
+                        </span> -->
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+            }
+            }
+            }
+        </div>
+
+
+        <div class="w-full max-w-full overflow-x-auto">
+            <div class="w-full">
+                <ng-datatable [rows]="rows()" [columns]="cols" [sortable]="true" class="w-full" [stickyHeader]="true"
+                    [showPageSize]="false" skin="whitespace-nowrap table-hover" [height]="'200px'"
+                    [noDataContent]="translations()?.noDataContent.label"
+                    [paginationInfo]="store.index.locale === 'en'? 'Showing {0} to {1} of {2} entries': 'عرض {0} إلى {1} من {2}'"
+                    firstArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
+                    lastArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg> '
+                    previousArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
+                    nextArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'>
+                    <ng-template [slot]="'expand'" let-value="data">
+                        <button class="btn btn-sm btn-outline-primary" (click)="toggleRow(value.currentIndex)">
+                            <span [innerHTML]="expandedRow()?.currentIndex === value.currentIndex 
+                            ? '&#9660;'
+                            : '&#9650;'">
+                            </span>
+                        </button>
+                    </ng-template>
+                    @for (tableField of field.TableServiceFields; track $index) {
+                    @if (tableField.FieldType === 10) {
+                    <ng-template [slot]="tableField.InternalFieldName" let-value="data">
+
+                        <button (click)="openFile(tableField, value.currentIndex)"
+                            [title]="store.index.locale === 'en' ? tableField.TitleEn : tableField.TitleAr"
+                            class="hover:bg-gray-100">
+                            @if(value[tableField.InternalFieldName]){
+                            <icon-search class="w-5 h-5"></icon-search>
+                            }
+                        </button>
+                    </ng-template>
+                    }
+                    }
+                    <ng-template slot="actions" let-value="data">
+                        <div class="flex gap-1" *ngIf="!shouldBeDim()">
+                            @for (tableField of field.TableServiceFields; track $index) {
+                            @if (tableField.FieldType == 14 &&
+                            tableField.InternalFieldName.toLocaleLowerCase().includes('edit') && !closeAddRow) {
+                            <button class="text-primary underline p-1 rounded-md hover:bg-gray-100"
+                                (click)="onEditRow(value.currentIndex)">
+                                <icon-edit class="w-5 h-5"></icon-edit>
+                                @if (store.index.locale == 'en') {
+                                {{tableField.TitleEn}}
+                                }@else {
+                                {{tableField.TitleAr}}
+                                }
+                            </button>
+                            }
+                            @if (tableField.FieldType == 14 &&
+                            tableField.InternalFieldName.toLocaleLowerCase().includes('delete') && !closeAddRow) {
+                            <button class="text-primary underline p-1 rounded-md hover:bg-gray-100"
+                                (click)="deleteRow(value.currentIndex)">
+                                <icon-trash class="w-5 h-5"></icon-trash>
+                                @if (store.index.locale == 'en') {
+                                {{tableField.TitleEn}}
+                                }@else {
+                                {{tableField.TitleAr}}
+                                }
+                            </button>
+                            }
+                            }
+                        </div>
+                    </ng-template>
+                </ng-datatable>
+
+                <!-- <div class="expanded-data-container">
+                    <div *ngIf="expandedRow() && expandedRowId() !== null">
+                        <div *ngIf="expandedRow().currentIndex === expandedRowId()">
+                            <div *ngFor="let field of expandedFields">
+                                <p><strong>{{ field.title }}:</strong> {{ expandedRow()[field.field] }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                <div class="modal1-overlay" [class.show]="showSideDrawer" (click)="closeSideDrawer()"></div>
+
+                <div class="full-screen-modal" [class.show]="showSideDrawer">
+                    <div class="modal1-header">
+                        <h3 class="modal1-title">تفاصيل إضافية</h3>
+                        <button class="modal1-close-btn" (click)="closeSideDrawer()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path d="M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="modal1-body" *ngIf="expandedRow()">
+
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+                            <ng-container *ngFor="let expandedField of expandedFields">
+
+                                @if(expandedRow()[expandedField.field]){
+                                @for (tableField of field.TableServiceFields; track $index) {
+                                @if (tableField.FieldType === 10 && expandedField.field ===
+                                tableField.InternalFieldName) {
+                                <div class="data-item">
+                                    <span class="data-label">{{ expandedField.title }}</span>
+                                    <button
+                                        class="data-value bg-slate-50 text-black border rounded-md border-gray-300 p-2"
+                                        (click)="openFile(tableField, expandedRow().currentIndex)"
+                                        [title]="store.index.locale === 'en'? tableField.TitleEn: tableField.TitleAr">
+                                        <icon-search class="w-5 h-5"></icon-search>
+                                    </button>
+                                </div>
+                                }@else if(expandedField.field === tableField.InternalFieldName) {
+                                <div class="data-item">
+                                    <span class="data-label">{{ expandedField.title }}</span>
+                                    <span
+                                        class="data-value border bg-slate-50 text-black rounded-md border-gray-300 p-2">{{
+                                        expandedRow()[expandedField.field] }}</span>
+                                </div>
+                                }
+                                }
+                                }
+                            </ng-container>
+                        </div>
+                    </div>
+                    <div class="modal1-footer">
+                        <button type="button" class="btn btn-primary ltr:ml-auto rtl:mr-auto"
+                            (click)="closeSideDrawer()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" class="ltr:mr-2 rtl:ml-2">
+                                <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round"></path>
+                                <path d="M6 6L18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round"></path>
+                            </svg>
+                            إغلاق
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="field.FieldType === 9">
+        <ng-container *ngIf="hasRequiredAttachments(field) && !shouldBeDim(); else null">
+            <p class="font-bold text-gray-800 mb-6 text-xl w-full">
+                {{translations()?.attachmentsRequiredHeader.label}}
+            </p>
+
+            <div class="step-container w-full">
+                <div class="flex items-start gap-4 mb-4 w-full">
+                    <div class="flex-1 w-full">
+                        <div class="step-content">
+                            @for (attachment of field.Attachments; track $index) {
+                            @if (attachment.REQ[0].IsRequired) {
+                            <div class="step-list-item">
+                                <span class="step-bullet block w-6 h-6 self-start"><img
+                                        src="/assets/images/Web/add-file-svgrepo-com.svg" alt="image file"
+                                        class="block flex-shrink-0 !w-5 !h-5">
+                                </span>
+                                <span>
+                                    @if (store.index.locale == 'en') {
+                                    {{ attachment.TitleEn }}
+                                    }@else {
+                                    {{ attachment.TitleAr }}
+                                    }
+                                </span>
+                            </div>
+                            }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <div class="w-full" [formArrayName]="field.InternalFieldName">
+            <div class="flex flex-wrap gap-6">
+                @if(!(shouldBeDim() && allFilesEmpty())){
+                @for(formGroup of getFormArray(field.InternalFieldName)?.controls; track $index) {
+                @if(!(shouldBeDim() && formGroup.get('files')?.value.length == 0) || !shouldBeDim()){
+                <ng-container>
+                    @if(!isComponentHidden[field.Attachments![$index].ID]){
+                    <div class="w-full border border-gray-300 rounded-lg" [formGroupName]="$index">
+                        @if(field.Attachments![$index]){
+                        <!-- [attachmentGroup]="formGroup"
+                                                [$index]="$index" -->
+                        <app-file-upload [form]="form" formControlName="files" [field]="field"
+                            [title]="store.index.locale == 'en'? field.Attachments![$index].TitleEn: field.Attachments![$index].TitleAr"
+                            [format]="field.Attachments![$index].AllowedFileTypes" [index]="$index"
+                            [uploadId]="'file' + field.Attachments![$index].ID"
+                            [acceptedTypes]="field.Attachments![$index].AllowedFileTypes"
+                            [multiple]="field.Attachments![$index].AddMoreThanOne"
+                            [maxFileSizeKB]="field.Attachments![$index].MaxAttachmentSizeKB"
+                            [required]="field.Attachments![$index].REQ[0].IsRequired && (formGroup.get('files')!.hasError('requiredArray'))"
+                            [disabledBtns]="shouldBeDim()"
+                            [attachmentNameKey]="getAttachmentName(field.AttachmentsFields!)!"
+                            [AttachmentTypeKey]="getAttachmentType(field.AttachmentsFields!)!"
+                            [errorMessages]="getErrorMessages()"
+                            [showTextBox]="shouldShowTextBoxForAttachment(field.Attachments![$index], field.AttachmentsFields!)"
+                            class="w-full" (isHidden)="onHidden($event, field.Attachments![$index].ID)"
+                            [ngClass]="'file' + field.Attachments![$index].ID"
+                            [recordedFiles]="getRecordedFiles(field.Attachments![$index].ID)"
+                            [attachment]="field.Attachments![$index]">
+                        </app-file-upload>
+                        }
+                        <!--    @for (formGroup of getFormArray(field.InternalFieldName).controls; track formGroup) { -->
+                    </div>
+                    }
+                </ng-container>
+                }
+                }
+                }@else {
+                <span class="text-lg font-bold text-primary">
+                    لا يوجد مرفقات
+                </span>
+                }
+                <!-- } -->
+
+                <!--         <app-dynamic-field *ngIf="!shouldBeHidden(asFieldJson(attachmentField))&& attachmentField.FieldType !== 10 && attachmentField.FieldType !== 1 && attachmentField.FieldType !== 13 && attachmentField.FieldType !== 1 &&
+                    attachmentField.FieldType !== 14" [field]="asFieldJson(attachmentField)" [form]="form"
+                    [ngClass]="{ 'w-full': attachmentField.FieldType === 2 || attachmentField.FieldType === 10, 'flex-1': attachmentField.FieldType !== 2, 'hidden': attachmentField.IsSystemField }">
+                </app-dynamic-field> -->
+
+            </div>
+
+        </div>
+        <!--  @for (attachment of field.Attachments; track $index) {
+            <app-file-upload [title]="store.index.locale == 'en'? attachment.TitleEn: attachment.TitleAr" [format]="attachment.AllowedFileTypes" [uploadId]="attachment.ID + ''"
+                acceptedTypes="*" [multiple]="attachment.AddMoreThanOne" [formControlName]="attachment.ID" [maxFileSizeKB]="attachment.MaxAttachmentSizeKB" [required]="attachment.REQ[0].IsRequired">
+            </app-file-upload>
+        } -->
+    </ng-container>
+
+    <ng-container *ngIf="field.FieldType === 10">
+        <div
+            class="flex ltr:flex-row rtl:flex-row-reverse justify-between items-center gap-6 bg-gray-100 ltr:pe-2 rtl:ps-2">
+            <input type="file" [disabled]="shouldBeDim()" (change)="onFileFieldJsonSelected($event, field)"
+                class="hidden" [id]="field.InternalFieldName">
+
+            @if(!shouldBeDim()){
+            <button type="button" [disabled]="shouldBeDim() || fileLoading()"
+                class="cursor-pointer text-white bg-primary p-2 rounded-lg hover:underline ltr:text-left rtl:text-right text-base shrink-0"
+                (click)="triggerFileInput()"
+                [ngClass]="{'bg-opacity-80 !cursor-not-allowed pointer-events-none': shouldBeDim() || fileLoading()}"
+                [class]="field.InternalFieldName">
+                @if(fileLoading()){
+                <span
+                    class="animate-spin border-2 border-white border-l-transparent rounded-full w-5 h-5 inline-block align-middle"></span>
+                <span [innerHTML]=" this.translations()?.fileLoaderMsg.label"></span>
+
+                }@else {
+                {{translations()?.fileInputBtn.label}}
+                }
+            </button>
+            }
+
+            @if (selectedFile()[field.InternalFieldName]) {
+            <div class="flex justify-between grow">
+                <div class="flex flex-wrap justify-between">
+                    <button class="cursor-pointer p-2 min-w-0 flex gap-1" (click)="openFile(field)">
+                        <icon-search class="w-5 h-5"></icon-search>
+                        {{ selectedFile()[field.InternalFieldName] }}
+                    </button>
+                    <div class="flex justify-between">
+                        @if (aiPercent()[field.InternalFieldName]) {
+                        <span class="flex items-center"><ai-completion-bar
+                                [percentage]="aiPercent()[field.InternalFieldName]"></ai-completion-bar></span>
+
+                        @if(newApplicationService.requestData() || newApplicationService.newRequestData()){
+                        <button class="ai-analysis-btn hover:bg-gray-50 py-1 px-2 rounded-md"
+                            (click)="triggerAiAnalysis(control?.value)">
+                            <span>✨ تحليل المرفق</span>
+                        </button>
+                        }
+                        }
+                    </div>
+                    <!-- 
+                    @if (aiPercent()) {
+          @if(recordedFiles()){
+          <button class="ai-analysis-btn hover:bg-gray-50 py-1 px-2 rounded-md"
+            (click)="triggerAiAnalysis(uploadedFiles[i][this.AttachmentDocIDKey])">
+            <span>✨ تحليل المرفق</span>
+          </button>
+          }
+          <span><ai-completion-bar [percentage]="aiPercent()!"></ai-completion-bar></span>
+          }
+           -->
+                </div>
+                @if(!shouldBeDim()){
+                <button aria-label="clear" class="text-primary" (click)="deleteFile()">
+                    <icon-x></icon-x>
+                </button>
+                }
+            </div>
+            }@else {
+            @if(!shouldBeDim()){
+            {{translations()?.fileInputPlaceholder.label}}
+            }@else{
+            <span class="ml-auto p-2">
+                لا يوجد ملف
+            </span>
+            }
+            }
+        </div>
+        <div class="flex flex-wrap gap-2 justify-start items-start">
+
+            <div class="relative">
+                <span class="flex gap-1 cursor-pointer text-sm mt-1 text-primary underline"
+                    [ngxTippy]="field.AllowedFileTypes!.split(',').join(', ')">
+                    <icon-file class="h-5 w-5 text-primary"></icon-file>
+                    {{translations()?.fileFormat?.label}}
+                </span>
+            </div>
+
+
+            <div class="relative">
+                <span class="flex gap-1 cursor-pointer text-sm mt-1 text-primary underline separator"
+                    [ngxTippy]="(field.MaxAttachmentSizeKB!/ 1024 | number:'1.0-2')?.split(',')?.join('') + 'MB'">
+                    {{translations()?.fileMaxSizeInForm?.label.replace(':', '')}}
+                </span>
+            </div>
+
+        </div>
+        <app-ai-analysis-modal [isOpened]="openAnalysisModel()" (closed)="onUserClose($event)"
+            [fieldName]="field.InternalFieldName"></app-ai-analysis-modal>
+    </ng-container>
+
+    <ng-container *ngIf="(field.FieldType === 19 && field.LookupValues)">
+        <ng-select [formControlName]="field.InternalFieldName" [id]="field.InternalFieldName" [deselectOnClick]="true"
+            [notFoundText]="translations()?.ngSelectSearchErr.label" (add)="onItemAdded($event)"
+            [appIdSetter]="'select-input-' + field.ServiceFieldID" [readonly]="shouldBeDim() ? true : null"
+            (change)="onLookupChange($event)" [clearable]="false" [multiple]="true"
+            [placeholder]="getLocalizedPlaceholder(field)"
+            [items]="filteredLookupValues() | availableItems: field : newApplicationService.requestData()"
+            [bindLabel]="store.index.locale == 'en'? 'TitleEn': 'TitleAr'" bindValue="LookupID" [searchable]="true"
+            class="w-full cursor-pointer custom-multiselect placeholder:text-black z-10" [ngClass]="{
+                'disabled': shouldBeDim(),
+                '!border-2 rounded-md !border-red-500': control?.invalid && control?.touched
+            }">
+            <ng-template ng-option-tmp let-item="item" let-index="index">
+                <div class="flex items-center justify-between w-full"
+                    [ngClass]="{ 'cursor-not-allowed': item.notSelectable}">
+                    <span>
+                        @if (store.index.locale == 'en') {
+                        {{ item.TitleEn }}
+                        }@else {
+                        {{ item.TitleAr }}
+                        }
+                    </span>
+
+                    <a *ngIf="item.TechnicalApprovalFile"
+                        [href]="newApplicationService.baseUrl + item.TechnicalApprovalFile"
+                        class="ml-2 text-blue-500 hover:underline" target="_blank" (click)="$event.stopPropagation()"
+                        [attr.aria-label]="store.index.locale === 'en'? item.TitleEn: item.TitleAr"
+                        [title]="store.index.locale === 'en'? item.TitleEn: item.TitleAr">
+                        <icon-file class="text-black w-5 h-5"></icon-file>
+                    </a>
+                </div>
+            </ng-template>
+            <ng-template ng-label-tmp let-item="item" let-clear="clear">
+                <div class="flex items-center gap-1 justify-between w-full">
+                    <span class="p-1 ps-2">
+                        @if (store.index.locale == 'en') {
+                        {{ item.TitleEn }}
+                        }@else {
+                        {{ item.TitleAr }}
+                        }
+                    </span>
+
+                    <a *ngIf="item.TechnicalApprovalFile"
+                        [href]="newApplicationService.baseUrl + item.TechnicalApprovalFile"
+                        class="ml-2 text-blue-500 hover:underline" target="_blank" (click)="$event.stopPropagation()"
+                        [attr.aria-label]="store.index.locale === 'en'? item.TitleEn: item.TitleAr"
+                        [title]="store.index.locale === 'en'? item.TitleEn: item.TitleAr">
+                        <icon-file class="text-white w-5 h-5"></icon-file>
+                    </a>
+                    <span class="ng-value-icon right" (click)="clear(item)">×</span>
+                </div>
+            </ng-template>
+        </ng-select>
+    </ng-container>
+
+    <ng-container *ngIf="field.FieldType === 14">
+        <button type="button" [id]="field.InternalFieldName" [attr.disabled]="shouldBeDim() ? true : null"
+            class="btn control-btn me-2 cursor-pointer" [ngClass]="{'opacity-50 !cursor-not-allowed': shouldBeDim(),
+                'btn-primary': field.TitleEn == 'Send Request',
+                'draft-btn text-gray-700': field.TitleEn == 'Save Draft',
+            }" (click)="onButtonClick(field)">
+            @if(store.index.locale == 'en'){
+            {{ field.TitleEn }}
+            }@else {
+            {{ field.TitleAr }}
+            }
+        </button>
+    </ng-container>
+    <ng-container *ngIf="field.FieldType === 17">
+        <!--  <quill-editor [modules]="modules2" [formControlName]="field.InternalFieldName"
+            [placeholder]="store.index.locale == 'en'? field.DescriptionEn: field.DescriptionAr"
+            [id]="field.InternalFieldName" [attr.disabled]="shouldBeDim() ? true : null" class="w-full h-40" [ngClass]="{'bg-gray-100 !cursor-not-allowed md:col-span-2': shouldBeDim(), 'border-red-500': control?.invalid && control?.touched
+            }"></quill-editor> -->
+        <div>
+            <app-my-editor [formControlName]="field.InternalFieldName" [quillID]="field.InternalFieldName"
+                [placeHolder]="store.index.locale == 'en'? field.DescriptionEn: field.DescriptionAr"
+                [isDisabled]="shouldBeDim()"
+                [ngClass]="{'direction-ltr': !isArabic, 'direction-rtl': isArabic, '!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en'}"></app-my-editor>
+        </div>
+    </ng-container>
+    @if (field.FieldType !== 18 && field.FieldType !== 8 && control && control.touched) {
+    @let topError = getHighestPriorityError(control);
+
+    @if (topError) {
+    <div class="text-red-500 text-xs mt-1">
+
+        @switch (topError.key) {
+
+        @case ('required') {
+        @if (store.index.locale === 'en') {
+        {{ field.ValidationMsgEn || 'This field is required.' }}
+        } @else {
+        {{ field.ValidationMsgAr || 'هذا الحقل مطلوب.' }}
+        }
+        }
+
+        @case ('noNegativeOne') {
+        @if (store.index.locale === 'en') {
+        {{ field.ValidationMsgEn || 'This field is required.' }}
+        } @else {
+        {{ field.ValidationMsgAr || 'هذا الحقل مطلوب.' }}
+        }
+        }
+
+        @case ('numberMinLength') {
+        {{ translations()?.minLengthErr1.label + ' ' + field.MIN_Length + ' ' + translations()?.minLengthErr2.label }}
+        }
+
+        @case ('email') {
+        {{ translations()?.emailErrMsg.label }}
+        }
+        @case ('pattern') {
+        {{ translations()?.linksErrMsg.label }}
+        }
+
+
+        @default {
+        @if (store.index.locale === 'en') {
+        {{ field.ExtraValidationMsgEn}}
+        } @else {
+        {{ field.ExtraValidationMsgAr}}
+        }
+        }
+        }
+    </div>
+    }
+    }
+</div>
+<ngx-spinner type="ball-spin-clockwise" bdColor="rgba(0,0,0,0)" color="#861A37"></ngx-spinner>

@@ -1,0 +1,294 @@
+<div class="bg-white rounded-lg shadow-xl max-w-4xl w-full h-full flex flex-col justify-between">
+    <!-- Card Header -->
+    <div class="bg-primary text-white p-4 flex justify-between items-center rounded-t-lg">
+        <h2 class="text-xl font-semibold sm:text-2xl" id="card-title">
+            {{singleLicenseCardData().applicationType}}
+        </h2>
+
+        @if( ![7008, 7005, 5015].includes(allData().ServiceID)){
+            <button (click)="openRequestAnalysis()"
+                class="ltr:ml-auto rtl:mr-auto flex items-center gap-4 text-white hover:underline px-2 py-1 rounded">
+                <icon-stars class="w-5 h-5 self-start"></icon-stars>
+                {{ translations()?.requestAnalysisBtn.label }}
+            </button>
+        }
+        <!-- <div class="flex items-center text-sm sm:text-base">
+            <a routerLink="applicationdetail" class="flex items-center gap-2">
+                <svg id="Star" xmlns="http://www.w3.org/2000/svg" width="19.504" height="19.5"
+                    viewBox="0 0 19.504 19.5">
+                    <path id="Stroke_1" data-name="Stroke 1"
+                        d="M9-.75c1.788,0,2.494,1.786,3.061,3.221a6.229,6.229,0,0,0,.92,1.807,3.668,3.668,0,0,0,1.977.4,7.935,7.935,0,0,1,2.106.291,2.282,2.282,0,0,1,1.611,1.7c.4,1.713-.861,2.754-1.877,3.591-.658.543-1.28,1.055-1.407,1.631a5.282,5.282,0,0,0,.274,2.153c.354,1.383.794,3.1-.674,4.211a2.326,2.326,0,0,1-1.425.491A5.093,5.093,0,0,1,10.9,17.624a4.277,4.277,0,0,0-1.9-.9,4.276,4.276,0,0,0-1.9.9A5.093,5.093,0,0,1,4.432,18.75a2.326,2.326,0,0,1-1.424-.491c-1.468-1.107-1.028-2.828-.674-4.21a5.277,5.277,0,0,0,.274-2.154c-.126-.576-.748-1.089-1.407-1.632C.186,9.427-1.078,8.385-.676,6.673A2.283,2.283,0,0,1,.936,4.97a7.935,7.935,0,0,1,2.106-.291,3.671,3.671,0,0,0,1.978-.4,6.226,6.226,0,0,0,.92-1.807C6.507,1.036,7.212-.75,9-.75Zm4.568,18a.837.837,0,0,0,.522-.189c.6-.456.5-1.189.124-2.642a6.258,6.258,0,0,1-.286-2.847,4.78,4.78,0,0,1,1.918-2.467c1.06-.874,1.541-1.364,1.37-2.09-.155-.659-.863-.765-2.331-.838A4.3,4.3,0,0,1,11.9,5.321a7.068,7.068,0,0,1-1.237-2.3C10.124,1.65,9.714.75,9,.75s-1.123.9-1.665,2.272A7.064,7.064,0,0,1,6.1,5.321a4.3,4.3,0,0,1-2.982.857C1.648,6.25.94,6.357.785,7.016c-.17.725.31,1.216,1.37,2.09a4.777,4.777,0,0,1,1.918,2.468,6.253,6.253,0,0,1-.286,2.847c-.371,1.452-.48,2.185.124,2.641a.837.837,0,0,0,.521.189,4.211,4.211,0,0,0,1.838-.877A5.188,5.188,0,0,1,9,15.225a5.188,5.188,0,0,1,2.73,1.148A4.212,4.212,0,0,0,13.568,17.25Z"
+                        transform="translate(0.752 0.75)" fill="#ffffff" />
+                </svg>
+
+                قيم الخدمة</a>
+        </div> -->
+    </div>
+
+    <!-- License Details Section -->
+    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 text-gray-700 relative">
+        <button (click)="navigateToDetails()" class="block absolute inset-0" aria-label="license details"></button>
+        <!-- License Number -->
+        <div class="flex flex-col" *ngFor="let item of singleLicenseCardData().stats | keyvalue : noSort">
+            <span class="text-sm font-medium mb-1 text-gray-700">
+                {{ getStatName(item.key) }}
+            </span>
+            <span class="text-lg font-bold ltr:text-left rtl:text-right" aria-labelledby="card-title" #element
+                [ngClass]="getNgClass(item.key)">
+                {{item.value}}
+            </span>
+        </div>
+        <!--  <div class="flex flex-col">
+            <span class="text-sm font-medium mb-1 text-gray-700">حالة الرخصة</span>
+            <span class="text-lg font-bold text-green-800">سارية</span> 
+        </div>
+        <div class="flex flex-col">
+            <span class="text-sm font-medium mb-1 text-gray-700">تاريخ البداية</span>
+            <div class="flex items-center">
+                <span class="text-lg font-bold">2025-12-02</span>
+            </div>
+        </div>
+        <div class="flex flex-col">
+            <span class="text-sm font-medium mb-1 text-gray-700">تاريخ النهاية</span>
+            <div class="flex items-center">
+                <span class="text-lg font-bold">2025-12-02</span>
+            </div>
+        </div> -->
+    </div>
+
+    <!-- Action Buttons Section -->
+    <div class="p-6 pt-0 border-t border-gray-200">
+        <div class="flex flex-wrap pt-3">
+            @for (action of cardActions() | sortByOrder: 'ActionSortOrder'; track $index; let isLast = $last) {
+
+            @if (action.isDropdown) {
+            @if(action.groupID){
+            <div hlMenu class="!block relative">
+                <button class="font-bold text-black flex gap-1 hover:bg-gray-200 px-3 py-2 rounded-md text-sm "
+                    [ngClass]="{' bg-gray-200':  openMenus[action.groupID],
+                          }" type="button" (click)="toggleMenu(action.groupID)" hlMenuButton>
+                    @if (!isLast || !action.isMore) {
+                    @if(action.actions[0].ActionID === 865 || action.actions[0].ActionID === 1841){
+                    <img src="/assets/images/icons/clipboard-remove-svgrepo-com.svg" alt="remove icon" class="h-4">
+                    }@else if (action.actions[0].ActionID === 1989 || action.actions[0].ActionID === 1990 ||
+                    action.actions[0].ActionID === 1991 ||
+                    action.actions[0].ActionID === 1723 || action.actions[0].ActionID === 1992 ||
+                    action.actions[0].ActionID === 1848 || action.actions[0].ActionID === 1900){
+                    <img src="/assets/images/icons/revoke57187.svg" alt="cancel icon" class="h-4">
+                    }@else if(action.actions[0].ActionID === 861 || action.actions[0].ActionID === 1845){
+                    <img src="/assets/images/icons/edit-svgrepo-com.svg" alt="edit icon" class="h-4">
+                    }@else if (action.actions[0].ActionID === 862) {
+                    <img src="/assets/images/icons/send-svgrepo-com.svg" alt="send icon" class="h-4">
+                    }@else if (action.actions[0].ActionID === 1724) {
+                    <img src="/assets/images/icons/copy-com.svg" alt="copy icon" class="h-4">
+                    }@else if(action.actions[0].ActionID === 1850 || action.actions[0].ActionID === 1844 ||
+                    action.actions[0].ActionID === 1993 || action.actions[0].ActionID === 1996 ||
+                    action.actions[0].ActionID === 1869 || action.actions[0].ActionID === 1872){
+                    <img src="/assets/images/icons/Group 57145.svg" alt="renew icon" class="h-4" />
+                    }@else if (action.actions[0].ActionID === 1832){
+                    <img src="/assets/images/icons/credit-card-payment-svgrepo-com.svg" alt="pay icon" class="h-4" />
+                    }@else if (action.actions[0].ActionID === 864){
+                    <icon-circle-check class="text-green-600 h-5"></icon-circle-check>
+                    }@else if ( action.actions[0].ActionID === 1995){
+                    <img src="/assets/images/icons/add-icon.svg" alt="add icon" class="h-4">
+                    }@else if(action.actions[0].ActionID === 1871){
+                    <img src="/assets/images/icons/property-transfer.svg" alt="property transfer icon" class="h-4">
+                    }@else if (action.actions[0].ActionID === 1985) {
+                    <img src="/assets/images/icons/Star.svg" class="h-4" alt="star icon for rating">
+                    }@else if (action.actions[0].ActionID === 1842 || action.actions[0].ActionID === 1843 ||
+                    action.actions[0].ActionID === 1993 || action.actions[0].ActionID === 1852 ||
+                    action.actions[0].ActionID === 1901) {
+                    <img src="/assets/images/icons/printer57135.svg" alt="print icon">
+                    }@else if (action.ActionID === 1859 || action.ActionID === 1865) {
+                    <icon-history-clock class="h-5 text-primary"></icon-history-clock>
+                    }
+                    }@else {
+                    <icon-square-rotated class="h-5 text-primary"></icon-square-rotated>
+                    }
+
+
+                    <span class="truncate">
+                        @if(isLast && action.isMore){
+                        {{translations()?.moreDropdown.label}}
+                        }@else {
+                        @if(store.locale == 'en'){
+                        {{ action.groupTitleEN }}
+                        }@else {
+                        {{ action.groupTitleAR }}
+                        }
+                        }
+                    </span>
+                    <span [@reverseChevron]="(!!openMenus[action.groupID]).toString()">
+                        <icon-chevron-down class="w-4 h-4 flex-shrink-0"
+                            [ngClass]="{'text-primary': !!openMenus[action.groupID]}"></icon-chevron-down>
+                    </span>
+                </button>
+                <ul *hlMenuItems @toggleAnimation
+                    class="top-11 absolute w-[250px] sm:w-[280px] !py-0 font-semibold shadow-lg shadow-primary bg-white text-dark ltr:right-0 rtl:right-0 z-[9999] border border-gray-200 rounded-md focus:!outline-none">
+                    @for (item of action.actions; track item.ActionID) {
+                    @if (item.isDropdown && !item.groupID) {
+                    <div hlMenu class="!block relative">
+                        <button
+                            class="font-bold text-black mx-1 flex gap-2 hover:bg-gray-200 px-3 py-2 rounded-md text-sm "
+                            [ngClass]="{' bg-gray-200': openMenus[item.ActionID],
+                    }" type="button" (click)="toggleMenu(item.ActionID)" hlMenuButton>
+                            <span class="truncate">
+                                @if(store.locale == 'en'){
+                                {{ item.TitleEN }}
+                                }@else {
+                                {{ item.TitleAR }}
+                                }
+                            </span>
+                            <span [@reverseChevron]="(!!openMenus[item.ActionID]).toString()">
+                                <icon-chevron-down class="w-4 h-4 flex-shrink-0"
+                                    [ngClass]="{'text-primary': !!openMenus[item.ActionID]}"></icon-chevron-down>
+                            </span>
+                        </button>
+                        <ul *hlMenuItems @toggleAnimation
+                            class="top-11 absolute w-[250px] sm:w-[280px] !py-0 font-semibold shadow-lg shadow-primary bg-white text-dark ltr:right-0 rtl:right-0 z-[9999] border border-gray-200 rounded-md focus:!outline-none">
+                            @for (process of filteredProcessList(item); track process.LookupID) {
+                            <li *hlMenuItem="let menuItem">
+                                <button
+                                    class="block w-full text-gray-600 hover:text-primary hover:bg-gray-50 px-4 py-3 text-sm  ltr:text-left rtl:text-right border-b border-gray-100 last:border-b-0"
+                                    (click)="setDefaultProcess(process.LookupID, item, process)">
+                                    {{store.locale === 'en'? process.TitleEn: process.TitleAr}}
+                                </button>
+                            </li>
+                            }
+                        </ul>
+                    </div>
+                    }@else{
+                    <button
+                        class="block w-full text-gray-600 hover:text-primary hover:bg-gray-50 px-4 py-3 text-sm  ltr:text-left rtl:text-right border-b border-gray-100 last:border-b-0"
+                        *hlMenuItem="let menuItem" (click)="handleAction(item)">
+
+                        {{store.locale === 'en'? item.TitleEN: item.TitleAR}}
+
+                    </button>
+                    }
+                    }
+                </ul>
+            </div>
+            }@else{
+            <div hlMenu class="!block relative">
+                <button class="font-bold text-black flex gap-1 hover:bg-gray-200 px-2 py-2 rounded-md text-sm "
+                    [ngClass]="{' bg-gray-200': openMenus[action.ActionID],
+                    }" type="button" (click)="toggleMenu(action.ActionID)" hlMenuButton>
+
+                    @if(action.ActionID === 865 || action.ActionID === 1841){
+                    <img src="/assets/images/icons/clipboard-remove-svgrepo-com.svg" alt="remove icon" class="h-4">
+                    }@else if (action.ActionID === 1989 || action.ActionID === 1990 || action.ActionID === 1991 ||
+                    action.ActionID === 1723 || action.ActionID === 1992 || action.ActionID === 1848 || action.ActionID
+                    === 1900){
+                    <img src="/assets/images/icons/revoke57187.svg" alt="cancel icon" class="h-4">
+                    }@else if(action.ActionID === 861 || action.ActionID === 1845){
+                    <img src="/assets/images/icons/edit-svgrepo-com.svg" alt="edit icon" class="h-4">
+                    }@else if (action.ActionID === 862) {
+                    <img src="/assets/images/icons/send-svgrepo-com.svg" alt="send icon" class="h-4">
+                    }@else if (action.ActionID === 1724) {
+                    <img src="/assets/images/icons/copy-com.svg" alt="copy icon" class="h-4">
+                    }@else if(action.ActionID === 1850 || action.ActionID === 1844 || action.ActionID === 1993 ||
+                    action.ActionID === 1996 || action.ActionID === 1869 || action.ActionID === 1872){
+                    <img src="/assets/images/icons/Group 57145.svg" alt="renew icon" class="h-4" />
+                    }@else if (action.ActionID === 1832){
+                    <img src="/assets/images/icons/credit-card-payment-svgrepo-com.svg" alt="pay icon" class="h-4" />
+                    }@else if (action.ActionID === 864){
+                    <icon-circle-check class="text-green-600 h-5"></icon-circle-check>
+                    }@else if ( action.ActionID === 1995){
+                    <img src="/assets/images/icons/add-icon.svg" alt="add icon" class="h-4">
+                    }@else if(action.ActionID === 1871){
+                    <img src="/assets/images/icons/property-transfer.svg" alt="property transfer icon" class="h-4">
+                    }@else if (action.ActionID === 1985) {
+                    <img src="/assets/images/icons/Star.svg" class="h-4" alt="star icon for rating">
+                    }@else if (action.ActionID === 1842 || action.ActionID === 1843 || action.ActionID === 1993 ||
+                    action.ActionID === 1852 || action.ActionID === 1901) {
+                    <img src="/assets/images/icons/printer57135.svg" alt="print icon">
+                    }@else if (action.ActionID === 1859 || action.ActionID === 1865) {
+                    <icon-history-clock class="h-5 text-primary"></icon-history-clock>
+                    }
+
+                    <span class="truncate">
+                        @if(store.locale == 'en'){
+                        {{ action.TitleEN }}
+                        }@else {
+                        {{ action.TitleAR }}
+                        }
+                    </span>
+                    <span [@reverseChevron]="(!!openMenus[action.ActionID]).toString()">
+                        <icon-chevron-down class="w-4 h-4 flex-shrink-0"
+                            [ngClass]="{'text-primary': !!openMenus[action.ActionID]}"></icon-chevron-down>
+                    </span>
+                </button>
+                <ul *hlMenuItems @toggleAnimation
+                    class="top-11 absolute w-[250px] sm:w-[280px] !py-0 font-semibold shadow-lg shadow-primary bg-white text-dark ltr:right-0 rtl:right-0 z-[9999] border border-gray-200 rounded-md focus:!outline-none">
+                    @for (item of filteredProcessList(action); track item.LookupID) {
+                    <li *hlMenuItem="let menuItem">
+                        <button
+                            class="block w-full text-gray-600 hover:text-primary hover:bg-gray-50 px-4 py-3 text-sm  ltr:text-left rtl:text-right border-b border-gray-100 last:border-b-0"
+                            (click)="setDefaultProcess(item.LookupID, action, item)">
+                            {{store.locale === 'en'? item.TitleEn: item.TitleAr}}
+                        </button>
+                    </li>
+                    }
+                </ul>
+            </div>
+            }
+            }@else {
+            <button type="button"
+                class="font-bold text-black flex gap-1 hover:bg-gray-200 px-2 py-2 rounded-md text-sm "
+                (click)="handleAction(action)">
+                @if(action.ActionID === 865 || action.ActionID === 1841){
+                <img src="/assets/images/icons/clipboard-remove-svgrepo-com.svg" alt="remove icon"
+                    class="h-4 flex-shrink-0">
+                }@else if (action.ActionID === 1989 || action.ActionID === 1990 || action.ActionID === 1991 ||
+                action.ActionID === 1723 || action.ActionID === 1992 || action.ActionID === 1848 || action.ActionID ===
+                1900){
+                <img src="/assets/images/icons/revoke57187.svg" alt="cancel icon" class="h-4 flex-shrink-0">
+                }@else if(action.ActionID === 861 || action.ActionID === 1845){
+                <img src="/assets/images/icons/edit-svgrepo-com.svg" alt="edit icon" class="h-4 flex-shrink-0">
+                }@else if (action.ActionID === 862) {
+                <img src="/assets/images/icons/send-svgrepo-com.svg" alt="send icon" class="h-4 flex-shrink-0">
+                }@else if (action.ActionID === 1724) {
+                <img src="/assets/images/icons/copy-com.svg" alt="copy icon" class="h-4 flex-shrink-0">
+                }@else if(action.ActionID === 1850 || action.ActionID === 1844 || action.ActionID === 1993 ||
+                action.ActionID === 1996 || action.ActionID === 1869 || action.ActionID === 1872){
+                <img src="/assets/images/icons/Group 57145.svg" alt="renew icon" class="h-4 flex-shrink-0" />
+                }@else if (action.ActionID === 1832 || action.ActionID === 1851){
+                <img src="/assets/images/icons/credit-card-payment-svgrepo-com.svg" alt="pay icon"
+                    class="h-4 flex-shrink-0" />
+                }@else if (action.ActionID === 864){
+                <icon-circle-check class="text-green-600 h-5 flex-shrink-0"></icon-circle-check>
+                }@else if ( action.ActionID === 1995){
+                <img src="/assets/images/icons/add-icon.svg" alt="add icon" class="h-4 flex-shrink-0">
+                }@else if(action.ActionID === 1871){
+                <img src="/assets/images/icons/property-transfer.svg" alt="property transfer icon"
+                    class="h-4 flex-shrink-0">
+                }@else if (action.ActionID === 1985) {
+                <img src="/assets/images/icons/Star.svg" class="h-4 flex-shrink-0" alt="star icon for rating">
+                }@else if (action.ActionID === 1842 || action.ActionID === 1843 || action.ActionID === 1993 ||
+                action.ActionID === 1852 || action.ActionID === 1901) {
+                <img src="/assets/images/icons/printer57135.svg" alt="print icon" class="flex-shrink-0">
+                }@else if(action.ActionID === 1856) {
+                <icon-pencil class="text-primary h-4 flex-shrink-0"></icon-pencil>
+                }@else if(action.ActionID === 1855) {
+                <icon-txt-file class="text-primary h-5 flex-shrink-0"></icon-txt-file>
+                }@else if (action.ActionID === 1859 || action.ActionID === 1865) {
+                <icon-history-clock class="h-5 text-primary flex-shrink-0"></icon-history-clock>
+                }
+                <span class="truncate">
+                    {{ store.locale === 'en' ? action.TitleEN : action.TitleAR }}
+                </span>
+            </button>
+            }
+            }
+            <!-- @if(allData().FkProcessID !== 40){
+            <button title="activity log"
+                class="font-bold text-black mx-1 flex gap-2 hover:bg-gray-200 px-2 py-1 rounded-md"
+                (click)="showRelatedRequests()">
+                <icon-history-clock class="h-5 text-primary"></icon-history-clock>
+                الطلبات المرتبطة للرخصة
+            </button>
+            } -->
+        </div>
+    </div>
+</div>

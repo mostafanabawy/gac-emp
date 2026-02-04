@@ -1,0 +1,636 @@
+.table-container table {
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.force-ltr {
+    direction: ltr !important;
+    unicode-bidi: bidi-override !important;
+    display: inline-block;
+}
+
+.table-container {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 600px;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+}
+
+table {
+    table-layout: auto;
+    width: 100%;
+    min-width: 100%;
+}
+
+/* خطوط فاصلة عمودية بين الأعمدة */
+table th,
+table td {
+    padding: 0.75rem;
+    white-space: nowrap;
+    border-right: 1px solid #d1d5db;
+    border-left: 1px solid #d1d5db;
+    border-bottom: 1px solid #e5e7eb;
+    position: relative;
+    min-width: 100px;
+}
+
+/* عمود الـ expand والـ serial يكونوا صغيرين */
+table th:first-child,
+table td:first-child {
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+table th:nth-child(2),
+table td:nth-child(2) {
+    width: 70px;
+    min-width: 70px;
+    max-width: 70px;
+    text-align: center;
+}
+
+/* إزالة الخط من آخر عمود */
+table th:last-child,
+table td:last-child {
+    border-right: none;
+}
+
+/* للـ RTL نعكس الخطوط */
+[dir="rtl"] table th,
+[dir="rtl"] table td {
+    border-right: none;
+    border-left: 1px solid #d1d5db;
+}
+
+[dir="rtl"] table th:last-child,
+[dir="rtl"] table td:last-child {
+    border-left: none;
+}
+
+th,
+td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cell-content {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 180px;
+}
+
+
+
+
+/* تحسين شكل الـ header */
+table thead th {
+    background-color: #f9fafb;
+    font-weight: 600;
+    border-bottom: 2px solid #d1d5db;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* تحسين شكل الصفوف */
+table tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+/* Tablet */
+@media (max-width: 1024px) and (min-width: 769px) {
+
+    table th,
+    table td {
+        padding: 0.6rem;
+        font-size: 0.875rem;
+        min-width: 80px;
+    }
+
+    .cell-content {
+        max-width: 150px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .table-container {
+        /* overflow-x: hidden !important; */
+        border: 2px solid #d1d5db;
+        border-radius: 0.5rem;
+    }
+
+    /* .overflow-x-auto {
+        overflow-x: hidden !important;
+    } */
+
+    .hide-on-mobile {
+        display: none !important;
+    }
+
+    table {
+        width: 100% !important;
+    }
+
+    table th,
+    table td {
+        padding: 0.6rem 0.4rem;
+        font-size: 0.75rem;
+        min-width: auto;
+        border-right: 1px solid #d1d5db;
+        border-bottom: 1px solid #d1d5db;
+    }
+
+    table th:first-child,
+    table td:first-child {
+        width: 50px;
+        min-width: 50px;
+        max-width: 50px;
+        padding: 0.4rem;
+    }
+
+    table th:nth-child(2),
+    table td:nth-child(2) {
+        width: 50px;
+        min-width: 50px;
+        max-width: 50px;
+    }
+
+    .cell-content {
+        max-width: 100%;
+        font-size: 0.75rem;
+    }
+
+    table button {
+        width: 1.75rem !important;
+        height: 1.75rem !important;
+    }
+
+    table button svg {
+        width: 0.875rem !important;
+        height: 0.875rem !important;
+    }
+
+    [dir="rtl"] table th,
+    [dir="rtl"] table td {
+        border-left: 1px solid #d1d5db;
+        border-right: none;
+    }
+}
+
+
+/* تحسين أزرار البحث */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary {
+    background-color: #fff;
+    border: 1px solid #6c757d;
+    color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.btn-success {
+    background-color: #10b981;
+    border: 1px solid #10b981;
+    color: #fff;
+}
+
+.btn-success:hover {
+    background-color: #059669;
+    border-color: #059669;
+}
+
+/* إخفاء زر الأعمدة في الشاشات الصغيرة */
+@media (max-width: 768px) {
+    .hide-on-small-screen {
+        display: none !important;
+    }
+}
+
+
+
+
+/* Desktop & Large Screens - scroll عمودي وأفقي */
+@media (min-width: 1025px) {
+    .table-container {
+        max-height: 70vh;
+        overflow-x: auto;
+        overflow-y: auto;
+    }
+
+    table {
+        min-width: 1200px;
+    }
+}
+
+/* Tablet - scroll عمودي وأفقي */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .table-container {
+        max-height: 60vh;
+        overflow-x: auto;
+        overflow-y: auto;
+    }
+
+    table {
+        min-width: 1000px;
+    }
+}
+
+
+/* تحسين شكل الـ flatpickr */
+::ng-deep .flatpickr-calendar {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+}
+
+::ng-deep .flatpickr-day.selected {
+    background: #8b1538 !important;
+    border-color: #8b1538 !important;
+}
+
+::ng-deep .flatpickr-day.selected:hover {
+    background: #6b1028 !important;
+    border-color: #6b1028 !important;
+}
+
+::ng-deep .flatpickr-day:hover {
+    background: #f3f4f6;
+    border-color: #e5e7eb;
+}
+
+::ng-deep .flatpickr-months {
+    background: #f9fafb;
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+::ng-deep .flatpickr-current-month {
+    padding: 0.5rem 0;
+}
+
+::ng-deep .flatpickr-weekdays {
+    background: #f9fafb;
+}
+
+::ng-deep .flatpickr-input {
+    cursor: pointer;
+}
+
+::ng-deep .flatpickr-input:focus {
+    border-color: #8b1538;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
+}
+
+/* في service-fees.component.css */
+.table-container {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 200px);
+    /* ارتفاع مناسب */
+}
+
+.table-wrapper {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+}
+
+/* الهيدر الثابت */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+thead.sticky-top {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background-color: #f9fafb;
+    /* bg-gray-50 */
+}
+
+/* خلايا الهيدر */
+.sticky-header-cell {
+    position: sticky;
+    top: 0;
+    background-color: inherit;
+    z-index: 10;
+}
+
+/* التأكد من أن الظل يظهر عند التمرير */
+.table-wrapper::before {
+    content: '';
+    position: sticky;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, transparent 100%);
+    z-index: 15;
+}
+
+/* تحسين مظهر التمرير */
+.table-wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* خلفية للصف المختار */
+.bg-blue-50 {
+    background-color: #eff6ff;
+}
+
+/* التأكد من أن الجدول يأخذ العرض الكامل */
+table {
+    min-width: 100%;
+}
+
+/* تحسين عرض الأعمدة */
+th,
+td {
+    white-space: nowrap;
+    min-width: 120px;
+    /* عرض أدنى للأعمدة */
+}
+
+/* الأعمدة الثابتة (إذا أردت جعل بعض الأعمدة ثابتة أيضاً) */
+.fixed-column {
+    position: sticky;
+    left: 0;
+    background-color: white;
+    z-index: 5;
+}
+
+.fixed-column-header {
+    position: sticky;
+    left: 0;
+    background-color: #f9fafb;
+    z-index: 15;
+}
+
+.fixed-header th {
+    position: sticky;
+    top: 0;
+    background-color: #470076 !important;
+    color: white;
+    z-index: 10;
+}
+
+/* تص
+ميم البحث البسيط والمتقدم */
+.search-toggle-animation {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* تحسين تصميم الحقول في البحث البسيط */
+.space-y-4>div {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* تحسين تصميم الأيقونات في الحقول */
+.form-input:focus+div svg {
+    color: #8b1538;
+    transition: color 0.2s ease;
+}
+
+/* تحسين زر التبديل */
+.btn.transition-all {
+    transition: all 0.3s ease;
+}
+
+.btn.transition-all:hover {
+    transform: translateY(-2px);
+}
+
+/* تحسين الـ labels */
+label.font-semibold {
+    color: #374151;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Search Criteria Chips */
+.search-criteria-chip {
+    animation: slideInFromTop 0.3s ease-out;
+}
+
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Global Search Bar */
+.global-search-bar {
+    transition: all 0.3s ease;
+}
+
+.global-search-bar:focus-within {
+    box-shadow: 0 4px 12px rgba(139, 21, 56, 0.15);
+    border-color: #8b1538;
+}
+
+/* Collapsed Search Animation */
+.search-collapsed {
+    animation: collapseSearch 0.4s ease-out;
+}
+
+@keyframes collapseSearch {
+    from {
+        max-height: 1000px;
+        opacity: 1;
+    }
+
+    to {
+        max-height: 0;
+        opacity: 0;
+    }
+}
+
+/* Expanded Search Animation */
+.search-expanded {
+    animation: expandSearch 0.4s ease-out;
+}
+
+@keyframes expandSearch {
+    from {
+        max-height: 0;
+        opacity: 0;
+    }
+
+    to {
+        max-height: 1000px;
+        opacity: 1;
+    }
+}
+
+/* Chip Remove Button */
+.chip-remove-btn {
+    transition: all 0.2s ease;
+}
+
+.chip-remove-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Full Screen Table */
+.table-fullscreen {
+    min-height: calc(100vh - 200px);
+}
+
+/* Payment Methods Legend Styling */
+.payment-legend-container {
+    animation: fadeInDown 0.5s ease-out;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive legend for mobile */
+@media (max-width: 768px) {
+    .payment-legend-container .flex-wrap {
+        justify-content: center;
+    }
+
+    .payment-legend-container>div>div {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .payment-legend-container svg {
+        width: 1rem;
+        height: 1rem;
+    }
+}
+
+/* إخفاء علامة X في الـ multi-select عندما لا توجد قيم مختارة */
+::ng-deep .custom-multiselect .ng-clear-wrapper {
+    display: none !important;
+}
+
+/* إظهار علامة X فقط عندما توجد قيم مختارة */
+::ng-deep .custom-multiselect.ng-has-value .ng-clear-wrapper {
+    display: flex !important;
+}
+
+/* تنسيق الـ disabled option "من فضلك اختر" */
+::ng-deep .custom-multiselect .ng-option.ng-option-disabled {
+    background-color: #f9fafb !important;
+    cursor: not-allowed !important;
+    font-style: italic !important;
+}
+
+::ng-deep .custom-multiselect .ng-option.ng-option-disabled:hover {
+    background-color: #f9fafb !important;
+}
+
+/* إخفاء أي قيمة -1 في الـ tags */
+::ng-deep .custom-multiselect .ng-value[ng-reflect-value="-1"] {
+    display: none !important;
+}
+
+/* إخفاء أي option بقيمة -1 */
+::ng-deep .custom-multiselect .ng-option[ng-reflect-value="-1"] {
+    display: none !important;
+}
+
+/* تحسين مظهر الـ multi-select tags */
+::ng-deep .custom-multiselect .ng-value-container {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+::ng-deep .custom-multiselect .ng-value {
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 4px 8px;
+    margin: 2px;
+    font-size: 0.875rem;
+}
+
+::ng-deep .custom-multiselect .ng-value-label {
+    color: #374151;
+    font-weight: 500;
+}
+
+::ng-deep .custom-multiselect .ng-value-icon {
+    font-size: 14px;
+    margin-left: 6px;
+}
+
+::ng-deep .custom-multiselect .ng-value-icon:hover {
+    color: #ef4444;
+}

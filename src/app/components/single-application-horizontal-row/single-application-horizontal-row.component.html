@@ -1,0 +1,38 @@
+<article class="border border-gray-300 rounded-md p-4">
+    <h3 class="text-base font-bold mb-2">
+        رخصة تعهدات تنظيم فعالية شبابية
+    </h3>
+    <div class="flex justify-between gap-20 items-end">
+        <dl class="flex flex-wrap gap-10 justify-between grow">
+            <ng-container *ngFor="let item of dataToDisplay() | keyvalue">
+                <div>
+                    <dt class="text-gray-600 text-base">
+                        {{ item.key }}
+                    </dt>
+                    <dl class="font-bold text-base">
+                        {{ item.value }}
+                    </dl>
+                </div>
+            </ng-container>
+        </dl>
+        <div class="flex flex-wrap justify-between gap-6">
+            <button class="text-green-600 text-lg font-bold flex gap-1">
+                <icon-circle-check class="text-green-600 w-6 h-6"></icon-circle-check>
+                موافقة
+            </button>
+            <button class="text-red-600 text-lg font-bold flex gap-1">
+                <icon-x-circle class="text-red-600 w-6 h-6"></icon-x-circle>
+                رفض
+            </button>
+            <button class="text-lg font-bold hover:bg-gray-100 px-4 py-2 rounded-lg">
+                ارجاع الطلب لرئيس القسم
+            </button>
+            <button class="text-lg font-bold hover:bg-gray-100 px-4 py-2 rounded-lg">
+                تعديل الطلب
+            </button>
+            <button class="text-lg font-bold hover:bg-gray-100 px-4 py-2 rounded-lg">
+                إعفاء من الرسوم
+            </button>
+        </div>
+    </div>
+</article>

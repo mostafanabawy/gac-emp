@@ -1,0 +1,127 @@
+<section class="my-6 p-2 h-full">
+    <!-- <app-bread-crumps pageName="breadCrumb.reportsbc"></app-bread-crumps> -->
+
+    <div>
+        <h3 class="font-bold text-2xl mt-6 mb-2">
+            الرسوم المحصلة للخدمات
+        </h3>
+        <form [formGroup]="selectGroup" (ngSubmit)="submitForm()" class="my-6">
+            <div class="flex justify-between">
+                <select name="applicationType" id="applicationType" formControlName="applicationType"
+                    class="form-select w-1/4 bg-gray-100 text-gray-600">
+                    <option value="option2">option2</option>
+                    <option value="option1">نوع الخدمة</option>
+                    <option value="option3">option3</option>
+                    <option value="option4">option4</option>
+                </select>
+                <div class="flex gap-2">
+                    <input type="text" mwlFlatpickr formControlName="date1" [options]="basic"
+                        class="form-input bg-gray-100" placeholder="تاريخ الدفع من" />
+                    <input type="text" mwlFlatpickr formControlName="date1" [options]="basic"
+                        class="form-input bg-gray-100" placeholder="تاريخ الدفع الي" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="panel">
+
+        <apx-chart [series]="columnChart.series" [chart]="columnChart.chart" [colors]="columnChart.colors"
+            [dataLabels]="columnChart.dataLabels" [stroke]="columnChart.stroke" [plotOptions]="columnChart.plotOptions"
+            [grid]="columnChart.grid" [xaxis]="columnChart.xaxis" [yaxis]="columnChart.yaxis"
+            [tooltip]="columnChart.tooltip" class="rounded-lg bg-white dark:bg-black"></apx-chart>
+    </div>
+
+
+    <div class="grid md:grid-cols-5 gap-8 mt-6">
+        <div class="md:col-span-3 panel">
+            <h3 class="font-bold text-2xl my-5 border-b border-gray-300 py-2">
+                تقرير الطلبات منظرة الرد حسب الموظف
+            </h3>
+            <apx-chart [series]="columnChart1.series" [chart]="columnChart1.chart" [colors]="columnChart1.colors"
+                [dataLabels]="columnChart1.dataLabels" [stroke]="columnChart1.stroke"
+                [plotOptions]="columnChart1.plotOptions" [grid]="columnChart1.grid" [xaxis]="columnChart1.xaxis"
+                [yaxis]="columnChart1.yaxis" [tooltip]="columnChart1.tooltip"
+                class="rounded-lg bg-white dark:bg-black"></apx-chart>
+        </div>
+        <div class="md:col-span-2 h-full relative overflow-hidden panel">
+            <div class="w-full" id="salesChartContainer">
+                <h3 class="font-bold text-2xl my-5 border-b border-gray-300 py-2">
+                    تقرير الطلبات منظرة الرد حسب الموظف
+                </h3>
+                <select name="chartSelected" id="chartSelected" class="form-select bg-gray-100">
+                    <option value="">
+                        الخدمات الاكثرتحصيلا للرسوم
+                    </option>
+                </select>
+                <apx-chart [series]="donutChart.series" [chart]="donutChart.chart" [stroke]="donutChart.stroke"
+                    [labels]="donutChart.labels" [colors]="donutChart.colors" [legend]="donutChart.legend"
+                    class="rounded-lg bg-white dark:bg-black"></apx-chart>
+            </div>
+        </div>
+    </div>
+    <div class="panel my-6">
+        <h3 class="font-bold text-2xl mb-2">
+            عدد الرخص لكل خدمة
+        </h3>
+        <div class="flex justify-end border-2 rounded-lg px-2 py-4 border-gray-200">
+            <div class="flex gap-2">
+                <input type="text" mwlFlatpickr [options]="basic" class="form-input bg-gray-100"
+                    placeholder="تاريخ الرخصة من" />
+                <input type="text" mwlFlatpickr [options]="basic" class="form-input bg-gray-100"
+                    placeholder="تاريخ الرخصة الى" />
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <div class="rounded-lg bg-white p-2 w-[150px] text-center mt-3">
+                <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [stroke]="chartOptions.stroke"
+                    [tooltip]="chartOptions.tooltip">
+                </apx-chart>
+                <div class="text-2xl font-bold mt-2">23</div>
+                <div class="text-sm text-gray-600 mt-1 rtl text-right">الاستشارات الرياضية</div>
+            </div>
+            <div class="rounded-lg bg-white p-2 w-[150px] text-center mt-3">
+                <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [stroke]="chartOptions.stroke"
+                    [tooltip]="chartOptions.tooltip">
+                </apx-chart>
+                <div class="text-2xl font-bold mt-2">23</div>
+                <div class="text-sm text-gray-600 mt-1 rtl text-right">الاستشارات الرياضية</div>
+            </div>
+        </div>
+    </div>
+    <div class="panel my-6">
+        <h3 class="font-bold text-2xl mb-2">
+            عدد رخص الانشطة الفرعية لكل خدمة
+        </h3>
+        <div class="flex justify-between border-2 rounded-lg px-2 py-4 border-gray-200">
+            <div class="w-1/4">
+                <select name="" id="" class="form-select bg-gray-100">
+                    <option value="">
+                        النشاط الفرعي
+                    </option>
+                </select>
+            </div>
+            <div class="flex gap-2">
+                <input type="text" mwlFlatpickr [options]="basic" class="form-input bg-gray-100"
+                    placeholder="تاريخ الرخصة من" />
+                <input type="text" mwlFlatpickr [options]="basic" class="form-input bg-gray-100"
+                    placeholder="تاريخ الرخصة الى" />
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <div class="rounded-lg bg-white p-2 w-[150px] text-center mt-3">
+                <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [stroke]="chartOptions.stroke"
+                    [tooltip]="chartOptions.tooltip">
+                </apx-chart>
+                <div class="text-2xl font-bold mt-2">23</div>
+                <div class="text-sm text-gray-600 mt-1 rtl text-right">الاستشارات الرياضية</div>
+            </div>
+            <div class="rounded-lg bg-white p-2 w-[150px] text-center mt-3">
+                <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [stroke]="chartOptions.stroke"
+                    [tooltip]="chartOptions.tooltip">
+                </apx-chart>
+                <div class="text-2xl font-bold mt-2">23</div>
+                <div class="text-sm text-gray-600 mt-1 rtl text-right">الاستشارات الرياضية</div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,546 @@
+<app-bread-crumps [pageName]="translations?.DetermineFees?.label" [url]="itemURL"></app-bread-crumps>
+
+<div *ngIf="showAddModal" class="fixed inset-0 z-50 zindex-88 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white dark:bg-[#0e1726] rounded-lg shadow-lg w-[95%] md:w-[1200px] p-8">
+        <div class="flex justify-between close-popup">
+
+            <h3 class="text-xl font-bold mb-6" id="addAttachmentModalLabel">
+                {{ isEditMode ? translations?.edit?.label : translations?.add?.label }}
+            </h3>
+            <button type="button" (click)="closeAddUserModal()" class="bg-primary text-white">
+                <icon-x></icon-x>
+            </button>
+        </div>
+
+        <form [formGroup]="addFeesForm" (ngSubmit)="submitAddUser()">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                <!-- Service -->
+                <div>
+                    <label for="FKServiceID">{{ translations?.ServiceType?.label }} <span
+                            class="text-red-500">*</span></label>
+                    <ng-select formControlName="FKServiceID" (change)="getAddService($event)" [items]="Services"
+                        id="FKServiceID" bindLabel="ServiceID" bindValue="ServiceID"
+                        [ngClass]="{'is-invalid': FKServiceID?.invalid && (FKServiceID?.dirty || FKServiceID?.touched)}"
+                        [searchable]="true" [searchFn]="customSearchFn">
+                        <ng-template ng-label-tmp let-item="item">
+                            {{ translate.currentLang === 'ae' ? item.ServiceTitleAr : item.ServiceTitleEn }}
+                        </ng-template>
+                        <ng-template ng-option-tmp let-item="item">
+                            {{ translate.currentLang === 'ae' ? item.ServiceTitleAr : item.ServiceTitleEn }}
+                        </ng-template>
+                    </ng-select>
+                    <div *ngIf="FKServiceID?.invalid && (FKServiceID?.dirty || FKServiceID?.touched)"
+                        class="text-red-500 text-sm mt-1">
+                        {{ translations?.FKServiceID?.validation }}
+                    </div>
+                </div>
+
+                <!-- Clubs -->
+                <div *ngIf="showClubs">
+                    <label for="FkClubID">{{ translations?.Club?.label }}</label>
+                    <ng-select formControlName="FkClubID" (change)="getAddClub($event)" [items]="Clubs" id="FkClubID"
+                        bindLabel="TitleEn" bindValue="LookupID" [searchFn]="customSearchFn">
+                        <ng-template ng-label-tmp let-item="item">
+                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                        </ng-template>
+                        <ng-template ng-option-tmp let-item="item">
+                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                        </ng-template>
+                    </ng-select>
+                </div>
+
+                <!-- Membership Type -->
+                <div *ngIf="MembershipType">
+                    <label for="FkMembershipTypeID">{{ translations?.Membershiptype?.label }}</label>
+                    <ng-select formControlName="FkMembershipTypeID" [items]="MembershipTypes" id="FkMembershipTypeID"
+                        bindLabel="TitleEn" bindValue="LookupID" [searchFn]="customSearchFn">
+                        <ng-template ng-label-tmp let-item="item">
+                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                        </ng-template>
+                        <ng-template ng-option-tmp let-item="item">
+                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                        </ng-template>
+                    </ng-select>
+                </div>
+
+                <!-- Applicant Type -->
+                <div *ngIf="ApplicantType">
+                    <label for="FkApplicantTypeID">{{ translations?.ApplicantType?.label }}</label>
+                    <ng-select formControlName="FkApplicantTypeID" (change)="getEvent($event)" [items]="ApplicantTypes"
+                        id="FkApplicantTypeID" bindLabel="TitleEn" bindValue="LookupID" [searchFn]="customSearchFn">
+                        <ng-template ng-label-tmp let-item="item">
+                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                        </ng-template>
+                        <ng-template ng-option-tmp let-item="item">
+                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                        </ng-template>
+                    </ng-select>
+                </div>
+
+                <!-- Local Or International -->
+                <div *ngIf="LocalOrInternational">
+                    <label for="FkLocalOrInternationalID">{{ translations?.LocalOrInternational?.label }}</label>
+                    <ng-select formControlName="FkEventID" [items]="EventList" id="FkLocalOrInternationalID"
+                        bindLabel="TitleEn" bindValue="LookupID" [searchFn]="customSearchFn">
+                        <ng-template ng-label-tmp let-item="item">
+                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                        </ng-template>
+                        <ng-template ng-option-tmp let-item="item">
+                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                        </ng-template>
+                    </ng-select>
+                </div>
+
+                <!-- Category -->
+                <div *ngIf="Category">
+                    <label for="FkCategoryID">{{ translations?.Category?.label }}</label>
+                    <ng-select formControlName="FkSexID" [items]="Sex" id="FkCategoryID" bindLabel="TitleEn"
+                        bindValue="LookupID" [searchFn]="customSearchFn">
+                        <ng-template ng-label-tmp let-item="item">
+                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                        </ng-template>
+                        <ng-template ng-option-tmp let-item="item">
+                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                        </ng-template>
+                    </ng-select>
+                    <div *ngIf="FkCategoryID?.invalid && (FkCategoryID?.dirty || FkCategoryID?.touched)"
+                        class="text-red-500 text-sm mt-1">
+                        {{ translations?.FkSexID?.validation }}
+                    </div>
+                </div>
+
+                <!-- Process -->
+                <div>
+                    <label for="FkProcessTypeID">{{ translations?.FkProcessID?.label }} <span
+                            class="text-red-500">*</span></label>
+                    <ng-select formControlName="FkProcessID" [items]="Process" id="FkProcessTypeID" bindLabel="TitleEn"
+                        bindValue="LookupID"
+                        [ngClass]="{'is-invalid': FkProcessID?.invalid && (FkProcessID?.dirty || FkProcessID?.touched)}"
+                        [searchFn]="customSearchFn">
+                        <ng-template ng-label-tmp let-item="item">
+                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                        </ng-template>
+                        <ng-template ng-option-tmp let-item="item">
+                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                        </ng-template>
+                    </ng-select>
+                    <div *ngIf="FkProcessID?.invalid && (FkProcessID?.dirty || FkProcessID?.touched)"
+                        class="text-red-500 text-sm mt-1">
+                        {{ translations?.FkProcessID?.validation }}
+                    </div>
+                </div>
+
+                <!-- Fees Value -->
+                <div>
+                    <label for="FeesValue">{{ translations?.FeesValue?.label }} <span
+                            class="text-red-500">*</span></label>
+                    <input id="FeesValue" type="number" formControlName="FeesValue" class="form-input" [min]="0"
+                        [ngClass]="{'is-invalid': FeesValue?.invalid && (FeesValue?.dirty || FeesValue?.touched)}" />
+                    <div *ngIf="FeesValue?.invalid && (FeesValue?.dirty || FeesValue?.touched)"
+                        class="text-red-500 text-sm mt-1">
+                        {{ translations?.FeesValue?.validation }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex justify-end gap-2 pt-6">
+                <button type="submit" class="btn btn-primary">
+                    <icon-plus *ngIf="!isEditMode"></icon-plus>
+                    <icon-edit *ngIf="isEditMode"></icon-edit>
+                    <span class="m-1">{{ isEditMode ? translations?.edit?.label : translations?.add?.label }}</span>
+                </button>
+                <button type="button" class="btn btn-primary" (click)="closeAddUserModal()">
+                    <icon-x></icon-x>
+                    <span class="m-1">{{ translations?.close?.label }}</span>
+                </button>
+            </div>
+        </form>
+
+
+    </div>
+</div>
+
+<form class="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-[#0e1726]"
+    [formGroup]="feesForm" (ngSubmit)="onSubmit()">
+
+    <div class="flex justify-between items-center mb-5">
+        <h2 class="text-lg font-bold">{{ translations?.search?.label }}</h2>
+        <button type="button" class="btn text-white bg-primary" (click)="openAddUserModal()"
+            title="{{ translations?.AddFees?.label }}">
+            <i class="fa fa-plus me-1" aria-hidden="true"></i>{{ translations?.AddFees?.label }}
+        </button>
+
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div>
+            <label for="FkManagementID">{{ translations?.Management?.label }}
+
+            </label>
+            <ng-select [items]="Departments" id="FkManagementID" bindLabel="TitleEn" bindValue="ID"
+                [placeholder]="translations?.Management?.label" formControlName="DepartmentId"
+                [searchFn]="customSearchFn" aria-labelledby="FkManagementID-label">
+                <span id="FkManagementID-label" class="sr-only">{{ translations?.Management?.label }}</span>
+                <ng-template ng-label-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+            </ng-select>
+        </div>
+        <div>
+            <label for="FkDepartmentID">{{ translations?.Section?.label }}</label>
+            <ng-select (change)="getSection($event)" [items]="Section" id="FkDepartmentID" bindLabel="TitleEn"
+                bindValue="LookupID" [placeholder]="translations?.Department?.label" formControlName="SectionsID"
+                [searchFn]="customSearchFn" aria-labelledby="FkDepartmentID-label">
+                <span id="FkDepartmentID-label" class="sr-only">{{ translations?.Section?.label }}</span>
+                <ng-template ng-label-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+            </ng-select>
+        </div>
+        <div>
+            <label for="FkRequesttypeID">{{ translations?.Requesttype?.label }}</label>
+            <ng-select [items]="Request" (change)="getRequest($event)" id="FkRequesttypeID" bindLabel="TitleEn"
+                bindValue="ID" [placeholder]="translations?.Requesttype?.label" formControlName="FKReqID"
+                [searchFn]="customSearchFn" aria-labelledby="FkRequesttypeID-label">
+                <span id="FkRequesttypeID-label" class="sr-only">{{ translations?.Requesttype?.label }}</span>
+                <ng-template ng-label-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+            </ng-select>
+        </div>
+        <div>
+            <label for="FkServiceTypeID">{{ translations?.ServiceType?.label }}</label>
+            <ng-select (change)="getService($event)" [items]="Services" id="FkServiceTypeID" bindLabel="ServiceTitleEn"
+                bindValue="ServiceID" [placeholder]="translations?.ServiceType?.label" formControlName="FKServiceID"
+                [searchFn]="customSearchFn" aria-labelledby="FkServiceTypeID-label">
+                <span id="FkServiceTypeID-label" class="sr-only">{{ translations?.ServiceType?.label }}</span>
+                <ng-template ng-label-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.ServiceTitleAr : item.ServiceTitleEn }}
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.ServiceTitleAr : item.ServiceTitleEn }}
+                </ng-template>
+            </ng-select>
+        </div>
+
+        <div>
+            <label for="FkClubID">{{ translations?.Club?.label }}</label>
+            <ng-select [items]="Clubs" id="FkClubID" bindLabel="TitleEn" bindValue="LookupID"
+                [placeholder]="translations?.Club?.label" formControlName="FkClubID" [searchFn]="customSearchFn"
+                aria-labelledby="FkClubID-label">
+                <span id="FkClubID-label" class="sr-only">{{ translations?.Club?.label }}</span>
+                <ng-template ng-label-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+            </ng-select>
+        </div>
+        <div>
+            <label for="FkMembershipTypeID">{{ translations?.Membershiptype?.label }}</label>
+            <ng-select [items]="MembershipTypes" id="FkMembershipTypeID" bindLabel="TitleEn" bindValue="LookupID"
+                [placeholder]="translations?.Membershiptype?.label" formControlName="FkMembershipTypeID"
+                [searchFn]="customSearchFn" aria-labelledby="FkMembershipTypeID-label">
+                <span id="FkMembershipTypeID-label" class="sr-only">{{ translations?.Membershiptype?.label }}</span>
+                <ng-template ng-label-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+            </ng-select>
+        </div>
+        <div>
+            <label for="FkApplicantTypeID">{{ translations?.ApplicantType?.label }}</label>
+            <ng-select [items]="ApplicantTypes" id="FkApplicantTypeID" bindLabel="TitleEn" bindValue="LookupID"
+                [placeholder]="translations?.ApplicantType?.label" formControlName="FkApplicantTypeID"
+                [searchFn]="customSearchFn" aria-labelledby="FkApplicantTypeID-label">
+                <span id="FkApplicantTypeID-label" class="sr-only">{{ translations?.ApplicantType?.label }}</span>
+                <ng-template ng-label-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+            </ng-select>
+        </div>
+        <div>
+            <label for="FkLocalOrInternationalID">{{ translations?.LocalOrInternational?.label }}</label>
+            <ng-select [items]="EventList" id="FkLocalOrInternationalID" bindLabel="TitleEn" bindValue="LookupID"
+                [placeholder]="translations?.LocalOrInternational?.label" formControlName="FkEventID"
+                [searchFn]="customSearchFn" aria-labelledby="FkLocalOrInternationalID-label">
+                <span id="FkLocalOrInternationalID-label" class="sr-only">{{ translations?.LocalOrInternational?.label
+                    }}</span>
+                <ng-template ng-label-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+            </ng-select>
+        </div>
+        <div>
+            <label for="FkCategoryID">{{ translations?.Category?.label }}</label>
+            <ng-select [items]="Sex" id="FkCategoryID" bindLabel="TitleEn" bindValue="LookupID"
+                [placeholder]="translations?.Category?.label" formControlName="FkSexID" [searchFn]="customSearchFn"
+                aria-labelledby="FkCategoryID-label">
+                <span id="FkCategoryID-label" class="sr-only">{{ translations?.Category?.label }}</span>
+                <ng-template ng-label-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+            </ng-select>
+        </div>
+        <div>
+            <label for="FkProcessTypeID">{{ translations?.ProcessType?.label }}</label>
+            <ng-select [items]="Process" id="FkProcessTypeID" bindLabel="TitleEn" bindValue="LookupID"
+                [placeholder]="translations?.ProcessType?.label" formControlName="FkProcessID"
+                [searchFn]="customSearchFn" aria-labelledby="FkProcessTypeID-label">
+                <span id="FkProcessTypeID-label" class="sr-only">{{ translations?.ProcessType?.label }}</span>
+                <ng-template ng-label-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+            </ng-select>
+        </div>
+        <div>
+            <label for="FeesValue">{{ translations?.FeesValue?.label }}</label>
+            <input id="FeesValue" type="text" formControlName="FeesValue" class="form-input"
+                [placeholder]="translations?.FeesValue?.label " />
+        </div>
+
+        <!-- Date From -->
+        <div>
+            <label for="Start_CreationDate">{{ translations?.DateOfCreationFrom?.label }}</label>
+            <input type="text" [placeholder]="translations?.DateOfCreationFrom?.label" mwlFlatpickr
+                id="Start_CreationDate" formControlName="Start_CreationDate" [options]="basic" class="form-input" />
+        </div>
+
+        <!-- Date To -->
+        <div>
+            <label for="End_CreationDate">{{ translations?.DateOfCreationTo?.label }}</label>
+            <input type="text" [placeholder]="translations?.DateOfCreationTo?.label" mwlFlatpickr id="End_CreationDate"
+                formControlName="End_CreationDate" [options]="basic" class="form-input" />
+
+        </div>
+
+
+        <div class="col-span-full flex justify-center gap-3 mt-5">
+            <button type="submit" class="btn btn-primary" title="{{ translations?.Search?.label  }}">
+                <icon-search class="me-2"></icon-search>
+                <span>{{ translations?.search?.label }}</span>
+            </button>
+
+            <button type="button" class="btn btn-primary" (click)="onReset()" title="{{ translations?.Reset?.label  }}">
+                <icon-restore class="me-2"></icon-restore>
+                {{ translations?.Reset?.label }}
+            </button>
+
+            <button type="button" class="btn btn-primary" (click)="exportTOExcel()"
+                title="{{ translations?.ExportReport?.label  }}">
+                <icon-file class="me-2"></icon-file>
+                {{ translations?.ExportReport?.label }}
+            </button>
+        </div>
+    </div>
+</form>
+
+<div class="table-container shadow-md rounded-xl border border-gray-200 bg-white overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th *ngFor="let col of cols" (click)="col.sort && onSortChange({ field: col.field })" [ngClass]="{
+              'cursor-pointer select-none': col.sort, 
+              'text-primary font-semibold': currentSortField === col.field
+            }" class="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b border-gray-200">
+                        <div class="flex items-center gap-1">
+                            <span [innerHTML]="col.title"></span>
+                            <span class="transition-transform">
+                                <svg *ngIf="col.sort && currentSortDirection === 1" class="w-3.5 h-3.5 text-primary"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M5 15L12 8L19 15" stroke-width="2" stroke-linecap="round" />
+                                </svg>
+                                <svg *ngIf="col.sort && currentSortDirection === 2" class="w-3.5 h-3.5 text-primary"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19 9L12 16L5 9" stroke-width="2" stroke-linecap="round" />
+                                </svg>
+                            </span>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngIf="isLoading; else tableRows">
+                    <tr *ngFor="let _ of [].constructor(5)">
+                        <td *ngFor="let col of cols" class="px-4 py-3 border-b">
+                            <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
+                        </td>
+                    </tr>
+                </ng-container>
+                <ng-template #tableRows>
+                    <ng-container *ngFor="let row of rows; let index = index">
+                        <!-- Main Row -->
+                        <tr (click)="onRowClick({ row: row })" class="hover:bg-gray-50 transition cursor-pointer">
+                            <td *ngFor="let col of cols" class="px-4 py-3 border-b text-sm text-gray-700"
+                                [ngClass]="{'text-end font-mono': col.isNumber}">
+                                <ng-container [ngSwitch]="col.field">
+
+                                    <!-- Expand Button -->
+                                    <!-- Expand Button -->
+                                    <ng-container *ngSwitchCase="'expand'">
+                                        <button aria-label="Expand Row" class="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 text-gray-600 
+                 hover:bg-primary hover:text-white hover:border-primary transition"
+                                            (click)="toggleRowExpand(row.ID); $event.stopPropagation()">
+                                            <!-- Plus Icon -->
+                                            <svg *ngIf="expandedRow?.ID !== row.ID" xmlns="http://www.w3.org/2000/svg"
+                                                class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 9l-7 7-7-7" />
+                                            </svg>
+
+                                            <!-- Minus Icon -->
+                                            <svg *ngIf="expandedRow?.ID === row.ID" xmlns="http://www.w3.org/2000/svg"
+                                                class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M5 15l7-7 7 7" />
+                                            </svg>
+                                        </button>
+                                    </ng-container>
+
+
+                                    <!-- Actions -->
+                                    <ng-container *ngSwitchCase="'Actions'">
+                                        <div class="flex gap-2">
+                                            <button aria-label="Edit Row" class="btn btn-sm btn-primary"
+                                                (click)="editFees(row.ID); $event.stopPropagation()">
+                                                <icon-edit></icon-edit>
+                                            </button>
+                                        </div>
+                                    </ng-container>
+
+                                    <!-- Default -->
+                                    <div *ngSwitchDefault
+                                        [innerHTML]="col.cellRenderer ? col.cellRenderer(row) : row[col.field]"></div>
+                                </ng-container>
+                            </td>
+                        </tr>
+
+                        <!-- Details Row -->
+                        <tr *ngIf="expandedRow?.ID === row.ID" class="bg-gray-50">
+                            <td [attr.colspan]="cols.length" class="p-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div *ngFor="let detail of [
+                {label: translations?.TitleAr_Club?.label, value: row.ClubTitleAr},
+                {label: translations?.TitleEn_Club?.label, value: row.ClubTitleEn},
+                {label: translations?.MembershipTypeTitleAr?.label, value: row.MembershipTypeTitleAr},
+                {label: translations?.MembershipTypeTitleEn?.label, value: row.MembershipTypeTitleEn},
+                {label: translations?.ApplicantTypeTitleAr?.label, value: row.ApplicantTypeTitleAr},
+                {label: translations?.ApplicantTypeTitleEn?.label, value: row.ApplicantTypeTitleEn},
+                { label: translations?.EventTitleAr?.label, value: row.EventTitleAr },
+                { label: translations?.EventTitleEn?.label, value: row.EventTitleEn },
+                {label: translations?.Category?.label, value: row.SexTitleAr},
+                {label: translations?.ProcessTitleAr?.label, value: row.ProcessTitleAr},
+              ]" class="p-3 bg-white rounded-lg border border-gray-200 shadow-sm">
+                                        <label
+                                            class="block text-xs font-semibold text-gray-500">{{detail.label}}:</label>
+                                        <span class="block text-sm text-gray-800" [ngClass]="{'text-green-600 font-bold': detail.label==='Status' && row.Active,
+                                  'text-red-600 font-bold': detail.label==='Status' && !row.Active}">
+                                            {{ detail.value || '-' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </ng-template>
+            </tbody>
+        </table>
+    </div>
+    <div class="p-2 flex flex-col sm:flex-row justify-between items-center mt-4 gap-3">
+
+        <div class="text-sm text-gray-600">
+            {{ paginationInfoText }}
+        </div>
+
+        <div class="flex items-center gap-2">
+            <!-- First Page -->
+            <button class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 
+                   hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === 1" (click)="onPageChange(1)">
+                «
+            </button>
+
+            <!-- Previous Page -->
+            <button class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 
+                   hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === 1" (click)="onPageChange(paginationInfo.CurrentPage - 1)">
+                ‹
+            </button>
+
+            <!-- Page Numbers -->
+            <div class="flex gap-1">
+                <ng-container *ngFor="let page of getPageNumbers()">
+                    <!-- لو الصفحة -1 يعني Ellipsis -->
+                    <span *ngIf="page === -1" class="px-2 text-gray-400">...</span>
+
+                    <!-- لو رقم صفحة -->
+                    <button *ngIf="page !== -1"
+                        class="w-9 h-9 flex items-center justify-center rounded-full border transition font-medium"
+                        [ngClass]="{
+      'bg-primary text-white border-primary': page === paginationInfo.CurrentPage, 
+      'border-gray-300 text-gray-600 hover:bg-primary hover:text-white hover:border-primary': page !== paginationInfo.CurrentPage
+    }" (click)="onPageChange(page)">
+                        {{ page }}
+                    </button>
+                </ng-container>
+
+            </div>
+
+            <!-- Next Page -->
+            <button class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 
+                   hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === paginationInfo.TotalPages"
+                (click)="onPageChange(paginationInfo.CurrentPage + 1)">
+                ›
+            </button>
+
+            <!-- Last Page -->
+            <button class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 
+                   hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === paginationInfo.TotalPages"
+                (click)="onPageChange(paginationInfo.TotalPages)">
+                »
+            </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <select id="pageSize" aria-label="pageSize"
+                class="border rounded-lg px-2 py-1 text-sm focus:ring-primary focus:border-primary"
+                [(ngModel)]="paginationInfo.PageSize" (ngModelChange)="onPageSizeChange($event)"
+                [ngModelOptions]="{standalone: true}">
+                <option [value]="10">10</option>
+                <option [value]="20">20</option>
+                <option [value]="50">50</option>
+                <option [value]="100">100</option>
+            </select>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,801 @@
+<div *ngIf="rows.length > 0 || isLoading"
+    class="mt-6 table-container shadow-md rounded-xl border border-gray-200 bg-white overflow-hidden relative">
+
+    <!-- Payment Methods Legend Header -->
+    <div *ngIf="showPaymentLegend"
+        class="payment-legend-container px-6 py-4 bg-gradient-to-r from-primary/5 via-white to-primary/5 border-b-2 border-primary/20">
+        <div class="flex items-center justify-center gap-3 flex-wrap">
+            <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-md border-2 border-primary/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span class="font-bold text-gray-800 text-sm">{{ isArabic ? 'طرق الدفع' : 'Payment Methods' }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-blue-50 to-blue-100 text-blue-800 border-2 border-blue-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94L14.4 2.81c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? 'يدوي' : 'Manual' }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-green-50 to-green-100 text-green-800 border-2 border-green-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? 'إلكتروني' : 'Electronic' }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-purple-50 to-purple-100 text-purple-800 border-2 border-purple-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? 'إلكتروني أوتوماتيك' : 'Electronic Automatic' }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Legend Header -->
+    <div *ngIf="showStatusLegend"
+        class="payment-legend-container px-6 py-4 bg-gradient-to-r from-primary/5 via-white to-primary/5 border-b-2 border-primary/20">
+        <div class="flex items-center justify-center gap-3 flex-wrap">
+            <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-md border-2 border-primary/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="font-bold text-gray-800 text-sm">{{ isArabic ? 'حالات الرخص' : 'License Status' }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-green-50 to-green-100 text-green-800 border-2 border-green-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? 'رخصة سارية' : 'Valid License' }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-orange-50 to-orange-100 text-orange-800 border-2 border-orange-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? 'رخصة مسحوبة' : 'License Withdrawn' }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-blue-50 to-blue-100 text-blue-800 border-2 border-blue-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? 'رخصة منتهية' : 'License Expired' }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-red-50 to-red-100 text-red-800 border-2 border-red-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? 'رخصة ملغية' : 'Canceled License' }}</span>
+            </div>
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-red-900 text-red-100 border-2 border-red-800 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                </svg>
+                <span class="font-bold text-sm">
+                    {{ isArabic ? 'تم الاخلاء': 'Evacuated' }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submission Methods Legend Header -->
+    <div *ngIf="showSubmissionLegend"
+        class="payment-legend-container px-6 py-4 bg-gradient-to-r from-primary/5 via-white to-primary/5 border-b-2 border-primary/20">
+        <div class="flex items-center justify-center gap-3 flex-wrap">
+            <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-md border-2 border-primary/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span class="font-bold text-gray-800 text-sm">{{ isArabic ? 'طرق التقديم' : 'Submission Methods'
+                    }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-green-50 to-green-100 text-green-800 border-2 border-green-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? 'اونلاين' : 'Online' }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-blue-50 to-blue-100 text-blue-800 border-2 border-blue-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? 'موظف' : 'Employee' }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Duration Legend Header -->
+    <div *ngIf="showDurationLegend"
+        class="payment-legend-container px-6 py-4 bg-gradient-to-r from-primary/5 via-white to-primary/5 border-b-2 border-primary/20">
+        <div class="flex items-center justify-center gap-3 flex-wrap">
+            <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-md border-2 border-primary/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span class="font-bold text-gray-800 text-sm">{{ isArabic ? 'المدة الزمنية' : 'Duration' }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-green-50 to-green-100 text-green-700 border-2 border-green-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? '1-5 أيام (سريع)' : '1-5 Days (Fast)' }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-yellow-50 to-yellow-100 text-yellow-700 border-2 border-yellow-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? '5-10 أيام (متوسط)' : '5-10 Days (Medium)' }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-red-50 to-red-100 text-red-700 border-2 border-red-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? '+10 أيام (بطيء)' : '+10 Days (Slow)' }}</span>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="showDutyFreeLegend"
+        class="payment-legend-container px-6 py-4 bg-gradient-to-r from-primary/5 via-white to-primary/5 border-b-2 border-primary/20">
+        <div class="flex items-center justify-center gap-3 flex-wrap">
+            <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-md border-2 border-primary/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="font-bold text-gray-800 text-sm">{{ isArabic ? 'نوع الإعفاء' : 'Type of exemption'
+                    }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-green-50 to-green-100 text-green-700 border-2 border-green-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? 'معفي' : 'Duty Free' }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-red-50 to-red-100 text-red-700 border-2 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? 'غير معفى' : 'Not Duty Free' }}</span>
+            </div>
+        </div>
+    </div>
+    <!-- Escalation Status Legend Header -->
+    <div *ngIf="showEscalationLegend"
+        class="payment-legend-container px-6 py-4 bg-gradient-to-r from-primary/5 via-white to-primary/5 border-b-2 border-primary/20">
+        <div class="flex items-center justify-center gap-3 flex-wrap">
+            <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-md border-2 border-primary/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span class="font-bold text-gray-800 text-sm">{{ isArabic ? 'حالة التصعيد' : 'Escalation Status'
+                    }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-red-50 to-red-100 text-red-700 border-2 border-red-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? 'طلب مصعد حاليا' : 'Current Escalated Request' }}</span>
+            </div>
+
+            <div
+                class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-yellow-50 to-yellow-100 text-yellow-700 border-2 border-yellow-300 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? 'طلب مصعد من قبل' : 'Previous Escalated Request' }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Late Role Legend Header -->
+    <div *ngIf="showLateRoleLegend"
+        class="payment-legend-container px-6 py-4 bg-gradient-to-r from-primary/5 via-white to-primary/5 border-b-2 border-primary/20">
+        <div class="flex items-center justify-center gap-3 flex-wrap">
+            <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-md border-2 border-primary/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="font-bold text-gray-800 text-sm">{{ isArabic ? 'متاخر عند' : 'Late With' }}</span>
+            </div>
+
+            <div *ngFor="let role of lateRoles.slice(1)"
+                class="flex items-center gap-2 px-4 py-2 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105"
+                [ngClass]="getLateRoleBadgeClass(role.LookupID)">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+                </svg>
+                <span class="font-bold text-sm">{{ isArabic ? role.TitleAr : role.TitleEn }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto relative">
+
+        <table class="w-full border-collapse resizable-table">
+            <thead class="bg-gray-50 relative z-[1]">
+                <tr>
+                    <ng-container *ngFor="let col of cols">
+                        <th *ngIf="col.visible === true"
+                            (click)="col.sort && handleSort(col.field)" [ngClass]="{
+                                'cursor-pointer select-none': col.sort, 
+                                'text-primary font-semibold': currentSortField === col.field,
+                                'hide-on-mobile': shouldHideOnMobile(col.field)
+                            }" [title]="col.title" [style.width]="col.width" [style.min-width]="col.width"
+                            class="px-4 py-3 text-left text-sm font-medium text-gray-700 border-b border-gray-200">
+                            <div [ngSwitch]="col.field" class="flex items-center gap-1">
+
+                                <ng-container *ngSwitchCase="'checkbox'">
+                                    <div class="flex items-center justify-center w-full">
+                                        <input type="checkbox" [checked]="isAllSelected()"
+                                            (change)="toggleSelectAll($event)" (click)="$event.stopPropagation()"
+                                            aria-label="select all"
+                                            class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary cursor-pointer transition">
+                                    </div>
+                                </ng-container>
+
+                                <ng-container *ngSwitchDefault>
+                                    <span>{{col.title}}</span>
+                                    <span *ngIf="col.sort" class="transition-transform">
+                                        <svg *ngIf="currentSortField === col.field && currentSortDirection === 1"
+                                            class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path d="M5 15L12 8L19 15" stroke-width="2" stroke-linecap="round" />
+                                        </svg>
+                                        <svg *ngIf="currentSortField === col.field && currentSortDirection === 2"
+                                            class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path d="M19 9L12 16L5 9" stroke-width="2" stroke-linecap="round" />
+                                        </svg>
+                                        <!-- Default sort icon when column is not currently sorted -->
+                                        <svg *ngIf="currentSortField !== col.field" class="w-3.5 h-3.5 text-gray-400"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path d="M8 9l4-4 4 4m0 6l-4 4-4-4" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </span>
+                                </ng-container>
+                            </div>
+                        </th>
+                    </ng-container>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Loading State -->
+                <ng-container *ngIf="isLoading; else tableRows">
+                    <tr *ngFor="let _ of [].constructor(5)">
+                        <ng-container *ngFor="let col of cols">
+                            <td *ngIf="col.visible === true"
+                                class="border-b px-4 py-3">
+                                <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
+                            </td>
+                        </ng-container>
+                    </tr>
+                </ng-container>
+
+                <!-- Table Rows -->
+                <ng-template #tableRows>
+                    <ng-container *ngFor="let row of rows; let index = index">
+                        <!-- Main Row -->
+                        <tr class="hover:bg-gray-50 transition">
+                            <ng-container *ngFor="let col of cols">
+                                <td *ngIf="col.visible === true"
+                                    class="px-4 py-3 border-b text-sm text-gray-700" [ngClass]="{
+                                        'text-end font-mono': col.isNumber,
+                                        'hide-on-mobile': shouldHideOnMobile(col.field)
+                                    }"
+                                    [class]="shouldApplyDurationStyling(col) ? getDurationBadgeClass(row) : (shouldApplyEscalationStyling(col) ? getEscalationStatusBadgeClass(row) : '')"
+                                    [ngSwitch]="col.field">
+                                    <!-- Serial Number -->
+                                    <ng-container *ngSwitchCase="'serial'">
+                                        <span class="force-ltr">
+                                            {{ (paginationInfo.CurrentPage - 1) * paginationInfo.PageSize + index + 1 }}
+                                        </span>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'Serial'">
+                                        <span class="force-ltr">
+                                            {{ (paginationInfo.CurrentPage - 1) * paginationInfo.PageSize + index + 1 }}
+                                        </span>
+                                    </ng-container>
+
+                                    <ng-container *ngSwitchCase="'checkbox'">
+                                        <div class="flex items-center justify-center">
+                                            <input type="checkbox" [checked]="isRowSelected(row)"
+                                                (change)="toggleRowSelection(row)" (click)="$event.stopPropagation()"
+                                                class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary cursor-pointer transition">
+                                        </div>
+                                    </ng-container>
+
+                                    <!-- فتح الطلب -->
+                                    <ng-container *ngSwitchCase="'openRequest'">
+                                        <div class="flex items-center">
+                                            <button (click)="handleActionClick(null, row); $event.stopPropagation()"
+                                                class="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition cursor-pointer"
+                                                [title]="isArabic ? 'فتح الطلب' : 'Open Request'">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </ng-container>
+
+                                    <ng-container *ngSwitchCase="'users'">
+                                        <div class="flex items-center gap-1 min-w-24">
+                                            @if(empLookup()){
+                                            <ng-select type="text" name="userName" id="userName" appendTo="body"
+                                                class="border border-[#7070705D] custom-multiselect cursor-pointer !z-10 min-w-full"
+                                                [searchable]="true" [clearable]="false"
+                                                #userSelect
+                                                [(ngModel)]="selectedEmp"
+                                                [bindValue]="isArabic? 'NameEn': 'Name'"
+                                                (change)="handleActionClick($event, row, true)"
+                                                [items]="empLookup() || []" [bindLabel]="isArabic? 'NameEn': 'Name'"
+                                                [placeholder]="translations?.LookupDefault.label"
+                                                [dropdownPosition]="'auto'"></ng-select>
+                                            }
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'ai'">
+                                        <div class="flex items-center gap-1 w-fit">
+                                            @if( ![7008, 7005, 5015].includes(row.ServiceID)){
+                                                <button [title]="translations.requestAnalysisBtn.label" class="flex items-center justify-center gap-2 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition cursor-pointer" (click)="emitAnalysis(row)">
+                                                    <icon-stars class="w-5 h-5"></icon-stars>
+                                                    {{translations?.analysisBtnInTable.label}}
+                                                </button>
+                                            }@else{
+                                                <span class="text-xl">-</span>
+                                            }
+                                        </div>
+                                    </ng-container>
+                                    <!-- Actions Column -->
+                                    <ng-container *ngSwitchCase="'actions'">
+                                        <div class="flex items-center gap-1">
+                                            <!-- Show first 2 actions as buttons -->
+                                            <ng-container
+                                                *ngFor="let action of row.Actions?.slice(0, 2); let i = index">
+                                                @if(action.ActionID !== 1877){
+                                                <button
+                                                    (click)="handleActionClick(action, row); $event.stopPropagation()"
+                                                    class="flex items-center justify-center px-2 py-1 text-xs rounded hover:bg-gray-100 hover:scale-110 transition cursor-pointer
+                                                    !w-fit"
+                                                    [title]="isArabic ? action.TitleAR : action.TitleEN">
+                                                    <!-- {{ (isArabic ? action.TitleAR : action.TitleEN) | slice:0:8 }}{{
+                                                    (isArabic ? action.TitleAR : action.TitleEN)?.length > 8 ? '...' :
+                                                    '' }} -->
+                                                    @if(action.ActionID === 865 || action.ActionID === 1841){
+                                                    <img src="/assets/images/icons/clipboard-remove-svgrepo-com.svg"
+                                                        alt="remove icon" class="flex-shrink-0 h-4 w-4">
+                                                    }@else if (action.ActionID === 1989 || action.ActionID === 1990 ||
+                                                    action.ActionID === 1991 ||
+                                                    action.ActionID === 1723 || action.ActionID === 1992 ||
+                                                    action.ActionID === 1848 || action.ActionID === 1900){
+                                                    <img src="/assets/images/icons/revoke57187.svg" alt="cancel icon"
+                                                        class="flex-shrink-0 h-4 w-4">
+                                                    }@else if(action.ActionID === 861 || action.ActionID === 1845){
+                                                    <img src="/assets/images/icons/edit-svgrepo-com.svg" alt="edit icon"
+                                                        class="flex-shrink-0 h-4 w-4">
+                                                    }@else if (action.ActionID === 862) {
+                                                    <img src="/assets/images/icons/send-svgrepo-com.svg" alt="send icon"
+                                                        class="flex-shrink-0 h-4 w-4">
+                                                    }@else if (action.ActionID === 1724) {
+                                                    <img src="/assets/images/icons/copy-com.svg" alt="copy icon"
+                                                        class="flex-shrink-0 !h-4 !w-4">
+                                                    }@else if(action.ActionID === 1850 || action.ActionID === 1844 ||
+                                                    action.ActionID === 1993 ||
+                                                    action.ActionID === 1996 || action.ActionID === 1869 || action.ActionID === 1872){
+                                                    <img src="/assets/images/icons/Group 57145.svg" alt="renew icon"
+                                                        class="flex-shrink-0 !h-4 !w-4" />
+                                                    }@else if (action.ActionID === 1832){
+                                                    <img src="/assets/images/icons/credit-card-payment-svgrepo-com.svg"
+                                                        alt="pay icon" class="flex-shrink-0 !h-4 !w-4" />
+                                                    }@else if (action.ActionID === 864){
+                                                    <icon-circle-check class="flex-shrink-0 text-green-600 !h-5 !w-5"></icon-circle-check>
+                                                    }@else if ( action.ActionID === 1995){
+                                                    <img src="/assets/images/icons/add-icon.svg" alt="add icon"
+                                                        class="flex-shrink-0 h-4 w-4">
+                                                    }@else if(action.ActionID === 1871){
+                                                    <img src="/assets/images/icons/property-transfer.svg"
+                                                        alt="property transfer icon" class="flex-shrink-0 !h-4 !w-4">
+                                                    }@else if (action.ActionID === 1985 || action.ActionID === 1984) {
+                                                    <img src="/assets/images/icons/Star.svg" class="flex-shrink-0 !h-4 !w-4"
+                                                        alt="star icon for rating">
+                                                    }@else if (action.ActionID === 1842 || action.ActionID === 1843 ||
+                                                    action.ActionID === 1993 || action.ActionID === 1852 ||
+                                                    action.ActionID === 1901) {
+                                                    <img src="/assets/images/icons/printer57135.svg" alt="print icon">
+                                                    }@else if (action.ActionID === 1859 || action.ActionID === 1865) {
+                                                    <icon-history-clock class="flex-shrink-0 !h-5 !w-5 text-primary"></icon-history-clock>
+                                                    }
+                                                </button>
+                                                }
+                                            </ng-container>
+
+                                            <!-- Dropdown for more actions if there are more than 2 -->
+                                            <div *ngIf="row.Actions?.length > 2" class="relative">
+                                                <button [attr.popovertarget]="row[rowIdentifierField]"
+                                                    (click)="toggleActionMenu(row[rowIdentifierField]); $event.stopPropagation()"
+                                                    [style.anchor-name]="'--anchor-' + row[rowIdentifierField]"
+                                                    class="flex items-center justify-center w-7 h-7 rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white transition cursor-pointer"
+                                                    [title]="isArabic ? 'المزيد' : 'More'">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                                    </svg>
+                                                </button>
+
+                                                <!-- Actions dropdown menu -->
+                                                <div popover [id]="row[rowIdentifierField]"
+                                                    *ngIf="openActionMenus[row[rowIdentifierField]]"
+                                                    [style.position-anchor]="'--anchor-' + row[rowIdentifierField]"
+                                                    class="absolute top-full mt-1 left-0 bg-white border border-gray-300 rounded-lg shadow-xl z-[9999] min-w-[150px] native-popover-menu transform translate-x-1/2"
+                                                    (click)="$event.stopPropagation()">
+                                                    <ng-container *ngFor="let action of row.Actions?.slice(2)">
+                                                        @if(action.ActionID !== 1877){
+                                                        <button
+                                                            (click)="handleActionClick(action, row); toggleActionMenu(row[rowIdentifierField]); $event.stopPropagation()"
+                                                            class="block w-full text-right px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary transition">
+                                                            {{ isArabic ? action.TitleAR : action.TitleEN }}
+                                                        </button>
+                                                        }
+                                                    </ng-container>
+                                                </div>
+                                            </div>
+
+                                            <!-- If no actions, show default edit button -->
+                                            <button *ngIf="!row.Actions || row.Actions.length === 0"
+                                                (click)="handleActionClick(null, row); $event.stopPropagation()"
+                                                class="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition cursor-pointer"
+                                                [title]="isArabic ? 'تعديل' : 'Edit'">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </ng-container>
+
+                                    <!-- زر التوسيع -->
+                                    <ng-container *ngSwitchCase="'expand'">
+                                        <div class="flex items-center justify-center">
+                                            <button aria-label="Expand Row"
+                                                class="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 text-gray-600 hover:bg-primary hover:text-white hover:border-primary transition cursor-pointer"
+                                                (click)="toggleRowExpand(row); $event.stopPropagation()">
+                                                <!-- Arrow Down Icon (Closed State) -->
+                                                <svg *ngIf="!isRowExpanded(row)" xmlns="http://www.w3.org/2000/svg"
+                                                    class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                                    stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M19 9l-7 7-7-7" />
+                                                </svg>
+                                                <!-- Arrow Up Icon (Open State) -->
+                                                <svg *ngIf="isRowExpanded(row)" xmlns="http://www.w3.org/2000/svg"
+                                                    class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                                    stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M5 15l7-7 7 7" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </ng-container>
+
+                                    <!-- Default Cell Content -->
+                                    <span *ngSwitchDefault>
+                                        <!-- Attachment Details Button -->
+                                        <button *ngIf="col.field === 'attachmentDetails'"
+                                            (click)="handleAttachmentClick(row); $event.stopPropagation()"
+                                            class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm font-semibold hover:bg-blue-200 transition-all cursor-pointer"
+                                            [title]="isArabic ? 'عرض تفاصيل المرفقات' : 'View attachment details'">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                                            </svg>
+                                            {{ isArabic ? 'عرض المرفقات' : 'View Attachments' }}
+                                        </button>
+
+                                        <!-- Attachment Count Column with Click -->
+                                        <button
+                                            *ngIf="col.field === 'AttachmentCount' && getCellValue(row, col) !== '-' && getCellValue(row, col) !== '0'"
+                                            (click)="handleAttachmentClick(row); $event.stopPropagation()"
+                                            class="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-lg text-sm font-semibold hover:bg-primary hover:text-white transition-all cursor-pointer"
+                                            [title]="isArabic ? 'عرض تفاصيل المرفقات' : 'View attachment details'">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                                            </svg>
+                                            {{ getCellValue(row, col) }}
+                                        </button>
+                                        <!-- Attachment Count Column without Click (when 0 or empty) -->
+                                        <span
+                                            *ngIf="col.field === 'AttachmentCount' && (getCellValue(row, col) === '-' || getCellValue(row, col) === '0')"
+                                            class="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-500 rounded-lg text-sm font-semibold"
+                                            [title]="isArabic ? 'لا توجد مرفقات' : 'No attachments'">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                                            </svg>
+                                            {{ getCellValue(row, col) }}
+                                        </span>
+                                        <!-- Payment Way Column with Badge -->
+                                        <span *ngIf="col.field.includes('PaymentWay')"
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm"
+                                            [ngClass]="getPaymentBadgeClass(row)" [title]="getCellValue(row, col)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5"
+                                                fill="currentColor" viewBox="0 0 24 24">
+                                                <path
+                                                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                            </svg>
+                                            {{ getCellValue(row, col) }}
+                                        </span>
+                                        <!-- Status Column with Badge (for licenses) -->
+                                        <span *ngIf="col.field.includes('Status') && (showStatusLegend || isFeaturedField(col.field))"
+                                            [ngClass]="getStatusBadgeClass(row)" [title]="getCellValue(row, col)">
+                                            {{ getCellValue(row, col) }}
+                                        </span>
+                                        <!-- Duty Free Column with Badge -->
+                                        <span *ngIf="col.field.includes('DutyFree')"
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm"
+                                            [ngClass]="getDutyFreeBadgeClass(row)" [title]="getDutyFreeText(row)">
+                                            {{ getDutyFreeText(row) }}
+                                        </span>
+
+                                        <!-- Submission Way Column with Badge (for requests) -->
+                                        <span *ngIf="col.field.includes('SubmissionWay')"
+                                            [ngClass]="getSubmissionBadgeClass(row)" [title]="getCellValue(row, col)">
+                                            {{ getCellValue(row, col) }}
+                                        </span>
+                                        <!-- Featured Fields: ActivitedText (حالة المستخدم) -->
+                                        <span *ngIf="isFeaturedField(col.field) && col.field === 'ActivitedText'"
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md"
+                                            [ngClass]="getActivitedBadgeClass(row)"
+                                            [title]="getCellValue(row, col)">
+                                            <svg *ngIf="row.ActivitedOriginal || row.Activited" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                                            </svg>
+                                            <svg *ngIf="!(row.ActivitedOriginal || row.Activited)" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                                            </svg>
+                                            {{ getCellValue(row, col) }}
+                                        </span>
+                                        <!-- Featured Fields: LateRole (متاخر عند) -->
+                                        <span *ngIf="isFeaturedField(col.field) && (col.field.includes('LateRole'))"
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm"
+                                            [ngClass]="getLateRoleBadgeClass(getLateRoleLookupId(row))"
+                                            [title]="getCellValue(row, col)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            {{ getCellValue(row, col) }}
+                                        </span>
+                                        <!-- Featured Fields: LateDaysCount (عدد أيام التأخير) -->
+                                        <span *ngIf="isFeaturedField(col.field) && col.field === 'LateDaysCount'"
+                                            class="inline-flex items-center justify-center px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm min-w-[60px]"
+                                            [ngClass]="getLateDaysBadgeClass(row)"
+                                            [title]="getCellValue(row, col) + ' ' + (isArabic ? 'يوم' : 'Days')">
+                                            {{ getCellValue(row, col) }}
+                                        </span>
+                                        <!-- Featured Fields: FeesValue (قيمة الرسوم) -->
+                                        <span *ngIf="isFeaturedField(col.field) && col.field === 'FeesValue'"
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-bold shadow-md bg-gradient-to-br from-green-50 to-green-100 text-green-800 border-2 border-green-300"
+                                            [title]="getCellValue(row, col)">
+                                     
+                                            {{ getCellValue(row, col) }}
+                                        </span>
+                                        <!-- Featured Fields: Active (حالة التفعيل) -->
+                                        <span *ngIf="isFeaturedField(col.field) && col.field === 'Active'"
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-bold shadow-md border-2"
+                                            [ngClass]="row.Active ? 'bg-gradient-to-br from-green-50 to-green-100 text-green-800 border-green-300' : 'bg-gradient-to-br from-red-50 to-red-100 text-red-800 border-red-300'"
+                                            [title]="row.Active ? (isArabic ? 'مفعل' : 'Active') : (isArabic ? 'غير مفعل' : 'Inactive')">
+                                            <svg *ngIf="row.Active" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                            </svg>
+                                            <svg *ngIf="!row.Active" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                            </svg>
+                                            {{ row.Active ? (isArabic ? 'مفعل' : 'Active') : (isArabic ? 'غير مفعل' : 'Inactive') }}
+                                        </span>
+                                        <!-- AddMoreThanOne Column with Badge -->
+                                        <span *ngIf="col.field === 'AddMoreThanOne'"
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm"
+                                            [ngClass]="row.AddMoreThanOne ? 'bg-gradient-to-br from-blue-50 to-blue-100 text-blue-800 border-2 border-blue-300' : 'bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800 border-2 border-gray-300'"
+                                            [title]="row.AddMoreThanOne ? (isArabic ? 'نعم' : 'Yes') : (isArabic ? 'لا' : 'No')">
+                                            <svg *ngIf="row.AddMoreThanOne" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                            </svg>
+                                            <svg *ngIf="!row.AddMoreThanOne" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                            </svg>
+                                            {{ row.AddMoreThanOne ? (isArabic ? 'نعم' : 'Yes') : (isArabic ? 'لا' : 'No') }}
+                                        </span>
+                                        <!-- Number Columns -->
+                                        <span
+                                            *ngIf="!isFeaturedField(col.field) && !col.field.includes('PaymentWay') && !col.field.includes('Status') && !col.field.includes('SubmissionWay') && col.field !== 'AttachmentCount' && col.field !== 'attachmentDetails' && col.isNumber && col.field !== 'FeesValue'"
+                                            class="force-ltr cell-content" [title]="getCellValue(row, col)">{{
+                                            getCellValue(row, col) }}</span>
+                                        <!-- Text Columns -->
+                                        <span
+                                            *ngIf="!isFeaturedField(col.field) && !col.field.includes('PaymentWay') && !col.field.includes('Status') && !col.field.includes('SubmissionWay') && col.field !== 'AttachmentCount' && col.field !== 'attachmentDetails' && col.field !== 'AddMoreThanOne' && !col.isNumber && col.field !== 'FeesValue'"
+                                            class="cell-content" [title]="getCellValue(row, col)">{{ getCellValue(row,
+                                            col) }}</span>
+
+                                        <!-- Status Column without badge (for fees) -->
+                                        <span *ngIf="col.field.includes('Status') && !showStatusLegend && !isFeaturedField(col.field)"
+                                            class="cell-content" [title]="getCellValue(row, col)">{{ getCellValue(row,
+                                            col) }}</span>
+                                    </span>
+                                </td>
+                            </ng-container>
+                        </tr>
+
+                        <!-- Expanded Details Row -->
+                        <!-- داخل Expanded Row -->
+                        <tr *ngIf="isRowExpanded(row)" class="bg-gray-50">
+                            <td [attr.colspan]="visibleColumnsCount" class="p-3 md:p-4">
+                                <div *ngIf="getRowExpandedDetails(row).length > 0"
+                                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                                    <div *ngFor="let detail of getRowExpandedDetails(row)"
+                                        class="p-2 md:p-3 bg-white rounded-lg border border-gray-200 shadow-sm">
+                                        <label class="block text-xs font-semibold text-gray-500 mb-1">{{ detail.label
+                                            }}:</label>
+                                        <span class="block text-xs md:text-sm text-gray-800 break-words overflow-auto"
+                                            [ngClass]="{'force-ltr font-mono text-end': detail.isNumber}">{{ detail.value
+                                            || '-' }}</span>
+                                    </div>
+                                </div>
+                                <div *ngIf="getRowExpandedDetails(row).length === 0"
+                                    class="text-center py-4 text-gray-500">
+                                    {{ isArabic ? 'لا توجد تفاصيل إضافية لعرضها' : 'No additional details to show' }}
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </ng-template>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="!hidePagination" class="p-4 flex flex-col lg:flex-row justify-between items-center gap-4 border-t border-gray-200">
+        <!-- Pagination Info -->
+        <div class="text-sm text-gray-600 order-1 lg:order-1">
+            {{ paginationInfoText }}
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="flex items-center gap-2 order-3 lg:order-2">
+            <!-- First Page -->
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === 1" (click)="handlePageChange(1)">
+                «
+            </button>
+
+            <!-- Previous Page -->
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === 1"
+                (click)="handlePageChange(paginationInfo.CurrentPage - 1)">
+                ‹
+            </button>
+
+            <!-- Page Numbers -->
+            <div class="flex gap-1">
+                <ng-container *ngFor="let page of getPageNumbers()">
+                    <span *ngIf="page === -1" class="px-2 text-gray-400">...</span>
+                    <button *ngIf="page !== -1"
+                        class="w-9 h-9 flex items-center justify-center rounded-full border transition font-medium"
+                        [ngClass]="{'bg-primary text-white border-primary': page === paginationInfo.CurrentPage, 'border-gray-300 text-gray-600 hover:bg-primary hover:text-white hover:border-primary': page !== paginationInfo.CurrentPage}"
+                        (click)="handlePageChange(page)">
+                        {{ page }}
+                    </button>
+                </ng-container>
+            </div>
+
+            <!-- Next Page -->
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === paginationInfo.TotalPages"
+                (click)="handlePageChange(paginationInfo.CurrentPage + 1)">
+                ›
+            </button>
+
+            <!-- Last Page -->
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === paginationInfo.TotalPages"
+                (click)="handlePageChange(paginationInfo.TotalPages)">
+                »
+            </button>
+        </div>
+
+        <!-- Page Size Selector -->
+        <div class="flex items-center gap-2 order-2 lg:order-3">
+            <label for="pageSize" class="text-sm text-gray-600 whitespace-nowrap">
+                {{ translations?.rowsPerPage?.label || (isArabic ? 'عدد الصفوف:' : 'Rows:') }}
+            </label>
+            <select id="pageSize" aria-label="pageSize"
+                class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-primary focus:border-primary bg-white"
+                [(ngModel)]="paginationInfo.PageSize" (ngModelChange)="handlePageSizeChange($event)"
+                [ngModelOptions]="{standalone: true}">
+                <option [value]="10">10</option>
+                <option [value]="20">20</option>
+                <option [value]="50">50</option>
+                <option [value]="100">100</option>
+            </select>
+        </div>
+    </div>
+
+
+</div>

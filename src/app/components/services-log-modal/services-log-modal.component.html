@@ -1,0 +1,108 @@
+<div id="servicesLog">
+    <!-- Modal -->
+    <ngx-custom-modal #modal4 class="modal-top z-[9999] large-modal" [closeOnOutsideClick]="false"
+        [hideCloseButton]="true">
+
+        <ng-template #modalBody>
+            <div class="p-2 border-b border-gray-200 flex justify-between">
+                <h2 class="text-lg min-[340px]:text-xl sm:text-2xl md:text-3xl p-2 flex items-center ps-2 text-primary">
+                    الإجراءات التي تمت على الطلب
+                </h2>
+                <button (click)="onUserClose('no')">
+                    <icon-x class="h-6 text-primary cursor-pointer hover:opacity-90"></icon-x>
+                </button>
+            </div>
+            <div class="ps-2">
+                <dl class="my-2">
+                    <div class="flex flex-wrap gap-2">
+                        <dt class="">
+                            <span class="font-bold">
+                                {{ translations()?.requestNumber.label}}:
+                            </span>
+                        </dt>
+                        <dd class="text-green-800 direction-ltr">
+                            {{ allApplicationsService.applicationNumber() }}
+                        </dd>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <dt class="">
+                            <span class="font-bold">
+                                {{translations()?.ServiceType?.label}}:
+                            </span>
+                        </dt>
+                        <dd class="text-green-800 direction-ltr">
+                            {{ store.index.locale === 'en' ? tableRows()[0].ItemTypeEn : tableRows()[0].ItemType }}
+                        </dd>
+                    </div>
+                    @if(allApplicationsService.ProcessID()){
+                        <div class="flex flex-wrap gap-2">
+                            <dt class="">
+                                <span class="font-bold">
+                                    {{ translations()?.ProcessID?.label}}:
+                                </span>
+                            </dt>
+                            <dd class="text-green-800">
+                                {{ allApplicationsService.ProcessID() }}
+                            </dd>
+                        </div>
+                    }
+                    <div class="flex flex-wrap gap-2">
+                        <dt class="">
+                            <span class="font-bold">
+                                {{ translations()?.Status?.label}}:
+                            </span>
+                        </dt>
+                        <dd class="text-green-800">
+                            {{ allApplicationsService.FkStatusID() }}
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+
+            <section class="space-y-4">
+                
+                <div class="table-container">
+                    @if(!allApplicationsService.modalLoader()){
+                    @if (!statusMessage()) {
+
+                    <div class="overflow-auto max-h-[calc(100vh-170px)]">
+                        <table class="w-full text-sm table-auto">
+                            <thead>
+                                <tr>
+                                    <th class="w-10">#</th>
+                                    @for (item of tableCols(); track $index) {
+                                    <th>
+                                        {{ item }}
+                                    </th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (item of tableRows(); track $index) {
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ item.OwnerName }}</td>
+                                    <td>{{ store.index.locale === 'en'? item.OwnerTypeEn: item.OwnerType }}</td>
+                                    <td>{{ store.index.locale === 'en'? item.ActionEn: item.Action }}</td>
+                                    <td>{{ item.Date | date: 'dd/MM/yyyy' }}</td>
+                                    <td class="whitespace-nowrap direction-ltr">{{ item.Date | date:'shortTime' }}</td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    }
+                    }
+                </div>
+            </section>
+
+
+
+        </ng-template>
+        <ng-template #modalFooter>
+            <div class="flex flex-col sm:flex-row gap-1 w-full justify-end items-start">
+
+            </div>
+        </ng-template>
+    </ngx-custom-modal>
+</div>

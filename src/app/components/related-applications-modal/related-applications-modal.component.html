@@ -1,0 +1,105 @@
+<div cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
+    <ngx-custom-modal #modal23 class="modal-top large-modal overflow-auto z-[9999]" id="relatedApplicationsModal"
+        [closeOnOutsideClick]="false" [hideCloseButton]="true">
+        <ng-template #modalHeader>
+            <div class="p-2 border-b border-gray-200 flex justify-between bg-primary">
+                <h2 class="text-lg min-[340px]:text-xl sm:text-2xl md:text-3xl p-2 flex items-center ps-2 text-white">
+                    الطلبات المرتبطة بنفس الرخصة ({{ rows().length }})
+                </h2>
+                <button (click)="onUserClose('no')">
+                    <icon-x class="h-8 text-white cursor-pointer hover:opacity-90"></icon-x>
+                </button>
+            </div>
+        </ng-template>
+        <ng-template #modalBody>
+            @if(rows().length > 0){
+                <div class="ps-2">
+                    <dl class="my-2">
+                        <div class="flex flex-wrap gap-2">
+                            <dt class="">
+                                <span class="font-bold">
+                                    نوع الخدمة:
+                                </span>
+                            </dt>
+                            <dd class="text-green-800">
+                                @if(store.locale === 'en'){
+                                {{rows()[rows().length - 1].ServiceTitleEn}}
+                                }@else {
+                                {{rows()[rows().length - 1].ServiceTitleAr}}
+                                }
+                            </dd>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <dt class="">
+                                <span class="font-bold">
+                                    رقم الرخصة:
+                                </span>
+                            </dt>
+                            <dd class="text-green-800 direction-ltr">
+                                {{rows()[rows().length - 1].ApprovedLicense || getLicenseNumber()}}
+    
+                            </dd>
+                        </div>
+                        
+                    </dl>
+    
+                </div>
+            }
+            <div class="w-full max-w-full overflow-x-auto">
+                <div class="w-full">
+                    <ng-datatable [rows]="rows()" [columns]="cols" [sortable]="true" class="w-full"
+                        [stickyHeader]="true" [showPageSize]="false"
+                        skin="whitespace-nowrap table-hover bh-cursor-pointer bh-table-compact" [height]="'200px'"
+                        [noDataContent]="translations()?.noDataContent.label" (rowClick)="onRowClick($event)"
+                        [paginationInfo]="store.locale === 'en'? 'Showing {0} to {1} of {2} entries': 'عرض {0} إلى {1} من {2}'"
+                        firstArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
+                        lastArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg> '
+                        previousArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
+                        nextArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'>
+                        @if(rows().length > 0){
+                            <ng-template [slot]="'currentIndex'" let-value="data">
+                                <span [ngClass]="getClassesByStatusId(value.FkStatusID)" class="block w-4 p-3">
+                                    {{value.currentIndex}}
+                                </span>
+                            </ng-template>
+                            <ng-template [slot]="'ApplicationNumber'" let-value="data">
+                                <p class="direction-ltr">
+                                    {{value.ApplicationNumber}}
+                                </p>
+                            </ng-template>
+                            <ng-template [slot]="'FkStatusID'" let-value="data">
+                                @if(store.locale === 'en'){
+                                {{value.FkStatusID_TitleEn}}
+                                }@else {
+                                {{value.FkStatusID_TitleAr}}
+                                }
+                            </ng-template>
+                            <ng-template [slot]="'FkProcessID'" let-value="data">
+                                @if(store.locale === 'en'){
+                                {{value.FkProcessID_TitleEn}}
+                                }@else {
+                                {{value.FkProcessID_TitleAr}}
+                                }
+                            </ng-template>
+                            <ng-template [slot]="'CreationDate'" let-value="data">
+                                {{value.CreationDate | date: 'dd/MM/yyyy'}}
+                            </ng-template>
+                            <ng-template [slot]="'LicenseCreationDate'" let-value="data">
+                                {{value.LicenseCreationDate | date: 'dd/MM/yyyy'}}
+                            </ng-template>
+                            <ng-template [slot]="'LicenseExpirationDate'" let-value="data">
+                                {{value.LicenseExpirationDate | date: 'dd/MM/yyyy'}}
+                            </ng-template>
+                        }
+                    </ng-datatable>
+
+                </div>
+            </div>
+        </ng-template>
+        <ng-template #modalFooter>
+            <!--  <button type="button" (click)="modal23.close()"
+                class="btn btn-outline-dark hover:bg-primary hover:text-white">مراجعة يدوية</button>
+            <button class="btn btn-primary ltr:ml-4 rtl:mr-4">ارسال الطلب</button> -->
+        </ng-template>
+    </ngx-custom-modal>
+</div>

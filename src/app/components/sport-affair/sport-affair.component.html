@@ -1,0 +1,1182 @@
+<div class="mb-5">
+    <div class="inline-block w-full">
+        <div class="relative z-[1]">
+            <div class="bg-primary h-1 absolute rtl:right-0 ltr:left-0 top-[30px] m-auto -z-[1] transition-[width]" [ngClass]="{
+                'w-[22%]': activeTab === 1, 
+                'w-[48%]': activeTab === 2, 
+                'w-[81%]': activeTab >= 3 && activeTab < 11
+            }"></div>
+            <ul class="mb-5 flex overflow-auto">
+                <li class="mx-auto" *ngFor="let tab of getTabs(); let i = index">
+                    <button type="button"
+                        class="bg-white dark:bg-[#253b5c] border-[3px] border-[#f3f2ee] dark:border-[#1b2e4b] flex justify-center items-center w-16 h-16 rounded-full"
+                        [ngClass]="{'!border-primary !bg-primary text-white': activeTab === tab}"
+                        (click)="setActiveTab(tab)" [attr.aria-label]="'Tab ' + tab">
+                        <span class="text-xl font-semibold">{{ tab }}</span>
+                    </button>
+                </li>
+            </ul>
+
+        </div>
+        <div>
+            <div *ngIf="activeTab === 1">
+
+                <h2 class="mb-5 text-[22px]">Applicant Data</h2>
+                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-12 m-4">
+                    <!-- Applicant QID -->
+                    <div class="col-span-12 md:col-span-3">
+                        <div class="form-group">
+                            <label for="ApplicantValue" class="block text-sm font-medium text-gray-900">
+                                Applicant QID
+                                <span class="text-red-500">Required</span>
+                            </label>
+                            <input type="text" id="ApplicantValue" maxlength="11" pattern="^[0-9]{11}$"
+                                class="form-input">
+                        </div>
+                    </div>
+
+                    <!-- Applicant Name -->
+                    <div class="col-span-12 md:col-span-3">
+                        <div class="form-group">
+                            <label for="ApplicantName" class="block text-sm font-medium text-gray-900">
+                                Applicant Name
+                                <span class="text-red-500">Required</span>
+                            </label>
+                            <input type="text" id="ApplicantName" class="form-input">
+                        </div>
+                    </div>
+
+                    <!-- Establishment ID -->
+                    <div class="col-span-12 md:col-span-3">
+                        <div class="form-group">
+                            <label for="Establishment_Number" class="block text-sm font-medium text-gray-900">
+                                Establishment ID
+                            </label>
+                            <input type="text" id="Establishment_Number" class="form-input">
+                        </div>
+                    </div>
+
+                    <!-- Establishment Name -->
+                    <div class="col-span-12 md:col-span-3">
+                        <div class="form-group">
+                            <label for="Organization_Name1" class="block text-sm font-medium text-gray-900">
+                                Establishment Name
+                            </label>
+                            <input type="text" id="Organization_Name1" class="form-input">
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+            <div *ngIf="activeTab === 2">
+                <h2 class="mb-5 text-[22px]"> License Applicant Data</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- License Applicant QID -->
+                    <div class="form-group">
+                        <label for="LicenseOwner_QID" class="block text-sm font-medium text-gray-700">
+
+                            License Applicant Name
+
+                            <span ng-show="LicensingYouthEventForm.LicenseApplicantQID.$error.required"
+                                class="text-red-500 text-xs">
+                                Required
+                            </span>
+
+                        </label>
+                        <input type="text" id="LicenseOwner_QID" class="form-input" aria-invalid="true">
+                    </div>
+
+                    <!-- Name -->
+                    <div class="form-group">
+                        <label for="LicenseOwner_Name" class="block text-sm font-medium text-gray-700">
+
+                            Identification Type
+
+
+                        </label>
+                        <input type="text" id="LicenseOwner_Name" class="form-input" aria-invalid="true">
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="LicenseOwner_Mobile1" class="block text-sm font-medium text-gray-700">
+
+                            License Applicant Personal Card Number
+
+                            <span ng-show="LicensingYouthEventForm.LicenseApplicantPhone.$error.required"
+                                class="text-red-500 text-xs">
+                                Required
+                            </span>
+
+                        </label>
+                        <input type="text" maxlength="8" id="LicenseOwner_Mobile1" class="form-input"
+                            aria-invalid="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="LicenseOwner_Mobile1" class="block text-sm font-medium text-gray-700">
+
+                            Phone
+
+                            <span ng-show="LicensingYouthEventForm.LicenseApplicantPhone.$error.required"
+                                class="text-red-500 text-xs">
+                                Required
+                            </span>
+
+                        </label>
+                        <input type="text" maxlength="8" id="LicenseOwner_Mobile1" class="form-input"
+                            aria-invalid="true">
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="CoEmail1" class="block text-sm font-medium text-gray-700">
+                            License Applicant Email
+                            <span ng-show="LicensingYouthEventForm.LicenseApplicantEmail.$error.required"
+                                class="text-red-500 text-xs">
+                                Required
+                            </span>
+
+                        </label>
+                        <input type="email" id="CoEmail1" placeholder="email@mail.com" class="form-input"
+                            aria-invalid="true">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="LicenseApplicantNationality"
+                            class="form-label form-label-outside rd-input-label ng-binding">
+                            License Applicant Nationality
+
+                        </label>
+                        <select id="LicenseApplicantNationality" class="form-select">
+                            <option style="display:none" value="" class="ng-binding" selected="selected">-- Select --
+                            </option>
+                            <option label="Uganda" value="string:1726">Uganda</option>
+                            <option label="Slovenia" value="string:1777">Slovenia</option>
+                            <option label="Chad" value="string:1805">Chad</option>
+                            <option label="Mexico" value="string:1810">Mexico</option>
+                            <option label="Argentina" value="string:1811">Argentina</option>
+                            <option label="Venezuela" value="string:1835">Venezuela</option>
+                            <option label="Dominican" value="string:1837">Dominican</option>
+                            <option label="Qatari Document" value="string:691">Qatari Document</option>
+                            <option label="Palestine " value="string:200">Palestine </option>
+                            <option label="Afghanistan " value="string:206">Afghanistan </option>
+                            <option label="Qatar" value="string:170" selected="selected">Qatar</option>
+                            <option label="Egypt" value="string:171">Egypt</option>
+                            <option label="Saudi Arabia" value="string:172">Saudi Arabia</option>
+                            <option label="Emirates" value="string:173">Emirates</option>
+                            <option label="Bahrain" value="string:174">Bahrain</option>
+                            <option label="Kuwait" value="string:175">Kuwait</option>
+                            <option label="Oman" value="string:176">Oman</option>
+                            <option label="Yemen" value="string:177">Yemen</option>
+                            <option label="Jordan" value="string:178">Jordan</option>
+                            <option label="Iraq" value="string:179">Iraq</option>
+                            <option label="Lebanon" value="string:180">Lebanon</option>
+                            <option label="Syria" value="string:181">Syria</option>
+                            <option label="Libya" value="string:182">Libya</option>
+                            <option label="Morocco" value="string:183">Morocco</option>
+                            <option label="Tunis" value="string:184">Tunis</option>
+                            <option label="Algeria" value="string:185">Algeria</option>
+                            <option label="Mauritania" value="string:186">Mauritania</option>
+                            <option label="Sudan" value="string:187">Sudan</option>
+                            <option label="pakistan " value="string:210">pakistan </option>
+                            <option label="Philippines " value="string:211">Philippines </option>
+                            <option label="Sri Lanka " value="string:212">Sri Lanka </option>
+                            <option label="Ukraine " value="string:213">Ukraine </option>
+                            <option label="Eritrea " value="string:214">Eritrea </option>
+                            <option label="Russia " value="string:215">Russia </option>
+                            <option label="Malaysia " value="string:216">Malaysia </option>
+                            <option label="Cyprus" value="string:217">Cyprus</option>
+                            <option label="Malta" value="string:218">Malta</option>
+                            <option label="Brazil" value="string:219">Brazil</option>
+                            <option label="Sweden" value="string:660">Sweden</option>
+                            <option label="Switzerland " value="string:661">Switzerland </option>
+                            <option label="Greece" value="string:662">Greece</option>
+                            <option label="Belgium" value="string:663">Belgium</option>
+                            <option label="Norway" value="string:664">Norway</option>
+                            <option label="Austria" value="string:665">Austria</option>
+                            <option label="Georgia" value="string:666">Georgia</option>
+                            <option label="Australia " value="string:667">Australia </option>
+                            <option label="SPAIN " value="string:668">SPAIN </option>
+                            <option label="Netherlands " value="string:669">Netherlands </option>
+                            <option label="Hong Kong " value="string:670">Hong Kong </option>
+                            <option label="Monte Carlo" value="string:671">Monte Carlo</option>
+                            <option label="Turkey" value="string:672">Turkey</option>
+                            <option label="China " value="string:673">China </option>
+                            <option label="Bahamas" value="string:674">Bahamas</option>
+                            <option label="BELIZE" value="string:675">BELIZE</option>
+                            <option label="Ireland" value="string:676">Ireland</option>
+                            <option label="Indonesia " value="string:677">Indonesia </option>
+                            <option label="Korea " value="string:678">Korea </option>
+                            <option label="Singapore " value="string:679">Singapore </option>
+                            <option label="poland " value="string:680">poland </option>
+                            <option label="Nigeria" value="string:681">Nigeria</option>
+                            <option label="Uzbekistan" value="string:682">Uzbekistan</option>
+                            <option label="Portugal" value="string:683">Portugal</option>
+                            <option label="Panama" value="string:684">Panama</option>
+                            <option label="Kenya" value="string:685">Kenya</option>
+                            <option label="Armenia" value="string:686">Armenia</option>
+                            <option label="Liberia" value="string:687">Liberia</option>
+                            <option label="Denmark" value="string:688">Denmark</option>
+                            <option label="Virgin Islands" value="string:689">Virgin Islands</option>
+                            <option label="Other" value="string:690">Other</option>
+                            <option label="Somalia" value="string:188">Somalia</option>
+                            <option label="Djibouti" value="string:189">Djibouti</option>
+                            <option label="India" value="string:190">India</option>
+                            <option label="Bangladesh" value="string:191">Bangladesh</option>
+                            <option label="Iran" value="string:192">Iran</option>
+                            <option label="United States Of America" value="string:193">United States Of America
+                            </option>
+                            <option label="France" value="string:194">France</option>
+                            <option label="United Kingdom" value="string:195">United Kingdom</option>
+                            <option label="Italy" value="string:196">Italy</option>
+                            <option label="Japan" value="string:197">Japan</option>
+                            <option label="Belarus" value="string:198">Belarus</option>
+                            <option label="Niger" value="string:199">Niger</option>
+                            <option label="Germany " value="string:207">Germany </option>
+                            <option label="Thailand " value="string:208">Thailand </option>
+                            <option label="Ghana " value="string:209">Ghana </option>
+                            <option label="Nepal " value="string:201">Nepal </option>
+                            <option label="Bolivia " value="string:202">Bolivia </option>
+                            <option label="Ethiopia " value="string:203">Ethiopia </option>
+                            <option label="Bosnia " value="string:204">Bosnia </option>
+                            <option label="canada " value="string:205">canada </option>
+                            <option label="Serbia" value="string:692">Serbia</option>
+                            <option label="Albania" value="string:693">Albania</option>
+                            <option label="Hungary" value="string:694">Hungary</option>
+                            <option label="South Africa" value="string:695">South Africa</option>
+                            <option label="New Zealand" value="string:1483">New Zealand</option>
+                        </select>
+                    </div>
+
+                    <!-- PostalCode -->
+                    <div class="form-group mb-4">
+                        <label for="PostalCode" class="block text-sm font-medium text-gray-700">
+                            Postal Code
+
+                        </label>
+                        <input type="text" id="PostalCode" class="form-input" aria-invalid="true">
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div *ngIf="activeTab === 3">
+                <h2 class="mb-5 text-[22px]"> Responsible Manager Data</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="form-group">
+                        <label for="Manager_Name" class="form-label block text-gray-700 font-semibold">
+                            Manager Name
+                            <span class="text-red-500"
+                                ng-show="LicensingYouthEventForm.ManagerName.$error.required && !DimManager_Name">
+                                Required
+                            </span>
+                        </label>
+                        <input type="text" class="form-input" aria-invalid="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="ManagerIsPassportOrQID" class="form-label block text-gray-700 font-semibold">
+                            Identification Type
+
+
+                        </label>
+                        <select id="ManagerIsPassportOrQID" class="form-select">
+                            <option value="0" class="ng-binding">Personal Card</option>
+                            <option value="1" class="ng-binding">Passport</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="ManagerPersCardNo" class="form-label form-label-outside rd-input-label ng-binding">
+                            Manager Personal Card Number
+                            <span class="text-red-500">
+                                Required
+                            </span>
+                        </label>
+
+                        <input type="text" maxlength="8" id="LicenseOwner_Mobile" class="form-input"
+                            aria-invalid="true">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Phone" class="form-label block text-gray-700 font-semibold">
+                            Manager Phone
+                            <span class="text-red-500">
+                                Required
+                            </span>
+
+                        </label>
+                        <input type="tel" id="Phone" placeholder="5468215" class="form-input" aria-invalid="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="CoEmail2" class="form-label block text-gray-700 font-semibold">
+                            Manager Email
+                            <span class="text-red-500">
+                                Required
+                            </span>
+
+                        </label>
+                        <input type="email" id="CoEmail2" placeholder="email@mail.com" class="form-input"
+                            aria-invalid="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="ManagerNationality" class="form-label form-label-outside rd-input-label ng-binding">
+                            Manager Nationality
+                            <span class="text-red-500">
+                                Required
+                            </span>
+                        </label>
+                        <select class="form-select" id="ManagerNationality">
+                            <option style="display:none" value="" class="ng-binding" selected="selected">-- Select --
+                            </option>
+                            <option label="Uganda" value="string:1726">Uganda</option>
+                            <option label="Slovenia" value="string:1777">Slovenia</option>
+                            <option label="Chad" value="string:1805">Chad</option>
+                            <option label="Mexico" value="string:1810">Mexico</option>
+                            <option label="Argentina" value="string:1811">Argentina</option>
+                            <option label="Venezuela" value="string:1835">Venezuela</option>
+                            <option label="Dominican" value="string:1837">Dominican</option>
+                            <option label="Qatari Document" value="string:691">Qatari Document</option>
+                            <option label="Palestine " value="string:200">Palestine </option>
+                            <option label="Afghanistan " value="string:206">Afghanistan </option>
+                            <option label="Qatar" value="string:170">Qatar</option>
+                            <option label="Egypt" value="string:171">Egypt</option>
+                            <option label="Saudi Arabia" value="string:172">Saudi Arabia</option>
+                            <option label="Emirates" value="string:173">Emirates</option>
+                            <option label="Bahrain" value="string:174">Bahrain</option>
+                            <option label="Kuwait" value="string:175">Kuwait</option>
+                            <option label="Oman" value="string:176">Oman</option>
+                            <option label="Yemen" value="string:177">Yemen</option>
+                            <option label="Jordan" value="string:178">Jordan</option>
+                            <option label="Iraq" value="string:179">Iraq</option>
+                            <option label="Lebanon" value="string:180">Lebanon</option>
+                            <option label="Syria" value="string:181">Syria</option>
+                            <option label="Libya" value="string:182">Libya</option>
+                            <option label="Morocco" value="string:183">Morocco</option>
+                            <option label="Tunis" value="string:184">Tunis</option>
+                            <option label="Algeria" value="string:185">Algeria</option>
+                            <option label="Mauritania" value="string:186">Mauritania</option>
+                            <option label="Sudan" value="string:187">Sudan</option>
+                            <option label="pakistan " value="string:210">pakistan </option>
+                            <option label="Philippines " value="string:211">Philippines </option>
+                            <option label="Sri Lanka " value="string:212">Sri Lanka </option>
+                            <option label="Ukraine " value="string:213">Ukraine </option>
+                            <option label="Eritrea " value="string:214">Eritrea </option>
+                            <option label="Russia " value="string:215">Russia </option>
+                            <option label="Malaysia " value="string:216">Malaysia </option>
+                            <option label="Cyprus" value="string:217">Cyprus</option>
+                            <option label="Malta" value="string:218">Malta</option>
+                            <option label="Brazil" value="string:219">Brazil</option>
+                            <option label="Sweden" value="string:660">Sweden</option>
+                            <option label="Switzerland " value="string:661">Switzerland </option>
+                            <option label="Greece" value="string:662">Greece</option>
+                            <option label="Belgium" value="string:663">Belgium</option>
+                            <option label="Norway" value="string:664">Norway</option>
+                            <option label="Austria" value="string:665">Austria</option>
+                            <option label="Georgia" value="string:666">Georgia</option>
+                            <option label="Australia " value="string:667">Australia </option>
+                            <option label="SPAIN " value="string:668">SPAIN </option>
+                            <option label="Netherlands " value="string:669">Netherlands </option>
+                            <option label="Hong Kong " value="string:670">Hong Kong </option>
+                            <option label="Monte Carlo" value="string:671">Monte Carlo</option>
+                            <option label="Turkey" value="string:672">Turkey</option>
+                            <option label="China " value="string:673">China </option>
+                            <option label="Bahamas" value="string:674">Bahamas</option>
+                            <option label="BELIZE" value="string:675">BELIZE</option>
+                            <option label="Ireland" value="string:676">Ireland</option>
+                            <option label="Indonesia " value="string:677">Indonesia </option>
+                            <option label="Korea " value="string:678">Korea </option>
+                            <option label="Singapore " value="string:679">Singapore </option>
+                            <option label="poland " value="string:680">poland </option>
+                            <option label="Nigeria" value="string:681">Nigeria</option>
+                            <option label="Uzbekistan" value="string:682">Uzbekistan</option>
+                            <option label="Portugal" value="string:683">Portugal</option>
+                            <option label="Panama" value="string:684">Panama</option>
+                            <option label="Kenya" value="string:685">Kenya</option>
+                            <option label="Armenia" value="string:686">Armenia</option>
+                            <option label="Liberia" value="string:687">Liberia</option>
+                            <option label="Denmark" value="string:688">Denmark</option>
+                            <option label="Virgin Islands" value="string:689">Virgin Islands</option>
+                            <option label="Other" value="string:690">Other</option>
+                            <option label="Somalia" value="string:188">Somalia</option>
+                            <option label="Djibouti" value="string:189">Djibouti</option>
+                            <option label="India" value="string:190">India</option>
+                            <option label="Bangladesh" value="string:191">Bangladesh</option>
+                            <option label="Iran" value="string:192">Iran</option>
+                            <option label="United States Of America" value="string:193">United States Of America
+                            </option>
+                            <option label="France" value="string:194">France</option>
+                            <option label="United Kingdom" value="string:195">United Kingdom</option>
+                            <option label="Italy" value="string:196">Italy</option>
+                            <option label="Japan" value="string:197">Japan</option>
+                            <option label="Belarus" value="string:198">Belarus</option>
+                            <option label="Niger" value="string:199">Niger</option>
+                            <option label="Germany " value="string:207">Germany </option>
+                            <option label="Thailand " value="string:208">Thailand </option>
+                            <option label="Ghana " value="string:209">Ghana </option>
+                            <option label="Nepal " value="string:201">Nepal </option>
+                            <option label="Bolivia " value="string:202">Bolivia </option>
+                            <option label="Ethiopia " value="string:203">Ethiopia </option>
+                            <option label="Bosnia " value="string:204">Bosnia </option>
+                            <option label="canada " value="string:205">canada </option>
+                            <option label="Serbia" value="string:692">Serbia</option>
+                            <option label="Albania" value="string:693">Albania</option>
+                            <option label="Hungary" value="string:694">Hungary</option>
+                            <option label="South Africa" value="string:695">South Africa</option>
+                            <option label="New Zealand" value="string:1483">New Zealand</option>
+                        </select><!-- end ngIf: Language=='en' -->
+                    </div>
+
+
+
+                </div>
+            </div>
+            <div *ngIf="activeTab === 4">
+                <h2 class="mb-5 text-[22px]">Company Data</h2>
+                <div class="grid grid-cols-12 md:grid-cols-12 mb-4 gap-4">
+
+
+                    <div class="col-span-3">
+                        <div class="form-group">
+                            <label for="CommercialRegisterNumber1" class="block text-sm font-medium text-gray-700">
+                                Commercial Registration Number
+
+                            </label>
+                            <a ng-show="DoneOrError == 1" target="_blank" data-toggle="modal" data-target="#popCRModal"
+                                class="text-indigo-600">
+                                <i class="fa fa-external-link" title="Commercial Registration Data"
+                                    style="font-size:large; color:#8c0135"></i>
+                            </a>
+                            <input type="text" id="CommercialRegisterNumber1" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="col-span-3">
+                        <div class="form-group">
+                            <label for="CompanyTradeMark" class="block text-sm font-medium text-gray-700">
+                                Trade Name
+
+                            </label>
+                            <input type="text" id="CompanyTradeMark" class="form-input">
+                        </div>
+                    </div>
+                    <div class="col-span-3">
+                        <div class="form-group">
+                            <label for="CompanyName" class="form-label form-label-outside rd-input-label ng-binding">
+                                Organization Name
+                            </label>
+                            <a ng-show="ComLicDoneOrError == 1" target="_blank" data-toggle="modal"
+                                data-target="#popComLicModal" class="text-indigo-600">
+                                <i class="fa fa-external-link" title="Commercial license Data"
+                                    style="font-size:large; color:#8c0135"></i>
+                            </a>
+                            <input type="text" id="CommercialLicenseNumber" class="form-input">
+                        </div>
+                    </div>
+                    <div class="col-span-3">
+                        <div class="form-group">
+                            <label for="CompanyNameEn" class="form-label form-label-outside rd-input-label ng-binding">
+                                English Organization Name
+                            </label>
+                            <input type="text" id="BuildingNumber" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="col-span-3">
+                        <div class="form-group">
+                            <label for="LicenseNo" class="form-label form-label-outside rd-input-label ng-binding">
+                                License Number
+
+                            </label>
+                            <input type="text" id="FloorNum" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="col-span-3">
+                        <div class="form-group">
+                            <label for="BranchName" class="block text-sm font-medium text-gray-700">
+                                Branch Name
+
+                            </label>
+                            <input type="text" id="BranchName" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="col-span-3">
+                        <div class="form-group">
+                            <label for="BranchCommercialRegistrationNo"
+                                class="form-label form-label-outside rd-input-label ng-binding">
+                                Commercial Sub-Registration Number
+                            </label>
+                            <input type="text" id="BranchCommercialRegistrationNo" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="col-span-3">
+                        <div class="form-group">
+                            <label for="BranchLicenseNo"
+                                class="form-label form-label-outside rd-input-label ng-binding">
+                                Branch license Number
+                            </label>
+                            <input type="text" id="StreetNumber" class="form-input">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div *ngIf="activeTab === 5">
+                <h2 class="mb-5 text-[22px]">Headquarters Data</h2>
+                <div class="grid grid-cols-12 sm:grid-cols-12 md:grid-cols-12 gap-4">
+                    <div class="col-span-2">
+                        <div class="form-group">
+                            <label for="HeadquartersType"
+                                class="form-label form-label-outside rd-input-label ng-binding">
+                                Headquarters Type
+
+                            </label>
+                            <select id="HeadquartersType" class="form-select ">
+                                <option style="display:none" value="" class="ng-binding" selected="selected">-- Select
+                                    --
+                                </option>
+                                <option label="Administrative Office - Tower" value="string:1560">Administrative Office
+                                    -
+                                    Tower</option>
+                                <option label="Administrative Office - Villa" value="string:1561">Administrative Office
+                                    -
+                                    Villa</option>
+                                <option label="Sport Center" value="string:1562">Sport Center</option>
+                                <option label="GYM" value="string:1563">GYM</option>
+                                <option label="Sports Complex" value="string:1564">Sports Complex</option>
+                                <option label="Other" value="string:1565">Other</option>
+                                <option label="Administrative office tower and villa" value="string:1606">Administrative
+                                    office tower and villa</option>
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="col-span-2">
+                        <div class="form-group">
+                            <label for="PropertyStatus" class="form-label form-label-outside rd-input-label ng-binding">
+                                Property Status
+
+                            </label>
+
+                            <select id="PropertyStatus" ng-if="Language=='en' " class="form-select">
+                                <option style="display:none" value="" class="ng-binding" selected="selected">-- Select
+                                    --
+                                </option>
+                                <option label="Especially" value="string:1566">Especially</option>
+                                <option label="Leased" value="string:1567">Leased</option>
+                                <option label="State Owner" value="string:1568">State Owner</option>
+                            </select>
+
+
+                        </div>
+                    </div>
+
+                    <div class="col-span-2">
+                        <div class="form-group">
+                            <label for="GeographicalArea"
+                                class="form-label form-label-outside rd-input-label ng-binding">
+                                Geographical Area
+
+                            </label>
+
+                            <input id="GeographicalArea" type="text" class="form-input">
+
+                        </div>
+                    </div>
+
+                    <div class="col-span-3">
+                        <div class="form-group">
+                            <label for="Municipal" class="form-label form-label-outside rd-input-label ng-binding">
+                                Municipal
+                                <span ng-show="RequestForm.Municipal.$error.required"
+                                    class="help-inline ng-binding ng-hide" aria-hidden="true">
+                                    Required
+                                </span>
+                            </label>
+
+                            <input id="Municipal" type="text" class="form-input">
+
+                        </div>
+
+
+
+
+                    </div>
+
+                    <div class="col-span-3">
+                        <div class="form-group">
+                            <label for="TotalAreaInSquareMeters"
+                                class="form-label form-label-outside rd-input-label ng-binding">
+                                Total Area in Square Meters
+
+                            </label>
+                            <input id="TotalAreaInSquareMeters" type="text" class="form-input">
+
+                        </div>
+                    </div>
+
+                    <div class="col-span-2">
+                        <div class="form-group">
+                            <label for="BuildingNum" class="form-label form-label-outside rd-input-label ng-binding">
+                                Building Number
+
+                            </label>
+                            <input type="tel" id="BuildingNum" class="form-input">
+
+                        </div>
+                    </div>
+                    <div class="col-span-2">
+                        <div class="form-group">
+                            <label for="FloorNum" class="form-label form-label-outside rd-input-label ng-binding">
+                                Floor Number
+
+                            </label>
+                            <input type="tel" id="FloorNum" class="form-input">
+                        </div>
+                    </div>
+                    <div class="col-span-2">
+                        <div class="form-group">
+                            <label for="FlatNum" class="form-label form-label-outside rd-input-label ng-binding">
+                                Flat Number
+
+                            </label>
+                            <input type="tel" id="FlatNum" class="form-input">
+
+                        </div>
+                    </div>
+                    <div class="col-span-2">
+                        <div class="form-group">
+                            <label for="AreaNo" class="form-label form-label-outside rd-input-label ng-binding">
+                                Area Number
+
+                            </label>
+
+                            <input type="tel" id="AreaNo" class="form-input">
+
+                        </div>
+                    </div>
+                    <div class="col-span-2">
+                        <div class="form-group">
+                            <label for="StreetNo" class="form-label form-label-outside rd-input-label ng-binding">
+                                Street Number
+
+                            </label>
+
+                            <input type="tel" id="StreetNo" class="form-input ">
+
+                        </div>
+                    </div>
+                    <div class="col-span-2">
+                        <div class="form-group">
+                            <label for="StreetName" class="form-label form-label-outside rd-input-label ng-binding">
+                                Street Name
+
+                            </label>
+
+                            <input id="StreetName" type="text" class="form-input">
+
+                        </div>
+                    </div>
+
+                    <div class="col-span-12 mb-3">
+                        <div class="form-group">
+                            <label for="HeadquartersLink"
+                                class="form-label form-label-outside rd-input-label ng-binding">
+                                Headquarters Link
+                                <span ng-show="RequestForm.HeadquartersLink.$error.required"
+                                    class="help-inline ng-binding ng-hide" aria-hidden="true">
+                                    Required
+                                </span>
+                            </label>
+
+
+                            <input id="HeadquartersLink" type="text" class="form-input">
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+            <div *ngIf="activeTab === 6">
+
+                <h2 class="mb-5 text-[22px]"> Activity Data</h2>
+                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-12 m-4">
+
+
+                    <div class="col-span-5">
+                        <div class="form-group">
+                            <label for="MainSportActivity"
+                                class="form-label form-label-outside rd-input-label ng-binding">
+                                Main Sport Activity
+                                <span class="text-red-500">Required</span>
+                            </label>
+
+                            <select class="form-select">
+                                <option style="display:none" value="" class="ng-binding" selected="selected">--
+                                    Select --</option>
+                                <option label="Sports Commercial Complex (Private clubs) : 9319001" value="number:1">
+                                    Sports Commercial Complex (Private clubs) : 9319001</option>
+                                <option label="Commercial sports academies : 9319004" value="number:2">Commercial
+                                    sports academies : 9319004</option>
+                                <option label="Commercial sports centers : 9319005" value="number:3">Commercial
+                                    sports centers : 9319005</option>
+                                <option label="Integrative and business centers : 9319006" value="number:4">
+                                    Integrative and business centers : 9319006</option>
+                                <option label="Sports clubs companies : 9319009" value="number:5">Sports clubs
+                                    companies : 9319009</option>
+                                <option label="Sports Investments : 9319010" value="number:6">Sports Investments :
+                                    9319010</option>
+                                <option label="Marketing &amp; Sports Investment : 9319012" value="number:7">
+                                    Marketing &amp; Sports Investment : 9319012</option>
+                                <option label="Management facilities and sports facility : 9319013" value="number:8">
+                                    Management facilities and sports facility : 9319013</option>
+                                <option label="Pledges to organize sporting events : 9319014" value="number:9">
+                                    Pledges to organize sporting events : 9319014</option>
+                                <option label="Training centers of sports cadres : 9319015" value="number:10">
+                                    Training centers of sports cadres : 9319015</option>
+                                <option label="Creation and registration of sports bodies : Independent Activity"
+                                    value="number:11">Creation and registration of sports bodies : Independent
+                                    Activity</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-span-2">
+                        <div class="form-group">
+                            <label for="Category" class="form-label form-label-outside rd-input-label ng-binding">
+                                Category
+                                <span ng-show="RequestForm.Category.$error.required"
+                                    class="help-inline ng-binding ng-hide" aria-hidden="true">
+                                    Required
+                                </span>
+                            </label>
+                            <select class="form-select">
+                                <option style="display:none" value="" class="ng-binding" selected="selected">--
+                                    Select --</option>
+                                <option label="Men" value="string:1569">Men</option>
+                                <option label="Women" value="string:1570">Women</option>
+                                <option label="Men and Women" value="string:1592">Men and Women</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-span-3">
+                        <div class="form-group">
+                            <label for="FkAgeGroupID" class="form-label form-label-outside rd-input-label ng-binding">
+                                Age Category
+
+                            </label>
+                            <select class="form-select">
+                                <option style="display:none" value="" class="ng-binding" selected="selected">--
+                                    Select --</option>
+                                <option label="Children and children under 18 years of age" value="string:1571">
+                                    Children and children under 18 years of age</option>
+                                <option label="The youth category is 18-40 years old" value="string:1572">The youth
+                                    category is 18-40 years old</option>
+                                <option label="Pioneers category above 40 years" value="string:1573">Pioneers
+                                    category above 40 years</option>
+                                <option label="Children and Youth" value="string:1607">Children and Youth</option>
+                                <option label="Children and Pioneers category" value="string:1608">Children and
+                                    Pioneers category</option>
+                                <option label="Youth and Pioneers category" value="string:1609">Youth and Pioneers
+                                    category</option>
+                                <option label="All categories" value="string:1610">All categories</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-span-2">
+                        <div class="form-group">
+                            <label for="IsPreviewResolution"
+                                class="form-label form-label-outside rd-input-label ng-binding">
+                                Preview Decision
+
+                            </label>
+                            <select id="IsPreviewResolution" class="form-select">
+                                <option style="display:none" value="" class="ng-binding">-- Select --</option>
+                                <option value="1" class="ng-binding">Agree</option>
+                                <option value="0" class="ng-binding">Don't Agree</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <div class="col-span-12">
+                        <div class="form-group">
+                            <label for="ActivityDesc" class="form-label form-label-outside rd-input-label ng-binding">
+                                Detailed Description of the Sport Activity and its Scope
+                            </label>
+                            <input type="text" id="ActivityDesc" readonly class="form-input">
+                        </div>
+                    </div>
+                    <div class="col-span-12">
+                        <div class="form-group">
+                            <label for="FeesValue" class="form-label form-label-outside rd-input-label ng-binding">
+                                Fees With Qatarian Ryal
+                            </label>
+                            <input type="text" id="FeesValue" class="form-input">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div *ngIf="activeTab === 7">
+                <h2 class="mb-5 text-[22px]"> Request General Attachments
+                </h2>
+
+                <div class="row">
+
+
+                    <div class="lg:col-span-12 md:col-span-12 HiddenForAdmin">
+                        <span class="text-green-500 text-lg">
+                            To Update Attachments, You Must Delete them First and Add them Again
+                            <br><br>
+                        </span>
+                    </div>
+
+
+
+                    <div class="lg:col-span-4 md:col-span-4 HiddenForAdmin">
+                        <div class="form-group">
+                            <label for="RequiredAttachmentControle"
+                                class="mt-5 form-label block text-sm font-medium text-gray-700">
+                                Attachment Type
+                                <span ng-show="AttachForm.$submitted && AttachForm.AttType.$invalid"
+                                    class="text-red-600">
+                                    Required
+                                </span>
+                            </label>
+                            <select
+                                class="form-select block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                id="RequiredAttachmentControle" required="" ng-model="$parent.AttType" name="AttType"
+                                ng-options="Atype as Atype.TitleEn for Atype in AttTypes track by Atype.FkAttachmetID"
+                                aria-invalid="false">
+                                <option label="Commercial Registration Image" value="1766" selected="selected">
+                                    Commercial Registration Image</option>
+                                <option label="Certificate of Preservation of Trade Name" value="1773">Certificate of
+                                    Preservation of Trade Name</option>
+                                <option label="Other Attachments" value="1775">Other Attachments</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4 md:col-span-4 HiddenForAdmin">
+                        <div class="form-group">
+                            <label for="Attchment" class="mt-5 form-label block text-sm font-medium text-gray-700">
+                                Attachment
+                                <span ng-show="AttachForm.$submitted && AttachForm.Attchment.$invalid"
+                                    class="text-red-600">
+                                    Required
+                                </span>
+                                <span ng-show="fileSizeError" class="text-red-600">
+                                    Big File Size
+                                </span>
+                                <span ng-show="fileTypeError" class="text-red-600">
+                                    File Type Error Choose (PDF, Word, Image, Video, Excel)
+                                </span>
+                            </label>
+                            <br>
+                            <div class="mb-5">
+                                <div class="custom-file-container" data-upload-id="Attchment"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-12 mt-5 group-item w-full" aria-hidden="false">
+                    <button type="button" title="Add Attachment" class="btn btn-primary mb-5">
+                        <i class="fa fa-plus"></i> Add Attachment
+                    </button>
+                </div>
+
+
+
+            </div>
+
+            <div *ngIf="activeTab === 8">
+                <h2 class="mb-5 text-[22px]">Request General Notes</h2>
+                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-12 m-4">
+                    <div class="lg:col-span-12">
+                        <label for="emergencyContact" class="block text-sm font-medium text-gray-900">Notes</label>
+                        <div class="mt-2">
+                            <textarea id="GeneralNote" class="form-textarea" rows="8"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="activeTab === 9">
+                <h2 class="mb-5 text-[22px]">Notes</h2>
+                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-12 m-4">
+                    <div class="lg:col-span-12">
+                        <label for="">General description of the commercial activity for which a license to practice
+                            sports is required </label>
+                        <div class="mb-5">
+                            <quill-editor [modules]="modules1"></quill-editor>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-12">
+                        <label for="">Description of the sports services proposed to be provided </label>
+                        <div class="mb-5">
+                            <quill-editor [modules]="modules1" class="block"></quill-editor>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-12">
+                        <label for="PlanStagesEstablishingEntity" class="form-label-outside rd-input-label">
+                            <u class="ng-binding"> Plan and stages of establishing the entity</u> <u style="color:red"
+                                class="ng-binding"> (Until the end of the first year of operation or the license period
+                                for renewal):</u>
+                        </label>
+                        <label for="">The stage before the actual operation of the business entity : Its Duration (
+                            required
+                            ) month and includes implementing the following procedures and operations Required</label>
+                        <div class="mb-5">
+                            <quill-editor [modules]="modules1"></quill-editor>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="activeTab === 10">
+                <h2 class="mb-5 text-[22px]"> Terms And Conditions
+                </h2>
+                <div class="box-body">
+
+                    <p
+                        style="font-weight: bold; font-size: large; line-height: 1.5; direction: rtl; text-align: right;">
+                        I, the undersigned, acknowledge the accuracy of the data contained in the current annual report
+                        and undertake to abide by, and the entity I represent, the implementation of all the following
+                        items, conditions, controls and obligations contained in the attached pledge and declaration,
+                        and acknowledge my full legal responsibility, personally and in my capacity as a representative
+                        of (trade name/commercial register) submitting an application to obtain a renewal of a license
+                        to practice a commercial activity in the sports sector, which is an activity, to the competent
+                        department, on the form prepared for this purpose, attaching the supporting documents, and
+                        fulfilling all the requirements necessary to implement these items:
+                        <br><br>
+                        The acknowledgment and undertaking are an integral part of the license/permit issued by the
+                        Ministry, and complementary to its provisions. Unless specifically provided for in these
+                        conditions, it is subject to the provisions and rules in force in the Ministry, and to adhere to
+                        all procedures and provisions stipulated in the relevant laws, regulations and decisions in the
+                        State of Qatar, and to obtain all necessary approvals from other government agencies.
+                        <br><br>
+                        Commitment to selecting and registering the company’s trade name stated in the license/permit
+                        application, implementing the relevant intellectual property rights laws and provisions, and
+                        bearing full legal responsibility in this regard.
+                        <br><br>
+                        Commitment to notifying the competent authority granting the license of any amendment to the
+                        data of the licensed person within thirty days from the date of approval of this amendment by
+                        the competent authorities.
+                        <br><br>
+                        Commitment to obtaining the necessary approvals in the event of representing the state or
+                        concluding any agreements or partnerships with foreign parties outside Qatar or acting as an
+                        agent for it, and bearing full legal responsibility in this regard, throughout the validity
+                        period of the license/permit issued by the Ministry.
+                        <br><br>
+                        Commitment to obtaining prior written approval from the Ministry to place the Ministry’s
+                        official logo and display it clearly in accordance with the Ministry’s visions and directives in
+                        this regard.
+                        <br><br>
+                        <a href="javascript:void(0);" id="MaleFemaleID">
+                            Commitment to the technical, geographical, human and temporal limits and controls stated in
+                            the license, and the requirements for separating the sexes and that the service provider be
+                            of the same sex as the service recipient while implementing practical applications during
+                            the training program licensed to be practiced.
+                        </a>
+                        <br><br>
+                        Commitment to achieving the national vision and the Ministry’s strategy in motivating community
+                        members to participate actively in sports, while developing physical and sports activities by
+                        committing to applying standard specifications for the quality of sports services and protecting
+                        the rights of beneficiaries and consumers thereof, in accordance with the controls, provisions,
+                        systems and laws in force to protect the consumer and combat commercial fraud.
+                        <br><br>
+                        Commitment to using the license/permit within the scope and limits of the purpose for which it
+                        was allocated and intended, and it is not permissible to change the use for which it was
+                        allocated, and it is not permissible to assign the license to others in any way except with the
+                        approval of the Ministry, and that in the event of a violation of that, or any of the
+                        conditions, the license/permit shall be considered cancelled without notice or warning, and the
+                        procedures resulting from the cancellation shall be taken in accordance with the rules in force
+                        in this regard.
+                        <br><br>
+                        Commitment to fulfilling the conditions, qualifications and technical expertise necessary to
+                        appoint specialists and technical and administrative cadres, and commitment to implementing the
+                        provisions of the internal regulations, human resources, the basic system and employee contracts
+                        concluded with them in accordance with the relevant laws and regulations.
+                        <br><br>
+                        Commitment not to provide consultations, doses, or medical, psychological, health, or
+                        nutritional prescriptions for weight loss, dieting, or the like except under the supervision of
+                        specialized medical personnel licensed in this regard, and not to provide beauty, skin care, or
+                        hair styling services within sports facilities and establishments authorized to practice
+                        commercial activities in the sports sector.
+                        <br><br>
+                        Commitment to comprehensive insurance against risks for workers, members, participants, visitors
+                        and beneficiaries of the sports services provided to them, as well as personal health insurance
+                        for workers in accordance with what has been contracted with them in writing in this regard.
+                        <br><br>
+                        Commitment to the requirements of health, safety, environmental, ventilation, and safe and sound
+                        sports practice in all closed and open spaces designated for practicing activities in accordance
+                        with the procedures and regulations followed in this regard, while carrying out periodic
+                        maintenance of sports tools, equipment, facilities, and installations and ensuring their
+                        suitability for use.
+                        <br><br>
+                        Commitment to obtaining the approvals and licenses required to conduct commercial activity from
+                        other relevant authorities in the country.
+                        <br><br>
+                        Commitment to referring to the Ministry and obtaining its prior written approval in everything
+                        related to the technical aspects related to practicing sports activities, services and work and
+                        in appointing technical and administrative cadres, and commitment to all the conditions and
+                        controls required by these approvals determined by the Ministry in this regard.
+                        <br><br>
+                        Commitment to coordinating with the relevant authorities to fulfill the technical requirements
+                        for the activities subject to the license/permit if they are related to a specific sport, with
+                        regard to the technical aspects related to the sports activity, the sports programs and services
+                        provided for practicing physical, motor and sports activities, and with regard to the
+                        availability of the technical conditions necessary for appointing technical and administrative
+                        cadres, and commitment to all the requirements and controls required by these approvals in this
+                        regard, with the necessity of referring to the Ministry and providing it with these approvals.
+                        <br><br>
+                        Commitment to obtaining prior written approval from the Ministry before announcing or promoting
+                        the organization of local or international events, championships, matches or sporting events,
+                        and commitment not to organize any events, championships, competitions, matches or sporting
+                        events within the country except after obtaining prior written approval from the Ministry, and
+                        commitment to all the requirements and controls required by these approvals in this regard,
+                        while submitting all required documents and papers and filling out the official and approved
+                        forms for this matter and submitting them on the specified date according to the period
+                        specified by the competent department in the Ministry, and that is a sufficient period of not
+                        less than three months before the intended date of the championship, competition, match, event
+                        or sporting event. Without prejudice to the image and global leadership of the country in this
+                        regard.
+                        <br><br>
+                        Commitment to applying the highest standards of professionalism in practicing sports activities,
+                        services and businesses without compromising the country’s global image and leadership in this
+                        regard.
+                        <br><br>
+                        The necessity of meeting the security, safety and medical examination standards for participants
+                        in sports activities, services and work to ensure their medical and health fitness to carry out
+                        physical and sports activities.
+                        <br><br>
+                        The company is committed to reviewing and renewing all technical and professional licenses for
+                        its employees and fulfilling the technical and legal requirements for practicing specialized
+                        sports activities.
+                        <br><br>
+                        Commitment to applying the standards and specifications of international institutions concerned
+                        with the company’s activity within the scope of the license and in accordance with quality
+                        requirements, modern work strategies and systems, and follow-up and evaluation procedures during
+                        the practice of licensed sports activities, services, and businesses.
+                        <br><br>
+                        Commitment to continuous improvement and development of the company’s level in organizing its
+                        commercial activity in terms of institutional organization and excellence, specialized technical
+                        personnel, electronic systems, means of communication and databases, and logistical and sports
+                        equipment.
+                        <br><br>
+                        Commitment to submitting a comprehensive annual report when submitting a license renewal
+                        application, including all contracts, works and activities that took place during the license’s
+                        validity period.
+                        <br><br>
+                        Commitment to observing the values, customs and traditions of Qatari society when engaging in
+                        sports activities, and commitment not to promote commercial names for sports activities that
+                        violate Qatari laws, customs, traditions and norms and Islamic law (for example, bodybuilding or
+                        body building...)
+                        <br><br>
+                        Do not use physical therapy devices or electrical muscle stimulation devices unless you have
+                        obtained approval for their use from the relevant authorities in the country, and under the
+                        supervision of specialized medical personnel licensed in this regard.
+                        <br><br>
+                        Commitment not to take, sell, display, possess, trade or exchange - within the facility and
+                        practice locations - any drugs, muscle stimulants, growth hormones, anabolic drugs, nutritional
+                        and chemical supplements, or prohibited substances according to the International Anti-Doping
+                        Code issued by the World Anti-Doping Agency.
+                        <br><br>
+                        Commitment to providing the Ministry with a list of prices for commercial services provided in
+                        the sports sector for approval before implementing them, with the necessity of placing them in a
+                        clear place for visitors to the facility, and submitting proposals for offers and promotional
+                        packages for services to obtain the Ministry’s approval to implement them before advertising and
+                        promoting them, and any update that occurs to them.
+                        <br><br>
+                        Commitment not to deal with injured or sick people except under the supervision of specialized
+                        medical personnel licensed in this regard.
+                        <br><br>
+                        The company will work during the validity of the license in the coming period to adjust its
+                        conditions in accordance with the comments received from the Ministry regarding adherence to the
+                        technical, geographical, human and temporal limits and controls permitted in the granted license
+                        and the scope of the purpose designated for practicing the services, works and activities
+                        designated for the company. <br><br>
+                        <br><br>
+                        Commitment to all precautionary measures and procedures to ensure the health and safety of
+                        customers, employees, and beneficiaries of the services, businesses, and activities provided by
+                        the company.
+                        <br><br>
+                        The licensed company may not transfer the license except after obtaining written approval from
+                        the competent department in the Ministry.
+                        <br><br>
+                        Commitment to fulfilling all the above-mentioned items, and also commitment to all current and
+                        future decisions, conditions, controls, provisions, circulars, systems, recommendations and
+                        relevant regulations issued by the Ministry, and not to breach this at any time.
+                        <br><br>
+                        In consideration of the above provisions, in the event of a violation of any of the
+                        aforementioned terms and conditions, the license shall be deemed void, and the competent
+                        administration may suspend the license for a period of three months if the violation is for the
+                        first time, and in the event of a repeat violation, the license shall be deemed void.
+                        <br><br>
+                        The renewal of the license to practice commercial activities in the sports sector shall be
+                        within a period not exceeding sixty days following the expiration of its term. The license
+                        renewal application shall be submitted on the form prepared for that purpose within the period
+                        stipulated in the previous paragraph. If the renewal application is not submitted within this
+                        period, the license shall be considered cancelled.
+                    </p><!-- end ngIf: Language=='en' -->
+
+
+
+                    <div class="mb-5">
+                        <br><br>
+                        <a style="text-decoration: underline; cursor: pointer; color: #8f1538 ;font-weight: bold; font-size: large "
+                            ng-click="ReadTermsAndConditions('TermsAndConditionsID')"
+                            ng-show="Request.FkPrimaryActivityID!=10 &amp;&amp; Request.FkPrimaryActivityID!=9"
+                            class="ng-binding" aria-hidden="false">
+                            Click Here To Read Terms And Conditions
+                        </a>
+                        &nbsp;&nbsp;
+                        <input id="btnCheckEkrarControl" type="checkbox"
+                            ng-disabled="Request.RequestID &amp;&amp; Request.FkStatusID != 0 &amp;&amp; Request.FkStatusID != 2 &amp;&amp; isCopytheRequest != 'true' &amp;&amp; !CorrectionMode &amp;&amp; !RenewDataFlag"
+                            ng-model="btnCheckEkrar" ng-checked="checkEkrar" ng-change="checkEkrarChange()"
+                            class="ng-pristine ng-untouched ng-valid ng-empty" aria-invalid="false">
+                        <label for="btnCheckEkrarControl" style="font-weight: bold; font-size: large"
+                            class="ng-binding">The Terms And Conditions Contained Therein Have Been Reviewed And
+                            Approved</label>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+        <div class="flex justify-between">
+            <button type="button" class="btn btn-primary" [disabled]="activeTab === 1" (click)="changeTab(-1)">Back</button>
+            
+            <button *ngIf="activeTab === 10" type="button" class="btn btn-success" (click)="finish()">Finish</button>
+            
+            <button *ngIf="activeTab < 10" type="button" class="btn btn-primary" (click)="changeTab(1)">Next</button>
+        </div>
+    </div>
+</div>

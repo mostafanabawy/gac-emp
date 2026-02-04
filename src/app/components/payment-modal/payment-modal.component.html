@@ -1,0 +1,111 @@
+<div cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
+    <!-- Modal -->
+    <ngx-custom-modal #modal12 class="modal-top z-[9999]" [hideCloseButton]="true">
+        <ng-template #modalBody>
+            @if (payment() == 'completed') {
+            <div class="flex items-center justify-center mb-2">
+                <div class="bg-green-300/25 p-6 rounded-full">
+                    <img src="/assets/images/icons/checked-ok-mark-accept-check-approved-svgrepo-com (2).svg"
+                        class="w-10" alt="approved icon">
+                </div>
+            </div>
+            }
+            <p class="text-center text-3xl font-bold"> {{ title() }} </p>
+            @if (payment() == 'start') {
+            <div class="flex items-center justify-center mb-2">
+                <div>
+                    <img src="/assets/images/brands/qnb.webp" class="w-1/4 mx-auto" alt="QNB bank logo">
+                </div>
+            </div>
+            }
+            @if (payment() == 'start') {
+            <p class="text-center text-sm mb-2">
+                لإتمام عملية الدفع. يرجى الانتظار حتى اكتمال العملية.
+            </p>
+            }
+            @if (payment() == 'completed') {
+            <p class="text-base text-gray-600 text-center my-2">شكراً لإتمام عملية الدفع</p>
+            <p class="text-green-800 text-3xl text-center mb-3">وتم اصدار الرخصة بنجاح</p>
+            }
+            <dl>
+                <div class="flex justify-between bg-gray-100 rounded-md p-2 border-b border-gray-300">
+                    <dt class="text-gray-700">
+                        المبلغ
+                        @if (payment() == 'start') {
+                        المطلوب:
+                        }@else {
+                        المدفوع:
+                        }
+                    </dt>
+                    <dd class="text-primary font-bold text-xl">{{ amount() }} ر.ق</dd>
+                </div>
+                @if (payment() == 'completed') {
+                <div class="flex justify-between bg-gray-100 rounded-md p-2 border-b border-gray-300 text-gray-700">
+                    <dt>
+                        رقم الرخصة:
+                    </dt>
+                    <dd>
+                        <span class="text-primary font-bold">{{ licenseNumber() }}</span>
+                    </dd>
+                </div>
+                }
+            </dl>
+
+            @if (payment() == 'start') {
+            <div role="note" aria-label="تعليمات هامة"
+                class="bg-orange-50 border border-orange-200 rounded-md p-4 mt-4">
+                <h3 class="text-right text-orange-800 font-bold mb-2 flex items-center gap-2">
+                    <icon-info-circle></icon-info-circle>
+                    تعليمات هامة:
+                </h3>
+                <ul class="text-right text-sm text-orange-700 space-y-1 list-none">
+                    <li class="flex items-center">
+                        <span class="mt-1 p-2 block text-orange-500">
+                            <icon-circle-check></icon-circle-check>
+                        </span>
+                        <span>لا تقم بإغلاق المتصفح أو العودة للخلف أثناء عملية الدفع</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="mt-1 p-2 block text-orange-500">
+                            <icon-circle-check></icon-circle-check>
+                        </span>
+                        <span>انتظر حتى يتم تأكيد إتمام العملية والعودة إلى صفحة التطبيق</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="mt-1 p-2 block text-orange-500">
+                            <icon-circle-check></icon-circle-check>
+                        </span>
+                        <span>جميع المعاملات المالية تتم بطريقة آمنة ومشفرة</span>
+                    </li>
+                </ul>
+            </div>
+            }@else {
+            <div role="status" aria-live="polite"
+                class="bg-blue-50 border border-blue-200 text-center text-sm text-gray-700 px-4 py-3 rounded-md mt-4 mx-4 shadow-sm">
+                <p>
+                    <span aria-hidden="true" class="inline-block ml-1 align-middle">
+                        <icon-clock class="text-primary"></icon-clock>
+                    </span>
+                    سيتم توجيهك تلقائيًا إلى صفحة <strong>رخصي</strong> خلال
+                    <span class="text-red-800 font-semibold">5</span> ثوانٍ
+                </p>
+                <p class="mt-2 text-xs text-gray-700">
+                    حيث يمكنك متابعة الرخصة، واستكمال الدفع والاطلاع على كافة تفاصيل الرخصة
+                </p>
+            </div>
+            }
+            @if (payment() == 'start') {
+            <div class="flex justify-center gap-3 mt-3">
+                <img src="/assets/images/icons/payment-modal-icon4.svg" alt="a bank icon">
+                <img src="/assets/images/icons/payment-modal-icon3.svg" alt="security icon">
+                <img src="/assets/images/icons/payment-modal-icon2.svg" alt="safe payment icon">
+            </div>
+            }
+
+
+        </ng-template>
+        <ng-template #modalFooter>
+            <button type="button" (click)="onUserClose()" class="btn btn-primary mx-auto">الانتقال الآن</button>
+        </ng-template>
+    </ngx-custom-modal>
+</div>

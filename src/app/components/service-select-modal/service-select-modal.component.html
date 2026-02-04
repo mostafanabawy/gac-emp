@@ -1,0 +1,32 @@
+<div cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
+    <ngx-custom-modal #modal299 class="modal-top large-modal overflow-auto" id="confirmModal">
+        <ng-template #modalHeader>
+            <div>
+                <h2 class="text-xl">{{ title() }}</h2>
+            </div>
+        </ng-template>
+        <ng-template #modalBody>
+            <label for="services" class="flex text-sm font-medium text-gray-700">
+                {{translations()?.serviceTypeModal?.label}}
+                <span *ngIf="!selectedService" class="text-red-500">*</span>
+            </label>
+            <ng-select [items]="services()" id="services"
+                [bindLabel]="store.locale === 'en' ? 'ServiceTitleEn' : 'ServiceTitleAr'" bindValue="ServiceID"
+                [(ngModel)]="selectedService" class="z-[999999999]" appendTo=".modal"
+                [placeholder]="translations()?.LookupDefault.label">
+            </ng-select>
+        </ng-template>
+        <ng-template #modalFooter>
+            <div class="flex gap-1">
+                <button class="btn btn-primary" [ngClass]="{'bg-opacity-80 cursor-not-allowed': !selectedService}"
+                    (click)="onConfirm()">
+                    {{confirmBtnName()}}
+                </button>
+                <button type="button" class="btn btn-outline-dark hover:bg-primary hover:text-white"
+                    (click)="onCancel()">
+                    {{translations()?.modalCancelBtn.label}}
+                </button>
+            </div>
+        </ng-template>
+    </ngx-custom-modal>
+</div>

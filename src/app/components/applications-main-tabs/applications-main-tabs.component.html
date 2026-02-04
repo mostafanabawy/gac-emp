@@ -1,0 +1,57 @@
+<section class="mb-5 bg-white border-[#B1AAB1] border rounded-t-lg p-2 mt-8 min-h-[50vh]">
+    <!-- links -->
+    <nav class="mt-3 mb-5 flex flex-wrap border-b border-white-light dark:border-[#191e3a] tab-talabat" role="tablist">
+        @if (this.allApplicationsService.tabsData()) {
+        @for (item of allApplicationsService.tabsData().children; track $index) {
+        <button [id]="'tab-' + item.TitleEn" role="tab" [attr.aria-selected]="tab8 === item.TitleEn"
+            [disabled]="allApplicationsService.disableTabs()"
+            class="-mb-[1px] flex items-center gap-2 border-transparent text-gray-600 p-5 py-3 !outline-none transition duration-300 hover:border-b-[3px] hover:!border-primary hover:text-primary font-bold text-base"
+            [ngClass]="{ 'active-tab': tab8 === item.TitleEn, 'cursor-not-allowed': allApplicationsService.disableTabs() }"
+            (click)="changeTab(item)">
+
+            <svg id="document-add-svgrepo-com" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 29.933 33.003">
+                <path id="Path_78192" data-name="Path 78192"
+                    d="M12.239,14.553H8.4a1.151,1.151,0,1,1,0-2.3h3.838a1.151,1.151,0,1,1,0,2.3Z"
+                    transform="translate(1.576 4.635)" />
+                <path id="Path_78193" data-name="Path 78193"
+                    d="M18.379,10.553H8.4a1.151,1.151,0,1,1,0-2.3h9.978a1.151,1.151,0,0,1,0,2.3Z"
+                    transform="translate(1.576 2.495)" />
+                <path id="Path_78194" data-name="Path 78194"
+                    d="M10.7,18.553H8.4a1.151,1.151,0,1,1,0-2.3h2.3a1.151,1.151,0,1,1,0,2.3Z"
+                    transform="translate(1.576 6.775)" />
+                <path id="Path_78195" data-name="Path 78195"
+                    d="M15.681,1.25h3.07c6.1,0,9.16,0,11.3,2.136s2.136,5.2,2.136,11.3v6.14c0,6.1,0,9.16-2.136,11.3s-5.2,2.136-11.3,2.136h-3.07c-6.1,0-9.16,0-11.3-2.136s-2.136-5.2-2.136-11.3v-6.14c0-6.1,0-9.16,2.136-11.3S9.582,1.25,15.681,1.25Zm3.07,30.7c5.464,0,8.206,0,9.668-1.461s1.461-4.2,1.461-9.668v-6.14c0-5.464,0-8.206-1.461-9.668s-4.2-1.461-9.668-1.461h-3.07c-5.464,0-8.206,0-9.668,1.461s-1.461,4.2-1.461,9.668v6.14c0,5.464,0,8.206,1.461,9.668s4.2,1.461,9.668,1.461Z"
+                    transform="translate(-2.25 -1.25)" opacity="0.5" />
+            </svg>
+            @if (store.index.locale === 'en') {
+            {{item.TitleEn}}
+            }@else {
+            {{item.TitleAr}}
+            }
+        </button>
+        }
+        }
+
+    </nav>
+    <!-- content -->
+
+    <div class="flex-1 text-sm mt-4">
+        @if(this.allApplicationsService.tabsData()){
+        @for (item2 of this.allApplicationsService.tabsData().children | sortByOrder: 'ItemOrderID'; track $index) {
+        <div *ngIf="tab8 === item2.TitleEn" [attr.aria-labelledby]="'tab-' + item2.TitleEn" role="tabpanel">
+            <app-application-types [tabData]="item2.children" [mainTabsData]="item2"
+                [ServicesType]="item2.ServicesType"></app-application-types>
+        </div>
+        }
+        }
+    </div>
+</section>
+
+<app-services-log-modal [isOpened]="allApplicationsService.isLogData()"
+    (closed)="onUserClose($event)"></app-services-log-modal>
+<app-related-applications-modal [isOpened]="allApplicationsService.isRelatedRequestsData()"
+    (closed)="onUserClose($event)"></app-related-applications-modal>
+
+<app-edited-data-modal [isOpened]="newApplicationService.isAuditData()"
+    (closed)="onUserClose($event)"></app-edited-data-modal>

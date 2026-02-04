@@ -1,0 +1,271 @@
+/* مكون تحميل الملفات مطابق للتصميم الأصلي بالضبط */
+
+/* الحاوي الرئيسي */
+.attachment {
+  margin-bottom: 20px;
+}
+
+/* الشريط العلوي */
+.document-header-bar {
+  background: #f8f9fa;
+  border: 1px solid #e5e7eb;
+  padding: 12px 16px;
+  border-radius: 8px 8px 0 0;
+}
+
+.document-title {
+  font-size: 17px;
+  font-weight: bold;
+  color: #374151;
+  margin: 0 0 4px 0;
+}
+
+.format-text {
+  font-size: 16px;
+  color: #4B5563;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* منطقة التحميل */
+.upload-area-exact {
+  border: 1px solid #e5e7eb;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  background: #ffffff;
+  padding: 16px;
+}
+
+.upload-box-exact {
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  background: #fafafa;
+  padding: 24px 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.upload-box-exact:hover {
+  border-color: #9ca3af;
+  background: #f3f4f6;
+}
+
+.upload-box-exact.drag-over {
+  border-color: #dc2626;
+  background: #fef2f2;
+  border-style: solid;
+}
+
+.upload-content-exact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.upload-text-exact {
+  color: #545454;
+  font-size: 14px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.or {
+  color: #454545;
+  font-size: 13px;
+}
+
+.upload-btn-exact {
+  background: #861A37;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upload-btn-exact:hover {
+  background: #6d1528;
+  transform: translateY(-1px);
+}
+
+/* إخفاء input الملف */
+.hidden {
+  display: none;
+}
+
+/* Flexbox utilities */
+.flex {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.w-8 {
+  width: 2rem;
+  height: 2rem;
+}
+
+.w-5 {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+/* قسم المعلومات المستخرجة مطابق للصورة */
+.extracted-info-section {
+  margin-top: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+/* الشريط العلوي */
+.extraction-header {
+  background: #f8f9fa;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 12px 16px;
+}
+
+.extraction-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.extraction-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.extraction-actions-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-type-label {
+  font-size: 12px;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.delete-extraction-btn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.delete-extraction-btn:hover {
+  background: #fef2f2;
+}
+
+/* شريط التقدم الأخضر */
+.progress-bar-container {
+  padding: 0;
+  background: #ffffff;
+  margin: 10px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: #f3f4f6;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #9F946D;
+  transition: width 0.3s ease;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* حاوي البيانات المستخرجة */
+.extracted-data-container {
+  padding: 20px;
+  background: #ffffff;
+}
+
+.data-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+/* بطاقة البيانات */
+.data-card {
+  background: #f8f9fa;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 12px;
+  text-align: center;
+}
+
+.data-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+  background: #e5e7eb;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.data-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1f2937;
+  word-break: break-all;
+}
+
+/* زر إعادة الاستخراج في الأسفل */
+.re-extraction-footer {
+  padding: 12px 16px;
+  border-top: 1px solid #e5e7eb;
+  background: #f8f9fa;
+  text-align: left;
+}
+
+.re-extract-button {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.re-extract-button:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  transform: translateY(-1px);
+}
+
+.w-4 {
+  width: 1rem;
+  height: 1rem;
+}

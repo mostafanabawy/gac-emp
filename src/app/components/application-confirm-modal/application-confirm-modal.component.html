@@ -1,0 +1,23 @@
+<div cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
+    <ngx-custom-modal #modal21 class="modal-top large-modal overflow-auto z-[9999]" id="confirmModal">
+        <ng-template #modalHeader>
+            <div>
+                <h2 class="text-xl">{{ title() }}</h2>
+            </div>
+        </ng-template>
+        <ng-template #modalBody>
+            <ng-content></ng-content>
+        </ng-template>
+        <ng-template #modalFooter>
+            <div class="flex gap-1">
+                <button class="btn btn-primary" [ngClass]="{'bg-opacity-80': form().invalid}" (click)="onConfirm()">
+                    {{confirmBtnName()}}
+                </button>
+                <button type="button"
+                    class="btn btn-outline-dark hover:bg-primary hover:text-white" (click)="onCancel()">
+                    {{translations()?.modalCancelBtn.label}}
+                </button>
+            </div>
+        </ng-template>
+    </ngx-custom-modal>
+</div>

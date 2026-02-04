@@ -1,0 +1,366 @@
+<!-- Carousel hero section -->
+<section class="-mx-6 -mt-6 swiper" id="slider1">
+    <div class="hero-carousel swiper-wrapper">
+        <div class="homePic w-full relative slider-item swiper-slide">
+            <a href="https://www.msy.gov.qa/wp-content/uploads/2025/03/استراتيجية-التميز-الرياضي-والشبابي.pdf"
+                target="_blank" class="absolute inset-0" aria-label="استراتيجية-التميز-الرياضي-والشبابي"></a>
+        </div>
+        <div class="homePic2 w-full relative slider-item swiper-slide">
+            <div class="absolute bottom-24 ltr:left-24 rtl:right-24 bg-white text-content">
+                <h2 class="text-[#60583d] text-2xl font-bold">{{ 'carousel2.header' | translate }}</h2>
+                <p class="text-xl">{{ 'carousel2.subheader' | translate }}</p>
+            </div>
+        </div>
+        <div class="homePic3 w-full relative slider-item swiper-slide">
+            <div class="absolute bottom-24 ltr:left-24 rtl:right-24 bg-white text-content">
+                <h2 class="text-[#60583d] text-2xl font-bold">{{ 'carousel3.header' | translate }}</h2>
+                <p class="text-xl">{{ 'carousel3.subheader' | translate }}</p>
+            </div>
+            <a href="https://www.msy.gov.qa/en/sports-day-awards-en/" aria-label="sports day awards page link"
+                class="absolute z-20 inset-0" target="_blank"></a>
+        </div>
+    </div>
+</section>
+
+<!-- service preview -->
+<section class="-mx-6 mt-20 ps-6">
+    <div class="flex mb-6 items-center">
+        <h2 class="text-2xl font-bold">{{ 'servicePreview.header' | translate }}</h2>
+        <a routerLink="" class="text-lg py-1 px-4 border rounded border-black mx-7 bg-white hover:underline">{{
+            "servicePreview.link" | translate }}</a>
+    </div>
+    <div class="px-4 container">
+        <!-- multiple -->
+        <div class="swiper" id="slider5">
+            <div class="swiper-wrapper">
+
+                <div *ngFor="let item of serviceItems; index as i" class="swiper-slide">
+                    <app-service-card class="w-full" [title]="item.title" [icon]="item.icon"
+                        [category]="item.category"></app-service-card>
+                </div>
+
+            </div>
+            <a href="javascript:;"
+                class="swiper-button-prev-ex5 absolute top-[44%] z-[999] grid -translate-y-1/2 place-content-center rounded-full border border-primary p-1 text-primary transition hover:border-primary hover:bg-primary hover:text-white ltr:left-2 rtl:right-2"
+                aria-label="Previous button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 rtl:rotate-180">
+                    <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </a>
+            <a href="javascript:;" aria-label="Next button"
+                class="swiper-button-next-ex5 absolute top-[44%] z-[999] grid -translate-y-1/2 place-content-center rounded-full border border-primary p-1 text-primary transition hover:border-primary hover:bg-primary hover:text-white ltr:right-2 rtl:left-2">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 ltr:rotate-180">
+                    <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </a>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</section>
+
+<!-- about us section -->
+
+<section class="about-announcement mt-20">
+    <div class="container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="announcement !ms-4">
+                <div class="date flex flex-col ltr:right-0 rtl:left-0">
+
+                    <span>
+                        سبتمبر
+                    </span>
+                    <span>
+                        ٢٠٢٥ </span>
+                </div>
+
+                <h2 class="text-2xl font-bold mb-6">
+                    {{ 'announcement.title' | translate }}
+                </h2>
+                <div class="desc">
+                    <p>جائزة اليوم الرياضي للدولة 2025</p>
+
+                    <p>
+                        <a href="https://www.msy.gov.qa/sports-day-awards/" target="_self" class="btn_link">
+                            {{ 'announcement.button' | translate }}
+                        </a>
+                    </p>
+                </div>
+
+
+                <img tabindex="-1" class="speaker ltr:right-5 rtl:left-5"
+                    src="https://www.msy.gov.qa/wp-content/uploads/2023/11/national-sport-day-qatar-logo.png"
+                    alt="Announcement Logo">
+            </div>
+
+
+            <div class="about-us">
+                <h2 class="text-2xl font-bold">
+                    {{ 'ministryName' | translate }}</h2>
+                <p>
+                </p>
+                <p class="text-gray-600">{{ 'ministry.firstP' | translate }}</p>
+                <p class="text-gray-600"> {{ 'ministry.secondP' | translate }}</p>
+                <p></p>
+
+                <a href="https://www.msy.gov.qa/%d9%85%d9%86-%d9%86%d8%ad%d9%86/%d8%b1%d8%a4%d9%8a%d8%a9-%d8%a7%d9%84%d9%88%d8%b2%d8%a7%d8%b1%d8%a9/"
+                    class="text-base px-8 py-2 border border-black bg-white rounded w-full hover:underline
+                    hover:bg-gray-600 hover:text-white transition-all" tabindex="0" aria-label="وزارة الرياضة والشباب">
+                    {{ 'ministry.learnMore' | translate }}
+                </a>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- clubs and centers section -->
+<section class="mt-20 bg-[#e1e1e1b3] py-3 px-6 -mx-6">
+    <div class="">
+        <h2 class="text-2xl font-bold">{{ 'centers-clubs.title' | translate }}</h2>
+    </div>
+    <!-- links -->
+    <nav class="mt-3 mb-5 flex flex-wrap gap-6 border-b border-white-light dark:border-[#191e3a]" role="tablist">
+
+        <button id="tab-youthcenters" role="tab" [attr.aria-selected]="tab8().toLowerCase() === 'youthcenters'"
+            class="-mb-[1px] flex items-center border-4 border-gray-300/95 bg-white text-base text-gray-600 px-8 py-4 !outline-none transition duration-300 hover:underline font-bold rounded-md"
+            [ngClass]="{ 'text-primary': tab8().toLowerCase() === 'youthcenters'}" (click)="tab8.set('youthcenters')  ">
+
+            المراكز الشبابية
+        </button>
+
+        <button id="tab-clubs" role="tab" [attr.aria-selected]="tab8().toLowerCase() === 'clubs'"
+            class="-mb-[1px] flex items-center border-4 border-gray-300/95 bg-white text-base text-gray-600 px-8 py-4 !outline-none transition duration-300 hover:underline font-bold rounded-md"
+            [ngClass]="{ 'text-primary': tab8().toLowerCase() === 'clubs' }" (click)="tab8.set('clubs')  ">
+
+            الأندية والاتحادات الرياضية
+        </button>
+
+    </nav>
+    <!-- content -->
+
+    <div class="flex-1 text-sm mt-4">
+        <!-- tab -->
+        <div *ngIf="tab8().toLowerCase() === 'clubs'" aria-labelledby="tab-clubs" role="tabpanel">
+            <!-- multiple -->
+            <div class="swiper" id="slider6">
+                <div class="swiper-wrapper">
+
+                    <div *ngFor="let item of clubItems; index as i" class="swiper-slide">
+                        <app-clubs-centers-card class="w-full" [title]="item.title" [icon]="item.icon"
+                            [link]="item.link"></app-clubs-centers-card>
+                    </div>
+
+                </div>
+                <a href="javascript:;"
+                    class="swiper-button-prev-ex6 absolute top-[44%] z-[999] grid -translate-y-1/2 place-content-center rounded-full border border-primary p-1 text-primary transition hover:border-primary hover:bg-primary hover:text-white ltr:left-2 rtl:right-2"
+                    aria-label="Previous button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 rtl:rotate-180">
+                        <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <a href="javascript:;" aria-label="Next button"
+                    class="swiper-button-next-ex6 absolute top-[44%] z-[999] grid -translate-y-1/2 place-content-center rounded-full border border-primary p-1 text-primary transition hover:border-primary hover:bg-primary hover:text-white ltr:right-2 rtl:left-2">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 ltr:rotate-180">
+                        <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+        <!-- tab -->
+        <div *ngIf="tab8().toLowerCase() === 'youthcenters'" aria-labelledby="tab-youthcenters" role="tabpanel"
+            class="p-4 overflow-hidden">
+            <!-- multiple -->
+            <div class="swiper" id="slider7">
+                <div class="swiper-wrapper">
+
+                    <div *ngFor="let item of youthCenterItems; index as i" class="swiper-slide">
+                        <app-clubs-centers-card class="w-full" [title]="item.title" [icon]="item.icon"
+                            [link]="item.link"></app-clubs-centers-card>
+                    </div>
+
+                </div>
+                <a href="javascript:;"
+                    class="swiper-button-prev-ex7 absolute top-[44%] z-[999] grid -translate-y-1/2 place-content-center rounded-full border border-primary p-1 text-primary transition hover:border-primary hover:bg-primary hover:text-white ltr:left-2 rtl:right-2"
+                    aria-label="Previous button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 rtl:rotate-180">
+                        <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <a href="javascript:;" aria-label="Next button"
+                    class="swiper-button-next-ex7 absolute top-[44%] z-[999] grid -translate-y-1/2 place-content-center rounded-full border border-primary p-1 text-primary transition hover:border-primary hover:bg-primary hover:text-white ltr:right-2 rtl:left-2">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 ltr:rotate-180">
+                        <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="py-20">
+        <a href="https://www.msy.gov.qa/%d8%a7%d9%84%d9%85%d8%b1%d8%a7%d9%83%d8%b2-%d8%a7%d9%84%d8%b4%d8%a8%d8%a7%d8%a8%d9%8a%d8%a9/"
+            class="text-xl px-8 py-2 border border-black bg-white rounded w-full hover:underline hover:bg-gray-600 hover:text-white transition-all ltr:mr-auto rtl:ml-auto"
+            tabindex="0">
+            شاهد المزيد
+        </a>
+    </div>
+</section>
+
+<!-- media center -->
+<section class="my-20 py-3 -mx-6">
+    <div class="">
+        <h2 class="text-2xl font-bold">{{ 'mediaCenter.title' | translate }}</h2>
+    </div>
+    <div class="mb-5 flex flex-col sm:flex-row mt-10">
+        <div class="mx-10 mb-5 sm:mb-0">
+            <div class="m-auto lg:space-y-4 flex flex-row md:flex-col items-center justify-center gap-2 lg:gap-0"
+                role="tablist">
+
+                <div class="bg-white shadow-md border border-gray-200 rounded p-2">
+                    <button role="tab" id="tab-news"
+                        class="mx-auto text-gray-600 rounded md:text-base p-4 lg:p-5 !outline-none transition lg:text-lg duration-300 hover:text-black hover:underline border-black flex flex-col"
+                        [ngClass]="{ 'border-2 border-primary !text-[#60583d]': tab5().toLowerCase() === 'news' }"
+                        (click)="tab5.set('news')">
+                        <img src="https://www.msy.gov.qa/wp-content/themes/msy/assets/images/media-icon1_1.png"
+                            class="w-10 h-10 lg:h-12 lg:w-12 mx-auto" alt="News Icon" tabindex="-1">
+                        {{ 'mediaCenter.tab1' | translate }}
+                    </button>
+                </div>
+                <div class="bg-white shadow-md border border-gray-200 rounded md:text-base p-2">
+                    <button role="tab" id="tab-events"
+                        class="mx-auto rounded px-4 py-4 lg:px-3 lg:py-5 text-gray-600 !outline-none transition lg:text-lg duration-300 hover:text-black hover:underline border-black flex flex-col"
+                        [ngClass]="{ 'border-2 border-primary !text-[#60583d]': tab5().toLowerCase() === 'events' }"
+                        (click)="tab5.set('events')">
+                        <img src="https://www.msy.gov.qa/wp-content/themes/msy/assets/images/media-icon2_1.png"
+                            class="w-10 h-10 lg:h-12 lg:w-12 mx-auto" alt="">
+                        {{ 'mediaCenter.tab2' | translate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="text-sm w-full sm:w-1/2 md:w-3/4 lg:w-4/5 xl:w-5/6">
+            <!-- tab -->
+            <div *ngIf="tab5().toLowerCase() === 'news'" aria-labelledby="tab-news" role="tabpanel" class="w-full">
+                <!-- swiper -->
+                <div class="swiper ltr:mr-5 rtl:ml-5 w-full" id="slider8">
+                    <div class="swiper-wrapper">
+
+                        <div *ngFor="let item of newsItems; index as i" class="swiper-slide">
+                            <app-media-centers-card [title]="item.title" [link]="item.link" [imageLink]="item.imageLink"
+                                [createdAt]="item.createdAt" class="w-full"></app-media-centers-card>
+                        </div>
+
+                    </div>
+                    <a href="javascript:;"
+                        class="swiper-button-prev-ex8 absolute top-[44%] z-[999] grid -translate-y-1/2 place-content-center rounded-full border border-primary p-1 text-primary transition hover:border-primary hover:bg-primary hover:text-white ltr:left-2 rtl:right-2"
+                        aria-label="Previous button">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 rtl:rotate-180">
+                            <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </a>
+                    <a href="javascript:;" aria-label="Next button"
+                        class="swiper-button-next-ex8 absolute top-[44%] z-[999] grid -translate-y-1/2 place-content-center rounded-full border border-primary p-1 text-primary transition hover:border-primary hover:bg-primary hover:text-white ltr:right-2 rtl:left-2">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 ltr:rotate-180">
+                            <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </a>
+                    <div class="swiper-pagination"></div>
+                </div>
+
+            </div>
+            <!-- tab -->
+            <div *ngIf="tab5().toLowerCase() === 'events'" aria-labelledby="tab-events" role="tabpanel">
+                @if (eventItems && eventItems.length > 0) {
+                <!-- swiper -->
+                <div class="swiper" id="slider9">
+                    <div class="swiper-wrapper">
+
+                        <div *ngFor="let item of youthCenterItems; index as i" class="swiper-slide">
+                        </div>
+
+                    </div>
+                    <a href="javascript:;"
+                        class="swiper-button-prev-ex9 absolute top-[44%] z-[999] grid -translate-y-1/2 place-content-center rounded-full border border-primary p-1 text-primary transition hover:border-primary hover:bg-primary hover:text-white ltr:left-2 rtl:right-2"
+                        aria-label="Previous button">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 rtl:rotate-180">
+                            <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </a>
+                    <a href="javascript:;" aria-label="Next button"
+                        class="swiper-button-next-ex9 absolute top-[44%] z-[999] grid -translate-y-1/2 place-content-center rounded-full border border-primary p-1 text-primary transition hover:border-primary hover:bg-primary hover:text-white ltr:right-2 rtl:left-2">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 ltr:rotate-180">
+                            <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </a>
+                    <div class="swiper-pagination"></div>
+                </div>
+                }@else {
+                <div id="profile" aria-labelledby="profile-tab">
+                    <div class="mb-5">
+                        <!--        <div class="row">
+                                        <div class="col-lg-12 col-xl-12">
+                                            <div class="events-calander">
+                                                <div id="evoCalendar"></div>
+
+                                                <div class="buttons">
+                                                    <a href="https://www.msy.gov.qa/?page_id=14" class="btn">
+                                                        ﺍﻟﺸﺒﺎﺑﻴﺔ
+                                                    </a>
+                                                    <a href="https://www.msy.gov.qa/?page_id=16" class="btn">
+                                                        ﺍﻟﺮﻳﺎﺿﻴﺔ
+                                                    </a>
+                                                </div>
+                                                
+                                                <div class="all-events text-center text-md-end">
+                                                    <a href="java:">
+                                                        ﺟﻤﻴﻌﻬﺎ <i class="fa fa-long-arrow-left"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>-->
+
+
+                        <!--<div class="col-md-6 event-calander d-none" tabindex="-1">
+                                                    <div class="inner-col">
+                                                        <div class="monthly" id="events_calendar" tabindex="-1" aria-hidden="true"></div>
+                                                        <div id="skiplink_cal" style="display: none" aria-hidden="true"></div>
+                                                    </div>
+                                                </div>-->
+                        <div class="text-gray-600">
+                            <p>لا توجد فعاليات قادمة في الوقت الحالي. يرجى التحقق مرة أخرى لاحقًا.</p>
+                        </div>
+                    </div>
+                    <a href="https://www.msy.gov.qa/%d8%a7%d9%84%d9%85%d8%b1%d9%83%d8%b2-%d8%a7%d9%84%d8%a5%d8%b9%d9%84%d8%a7%d9%85%d9%8a/%d8%b1%d8%b2%d9%86%d8%a7%d9%85%d8%a9-%d8%a7%d9%84%d9%81%d8%b9%d8%a7%d9%84%d9%8a%d8%a7%d8%aa/" target="_blank"
+                        class="text-base text-center rounded px-8 py-2 bg-[#60583d] hover:underline hover:bg-white hover:border hover:border-[#60583d] hover:text-[#60583d] text-white transition-all">
+                        {{ 'serviceCard.button1' | translate }}
+                    </a>
+                </div>
+                }
+            </div>
+
+        </div>
+    </div>
+</section>

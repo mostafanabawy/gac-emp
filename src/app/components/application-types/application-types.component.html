@@ -1,0 +1,405 @@
+<div class="mb-5">
+    <nav class="mt-3 mb-5 flex flex-wrap border-b border-white-light dark:border-[#191e3a]" role="tablist">
+        <ng-container *ngFor="let tab of applicationTypes() | sortByOrder: 'ItemOrderID'; let index = index">
+            <button [id]="tab.InboxType" role="tab" [disabled]="allApplicationsService.disableTabs()"
+                class="-mb-[1px] flex items-center border-transparent text-gray-600 p-5 py-3 !outline-none transition duration-300 hover:border-b-2 hover:!border-primary hover:text-primary font-bold text-xl"
+                [ngClass]="{ 'border-b-2 !border-primary text-primary': activeTab.toLowerCase() === tab.InboxType.toLowerCase(),
+                    'cursor-not-allowed': allApplicationsService.disableTabs()
+                 }" (click)="tabChange(tab)">
+                @if (store.index.locale === 'en') {
+                {{tab.TitleEn}}
+                }@else {
+                {{tab.TitleAr}}
+                }
+            </button>
+        </ng-container>
+    </nav>
+
+
+    <ng-container *ngFor="let tab of applicationTypes(); let index = index">
+        <div class="flex-1 text-sm">
+            <!-- 'RequestCard' -->
+            @if(tab.TabStyleID === 2846){
+            <div *ngIf="tab.InboxType.toLowerCase() === activeTab.toLowerCase()" role="tabpanel"
+                aria-labelledby="tab-app-cards">
+                <!-- search form -->
+                <div class="mb-5">
+                    <form class="flex justify-between flex-col md:flex-row gap-2">
+                        <div class="w-full sm:w-1/4">
+                            <input type="search" [placeholder]="translations()?.searchPlaceholderApp.label"
+                                class="border border-[#70707076] py-2 px-3 rounded w-full ltr:text-left rtl:text-right"
+                                [ngClass]="{'direction-ltr': searchValIsArabic, 'direction-rtl': !searchValIsArabic}"
+                                (input)="searchCards($event)">
+                        </div>
+                        <!-- @if(cardsData().length > 0){
+                        <div class="flex gap-3">
+                            <input type="text"
+                                [placeholder]="'applciationsPage.mainTabs.searchForm.exclude' | translate"
+                                class="border w-1/2 sm:w-auto border-[#70707076] p-2 rounded">
+                            <input type="text" [placeholder]="'applciationsPage.mainTabs.searchForm.order' | translate"
+                                class="border w-1/2 sm:w-auto border-[#70707076] p-2 rounded">
+                        </div>
+                        } -->
+                    </form>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 px-10 auto-rows-min">
+                    @if(!tabLoader()){
+                    @if(cardsData().length > 0){
+                    @for (card of paginatedApplications(); track $index) {
+                    <app-single-application-card [allData]="card" [evalRes]="evalResSignal()"
+                        (openAnalysisModel)="onAnalysisReq($event)" class="grid-rows-subgrid row-span-3"
+                        [singleApplicationCardData]="{
+                                isStatus: store.index.locale === 'en'? card.FkStatusID_TitleEn: card.FkStatusID_TitleAr,
+                                applicationType: store.index.locale === 'en'? card.ServiceTitleEn: card.ServiceTitleAr,
+                                type: store.index.locale === 'en'? card.FkProcessID_TitleEn: card.FkProcessID_TitleAr,
+                                stats: {
+                                    requestNumber: card.ApplicationNumber,
+                                
+                                CreationDate: (card.CreationDate | date:'dd/MM/yyyy')!
+                                },
+                                actions: card.Actions
+                            }"></app-single-application-card>
+                    <!-- 'رقم الرخصة': card.ApprovedLicense, -->
+                    }
+                    }@else {
+                    <span>
+                        {{translations()?.notFoundPlaceHolder.label}}
+                        @if (store.index.locale === 'en') {
+                        {{tab.TitleEn}}
+                        }@else {
+                        {{tab.TitleAr}}
+                        }
+                    </span>
+                    }
+                    }@else{
+                    <div class="col-span-full flex justify-center">
+                        <span
+                            class="animate-spin border-4 border-black border-l-transparent rounded-full w-12 h-12 inline-block align-middle m-auto mb-10"></span>
+                    </div>
+                    }
+
+                </div>
+                @if (pageNumbers.length > 0 && cardsData().length > 0) {
+
+                <!-- pagination -->
+                <p class="text-sm justify-end flex items-center my-6">
+                    {{paginationMessage}}
+                </p>
+                <div class="panel my-5 !shadow-none border border-[#B1AAB1] !p-2 ">
+                    <div class="grid md:grid-cols-2 gap-2 md:gap-0">
+                        <div class="flex gap-3 justify-center md:justify-start">
+                            <div
+                                class="flex items-center relative pr-5 before:content-[''] before:absolute before:w-3 before:h-3 before:bg-[#707070A7] before:right-0 before:top-1/2 before:-translate-y-1/2">
+                                <span class="text-gray-700">
+                                    {{ translations()?.applicationsColorDefinitionGray.label }}
+                                </span>
+                            </div>
+                            <div
+                                class="flex items-center relative pr-5 before:content-[''] before:absolute before:w-3 before:h-3 before:bg-[#FEBC2E] before:right-0 before:top-1/2 before:-translate-y-1/2">
+                                <span class="text-yellow-900">
+                                    {{ translations()?.applicationsColorDefinitionYellow.label }}
+                                </span>
+                            </div>
+                            <div
+                                class="flex items-center relative pr-5 before:content-[''] before:absolute before:w-3 before:h-3 before:bg-[#28C840] before:right-0 before:top-1/2 before:-translate-y-1/2">
+                                <span class="text-green-800">
+                                    {{ translations()?.applicationsColorDefinitionGreen.label }}
+                                </span>
+                            </div>
+                            <div
+                                class="flex items-center relative pr-5 before:content-[''] before:absolute before:w-3 before:h-3 before:bg-[#FE6058] before:right-0 before:top-1/2 before:-translate-y-1/2">
+                                <span class="text-red-800">
+                                    {{ translations()?.applicationsColorDefinitionRed.label }}
+                                </span>
+                            </div>
+                            <div
+                                class="flex items-center relative pr-5 before:content-[''] before:absolute before:w-3 before:h-3 before:bg-[#000] before:right-0 before:top-1/2 before:-translate-y-1/2">
+                                <span class="text-[#000]">
+                                    {{ translations()?.applicationsColorDefinitionBlue.label }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex items-center w-full flex-col justify-center">
+                            <ul
+                                class="mx-auto md:ms-auto md:me-0 inline-flex rtl: items-center space-x-1 rtl:space-x-reverse">
+                                <li>
+                                    <button type="button" (click)="goToFirstPage()" [disabled]="currentPage() === 1"
+                                        class="flex cursor-pointer justify-center rounded bg-white-light px-3.5 py-2 font-semibold text-dark transition hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary"
+                                        aria-label="first page button"
+                                        [ngClass]="{'opacity-90 !cursor-not-allowed': currentPage() === 1}">
+                                        <icon-carets-down class="rotate-90 rtl:-rotate-90" />
+                                    </button>
+                                </li>
+                                <li>
+                                    <button type="button" (click)="goToPreviousPage()" [disabled]="currentPage() === 1"
+                                        class="flex justify-center rounded bg-white-light px-3.5 py-2 font-semibold text-dark transition cursor-pointer hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary"
+                                        aria-label="previous page button"
+                                        [ngClass]="{'opacity-90 !cursor-not-allowed': currentPage() === 1}">
+                                        <icon-caret-down class="h-5 w-5 rotate-90 rtl:-rotate-90" />
+                                    </button>
+                                </li>
+                                <li class="flex">
+                                    <ul
+                                        class="m-auto inline-flex gap-x-1 items-center space-x-1 flex-row rtl:space-x-reverse">
+                                        @for (page of displayedPages(); track $index) {
+                                        <li>
+                                            @if (page === 0) {
+                                            <span
+                                                class="flex justify-center rounded px-3.5 py-2 font-semibold text-gray-400">...</span>
+                                            } @else {
+                                            <button type="button"
+                                                class="flex justify-center rounded px-3.5 py-2 font-semibold transition"
+                                                [ngClass]="{
+                                                        'bg-primary text-white dark:bg-primary dark:text-white-light': page === currentPage(),
+                                                        'bg-white-light text-dark hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary': page !== currentPage()
+                                                        }" (click)="goToPage(page)">
+                                                {{ page }}
+                                            </button>
+                                            }
+                                        </li>
+                                        }
+                                        <!--  <li>
+                                                    <button type="button"
+                                                        class="flex justify-center rounded bg-primary px-3.5 py-2 font-semibold text-white transition dark:bg-primary dark:text-white-light">
+                                                        2
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button type="button"
+                                                        class="flex justify-center rounded bg-white-light px-3.5 py-2 font-semibold text-dark transition hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary">
+                                                        3
+                                                    </button>
+                                                </li> -->
+                                    </ul>
+
+                                </li>
+                                <li>
+                                    <button type="button" (click)="goToNextPage()"
+                                        [disabled]="currentPage() === totalPages()"
+                                        class="flex justify-center rounded bg-white-light px-3.5 py-2 font-semibold text-dark transition cursor-pointer hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary"
+                                        aria-label="next page button"
+                                        [ngClass]="{'opacity-90 !cursor-not-allowed': currentPage() === totalPages()}">
+                                        <icon-caret-down class="h-5 w-5 -rotate-90 rtl:rotate-90" />
+                                    </button>
+                                </li>
+                                <li>
+                                    <button type="button" (click)="goToLastPage()"
+                                        [disabled]="currentPage() === totalPages()"
+                                        class="flex justify-center rounded bg-white-light px-3.5 py-2 font-semibold text-dark transition cursor-pointer hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary"
+                                        aria-label="last page button"
+                                        [ngClass]="{'opacity-90 !cursor-not-allowed': currentPage() === totalPages()}">
+                                        <icon-carets-down class="-rotate-90 rtl:rotate-90" />
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+            <!-- 'Requests/LicensesTable' -->
+            @if(tab.TabStyleID === 2852){
+            <div *ngIf="tab.InboxType.toLowerCase() === activeTab.toLowerCase()" role="tabpanel"
+                [attr.aria-labelledby]="tab.InboxType">
+                <!-- <app-advanced-search [mainTabsData]="mainTabsData()" [currentTabData]="tab"
+                [pageSize]="itemsPerPage()" (paginationInfo)="getPaginationInfo($event)"
+                    [ServicesType]="ServicesType()"></app-advanced-search> -->
+                <app-all-applications-table [tabData]="tab" [activeTab]="activeTab" [evalRes]="evalResSignal()"
+                    [newTotalRows]="TotalRows()" [mainTabsData]="mainTabsData()"
+                    [ServicesType]="ServicesType()" (openAnalysisModel)="onAnalysisReq($event)"></app-all-applications-table>
+            </div>
+            }
+            <!-- 'LicenseCard' -->
+            @if(tab.TabStyleID === 2847){
+            <div *ngIf="tab.InboxType.toLowerCase() === activeTab.toLowerCase()" aria-labelledby="tab-allLicenses"
+                role="tabpanel">
+                <form class="flex justify-between flex-col md:flex-row gap-2">
+                    <div class="w-full sm:w-1/4">
+                        <input type="search" [placeholder]="translations()?.searchPlaceholderLicense.label"
+                            class="border border-[#70707076] py-2 px-3 rounded w-full ltr:text-left rtl:text-right"
+                            [ngClass]="{'direction-ltr': searchValIsArabic, 'direction-rtl': !searchValIsArabic}"
+                            (input)="searchCards($event)">
+                    </div>
+                    <!--  @if(cardsData().length > 0){
+                    <div class="flex gap-3">
+                        <input type="text" [placeholder]="'applciationsPage.mainTabs.searchForm.exclude' | translate"
+                            class="border w-1/2 sm:w-auto border-[#70707076] p-2 rounded">
+                        <input type="text" [placeholder]="'applciationsPage.mainTabs.searchForm.order' | translate"
+                            class="border w-1/2 sm:w-auto border-[#70707076] p-2 rounded">
+                    </div>
+                    } -->
+                </form>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5 auto-rows-min">
+                    @if(!tabLoader()){
+
+                    @if(cardsData().length > 0){
+                    @for (card of paginatedApplications(); track $index) {
+                    <app-single-licence-card (actionCompleted)="actionCompleted()" [allData]="card" class="grid-rows-subgrid row-span-3"
+                        (servicesData)="setServicesModalData($event)" [evalRes]="evalResSignal()"
+                        (openAnalysisModel)="onAnalysisReq($event)" [singleLicenseCardData]="{
+                            applicationType: store.index.locale === 'en'? card.ServiceTitleEn: card.ServiceTitleAr,
+                            stats: {
+                                licenseNumber: card.ApprovedLicense,
+                                Status: store.index.locale === 'en'? card.FkStatusID_TitleEn: card.FkStatusID_TitleAr,
+                                LicenseCreationDate: (card.LicenseCreationDate | date:'dd/MM/yyyy')!,
+                                LicenseExpirationDate: (card.LicenseExpirationDate | date:'dd/MM/yyyy')!
+                            },
+                            actions: card.Actions
+                        }"></app-single-licence-card>
+                    }
+                    }@else {
+                    <span>
+                        {{translations()?.notFoundPlaceHolder.label}}
+                        @if (store.index.locale === 'en') {
+                        {{tab.TitleEn}}
+                        }@else {
+                        {{tab.TitleAr}}
+                        }
+                    </span>
+                    }
+                    }@else {
+                    <div class="col-span-full flex justify-center">
+                        <span
+                            class="animate-spin border-4 border-black border-l-transparent rounded-full w-12 h-12 inline-block align-middle m-auto mb-10"></span>
+                    </div>
+                    }
+                </div>
+                @if (pageNumbers.length > 0 && cardsData().length > 0) {
+
+                <!-- pagination -->
+                <p class="text-sm justify-end flex items-center my-6">
+                    {{paginationMessage}}
+                </p>
+                <div class="panel my-5 !shadow-none border border-[#B1AAB1] !p-2 overflow-auto">
+                    <div class="grid md:grid-cols-2 gap-2 md:gap-0">
+                        <div class="flex gap-3 justify-center md:justify-start">
+                            <div
+                                class="flex items-center relative pr-5 before:content-[''] before:absolute before:w-3 before:h-3 before:bg-[#28C840] before:right-0 before:top-1/2 before:-translate-y-1/2">
+                                <span class="text-green-800">
+                                    {{ translations()?.licenseColorDefinitionGreen.label}}
+                                </span>
+                            </div>
+                            <div
+                                class="flex items-center relative pr-5 before:content-[''] before:absolute before:w-3 before:h-3 before:bg-blue-800 before:right-0 before:top-1/2 before:-translate-y-1/2">
+                                <span class="text-blue-800">
+                                    {{ translations()?.licenseColorDefinitionPurple.label}}
+                                </span>
+                            </div>
+                            <div
+                                class="flex items-center relative pr-5 before:content-[''] before:absolute before:w-3 before:h-3 before:bg-red-800 before:right-0 before:top-1/2 before:-translate-y-1/2">
+                                <span class="text-red-800">
+                                    {{ translations()?.licenseColorDefinitionRed.label}}
+                                </span>
+                            </div>
+                            <div
+                                class="flex items-center relative pr-5 before:content-[''] before:absolute before:w-3 before:h-3 before:bg-orange-600 before:right-0 before:top-1/2 before:-translate-y-1/2">
+                                <span class="text-orange-600">
+                                    {{ translations()?.licenseColorDefinitionOrange.label}}
+                                </span>
+                            </div>
+                            <div
+                                class="flex items-center relative pr-5 before:content-[''] before:absolute before:w-3 before:h-3 before:bg-red-900 before:right-0 before:top-1/2 before:-translate-y-1/2">
+                                <span class="text-red-900 font-bold">
+                                    {{ translations()?.licenseColorDefinitionEvacuated.label }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex items-center w-full flex-col justify-center">
+                            <ul
+                                class="mx-auto md:ms-auto md:me-0 inline-flex rtl: items-center space-x-1 rtl:space-x-reverse">
+                                <li>
+                                    <button type="button" (click)="goToFirstPage()" [disabled]="currentPage() === 1"
+                                        class="flex cursor-pointer justify-center rounded bg-white-light px-3.5 py-2 font-semibold text-dark transition hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary"
+                                        aria-label="first page button"
+                                        [ngClass]="{'opacity-90 !cursor-not-allowed': currentPage() === 1}">
+                                        <icon-carets-down class="rotate-90 rtl:-rotate-90" />
+                                    </button>
+                                </li>
+                                <li>
+                                    <button type="button" (click)="goToPreviousPage()" [disabled]="currentPage() === 1"
+                                        class="flex justify-center rounded bg-white-light px-3.5 py-2 font-semibold text-dark transition cursor-pointer hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary"
+                                        aria-label="previous page button"
+                                        [ngClass]="{'opacity-90 !cursor-not-allowed': currentPage() === 1}">
+                                        <icon-caret-down class="h-5 w-5 rotate-90 rtl:-rotate-90" />
+                                    </button>
+                                </li>
+                                <li class="flex">
+                                    <ul
+                                        class="m-auto inline-flex gap-x-1 items-center space-x-1 flex-row rtl:space-x-reverse">
+                                        @for (page of displayedPages(); track $index) {
+                                        <li>
+                                            @if (page === 0) {
+                                            <span
+                                                class="flex justify-center rounded px-3.5 py-2 font-semibold text-gray-400">...</span>
+                                            } @else {
+                                            <button type="button"
+                                                class="flex justify-center rounded px-3.5 py-2 font-semibold transition"
+                                                [ngClass]="{
+                                                    'bg-primary text-white dark:bg-primary dark:text-white-light': page === currentPage(),
+                                                    'bg-white-light text-dark hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary': page !== currentPage()
+                                                    }" (click)="goToPage(page)">
+                                                {{ page }}
+                                            </button>
+                                            }
+                                        </li>
+                                        }
+                                        <!--  <li>
+                                                <button type="button"
+                                                    class="flex justify-center rounded bg-primary px-3.5 py-2 font-semibold text-white transition dark:bg-primary dark:text-white-light">
+                                                    2
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button type="button"
+                                                    class="flex justify-center rounded bg-white-light px-3.5 py-2 font-semibold text-dark transition hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary">
+                                                    3
+                                                </button>
+                                            </li> -->
+                                    </ul>
+
+                                </li>
+                                <li>
+                                    <button type="button" (click)="goToNextPage()"
+                                        [disabled]="currentPage() === totalPages()"
+                                        class="flex justify-center rounded bg-white-light px-3.5 py-2 font-semibold text-dark transition cursor-pointer hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary"
+                                        aria-label="next page button"
+                                        [ngClass]="{'opacity-90 !cursor-not-allowed': currentPage() === totalPages()}">
+                                        <icon-caret-down class="h-5 w-5 -rotate-90 rtl:rotate-90" />
+                                    </button>
+                                </li>
+                                <li>
+                                    <button type="button" (click)="goToLastPage()"
+                                        [disabled]="currentPage() === totalPages()"
+                                        class="flex justify-center rounded bg-white-light px-3.5 py-2 font-semibold text-dark transition cursor-pointer hover:bg-primary hover:text-white dark:bg-[#191e3a] dark:text-white-light dark:hover:bg-primary"
+                                        aria-label="last page button"
+                                        [ngClass]="{'opacity-90 !cursor-not-allowed': currentPage() === totalPages()}">
+                                        <icon-carets-down class="-rotate-90 rtl:rotate-90" />
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+            <!-- distribution Table -->
+            @if(tab.TabStyleID === 2855){
+            <div *ngIf="tab.InboxType.toLowerCase() === activeTab.toLowerCase()" role="tabpanel"
+                [attr.aria-labelledby]="tab.InboxType">
+
+                <app-distribution-table [tabData]="tab" [activeTab]="activeTab" [mainTabsData]="mainTabsData()"
+                    [ServicesType]="ServicesType()" (openAnalysisModel)="onAnalysisReq($event)"></app-distribution-table>
+            </div>
+            }
+
+        </div>
+    </ng-container>
+    @if (btnRelatedServices()) {
+    <app-service-select-modal [services]="btnRelatedServices()" [title]="clickedActionTitle()"
+        [confirmBtnName]="translations()?.validationMsgBtn.label"></app-service-select-modal>
+    }
+    <app-ai-analysis-modal [isOpened]="openAnalysisModel()" (closed)="onUserClose($event)"
+        [fieldName]="'request'"></app-ai-analysis-modal>
+</div>

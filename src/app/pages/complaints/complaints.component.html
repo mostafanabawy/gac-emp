@@ -1,0 +1,15 @@
+@if(currentLink()){
+<app-bread-crumps [pageName]="store.index.locale === 'en'? currentLink().TitleEn: currentLink().TitleAr"
+    [url]="currentLink().ItemURL"></app-bread-crumps>
+}
+
+<section class="mb-5 bg-white border-[#B1AAB1] border rounded-t-lg p-2 mt-8 min-h-[50vh]">
+    <div class="flex-1 text-sm mt-4">
+        @if(this.allApplicationsService.tabsData()){
+        <app-complaints-list [tabData]="this.allApplicationsService.tabsData()" [ServicesType]="this.allApplicationsService.tabsData().ServicesType"></app-complaints-list>
+
+        }
+    </div>
+</section>
+<app-related-applications-modal [isOpened]="allApplicationsService.isRelatedRequestsData()"
+    (closed)="onUserClose($event)"></app-related-applications-modal>

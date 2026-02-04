@@ -1,0 +1,130 @@
+<div class="attachment w-full" [ngClass]="'file'+uploadId"
+  *ngIf="(!!(disabledBtns && uploadedFiles.length) || !disabledBtns) && !(!attachment!.Active && allFilesDeleted())">
+  <div class="document-header-bar">
+    <div class="flex !items-start !justify-start gap-3">
+      <img src="/assets/images/Web/add-file-svgrepo-com.svg" alt="image file" class="w-8 flex-shrink-0">
+      <div class="flex flex-col min-w-0 flex-1 !items-start !justify-start">
+        <div class="flex flex-wrap flex-col gap-1 !items-start !justify-start w-full">
+          <div class="flex gap-1 flex-wrap justify-between w-full">
+            <p class="document-title grow break-words">
+              {{ title }}
+              <span *ngIf="required && uploadedFiles.length === 0 || allFilesDeleted()" class="text-red-500">*</span>
+
+            </p>
+            @if(attachment!.HasModel){
+            <span class="text-primary flex gap-1 text-base">
+              <icon-stars class="w-5 h-5"></icon-stars> {{translations()?.aiFileLabel.label}}
+            </span>
+            }
+          </div>
+          @if (showTextBoxSignal()) {
+          <div class="flex flex-col grow w-full">
+            <input type="text" [disabled]="disabledBtns"
+              [placeholder]="store.locale == 'en'? showTextBoxSignal().TitleEn: showTextBoxSignal().TitleAr"
+              (change)="onTextBoxChange($event)" [value]="recordedFiles()?.files[0]?.AttachmentName"
+              class="px-3 py-2 border w-full border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+          </div>
+          }
+        </div>
+        <p class="format-text break-words w-full flex gap-1 flex-wrap">
+          @if (translations()?.fileFormat?.label) {
+        <div class="w-full">
+          {{translations()?.fileFormat?.label}}
+        </div>
+        }
+
+        @for(group of groupedFormats; track group.category) {
+        <span class="border border-gray-300 rounded-lg py-1 px-3 text-sm bg-gray-50 transition-colors">
+          {{ group.types.join(', ') }}
+        </span>
+        }
+
+        </p>
+        <p class="format-text break-words">
+          @if (translations()?.fileMaxSizeInForm?.label) {
+          {{translations()?.fileMaxSizeInForm?.label}}
+          }
+          {{ (maxFileSizeKB / 1024 | number:'1.0-2')?.split(',')?.join('')}}MB
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="upload-area-exact relative"
+    *ngIf="(( multiple === true && disabledBtns === false) || (uploadedFiles.length === 0 || allFilesDeleted())) && attachment!.Active">
+    <div class="upload-box-exact" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)">
+      <div class="upload-content-exact flex">
+        <input type="file" [multiple]="multiple" [accept]="acceptedTypes" (change)="onFileSelected($event)"
+          class="hidden" [id]="uploadId">
+
+        <span class="upload-text-exact">
+          <img src="/assets/images/Web/file-upload-svgrepo-com.svg" alt="file-upload" class="w-5 inline-block">
+          @if (translations()?.dragDrop?.label && !checkScreenSize()) {
+          {{translations()?.dragDrop?.label}}
+          }
+          <span class="or" *ngIf="!checkScreenSize()">
+            @if (translations()?.or?.label) {
+            {{translations()?.or?.label}}
+            }
+          </span>
+
+          <button type="button" class="cursor-pointer " (click)="triggerFileInput()" class="upload-btn-exact">
+            @if (translations()?.uploadFile?.label) {
+            {{translations()?.uploadFile?.label}}
+            }
+          </button>
+        </span>
+      </div>
+    </div>
+    <!-- Display validation error if component is required and no files -->
+    <!-- <div *ngIf="required && !uploadedFiles.length && (uploadedFiles.length === 0)" class="text-red-500 text-sm mt-1">
+      هذا الحقل مطلوب.
+    </div> -->
+  </div>
+  <div *ngIf="loading" class="w-full h-[120px] relative rounded-lg">
+    <ngx-spinner type="ball-spin-clockwise" class="!z-10" [name]="uploadId" bdColor="rgba(0, 0, 0, 0.5)"
+      [fullScreen]="false"></ngx-spinner>
+  </div>
+
+  <ng-container *ngFor="let file of fileName(); let i = index;">
+    @if(file){
+
+    <div class="extracted-info-section">
+      <div class="progress-bar-container flex items-end relative">
+        <div class="flex flex-col grow">
+          <button (click)="showFile(i)" class="font-bold ltr:mr-auto rtl:ml-auto cursor-pointer flex gap-1">
+            <div>
+              <img src="/assets\images\icons\document-1-svgrepo-com (1).svg" class="w-8 h-8" alt="file icon">
+            </div>
+            {{ file }}
+          </button>
+
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="extractionProgress"></div>
+          </div>
+        </div>
+        <div class="absolute top-0 ltr:right-0 rtl:left-0 flex gap-2">
+          @if (aiPercent()) {
+          @if(recordedFiles()){
+          <button class="ai-analysis-btn hover:bg-gray-50 py-1 px-2 rounded-md"
+            (click)="triggerAiAnalysis(uploadedFiles[i][this.AttachmentDocIDKey])">
+            <span>✨ تحليل المرفق</span>
+          </button>
+          }
+          <span><ai-completion-bar [percentage]="aiPercent()!"></ai-completion-bar></span>
+          }
+        </div>
+        <button type="button" class="delete-extraction-btn self-end pb-0" *ngIf="!disabledBtns" (click)="removeFile(i)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <app-ai-analysis-modal [isOpened]="openAnalysisModel()" (closed)="onUserClose($event)" [fieldName]="attachment!.ID"></app-ai-analysis-modal>
+    }
+  </ng-container>
+
+</div>

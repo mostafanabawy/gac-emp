@@ -1,0 +1,22 @@
+<div id="helpTutorial" cdkTrapFocus [cdkTrapFocusAutoCapture]="true" *ngIf="isOpen()">
+    <ngx-custom-modal #modal6 class="modal-top large-modal overflow-auto !z-[9999]" id="appModal"
+        [closeOnOutsideClick]="false">
+        <ng-template #modalHeader>
+            <div>
+                <h2 class="text-xl">
+                {{ translations()?.guideVideo.label}}    
+                </h2>
+            </div>
+        </ng-template>
+        <ng-template #modalBody>
+            <!-- info section -->
+            <div class="py-5 !bg-white youtube-container">
+                <iframe class="w-full h-full" src="https://www.youtube.com/embed/vHey-ppwE28"
+                    title="وزارة الشباب والرياضة قطر" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+
+        </ng-template>
+    </ngx-custom-modal>
+</div>

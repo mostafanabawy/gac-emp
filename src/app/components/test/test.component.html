@@ -1,0 +1,957 @@
+
+<div class="mb-5">
+    <div class="inline-block w-full">
+        <div class="relative z-[1]">
+            <div class="bg-primary h-1 absolute rtl:right-0 ltr:left-0 top-[30px] m-auto -z-[1] transition-[width]" [ngClass]="{
+                'w-[22%]': activeTab === 1, 
+                'w-[48%]': activeTab === 2, 
+                'w-[81%]': activeTab >= 3 && activeTab < 11
+            }"></div>
+            <ul class="mb-5 flex overflow-auto">
+                <li class="mx-auto" *ngFor="let tab of getTabs(); let i = index">
+                    <button type="button"
+                        class="bg-white dark:bg-[#253b5c] border-[3px] border-[#f3f2ee] dark:border-[#1b2e4b] flex justify-center items-center w-16 h-16 rounded-full"
+                        [ngClass]="{'!border-primary !bg-primary text-white': activeTab === tab}"
+                        (click)="setActiveTab(tab)" [attr.aria-label]="'Tab ' + tab">
+                        <span class="text-xl font-semibold">{{ tab }}</span>
+                    </button>
+                </li>
+            </ul>
+
+        </div>
+        <section>
+            <div *ngIf="activeTab === 1">
+
+                <h2 class="mb-5 text-[22px]">Applicant Data</h2>
+                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-12 m-4">
+                    <!-- Applicant QID -->
+                    <div class="col-span-12 md:col-span-4">
+                        <div class="form-group">
+                            <label for="ApplicantValue" class="block text-sm font-medium text-gray-900">
+                                Applicant QID
+                                <span class="text-red-500">Required</span>
+                            </label>
+                            <input type="text" id="ApplicantValue" maxlength="11" pattern="^[0-9]{11}$"
+                                class="form-input">
+                        </div>
+                    </div>
+
+                    <!-- Applicant Name -->
+                    <div class="col-span-12 md:col-span-4">
+                        <div class="form-group">
+                            <label for="ApplicantName" class="block text-sm font-medium text-gray-900">
+                                Applicant Name
+                                <span class="text-red-500">Required</span>
+                            </label>
+                            <input type="text" id="ApplicantName" class="form-input">
+                        </div>
+                    </div>
+
+                    <!-- Establishment ID -->
+                    <div class="col-span-12 md:col-span-4">
+                        <div class="form-group">
+                            <label for="Establishment_Number" class="block text-sm font-medium text-gray-900">
+                                Establishment ID
+                            </label>
+                            <input type="text" id="Establishment_Number" class="form-input">
+                        </div>
+                    </div>
+
+                    <!-- Establishment Name -->
+                    <div class="col-span-12 md:col-span-4">
+                        <div class="form-group">
+                            <label for="Organization_Name1" class="block text-sm font-medium text-gray-900">
+                                Establishment Name
+                            </label>
+                            <input type="text" id="Organization_Name1" class="form-input">
+                        </div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="col-span-12 md:col-span-4">
+                        <div class="form-group">
+                            <label for="Phone" class="block text-sm font-medium text-gray-900">
+                                Phone Number
+                                <span class="text-red-500">Required</span>
+                            </label>
+                            <input type="text" id="Phone" maxlength="8" pattern="^[0-9]{8}$" class="form-input">
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-span-12 md:col-span-4">
+                        <div class="form-group">
+                            <label for="CoEmail" class="block text-sm font-medium text-gray-900">
+                                Email
+                                <span class="text-red-500">Required</span>
+                            </label>
+                            <input type="email" id="CoEmail" placeholder="email@mail.com"
+                                pattern="^[aA-zZ0-9._%+-]+@[Aa-zZ0-9.-]+\.[Aa-zZ]{2,4}$" class="form-input">
+                        </div>
+                    </div>
+
+                    <!-- Applicant QID Scan -->
+                    <div class="col-span-12 md:col-span-6">
+                        <div class="form-group">
+                            <label for="ApplicantQIDAtts_DocID" class="block text-sm font-medium text-gray-900">
+                                Applicant QID Scan
+                            </label>
+                            <div class="mb-5">
+                                <div class="custom-file-container" data-upload-id="ApplicantQIDAtts_DocID"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div *ngIf="activeTab === 2">
+
+                <h2 class="mb-5 text-[22px]"> Activity Data</h2>
+                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-12 m-4">
+                    <!-- Activity Name -->
+                    <div class="col-span-12">
+                        <div class="form-group">
+                            <label for="Activity_Name" class="block text-sm font-medium text-gray-900">
+                                Activity Name
+                                <!--
+                                <span class="text-red-500">Required</span>
+                                -->
+                            </label>
+                            <input type="text" id="Activity_Name" readonly class="form-input">
+                        </div>
+                    </div>
+
+                    <!-- Activity Type Table -->
+                    <div class="col-span-12">
+                        <div class="form-group">
+                            <table class="table-responsive" role="grid">
+                                <thead class="border-b-2 border-gray-600">
+                                    <tr>
+                                        <th class="py-2 px-4">Activity Type</th>
+                                        <th class="py-2 px-4">Activity Description</th>
+                                        <th class="py-2 px-4">Select Activity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Example of rows (repeat as needed) -->
+                                    <tr>
+                                        <td class="py-2 px-4">Forum or youth meeting</td>
+                                        <td class="py-2 px-4">
+                                            <a href="javascript:void(0);" class="helpiconpadding"
+                                                style="cursor:pointer">
+                                                <img alt="Activity Description - Forum or youth meeting"
+                                                    src="/assets/images/help.png" width="30">
+                                            </a>
+                                        </td>
+                                        <td class="py-2 px-4">
+                                            <input type="checkbox" title="Forum or youth meeting"
+                                                class="focus:ring-indigo-600">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4">Youth Festival</td>
+                                        <td class="py-2 px-4">
+                                            <a href="javascript:void(0);" class="helpiconpadding"
+                                                style="cursor:pointer">
+                                                <img alt="Activity Description - Youth Festival"
+                                                    src="/assets/images/help.png" width="30">
+                                            </a>
+                                        </td>
+                                        <td class="py-2 px-4">
+                                            <input type="checkbox" title="Youth Festival" class="focus:ring-indigo-600">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4">Youth trips</td>
+                                        <td class="py-2 px-4">
+                                            <a href="javascript:void(0);" class="helpiconpadding"
+                                                style="cursor:pointer">
+                                                <img alt="Activity Description - Youth trips"
+                                                    src="/assets/images/help.png" width="30">
+                                            </a>
+                                        </td>
+                                        <td class="py-2 px-4">
+                                            <input type="checkbox" title="Youth trips" class="focus:ring-indigo-600">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4">Seminar or conference</td>
+                                        <td class="py-2 px-4">
+                                            <a href="javascript:void(0);" class="helpiconpadding"
+                                                style="cursor:pointer">
+                                                <img alt="Activity Description - Seminar or conference"
+                                                    src="/assets/images/help.png" width="30">
+                                            </a>
+                                        </td>
+                                        <td class="py-2 px-4">
+                                            <input type="checkbox" title="Seminar or conference"
+                                                class="focus:ring-indigo-600">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4">Camp</td>
+                                        <td class="py-2 px-4">
+                                            <a href="javascript:void(0);" class="helpiconpadding"
+                                                style="cursor:pointer">
+                                                <img alt="Activity Description - Camp" src="/assets/images/help.png"
+                                                    width="30">
+                                            </a>
+                                        </td>
+                                        <td class="py-2 px-4">
+                                            <input type="checkbox" title="Camp" class="focus:ring-indigo-600">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4">Courses or workshops</td>
+                                        <td class="py-2 px-4">
+                                            <a href="javascript:void(0);" class="helpiconpadding"
+                                                style="cursor:pointer">
+                                                <img alt="Activity Description - Courses or workshops"
+                                                    src="/assets/images/help.png" width="30">
+                                            </a>
+                                        </td>
+                                        <td class="py-2 px-4">
+                                            <input type="checkbox" title="Courses or workshops"
+                                                class="focus:ring-indigo-600">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4">Exhibition</td>
+                                        <td class="py-2 px-4">
+                                            <a href="javascript:void(0);" class="helpiconpadding"
+                                                style="cursor:pointer">
+                                                <img alt="Activity Description - Exhibition"
+                                                    src="/assets/images/help.png" width="30">
+                                            </a>
+                                        </td>
+                                        <td class="py-2 px-4">
+                                            <input type="checkbox" title="Exhibition" class="focus:ring-indigo-600">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4">Youth camp</td>
+                                        <td class="py-2 px-4">
+                                            <a href="javascript:void(0);" class="helpiconpadding"
+                                                style="cursor:pointer">
+                                                <img alt="Activity Description - Youth camp"
+                                                    src="/assets/images/help.png" width="30">
+                                            </a>
+                                        </td>
+                                        <td class="py-2 px-4">
+                                            <input type="checkbox" title="Youth camp" class="focus:ring-indigo-600">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4">Lectures</td>
+                                        <td class="py-2 px-4">
+                                            <a href="javascript:void(0);" class="helpiconpadding"
+                                                style="cursor:pointer">
+                                                <img alt="Activity Description - Lectures" src="/assets/images/help.png"
+                                                    width="30">
+                                            </a>
+                                        </td>
+                                        <td class="py-2 px-4">
+                                            <input type="checkbox" title="Lectures" class="focus:ring-indigo-600">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4">Other</td>
+                                        <td class="py-2 px-4">
+                                            <a href="javascript:void(0);" class="helpiconpadding"
+                                                style="cursor:pointer">
+                                                <img alt="Activity Description - Other" src="/assets/images/help.png"
+                                                    width="30">
+                                            </a>
+                                        </td>
+                                        <td class="py-2 px-4">
+                                            <input type="checkbox" title="Other" class="focus:ring-indigo-600">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Other Activity (Conditional Visibility) -->
+                    <div class="col-span-12" id="otherActivityDiv">
+                        <div class="form-group">
+                            <label for="Other" class="block text-sm font-medium text-gray-900">
+                                Other Activity
+                            </label>
+                            <input type="text" id="Other" class="form-input">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div *ngIf="activeTab === 3">
+                <h2 class="mb-5 text-[22px]"> License Applicant Data</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- License Applicant QID -->
+                    <div class="form-group">
+                        <label for="LicenseOwner_QID" class="block text-sm font-medium text-gray-700">
+                            License Applicant QID
+                            <span ng-show="LicensingYouthEventForm.LicenseApplicantQID.$error.required"
+                                class="text-red-500 text-xs">
+                                Required
+                            </span>
+
+                        </label>
+                        <input type="text" id="LicenseOwner_QID" class="form-input" aria-invalid="true">
+                    </div>
+
+                    <!-- Name -->
+                    <div class="form-group">
+                        <label for="LicenseOwner_Name" class="block text-sm font-medium text-gray-700">
+                            Name
+                            <span
+                                ng-show="LicensingYouthEventForm.PerLicApplName.$error.required && !DimLicenseOwner_Name"
+                                class="text-red-500 text-xs">
+                                Required
+                            </span>
+                        </label>
+                        <input type="text" id="LicenseOwner_Name" class="form-input" aria-invalid="true">
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="form-group">
+                        <label for="LicenseOwner_Mobile1" class="block text-sm font-medium text-gray-700">
+                            Phone
+                            <span ng-show="LicensingYouthEventForm.LicenseApplicantPhone.$error.required"
+                                class="text-red-500 text-xs">
+                                Required
+                            </span>
+
+                        </label>
+                        <input type="text" maxlength="8" id="LicenseOwner_Mobile1" class="form-input"
+                            aria-invalid="true">
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="CoEmail1" class="block text-sm font-medium text-gray-700">
+                            License Applicant Email
+                            <span ng-show="LicensingYouthEventForm.LicenseApplicantEmail.$error.required"
+                                class="text-red-500 text-xs">
+                                Required
+                            </span>
+
+                        </label>
+                        <input type="email" id="CoEmail1" placeholder="email@mail.com" class="form-input"
+                            aria-invalid="true">
+                    </div>
+
+                    <!-- Applicant BirthDate -->
+                    <div class="form-group">
+                        <label for="LicenseOwner_Birthdate" class="block text-sm font-medium text-gray-700">
+                            Applicant BirthDate
+                            <span ng-show="LicensingYouthEventForm.LicenseApplicantBirthDate.$error.required"
+                                class="text-red-500 text-xs">
+                                Required
+                            </span>
+                        </label>
+
+                        <input type="text" mwlFlatpickr formControlName="date1" [options]="basic" class="form-input" />
+
+                    </div>
+
+                    <!-- Job -->
+                    <div class="form-group">
+                        <label for="LicenseOwner_Jobs1" class="block text-sm font-medium text-gray-700">
+                            The job of the license applicant
+                            <span ng-show="LicensingYouthEventForm.LicenseApplicantJobs.$error.required"
+                                class="text-red-500 text-xs">
+                                Required
+                            </span>
+                        </label>
+                        <input type="text" id="LicenseOwner_Jobs1" class="form-input" aria-invalid="true">
+                    </div>
+
+                    <!-- Nationality -->
+                    <div class="form-group">
+                        <label for="LicenseOwner_NationalityId" class="block text-sm font-medium text-gray-700">
+                            License Applicant Nationality
+                            <span ng-show="LicensingYouthEventForm.LicenseApplicantNationality.$error.required"
+                                class="text-red-500 text-xs">
+                                Required
+                            </span>
+                        </label>
+                        <select class="form-select" aria-invalid="true">
+                            <option value="" class="text-gray-400">-- Select --</option>
+                            <option label="Uganda" value="string:1726">Uganda</option>
+                            <option label="Slovenia" value="string:1777">Slovenia</option>
+                            <option label="Chad" value="string:1805">Chad</option>
+                            <!-- Add other options here -->
+                        </select>
+                    </div>
+
+                    <!-- File Upload -->
+                    <div class="col-span-1">
+                        <div class="form-group">
+                            <label for="LicenseOwner_QIDAtts_DocID" class="block text-sm font-medium text-gray-700">
+                                License Owner QID Scan
+                            </label>
+                            <div class="mb-5">
+                                <div class="custom-file-container" data-upload-id="LicenseOwner_QIDAtts_DocID"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div *ngIf="activeTab === 4">
+                <h2 class="mb-5 text-[22px]"> Responsible Manager Data</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="form-group">
+                        <label for="Manager_QID" class="form-label block text-gray-700 font-semibold">
+                            Responsible manager personal number
+                            <span class="text-red-500"
+                                ng-show="LicensingYouthEventForm.PersonalNumberOftheResponsibleManager.$error.required">
+                                Required
+                            </span>
+
+                        </label>
+                        <input type="text" id="Manager_QID" ng-pattern="/^[0-9]{11}$/" class="form-input"
+                            aria-invalid="true">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Manager_Name" class="form-label block text-gray-700 font-semibold">
+                            Manager Name
+                            <span class="text-red-500"
+                                ng-show="LicensingYouthEventForm.ManagerName.$error.required && !DimManager_Name">
+                                Required
+                            </span>
+                        </label>
+                        <input type="text" class="form-input" aria-invalid="true">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="LicenseOwner_Mobile" class="form-label block text-gray-700 font-semibold">
+                            Manager Company Mobile
+                            <span class="text-red-500"
+                                ng-show="LicensingYouthEventForm.RespManagerCompanyMobile.$error.required">
+                                Required
+                            </span>
+
+                        </label>
+                        <input type="text" maxlength="8" id="LicenseOwner_Mobile" class="form-input"
+                            aria-invalid="true">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="CoEmail2" class="form-label block text-gray-700 font-semibold">
+                            Manager Email
+                            <span class="text-red-500" ng-show="LicensingYouthEventForm.ManagerEmail.$error.required">
+                                Required
+                            </span>
+
+                        </label>
+                        <input type="email" id="CoEmail2" placeholder="email@mail.com" class="form-input"
+                            aria-invalid="true">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Manager_Birthdate" class="form-label block text-gray-700 font-semibold">
+                            The birthdate of the manager
+                            <span class="text-red-500"
+                                ng-show="LicensingYouthEventForm.ManagerBirthdate.$error.required">
+                                Required
+                            </span>
+                        </label>
+
+                        <input type="text" mwlFlatpickr formControlName="date1" [options]="basic" class="form-input" />
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="LicenseOwner_Jobs2" class="form-label block text-gray-700 font-semibold">
+                            The manager's job
+                            <span class="text-red-500" ng-show="LicensingYouthEventForm.ManageRole.$error.required">
+                                Required
+                            </span>
+                        </label>
+                        <input type="text" id="LicenseOwner_Jobs2" class="form-input" aria-invalid="true">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Manager_NationalityId" class="form-label block text-gray-700 font-semibold">
+                            Manager Nationality
+                            <span class="text-red-500"
+                                ng-show="LicensingYouthEventForm.ManagerNationality.$error.required">
+                                Required
+                            </span>
+                        </label>
+                        <select class="form-select" aria-invalid="true">
+                            <option style="display:none" value="">-- Select --</option>
+
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+                            <p id="Manager_QIDAtts_DocIDControle" tabindex="0">
+                                License Owner And Partners QID Scan
+                            </p>
+                        </label>
+
+                        <div class="mb-5">
+                            <div class="custom-file-container" data-upload-id="Manager_QIDAtts_DocIDControle"></div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+
+            <div *ngIf="activeTab === 5">
+                <h2 class="mb-5 text-[22px]">Company Data</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 mb-4 gap-4">
+                    <div class="col-span-1">
+                        <div class="form-group">
+                            <label for="CommercialLicenseNumber" class="block text-sm font-medium text-gray-700">
+                                Commercial License Number
+
+                            </label>
+                            <a ng-show="ComLicDoneOrError == 1" target="_blank" data-toggle="modal"
+                                data-target="#popComLicModal" class="text-indigo-600">
+                                <i class="fa fa-external-link" title="Commercial license Data"
+                                    style="font-size:large; color:#8c0135"></i>
+                            </a>
+                            <input type="text" id="CommercialLicenseNumber" name="CommercialLicenseNo"
+                                ng-model="Request.CommercialLicenseNumber"
+                                ng-blur="getCommercialLicenseNumberData(1) ; chackCompanyIfSuspended(Request.CommercialLicenseNumber,3)"
+                                ng-required="Request.FkProcessID == '42'"
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                aria-invalid="false">
+                        </div>
+                    </div>
+
+                    <div class="col-span-1">
+                        <div class="form-group">
+                            <label for="CommercialRegisterNumber1" class="block text-sm font-medium text-gray-700">
+                                Commercial Registration Number
+
+                            </label>
+                            <a ng-show="DoneOrError == 1" target="_blank" data-toggle="modal" data-target="#popCRModal"
+                                class="text-indigo-600">
+                                <i class="fa fa-external-link" title="Commercial Registration Data"
+                                    style="font-size:large; color:#8c0135"></i>
+                            </a>
+                            <input type="text" id="CommercialRegisterNumber1" name="CommercialRegisterNumber"
+                                ng-model="Request.CommercialRegisterNumber"
+                                ng-blur="getCompanyData() ; chackCompanyIfSuspended(Request.CommercialLicenseNumber,2)"
+                                ng-required="Request.FkProcessID == '42'"
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                aria-invalid="false">
+                        </div>
+                    </div>
+
+                    <div class="col-span-1">
+                        <div class="form-group">
+                            <label for="CompanyTradeMark" class="block text-sm font-medium text-gray-700">
+                                Trade Name
+
+                            </label>
+                            <input type="text" id="CompanyTradeMark" name="TradeName"
+                                ng-required="!Request.CommercialRegisterNumber"
+                                ng-class="RequiredField && (Request.CompanyTradeMark == null || Request.CompanyTradeMark == '') ? 'border-red-500' : ''"
+                                ng-model="Request.CompanyTradeMark"
+                                ng-readonly="Request.CommercialRegisterNumber && !CorrectionMode"
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                required="required" aria-invalid="true">
+                        </div>
+                    </div>
+
+                    <div class="col-span-1">
+                        <div class="form-group">
+                            <label for="BuildingNumber" class="block text-sm font-medium text-gray-700">
+                                Building Number
+
+                            </label>
+                            <input type="text" id="BuildingNumber" name="BuildingNum"
+                                ng-required="Request.FkProcessID == '42'" ng-pattern="/^[0-9]*$/"
+                                ng-model="Request.BuildingNumber"
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                aria-invalid="false">
+                        </div>
+                    </div>
+
+                    <div class="col-span-1">
+                        <div class="form-group">
+                            <label for="FloorNum" class="block text-sm font-medium text-gray-700">
+                                Floor Number
+
+
+                            </label>
+                            <input type="text" id="FloorNum" name="FloorNum" ng-required="Request.FkProcessID == '42'"
+                                ng-pattern="/^[0-9]*$/" ng-model="Request.FloorNum"
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                aria-invalid="false">
+                        </div>
+                    </div>
+
+                    <div class="col-span-1">
+                        <div class="form-group">
+                            <label for="FlatNum" class="block text-sm font-medium text-gray-700">
+                                Flat Number
+
+                            </label>
+                            <input type="text" id="FlatNum" name="FlatNum" ng-required="Request.FkProcessID == '42'"
+                                ng-pattern="/^[0-9]*$/" ng-model="Request.FlatNum"
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                aria-invalid="false">
+                        </div>
+                    </div>
+
+                    <div class="col-span-1">
+                        <div class="form-group">
+                            <label for="AreaNumber" class="block text-sm font-medium text-gray-700">
+                                Area Number
+
+                            </label>
+                            <input type="text" id="AreaNumber" name="AreaNo" ng-required="Request.FkProcessID == '42'"
+                                ng-pattern="/^[0-9]*$/" ng-model="Request.AreaNumber"
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                aria-invalid="false">
+                        </div>
+                    </div>
+
+                    <div class="col-span-1">
+                        <div class="form-group">
+                            <label for="StreetNumber" class="block text-sm font-medium text-gray-700">
+                                Street Number
+
+
+                            </label>
+                            <input type="text" id="StreetNumber" name="StreetNo"
+                                ng-required="Request.FkProcessID == '42'" ng-pattern="/^[0-9]*$/"
+                                ng-model="Request.StreetNumber"
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                aria-invalid="false">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div *ngIf="activeTab === 6">
+                <h2 class="mb-5 text-[22px]"> Partners and Founders Data </h2>
+                <div class="grid grid-cols-12 sm:grid-cols-12 md:grid-cols-12 gap-4">
+                    <div class="col-span-12 md:col-span-4">
+                        <div class="form-group">
+                            <label for="EffcType" class="flex text-sm font-semibold mb-2">
+                                Type
+
+                                <a tabindex="0" href="javascript:void(0);"
+                                    class="text-blue-500 ml-2 mb-3 hover:underline"
+                                    ng-click="GetActivityDesc(Partner.FKType.ID,1)">
+                                    <img alt="Help" src="/assets/images/help.png" width="30" title="Type Description">
+                                </a>
+                            </label>
+                            <select id="EffcType" class="form-select">
+                                <option style="display:none" value="" selected>-- Select --</option>
+                                <option label="Individual Foundation" value="1712" selected>Individual Foundation
+                                </option>
+                                <option label="Company" value="1728">Company</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-span-12 md:col-span-4">
+                        <div class="form-group">
+                            <label for="QIDOREstablishmentNumberControle" class="block text-sm font-semibold mb-1">
+                                QID Number
+
+
+                            </label>
+                            <input type="text" id="QIDOREstablishmentNumberControle" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="col-span-12 md:col-span-4">
+                        <div class="form-group">
+                            <label for="NameOrEstablishmentNameControle" class="block text-sm font-semibold mb-1">
+                                Name
+
+                            </label>
+                            <input type="text" id="NameOrEstablishmentNameControle" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="col-span-12 md:col-span-4">
+                        <div class="form-group">
+                            <label for="Nationality" class="block text-sm font-semibold mb-1">
+                                Nationality
+
+                            </label>
+                            <select id="Nationality" class="form-select">
+                                <option style="display:none" value="" selected>-- Select --</option>
+                                <option label="Uganda" value="1726">Uganda</option>
+                                <option label="Slovenia" value="1777">Slovenia</option>
+                                <!-- other options -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-span-12 md:col-span-4">
+                        <div class="form-group">
+                            <label for="BirthdateOrStartComReg" class="block text-sm font-semibold mb-1">
+                                Commercial Registration start date / BirthDate
+
+                            </label>
+                            <input type="text" mwlFlatpickr formControlName="date1" [options]="basic"
+                                class="form-input" />
+
+                        </div>
+                    </div>
+
+                    <div class="col-span-12 md:col-span-4">
+                        <div class="form-group">
+                            <label for="PartnerAdjectiveId" class="block text-sm font-semibold mb-1">
+                                Status
+
+                            </label>
+                            <select id="PartnerAdjectiveId" class="form-select">
+                                <option style="display:none" value="">-- Select --</option>
+                                <option value="1">Owner</option>
+                                <option value="2">Partner</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-span-12 sm:col-span-12">
+                        <div class="form-group">
+                            <label for="QIDOrComReg_DocId" class="block text-sm font-semibold mb-1">
+                                A copy of the identity card of the partners
+                            </label>
+                            <div class="mb-5">
+                                <div class="custom-file-container" data-upload-id="QIDOrComReg_DocId"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 text-center mt-5 group-item w-full  mb-4" aria-hidden="false">
+                    <button title="( You can add more than once )" type="button" class="btn btn-primary">
+                        <i class="fa fa-plus"></i> Add Partner and Founder
+                    </button>
+                </div>
+
+
+            </div>
+
+            <div *ngIf="activeTab === 7">
+                <h2 class="mb-5 text-[22px]"> Request General Attachments
+                </h2>
+
+                <div class="row">
+                    <div class="alert-attachment HiddenForAdmin ng-scope">
+                        <div class="col-md-12">
+                            <div
+                                class="flex items-center rounded bg-danger-light p-3.5 text-danger dark:bg-danger-dark-light">
+
+                                <ul aria-label="Required Attachments :">
+                                    <strong> Required Attachments : </strong>
+                                    <li>
+                                        <p class="hotFix ng-binding ng-scope" tabindex="0"
+                                            aria-label="A copy of the identity card of the partners">A copy of the
+                                            identity card of the partners</p>
+                                    </li>
+                                    <li>
+                                        <p class="hotFix ng-binding ng-scope" tabindex="0"
+                                            aria-label="A copy of the company commercial registration">A copy of the
+                                            company commercial registration</p>
+                                    </li>
+                                    <li>
+                                        <p class="hotFix ng-binding ng-scope" tabindex="0"
+                                            aria-label="License Owner QID Scan">License Owner QID Scan</p>
+                                    </li>
+                                    <li>
+                                        <p class="hotFix ng-binding ng-scope" tabindex="0"
+                                            aria-label="Applicant QID Scan">Applicant QID Scan</p>
+                                    </li>
+                                    <li>
+                                        <p class="hotFix ng-binding ng-scope" tabindex="0"
+                                            aria-label="Certificate of Preservation of Trade Name">Certificate of
+                                            Preservation of Trade Name</p>
+                                    </li>
+                                    <li>
+                                        <p class="hotFix ng-binding ng-scope" tabindex="0"
+                                            aria-label="License Owner And Partners QID Scan">License Owner And Partners
+                                            QID Scan</p>
+                                    </li>
+                                </ul>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-12 md:col-span-12 HiddenForAdmin">
+                        <span class="text-green-500 text-lg">
+                            To Update Attachments, You Must Delete them First and Add them Again
+                            <br><br>
+                        </span>
+                    </div>
+
+                    <div class="lg:col-span-4 md:col-span-4 HiddenForAdmin">
+                        <div class="form-group">
+                            <label for="AttName" class="mt-5 form-label block text-sm font-medium text-gray-700">
+                                Attachment Name
+                                <span ng-show="AttachForm.$submitted && AttachForm.AttName.$invalid"
+                                    class="text-red-600">
+                                    Required
+                                </span>
+                            </label>
+                            <input type="text" id="AttName"
+                                class="form-input block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4 md:col-span-4 HiddenForAdmin">
+                        <div class="form-group">
+                            <label for="RequiredAttachmentControle"
+                                class="mt-5 form-label block text-sm font-medium text-gray-700">
+                                Attachment Type
+                                <span ng-show="AttachForm.$submitted && AttachForm.AttType.$invalid"
+                                    class="text-red-600">
+                                    Required
+                                </span>
+                            </label>
+                            <select
+                                class="form-select block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                id="RequiredAttachmentControle" required="" ng-model="$parent.AttType" name="AttType"
+                                ng-options="Atype as Atype.TitleEn for Atype in AttTypes track by Atype.FkAttachmetID"
+                                aria-invalid="false">
+                                <option label="Commercial Registration Image" value="1766" selected="selected">
+                                    Commercial Registration Image</option>
+                                <option label="Certificate of Preservation of Trade Name" value="1773">Certificate of
+                                    Preservation of Trade Name</option>
+                                <option label="Other Attachments" value="1775">Other Attachments</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4 md:col-span-4 HiddenForAdmin">
+                        <div class="form-group">
+                            <label for="Attchment" class="mt-5 form-label block text-sm font-medium text-gray-700">
+                                Attachment
+                                <span ng-show="AttachForm.$submitted && AttachForm.Attchment.$invalid"
+                                    class="text-red-600">
+                                    Required
+                                </span>
+                                <span ng-show="fileSizeError" class="text-red-600">
+                                    Big File Size
+                                </span>
+                                <span ng-show="fileTypeError" class="text-red-600">
+                                    File Type Error Choose (PDF, Word, Image, Video, Excel)
+                                </span>
+                            </label>
+                            <br>
+                            <div class="mb-5">
+                                <div class="custom-file-container" data-upload-id="Attchment"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-12 mt-5 group-item w-full" aria-hidden="false">
+                    <button type="button" title="Add Attachment" class="btn btn-primary mb-5">
+                        <i class="fa fa-plus"></i> Add Attachment
+                    </button>
+                </div>
+
+
+
+            </div>
+
+            <div *ngIf="activeTab === 8">
+                <h2 class="mb-5 text-[22px]">Request General Notes</h2>
+                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-12 m-4">
+                    <div class="lg:col-span-12">
+                        <label for="emergencyContact" class="block text-sm font-medium text-gray-900">Notes</label>
+                        <div class="mt-2">
+                            <textarea id="GeneralNote" class="form-textarea" rows="8"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="activeTab === 9">
+                <h2 class="mb-5 text-[22px]">Notes</h2>
+                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-12 m-4">
+                    <div class="lg:col-span-12">
+                        <label for="ssn" class="block text-sm font-medium text-gray-900"> Notes To Department
+                            Head</label>
+                        <div class="mt-2">
+                            <input type="text" id="ssn" class="form-input">
+                        </div>
+                    </div>
+                    <div class="lg:col-span-12">
+                        <label for="ssn" class="block text-sm font-medium text-gray-900">
+                            Notes To Manager
+                        </label>
+                        <div class="mt-2">
+                            <input type="text" id="ssn" class="form-input">
+                        </div>
+                    </div>
+                    <div class="lg:col-span-12">
+                        <label for="ssn" class="block text-sm font-medium text-gray-900">
+
+                            Manager Notes
+
+                        </label>
+                        <div class="mt-2">
+                            <input type="text" id="ssn" class="form-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="activeTab === 10">
+                <h2 class="mb-5 text-[22px]"> Pledge And Affirmation
+                </h2>
+                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-12 m-4">
+
+                    <div class="lg:col-span-12 flex">
+                        <div class="tooltip1">
+                            <input type="checkbox" class="form-checkbox">
+                        </div>
+
+                        <label class="ng-binding">
+                            I acknowledge that all the submitted data and documents are correct and that I bear
+                            responsibility in case they violate reality and that it applies to the conditions mentioned
+                            in the service form, and there is no legal impediment to my obtaining the service.
+                            &nbsp;&nbsp;
+                            <!-- ngIf: !Request.ISAgreeingtopledgetoabidebythetermsandconditions --><span
+                                ng-if="!Request.ISAgreeingtopledgetoabidebythetermsandconditions"
+                                style="color:red ;filter:contrast(100%)" class="ng-scope">
+                                *
+                            </span><!-- end ngIf: !Request.ISAgreeingtopledgetoabidebythetermsandconditions -->
+                        </label>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </section>
+        <div class="flex justify-between">
+            <button type="button" class="btn btn-primary" [disabled]="activeTab === 1"
+                (click)="changeTab(-1)">Back</button>
+
+            <button *ngIf="activeTab === 10" type="button" class="btn btn-success" (click)="finish()">Finish</button>
+
+            <button *ngIf="activeTab < 10" type="button" class="btn btn-primary" (click)="changeTab(1)">Next</button>
+        </div>
+
+
+    </div>
+</div>

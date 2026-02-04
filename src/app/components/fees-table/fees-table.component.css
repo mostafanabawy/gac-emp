@@ -1,0 +1,796 @@
+.table-container table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse
+}
+
+.force-ltr {
+  direction: ltr !important;
+  unicode-bidi: bidi-override !important;
+  display: inline-block
+}
+
+.table-container {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 600px;
+  -webkit-overflow-scrolling: touch;
+  position: relative
+}
+
+table {
+  table-layout: auto;
+  width: 100%;
+  min-width: max-content;
+}
+
+table th,
+table td {
+  padding: .75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-right: 1px solid #d1d5db;
+  border-left: 1px solid #d1d5db;
+  border-bottom: 1px solid #e5e7eb;
+  position: relative;
+  min-width: 150px;
+}
+
+/* أول 3 أعمدة ثابتة وصغيرة */
+table th:first-child,
+table td:first-child {
+  width: 60px;
+  min-width: 60px;
+  max-width: 60px;
+  padding: .5rem;
+  text-align: center;
+}
+
+table th:nth-child(2),
+table td:nth-child(2) {
+  width: 50px;
+  min-width: 50px;
+  max-width: 50px;
+  text-align: center;
+}
+
+table th:nth-child(3),
+table td:nth-child(3) {
+  width: 80px;
+  min-width: 80px;
+  max-width: 80px;
+}
+
+table th:last-child,
+table td:last-child {
+  border-right: none
+}
+
+[dir=rtl] table th,
+[dir=rtl] table td {
+  border-right: none;
+  border-left: 1px solid #d1d5db
+}
+
+[dir=rtl] table th:last-child,
+[dir=rtl] table td:last-child {
+  border-left: none
+}
+
+th,
+td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cell-content {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+table thead th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  border-bottom: 2px solid #d1d5db;
+  position: sticky;
+  top: 0;
+  z-index: 10
+}
+
+table tbody tr {
+  border-bottom: 1px solid #e5e7eb
+}
+
+table tbody tr:hover {
+  background-color: #f9fafb
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+
+  table th,
+  table td {
+    padding: .6rem;
+    font-size: .875rem;
+    min-width: 80px;
+  }
+
+  .cell-content {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    border: 2px solid #d1d5db;
+    border-radius: .5rem;
+    overflow-x: auto;
+  }
+
+  .hide-on-mobile {
+    display: none !important
+  }
+
+  /* إخفاء أزرار الأعمدة والترتيب في الموبايل */
+  .hide-on-small-screen {
+    display: none !important;
+  }
+
+  table {
+    width: 100% !important;
+    min-width: 600px; /* عرض أدنى للجدول في الموبايل */
+  }
+
+  table th,
+  table td {
+    padding: 0.5rem 0.3rem;
+    font-size: 0.75rem;
+    min-width: auto;
+    border-right: 1px solid #d1d5db;
+    border-bottom: 1px solid #d1d5db;
+    vertical-align: middle;
+  }
+
+  /* عمود التوسيع */
+  table th:first-child,
+  table td:first-child {
+    width: 40px;
+    min-width: 40px;
+    max-width: 40px;
+    padding: 0.3rem;
+    text-align: center;
+  }
+
+  /* عمود الرقم التسلسلي */
+  table th:nth-child(2),
+  table td:nth-child(2) {
+    width: 45px;
+    min-width: 45px;
+    max-width: 45px;
+    text-align: center;
+    padding: 0.3rem;
+  }
+
+  /* عمود فتح الطلب */
+  table th:nth-child(3),
+  table td:nth-child(3) {
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    text-align: center;
+    padding: 0.3rem;
+  }
+
+  /* باقي الأعمدة */
+  table th:nth-child(n+4),
+  table td:nth-child(n+4) {
+    min-width: 120px;
+    padding: 0.5rem 0.4rem;
+  }
+
+  .cell-content {
+    max-width: 100%;
+    font-size: 0.75rem;
+    line-height: 1.2;
+  }
+
+  /* تصغير الأزرار في الموبايل */
+  table button {
+    width: 1.75rem !important;
+    height: 1.75rem !important;
+    padding: 0.2rem !important;
+  }
+
+  table button svg {
+    width: 0.875rem !important;
+    height: 0.875rem !important;
+  }
+
+  /* تحسين عرض الـ badges في الموبايل */
+  .inline-flex {
+    font-size: 0.625rem !important;
+    padding: 0.25rem 0.5rem !important;
+  }
+
+  /* تحسين عرض الأرقام */
+  .force-ltr {
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* تحسين التمرير الأفقي */
+  .table-container::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .table-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+  }
+
+  .table-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+
+  .table-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+
+  /* تحسين عرض الـ expanded row في الموبايل */
+  .bg-gray-50 td {
+    padding: 1rem !important;
+  }
+
+  .bg-gray-50 .grid {
+    gap: 0.75rem !important;
+  }
+
+  .bg-gray-50 .p-2 {
+    padding: 0.75rem !important;
+  }
+
+  /* RTL support for mobile */
+  [dir=rtl] table th,
+  [dir=rtl] table td {
+    border-left: 1px solid #d1d5db;
+    border-right: none
+  }
+
+  [dir=rtl] table th:last-child,
+  [dir=rtl] table td:last-child {
+    border-left: none;
+  }
+}
+
+.btn {
+  transition: all .3s ease
+}
+
+.btn-outline-secondary {
+  background-color: #fff;
+  border: 1px solid #6c757d;
+  color: #6c757d
+}
+
+.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: #fff
+}
+
+.btn-success {
+  background-color: #10b981;
+  border: 1px solid #10b981;
+  color: #fff
+}
+
+.btn-success {
+  background-color: #059669;
+  border-color: #059669
+}
+
+@media (max-width: 768px) {
+  .hide-on-small-screen {
+    display: none !important
+  }
+}
+
+.ng-clear-wrapper {
+  min-width: 44px !important;
+  min-height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important
+}
+
+.ng-clear {
+  font-size: 18px !important;
+  padding: 8px !important
+}
+
+.ng-input input {
+  min-height: 44px !important
+}
+
+@media (min-width: 1025px) {
+  .table-container {
+    max-height: 70vh;
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+
+  table {
+    min-width: max-content;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .table-container {
+    max-height: 60vh;
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+
+  table {
+    min-width: max-content;
+  }
+}
+
+.flatpickr-calendar {
+  box-shadow: 0 4px 6px -1px #0000001a, 0 2px 4px -1px #0000000f;
+  border-radius: .5rem;
+  border: 1px solid #e5e7eb
+}
+
+.flatpickr-day.selected {
+  background: #8b1538 !important;
+  border-color: #8b1538 !important
+}
+
+.flatpickr-day.selected:hover {
+  background: #6b1028 !important;
+  border-color: #6b1028 !important
+}
+
+.flatpickr-day:hover {
+  background: #f3f4f6;
+  border-color: #e5e7eb
+}
+
+.flatpickr-months {
+  background: #f9fafb;
+  border-radius: .5rem .5rem 0 0
+}
+
+.flatpickr-current-month {
+  padding: .5rem 0
+}
+
+.flatpickr-weekdays {
+  background: #f9fafb
+}
+
+.flatpickr-input {
+  cursor: pointer
+}
+
+.flatpickr-input:focus {
+  border-color: #8b1538;
+  outline: none;
+  box-shadow: 0 0 0 3px #8b15381a
+}
+
+.table-container {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 200px)
+}
+
+.table-wrapper{
+  flex: 1;
+  overflow: auto;
+  position: relative
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 10
+}
+
+thead.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: #f9fafb
+}
+
+.sticky-header-cell {
+  position: sticky;
+  top: 0;
+  background-color: inherit;
+  z-index: 10
+}
+
+.table-wrapper:before {
+  content: "";
+  position: sticky;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, .1) 0%, transparent 100%);
+  z-index: 15
+}
+
+.table-wrapper::-webkit-scrollbar {
+  width: 8px;
+  height: 8px
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #555
+}
+
+.bg-blue-50 {
+  background-color: #eff6ff
+}
+
+table {
+  min-width: 100%
+}
+
+th,
+td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 150px;
+}
+
+.fixed-column {
+  position: sticky;
+  left: 0;
+  background-color: #fff;
+  z-index: 5
+}
+
+.fixed-column-header {
+  position: sticky;
+  left: 0;
+  background-color: #f9fafb;
+  z-index: 15
+}
+
+.fixed-header th {
+  position: sticky;
+  top: 0;
+  background-color: #470076 !important;
+  color: #fff;
+  z-index: 10
+}
+
+.search-toggle-animation {
+  animation: fadeIn .3s ease-in-out
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px)
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0)
+  }
+}
+
+.space-y-4 > div {
+  animation: slideIn .3s ease-out
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translate(-20px)
+  }
+  to {
+    opacity: 1;
+    transform: translate(0)
+  }
+}
+
+.form-input:focus + div svg {
+  color: #8b1538;
+  transition: color .2s ease
+}
+
+.btn.transition-all {
+  transition: all .3s ease
+}
+
+.btn.transition-all:hover {
+  transform: translateY(-2px)
+}
+
+label.font-semibold {
+  color: #374151;
+  font-weight: 600;
+  margin-bottom: .5rem;
+  display: block
+}
+
+.search-criteria-chip {
+  animation: slideInFromTop .3s ease-out
+}
+
+@keyframes slideInFromTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px)
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0)
+  }
+}
+
+.global-search-bar {
+  transition: all .3s ease
+}
+
+.global-search-bar:focus-within {
+  box-shadow: 0 4px 12px #8b153826;
+  border-color: #8b1538
+}
+
+.search-collapsed {
+  animation: collapseSearch .4s ease-out
+}
+
+@keyframes collapseSearch {
+  0% {
+    max-height: 1000px;
+    opacity: 1
+  }
+  to {
+    max-height: 0;
+    opacity: 0
+  }
+}
+
+.search-expanded {
+  animation: expandSearch .4s ease-out
+}
+
+@keyframes expandSearch {
+  0% {
+    max-height: 0;
+    opacity: 0
+  }
+  to {
+    max-height: 1000px;
+    opacity: 1
+  }
+}
+
+.chip-remove-btn {
+  transition: all .2s ease
+}
+
+.chip-remove-btn:hover {
+  transform: scale(1.1)
+}
+
+.table-fullscreen {
+  min-height: calc(100vh - 200px)
+}
+
+
+
+@media screen and (max-width: 576px) {
+    table th:not([style*=width]):not(:first-child):not(:nth-child(2)),
+    table td:not([style*=width]):not(:first-child):not(:nth-child(2)) {
+        width: auto;
+        min-width: auto;
+    }
+}
+
+/* عمود الإجراءات - يتغير حسب عدد الأعمدة المرئية */
+table th:nth-child(3),
+table td:nth-child(3) {
+  padding: 0.5rem !important;
+}
+
+/* عندما يكون 3 أعمدة فقط (Serial, Expand, Actions) - عمود الإجراءات يكون صغير */
+table th:nth-child(3):last-child,
+table td:nth-child(3):last-child {
+  width: 80px !important;
+  min-width: 80px !important;
+  max-width: 80px !important;
+}
+
+/* عندما يكون أكثر من 3 أعمدة - عمود الإجراءات يكبر */
+table th:nth-child(3):not(:last-child),
+table td:nth-child(3):not(:last-child) {
+  width: 100px;
+  min-width: 100px;
+  max-width: 100px;
+}
+.se table th:nth-child(3):not(:last-child),
+.se table td:nth-child(3):not(:last-child) {
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+/* العمود الرابع (أول عمود بيانات بعد الإجراءات) - يكبر لما نجيب كل الأعمدة */
+table th:nth-child(4),
+table td:nth-child(4) {
+  min-width: 200px;
+}
+
+/* Payment Methods Legend Styling */
+.payment-legend-container {
+  animation: fadeInDown 0.5s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive legend for mobile */
+@media (max-width: 768px) {
+  .payment-legend-container .flex-wrap {
+    justify-content: center;
+  }
+  
+  .payment-legend-container > div > div {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .payment-legend-container svg {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+/* تقليل المسافات والحشو في الجدول */
+.table-container table th,
+.table-container table td {
+  padding: 8px 12px !important; /* تقليل من 16px إلى 8px */
+}
+
+/* تقليل ارتفاع الصفوف */
+.table-container table tr {
+  height: auto !important;
+  min-height: 40px !important; /* تقليل الارتفاع الأدنى */
+}
+
+/* تقليل المسافات في الخلايا */
+.table-container table td .cell-content {
+  line-height: 1.2 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* تقليل المسافات في الأزرار */
+.table-container table td button {
+  padding: 4px 8px !important;
+  margin: 0 !important;
+  min-height: 32px !important;
+}
+
+/* تقليل المسافات في badges */
+.table-container table td span.inline-flex {
+  padding: 4px 8px !important;
+}
+
+/* تقليل المسافات في header */
+.table-container table th {
+  padding: 8px 12px !important;
+}
+
+/* تقليل المسافات بين الأيقونات والنص */
+.table-container table td .inline-flex.items-center {
+  gap: 4px !important;
+}
+
+/* تقليل حجم الأيقونات */
+.table-container table td svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+/* تقليل المسافات في الصف الموسع */
+.table-container table tr.bg-gray-50 td {
+  padding: 12px !important;
+}
+
+/* تقليل المسافات في تفاصيل الصف الموسع */
+.table-container table .grid.gap-3 {
+  gap: 8px !important;
+}
+
+.table-container table .p-2.md\\:p-3 {
+  padding: 8px !important;
+}
+/* تحسينات إضافية لتقليل المسافات */
+
+/* إزالة المسافات الزائدة من الحاوي الرئيسي */
+.table-container {
+  padding: 0 !important;
+}
+
+/* تقليل المسافات في pagination */
+.table-container .p-2 {
+  padding: 8px !important;
+}
+
+/* تقليل المسافات بين أزرار pagination */
+.table-container .flex.gap-2 {
+  gap: 4px !important;
+}
+
+/* تقليل حجم أزرار pagination */
+.table-container .w-9.h-9 {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+/* تقليل المسافات في dropdown select */
+.table-container select {
+  padding: 4px 8px !important;
+}
+
+
+
+/* تقليل border radius للمظهر المحكم */
+.table-container {
+  border-radius: 8px !important;
+}
+
+.table-container table th:first-child {
+  border-top-left-radius: 8px !important;
+}
+
+.table-container table th:last-child {
+  border-top-right-radius: 8px !important;
+}
+
+/* تقليل المسافات في loading skeleton */
+.table-container .animate-pulse .h-4 {
+  height: 12px !important;
+}
+
+/* ضبط المسافات للشاشات الصغيرة */
+@media (max-width: 768px) {
+  .table-container table th,
+  .table-container table td {
+    padding: 6px 8px !important;
+  }
+  
+  .table-container table td button {
+    padding: 2px 6px !important;
+    min-height: 28px !important;
+  }
+}

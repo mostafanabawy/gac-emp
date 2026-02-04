@@ -1,0 +1,55 @@
+<div cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
+    <ngx-custom-modal #modal26 class="modal-top large-modal overflow-auto z-[9999]" id="completedProceduresModal">
+        <ng-template #modalHeader>
+            <div>
+                <h2 class="text-xl">
+                    الإجراءات التي تمت على الطلب
+                </h2>
+            </div>
+        </ng-template>
+        <ng-template #modalBody>
+            <h3 class="text-center font-bold text-lg">
+                طلب ترخيص شؤون رياضية
+            </h3>
+            <dl class="flex justify-between">
+                <div class="flex gap-2">
+                    <dt class="text-gray-600">
+                        رقم الطلب:
+                    </dt>
+                    <dd class="text-primary">
+                        2025-SAI-002127
+                    </dd>
+                </div>
+                <div class="flex gap-2">
+                    <dt class="text-gray-600">
+                        نوع الإجراء:
+                    </dt>
+                    <dd>
+                        طلب جديد
+                    </dd>
+                </div>
+            </dl>
+            <div class="mt-4 space-y-4 bg-gray-100 p-2 rounded-lg">
+                <article class="flex gap-4 items-start" *ngFor="let item of [1, 2, 3]">
+                    <div class="rounded-full bg-[#60583d] p-3 flex justify-center items-center" aria-label="history icon">
+                        <icon-history-clock class="text-white w-5 h-5" aria-label="history icon"></icon-history-clock>
+                    </div>
+                    <div>
+                        <time datetime="2025-02-16T10:31" class="text-gray-700">16/02/2025 10:31</time>
+                        <p class="text-base">
+                            تم رفع الرسوم بنجاح من خلال مقدم الطلب
+                        </p>
+                        <p class="text-base">
+                            عبد اللطيف ياسر
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </ng-template>
+        <ng-template #modalFooter>
+            <button class="btn btn-primary mx-auto" (click)="modal26.close()">
+                اغلاق
+            </button>
+        </ng-template>
+    </ngx-custom-modal>
+</div>

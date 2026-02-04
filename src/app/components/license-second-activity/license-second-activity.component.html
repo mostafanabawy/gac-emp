@@ -1,0 +1,147 @@
+<!-- Modern Page Loader -->
+<div *ngIf="isPageLoading" class="page-loader-overlay">
+  <div class="loader-content">
+    <div class="premium-spinner">
+      <div class="inner-ring"></div>
+      <div class="outer-ring"></div>
+      <div class="center-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12 2V6M12 18V22M6 12H2M22 12H18M19.07 4.93L16.24 7.76M7.76 16.24L4.93 19.07M19.07 19.07L16.24 16.24M7.76 7.76L4.93 4.93"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+    </div>
+    <p class="loader-text">{{ isArabic ? 'جاري تحميل البيانات...' : 'Loading activities data...' }}</p>
+  </div>
+</div>
+
+<app-bread-crumps [pageName]="pageName" [url]="itemURL" [class.opacity-0]="isPageLoading"></app-bread-crumps>
+
+<div class="w-full p-4 space-y-8" [attr.dir]="isArabic ? 'rtl' : 'ltr'" [class.opacity-0]="isPageLoading"
+  [class.transition-opacity]="true" [class.duration-500]="true">
+
+  <!-- ================== SUMMARY CARD ================== -->
+  <div class="grid grid-cols-1 gap-4">
+    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-xl p-6 text-center shadow-lg">
+      <p class="text-4xl font-bold">{{ animatedTotal | numFormat }}</p>
+      <h3 class="mt-2 text-lg font-semibold">
+        {{ translations()?.totalSecondaryActivities?.label || (isArabic ? 'إجمالي الأنشطة الفرعية' : 'Total Secondary
+        Activities') }}
+      </h3>
+    </div>
+  </div>
+
+  <!-- =================== SECONDARY ACTIVITIES CHART =================== -->
+  <div class="bg-white p-6 rounded-xl shadow-md space-y-6">
+    <!-- Single Line Header with Title and Print Button -->
+    <div class="flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <h3 class="text-xl font-bold whitespace-nowrap">
+          {{ translations()?.licenseSecondaryActivities?.label || (isArabic ? 'الأنشطة الفرعية للرخص' : 'License
+          Secondary Activities') }}
+        </h3>
+        <button type="button"
+          class="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+          (click)="printChart()" [title]="isArabic ? 'طباعة الرسم البياني' : 'Print Chart'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M6 17.9827C4.44655 17.9359 3.51998 17.7626 2.87868 17.1213C2 16.2426 2 14.8284 2 12C2 9.17157 2 7.75736 2.87868 6.87868C3.75736 6 5.17157 6 8 6H16C18.8284 6 20.2426 6 21.1213 6.87868C22 7.75736 22 9.17157 22 12C22 14.8284 22 16.2426 21.1213 17.1213C20.4800 17.7626 19.5535 17.9359 18 17.9827"
+              stroke="currentColor" stroke-width="1.5" />
+            <path opacity="0.5" d="M9 10H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M19 14L5 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            <path
+              d="M18 14V16C18 17.8856 18 18.8284 17.4142 19.4142C16.8284 20 15.8856 20 14 20H10C8.11438 20 7.17157 20 6.58579 19.4142C6 18.8284 6 17.8856 6 16V14"
+              stroke="currentColor" stroke-width="1.5" />
+            <path opacity="0.5"
+              d="M17 4C17 2.11438 17 1.17157 16.4142 0.585786C15.8284 0 14.8856 0 13 0H11C9.11438 0 8.17157 0 7.58579 0.585786C7 1.17157 7 2.11438 7 4V6H17V4Z"
+              stroke="currentColor" stroke-width="1.5" />
+          </svg>
+          {{ isArabic ? 'طباعة' : 'Print' }}
+        </button>
+
+        <button type="button"
+          class="px-3 py-1.5 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-all text-sm font-medium flex items-center gap-2 whitespace-nowrap"
+          (click)="exportToExcel()" [title]="isArabic ? 'تصدير لإكسل' : 'Export to Excel'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 10V16M12 16L9 13M12 16L15 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+            <path
+              d="M7 21H17C19.2091 21 21 19.2091 21 17V7C21 4.79086 19.2091 3 17 3H7C4.79086 3 3 4.79086 3 7V17C3 19.2091 4.79086 21 7 21Z"
+              stroke="currentColor" stroke-width="1.5" />
+          </svg>
+          {{ isArabic ? 'تصدير لإكسل' : 'Export' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Date Filters in Single Line -->
+    <div class="flex flex-wrap items-end justify-end gap-3">
+      <form [formGroup]="filterForm" class="flex flex-wrap items-end gap-3 w-full justify-end">
+        <!-- License Creation Date From -->
+        <div class="flex flex-col">
+          <label for="licCreationFrom" class="text-sm font-semibold mb-1 whitespace-nowrap">
+            {{ translations()?.issueFrom?.label || (isArabic ? 'إصدار من' : 'Issue From') }}
+          </label>
+          <input id="licCreationFrom" type="text" mwlFlatpickr [options]="basic"
+            class="border rounded-lg px-3 py-2 h-10 w-[150px]" formControlName="LicenseCreationDateFrom">
+        </div>
+
+        <!-- License Creation Date To -->
+        <div class="flex flex-col">
+          <label for="licCreationTo" class="text-sm font-semibold mb-1 whitespace-nowrap">
+            {{ translations()?.issueTo?.label || (isArabic ? 'إصدار إلى' : 'Issue To') }}
+          </label>
+          <input id="licCreationTo" type="text" mwlFlatpickr [options]="basic"
+            class="border rounded-lg px-3 py-2 h-10 w-[150px]" formControlName="LicenseCreationDateTo">
+        </div>
+
+        <!-- License Expiration Date From -->
+        <div class="flex flex-col">
+          <label for="licExpireFrom" class="text-sm font-semibold mb-1 whitespace-nowrap">
+            {{ translations()?.expireFrom?.label || (isArabic ? 'انتهاء من' : 'Expire From') }}
+          </label>
+          <input id="licExpireFrom" type="text" mwlFlatpickr [options]="basic"
+            class="border rounded-lg px-3 py-2 h-10 w-[150px]" formControlName="LicenseExpirationDateFrom">
+        </div>
+
+        <!-- License Expiration Date To -->
+        <div class="flex flex-col">
+          <label for="licExpireTo" class="text-sm font-semibold mb-1 whitespace-nowrap">
+            {{ translations()?.expireTo?.label || (isArabic ? 'انتهاء إلى' : 'Expire To') }}
+          </label>
+          <input id="licExpireTo" type="text" mwlFlatpickr [options]="basic"
+            class="border rounded-lg px-3 py-2 h-10 w-[150px]" formControlName="LicenseExpirationDateTo">
+        </div>
+
+        <!-- Filter Buttons -->
+        <button type="button" (click)="applyDateFilters()"
+          class="px-4 py-2 h-10 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors whitespace-nowrap">
+          {{ translations()?.Apply?.label || (isArabic ? 'تطبيق' : 'Apply') }}
+        </button>
+
+        <button type="button" (click)="resetDateFilters()"
+          class="px-4 py-2 h-10 bg-[#60583d] text-white rounded-lg hover:bg-[#60583d]/90 transition-colors whitespace-nowrap">
+          {{ translations()?.Reset?.label || (isArabic ? 'إعادة تعيين' : 'Reset') }}
+        </button>
+      </form>
+    </div>
+
+    <!-- Chart -->
+    <div class="w-full flex justify-center items-center" style="height: 500px;">
+      <canvas #chartCanvas role="img"
+        [attr.aria-label]="translations()?.secondaryActivitiesChart?.label || (isArabic ? 'رسم بياني للأنشطة الفرعية' : 'Secondary Activities Chart')"
+        class="max-w-full max-h-full">
+      </canvas>
+    </div>
+
+    <!-- No Data Message -->
+    <div *ngIf="filteredActivities.length === 0" class="text-center py-8">
+      <p class="text-gray-500 text-lg">
+        {{ translations()?.noActivitiesFound?.label || (isArabic ? 'لا توجد أنشطة فرعية تطابق البحث' : 'No secondary
+        activities match your search') }}
+      </p>
+    </div>
+  </div>
+
+</div>

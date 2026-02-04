@@ -1,0 +1,30 @@
+.single-application-card {
+  height: auto;
+}
+@media (min-width: 768px) and (max-width: 874px) {
+  .single-application-card {
+    height: 177px; 
+  }
+}
+@media (min-width: 875px) and (max-width: 990px) {
+  .single-application-card {
+    height: 245px; 
+  }
+}
+@media (min-width: 991px) and (max-width: 1047px) {
+  .single-application-card {
+    height: 248px; 
+  }
+}
+
+@media (min-width: 1047px) and (max-width: 1424px) {
+  .single-application-card {
+    height: 205px; 
+  }
+}
+
+@media (min-width: 1424px) {
+  .single-application-card {
+    height: 175px; 
+  }
+}

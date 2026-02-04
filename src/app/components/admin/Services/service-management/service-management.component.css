@@ -1,0 +1,106 @@
+.details-row {
+    background: #f9fafb;
+    /* Light background for details */
+    border-top: 1px solid #e5e7eb;
+}
+
+.details-content {
+    padding: 16px;
+}
+
+.details-content label {
+    color: #374151;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.details-content span {
+    color: #4b5563;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.ng-datatable {
+    width: 100%;
+}
+
+.form-section.form-select {
+    padding-left: 40px !important;
+    padding-right: 30px !important;
+    margin: 0;
+}
+
+/* تخصيص حجم العمود الثالث في الجدول */
+app-fees-table ::ng-deep table th:nth-child(3),
+app-fees-table ::ng-deep table td:nth-child(3) {
+  width: 200px !important;
+  min-width: 200px !important;
+  max-width: 200px !important;
+}
+app-fees-table ::ng-deep table th{
+    width: 150px;
+}
+/* تخصيص حجم العمود الثالث في الكروت - إذا كان هناك grid */
+.cards-grid .card-column-3 {
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+/* تأكد من أن النص لا يتجاوز العرض المحدد */
+app-fees-table ::ng-deep table td:nth-child(3) .cell-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 180px;
+}
+
+/* إضافة tooltip للنص المقطوع */
+app-fees-table ::ng-deep table td:nth-child(3) .cell-content:hover {
+  overflow: visible;
+  white-space: normal;
+  position: relative;
+  z-index: 10;
+}
+
+/* إذا كنت تريد تخصيص أعمدة أخرى أيضاً */
+
+/* العمود الأول (expand) */
+app-fees-table ::ng-deep table th:nth-child(1),
+app-fees-table ::ng-deep table td:nth-child(1) {
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
+}
+
+/* العمود الثاني (Serial) */
+app-fees-table ::ng-deep table th:nth-child(2),
+app-fees-table ::ng-deep table td:nth-child(2) {
+  width: 80px !important;
+  min-width: 80px !important;
+  max-width: 80px !important;
+}
+
+/* العمود الرابع */
+app-fees-table ::ng-deep table th:nth-child(4),
+app-fees-table ::ng-deep table td:nth-child(4) {
+  width: 150px !important;
+  min-width: 150px !important;
+  max-width: 150px !important;
+}
+
+/* العمود الأخير (Actions) */
+app-fees-table ::ng-deep table th:last-child,
+app-fees-table ::ng-deep table td:last-child {
+  width: 100px !important;
+  min-width: 100px !important;
+  max-width: 100px !important;
+}
+
+/* تحسين عرض الجدول بشكل عام */
+app-fees-table ::ng-deep table {
+  table-layout: fixed !important;
+  width: 100% !important;
+}

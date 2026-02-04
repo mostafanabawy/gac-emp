@@ -1,0 +1,9 @@
+<app-file-upload
+                title="السيرة الذاتية والمعلومات العلمية للمدير المسؤول"
+                format="PDF"
+                uploadId="fileInput1"
+                acceptedTypes=".pdf,.doc,.docx"
+                [multiple]="true"
+                (filesSelected)="onFilesSelected($event, 1)"
+                (filesDropped)="onFilesDropped($event, 1)">
+              </app-file-upload>

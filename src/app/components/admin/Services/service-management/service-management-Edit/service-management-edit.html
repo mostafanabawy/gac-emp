@@ -1,0 +1,566 @@
+<app-bread-crumps [pageName]="translations?.serviceManagement?.label" [url]="itemURL"></app-bread-crumps>
+
+<div class="flex flex-col lg:flex-row min-h-screen bg-gray-100 gap-6 mt-1">
+    <aside
+        class="bg-white shadow-md flex flex-col rounded-t-lg h-fit top-[140px] right-0 transition-all duration-300"
+        role="complementary" aria-label="page sections">
+        <div class="bg-[#60583d] flex items-center justify-between w-full p-4 rounded-t-lg">
+            <h2 class="text-xl font-semibold mb-1 text-white py-2 px-3 flex-1"
+                [ngClass]="sidebarCollapsed ? 'hidden' : 'block'">{{ translations?.Modification?.label }}</h2>
+            <button type="button" (click)="toggleSidebar()" class="collapse-button-custom"
+                [ngClass]="(sidebarCollapsed || isMobileScreen) ? 'mx-auto' : ''"
+                [title]="(sidebarCollapsed || isMobileScreen) ? 'توسيع القائمة' : 'طي القائمة'">
+                <img *ngIf="!sidebarCollapsed" src="/assets/images/r-side.svg" alt="طي القائمة"
+                    class="w-6 h-6 transition-all duration-300">
+                <img *ngIf="sidebarCollapsed" src="/assets/images/l-slide.svg" alt="توسيع القائمة"
+                    class="w-4 h-4 transition-all duration-300">
+            </button>
+        </div>
+        <nav aria-label="page sections first list" class="w-full">
+            <ul class="mt-1 space-y-3 w-full px-3">
+                <li></li>
+                <li>
+                    <button (click)="changeTab('personal')" aria-label="personal information section" [ngClass]="{
+                'text-primary font-semibold active-section': activeTab() === 'personal'
+            }" class="items-center p-3 duration-200 w-100 border-[#CDCDCD] text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2"
+                        [ngClass]="sidebarCollapsed ? 'border-none' : ''">
+                        <div [title]="sidebarCollapsed ? translations?.serviceManagement?.label : ''"
+                            class="border p-2 rounded-full border-gray-600"
+                            [ngClass]="activeTab() === 'personal' ? 'border-primary' : ''">
+                            <icon-settings></icon-settings>
+                        </div>
+                        <span [ngClass]="{
+                    'hidden': sidebarCollapsed,
+                    'text-primary font-semibold active-section': activeTab() === 'personal' && !sidebarCollapsed
+                }">{{ translations?.serviceManagement?.label }}</span>
+                    </button>
+                </li>
+                <li>
+                    <button (click)="changeTab('serviceFields')" aria-label="serviceFields information section"
+                        [ngClass]="{
+                'text-primary font-semibold active-section': activeTab() === 'serviceFields'
+            }" class="items-center p-3 duration-200 w-100 border-[#CDCDCD] text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2"
+                        [ngClass]="sidebarCollapsed ? 'border-none' : ''">
+                        <div [title]="sidebarCollapsed ? translations?.serviceFields?.label : ''"
+                            class="border p-2 rounded-full border-gray-600"
+                            [ngClass]="activeTab() === 'serviceFields' ? 'border-primary' : ''">
+                            <icon-code-file></icon-code-file>
+                        </div>
+                        <span [ngClass]="{
+                    'hidden': sidebarCollapsed,
+                    'text-primary font-semibold active-section': activeTab() === 'serviceFields' && !sidebarCollapsed
+                }">{{ translations?.serviceFields?.label }}</span>
+                    </button>
+                </li>
+                <li>
+                    <button (click)="changeTab('userRoles')" aria-label="userRoles information section" [ngClass]="{
+                'text-primary font-semibold active-section': activeTab() === 'userRoles'
+            }" class="items-center p-3 duration-200 w-100 border-[#CDCDCD] text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2"
+                        [ngClass]="sidebarCollapsed ? 'border-none' : ''">
+                        <div [title]="sidebarCollapsed ? translations?.UserRoles?.label : ''"
+                            class="border p-2 rounded-full border-gray-600"
+                            [ngClass]="activeTab() === 'userRoles' ? 'border-primary' : ''">
+                            <icon-user></icon-user>
+                        </div>
+                        <span [ngClass]="{
+                    'hidden': sidebarCollapsed,
+                    'text-primary font-semibold active-section': activeTab() === 'userRoles' && !sidebarCollapsed
+                }">{{ translations?.UserRoles?.label }}</span>
+                    </button>
+                </li>
+                <li>
+                    <button (click)="changeTab('serviceStatuses')" aria-label="serviceStatuses information section"
+                        [ngClass]="{
+                'text-primary font-semibold active-section': activeTab() === 'serviceStatuses'
+            }" class="items-center p-3 duration-200 w-100 border-[#CDCDCD] text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2"
+                        [ngClass]="sidebarCollapsed ? 'border-none' : ''">
+                        <div [title]="sidebarCollapsed ? translations?.ServiceStatuses?.label : ''"
+                            class="border p-2 rounded-full border-gray-600"
+                            [ngClass]="activeTab() === 'serviceStatuses' ? 'border-primary' : ''">
+                            <icon-checks></icon-checks>
+                        </div>
+                        <span [ngClass]="{
+                    'hidden': sidebarCollapsed,
+                    'text-primary font-semibold active-section': activeTab() === 'serviceStatuses' && !sidebarCollapsed
+                }">{{ translations?.ServiceStatuses?.label }}</span>
+                    </button>
+                </li>
+                <li>
+                    <button (click)="changeTab('serviceProcesses')" aria-label="serviceProcesses information section"
+                        [ngClass]="{
+                'text-primary font-semibold active-section': activeTab() === 'serviceProcesses'
+            }" class="items-center p-3 duration-200 w-100 border-[#CDCDCD] text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2"
+                        [ngClass]="sidebarCollapsed ? 'border-none' : ''">
+                        <div [title]="sidebarCollapsed ? translations?.ServiceProcesses?.label : ''"
+                            class="border p-2 rounded-full border-gray-600"
+                            [ngClass]="activeTab() === 'serviceProcesses' ? 'border-primary' : ''">
+                            <icon-archive></icon-archive>
+                        </div>
+                        <span [ngClass]="{
+                    'hidden': sidebarCollapsed,
+                    'text-primary font-semibold active-section': activeTab() === 'serviceProcesses' && !sidebarCollapsed
+                }">{{ translations?.ServiceProcesses?.label }}</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-3 bg-white rounded-lg shadow-md order-2 md:order-none">
+        <!-- Header Section -->
+        <div class="mb-6">
+            <!-- Service Name Card with Back Button -->
+            <div class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-primary/10 to-primary/5 rounded-lg border border-primary/20 shadow-sm">
+                
+                
+                <!-- Service Name in the center -->
+                <div class="flex items-center gap-3 flex-1 justify-start">
+                    <div class="flex items-center justify-center w-10 h-10 bg-primary/20 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-sm text-gray-600 font-medium">{{ translations?.ServiceName?.label || 'اسم الخدمة' }}</span>
+                        <span class="text-lg font-bold text-primary">
+                            {{(isArabic ? ServiceTitleAr?.value : ServiceTitleEn?.value) || translations?.ServiceName?.label || 'اسم الخدمة'}}
+                        </span>
+                    </div>
+                </div>
+                <!-- Back Button on the left -->
+                <button type="button" (click)="goBackToPreviousTab()" 
+                        class="flex items-center gap-2 px-3 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all">
+                    <icon-arrow-left class="w-4 h-4"></icon-arrow-left>
+                    {{ translations?.back?.label }}
+                </button>
+
+            </div>
+        </div>
+        <ng-container [ngSwitch]="activeTab()">
+            <!-- Personal Info -->
+            <section *ngSwitchCase="'personal'" id="personal-section">
+                <div class="card">
+                    <div class="card-body">
+                        <form
+                            class="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-[#0e1726]"
+                            [formGroup]="AddserviceproceduresForm" (ngSubmit)="onAddSubmit()">
+                            <!-- Form Inputs Grid -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                                <div>
+                                    <label for="ServiceTitleAr">{{ translations?.ServiceTitleAr?.label }}
+                                        <span
+                                            *ngIf="ServiceTitleAr?.invalid && (ServiceTitleAr?.dirty || ServiceTitleAr?.touched)"
+                                            class="text-red-500 font-bold">*</span>
+                                    </label>
+                                    <input id="ServiceTitleAr" type="text" formControlName="ServiceTitleAr"
+                                        class="form-input" [placeholder]="translations?.ServiceTitleAr?.label"
+                                        [ngClass]="{'is-invalid': ServiceTitleAr?.invalid && (ServiceTitleAr?.dirty || ServiceTitleAr?.touched)}" />
+
+                                    <!-- error -->
+                                    <div *ngIf="ServiceTitleAr?.invalid && (ServiceTitleAr?.dirty || ServiceTitleAr?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.ServiceTitleAr?.validation }}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="ServiceTitleEn">{{ translations?.ServiceTitleEn?.label }}
+                                        <span
+                                            *ngIf="ServiceTitleEn?.invalid && (ServiceTitleEn?.dirty || ServiceTitleEn?.touched)"
+                                            class="text-red-500 font-bold">*</span>
+                                    </label>
+                                    <input id="ServiceTitleEn" type="text" formControlName="ServiceTitleEn"
+                                        class="form-input" [placeholder]="translations?.ServiceTitleEn?.label"
+                                        [ngClass]="{'is-invalid': ServiceTitleEn?.invalid && (ServiceTitleEn?.dirty || ServiceTitleEn?.touched)}" />
+
+                                    <div *ngIf="ServiceTitleEn?.invalid && (ServiceTitleEn?.dirty || ServiceTitleEn?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.ServiceTitleEn?.validation }}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="DepartmentID">{{ translations?.DepartmentID?.label }}
+                                        <span
+                                            *ngIf="DepartmentID?.invalid && (DepartmentID?.dirty || DepartmentID?.touched)"
+                                            class="text-red-500 font-bold">*</span>
+                                    </label>
+
+                                    <ng-select [items]="Departments" id="DepartmentID" bindLabel="ID" bindValue="ID"
+                                        [placeholder]="translations?.DepartmentID?.label"
+                                        [ngClass]="{'is-invalid': DepartmentID?.invalid && (DepartmentID?.dirty || DepartmentID?.touched)}"
+                                        formControlName="DepartmentID" [searchFn]="customSearchFn"
+                                        aria-labelledby="DepartmentID-label">
+
+                                        <span id="DepartmentID-label" class="sr-only">{{ translations?.Department?.label
+                                            }}</span>
+
+                                        <ng-template ng-label-tmp let-item="item">
+                                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                                        </ng-template>
+                                        <ng-template ng-option-tmp let-item="item">
+                                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                                        </ng-template>
+                                    </ng-select>
+
+                                    <div *ngIf="DepartmentID?.invalid && (DepartmentID?.dirty || DepartmentID?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.DepartmentID?.validation }}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="SectionID">{{ translations?.SectionID?.label }}
+                                        <span *ngIf="SectionID?.value == -1 || !SectionID?.value"
+                                            class="text-red-500 font-bold">*</span>
+                                    </label>
+                                    <ng-select [items]="Section" id="SectionID" bindLabel="LookupID"
+                                        bindValue="LookupID" placeholder="{{ translations?.SectionID?.label }}"
+                                        [ngClass]="{'is-invalid': SectionID?.invalid && (SectionID?.dirty || SectionID?.touched)}"
+                                        formControlName="SectionID" [searchFn]="customSearchFn"
+                                        aria-labelledby="SectionID-label">
+                                        <span id="SectionID-label" class="sr-only">{{ translations?.SectionID?.label
+                                            }}</span>
+                                        <ng-template ng-label-tmp let-item="item">
+                                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                                        </ng-template>
+                                        <ng-template ng-option-tmp let-item="item">
+                                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                                        </ng-template>
+                                    </ng-select>
+                                    <div *ngIf="SectionID?.invalid && (SectionID?.dirty || SectionID?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.SectionID?.validation }}
+                                    </div>
+                                </div>
+
+                                <!-- RequestTypeID -->
+                                <div>
+                                    <label for="RequestTypeID">{{ translations?.RequestType?.label }}
+                                        <span *ngIf="RequestTypeID?.value == -1 || !RequestTypeID?.value"
+                                            class="text-red-500 font-bold">*</span>
+                                    </label>
+                                    <ng-select [items]="Request" id="RequestTypeID" bindLabel="ID" bindValue="ID"
+                                        placeholder="{{ translations?.RequestTypeID?.label }}"
+                                        [ngClass]="{'is-invalid': RequestTypeID?.invalid && (RequestTypeID?.dirty || RequestTypeID?.touched)}"
+                                        formControlName="RequestTypeID" [searchFn]="customSearchFn"
+                                        aria-labelledby="RequestTypeID-label">
+                                        <span id="RequestTypeID-label" class="sr-only">{{
+                                            translations?.RequestType?.label }}</span>
+                                        <ng-template ng-label-tmp let-item="item">
+                                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                                        </ng-template>
+                                        <ng-template ng-option-tmp let-item="item">
+                                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                                        </ng-template>
+                                    </ng-select>
+                                    <div *ngIf="RequestTypeID?.invalid && (RequestTypeID?.dirty || RequestTypeID?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.RequestTypeID?.validation }}
+                                    </div>
+                                </div>
+
+                                <!-- AppPrefixCode -->
+                                <div>
+                                    <label for="AppPrefixCode">{{ translations?.AppPrefixCode?.label }}
+                                        <span *ngIf="!AppPrefixCode?.value" class="text-red-500 font-bold">*</span>
+                                    </label>
+                                    <input id="AppPrefixCode" type="text" formControlName="AppPrefixCode"
+                                        class="form-input" placeholder="{{ translations?.AppPrefixCode?.label }}"
+                                        [ngClass]="{'is-invalid': AppPrefixCode?.invalid && (AppPrefixCode?.dirty || AppPrefixCode?.touched)}" />
+                                    <div *ngIf="AppPrefixCode?.invalid && (AppPrefixCode?.dirty || AppPrefixCode?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.AppPrefixCode?.validation }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="LicensePrefixCode">{{ translations?.LicensePrefixCode?.label }}
+                                        <span *ngIf="!LicensePrefixCode?.value" class="text-red-500 font-bold">*</span>
+
+                                    </label>
+                                    <input id="LicensePrefixCode" type="text" formControlName="LicensePrefixCode"
+                                        class="form-input" [placeholder]="translations?.LicensePrefixCode?.label"
+                                        [ngClass]="{'is-invalid':  LicensePrefixCode?.invalid && (LicensePrefixCode?.dirty || LicensePrefixCode?.touched)}" />
+                                    <div *ngIf="LicensePrefixCode?.invalid && (LicensePrefixCode?.dirty || LicensePrefixCode?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.LicensePrefixCode?.validation }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="LicensePeriod">{{ translations?.LicensePeriod?.label }}
+                                        <span *ngIf="!LicensePeriod?.value" class="text-red-500 font-bold">*</span>
+
+                                    </label>
+                                    <input id="LicensePeriod" type="number" formControlName="LicensePeriod"
+                                        class="form-input" [placeholder]="translations?.LicensePeriod?.label"
+                                        [ngClass]="{'is-invalid':  LicensePeriod?.invalid && (LicensePeriod?.dirty || LicensePeriod?.touched)}" />
+                                    <div *ngIf="LicensePeriod?.invalid && (LicensePeriod?.dirty || LicensePeriod?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.LicensePeriod?.validation }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="Status">{{ translations?.Activited?.label }}
+
+                                    </label>
+                                    <select id="Status" formControlName="Active" class="form-select text-white-dark"
+                                        aria-labelledby="Status-label">
+                                        <span id="Status-label" class="sr-only">{{ translations?.Activited?.label
+                                            }}</span>
+                                        <option [ngValue]="true">{{ translations?.Active?.label }}</option>
+                                        <option [ngValue]="false">{{ translations?.NotActive?.label }}</option>
+                                    </select>
+                                </div>
+
+
+
+                                <!-- Suspend Date From -->
+                                <div>
+                                    <label for="SuspendDateFrom">{{ translations?.SuspendDateFrom?.label }}</label>
+                                    <input id="SuspendDateFrom" mwlFlatpickr [options]="basic" type="text"
+                                        formControlName="SuspendDateFrom" class="form-input"
+                                        placeholder="{{ translations?.SuspendDateFrom?.label }}" />
+                                </div>
+
+                                <!-- Suspend Date To -->
+                                <div>
+                                    <label for="SuspendDateTo">{{ translations?.SuspendDateTo?.label }}</label>
+                                    <input id="SuspendDateTo" mwlFlatpickr [options]="basic" type="text"
+                                        formControlName="SuspendDateTo" class="form-input"
+                                        placeholder="{{ translations?.SuspendDateTo?.label }}" />
+                                </div>
+
+                                <!-- Suspend Time From -->
+                                <div>
+                                    <label for="SuspendTimeFrom">{{ translations?.SuspendTimeFrom?.label }}</label>
+                                    <input id="SuspendTimeFrom" type="time" formControlName="SuspendTimeFrom"
+                                        class="form-input" placeholder="{{ translations?.SuspendTimeFrom?.label }}" />
+                                </div>
+
+                                <!-- Suspend Time To -->
+                                <div>
+                                    <label for="SuspendTimeTo">{{ translations?.SuspendTimeTo?.label }}</label>
+                                    <input id="SuspendTimeTo" type="time" formControlName="SuspendTimeTo"
+                                        class="form-input" placeholder="{{ translations?.SuspendTimeTo?.label }}" />
+                                </div>
+
+                                <!-- Allowable Periods -->
+                                <div>
+                                    <label for="AllowablePeriodBefore">{{ translations?.AllowablePeriodBefore?.label
+                                        }}</label>
+                                    <input id="AllowablePeriodBefore" type="number"
+                                        formControlName="AllowablePeriodBefore" class="form-input"
+                                        placeholder="{{ translations?.AllowablePeriodBefore?.label }}" />
+                                </div>
+
+                                <div>
+                                    <label for="AllowablePeriodAfter">{{ translations?.AllowablePeriodAfter?.label
+                                        }}</label>
+                                    <input id="AllowablePeriodAfter" type="number"
+                                        formControlName="AllowablePeriodAfter" class="form-input"
+                                        placeholder="{{ translations?.AllowablePeriodAfter?.label }}" />
+                                </div>
+
+                                <!-- Int fields -->
+                                <div>
+                                    <label for="MinActivitiesCount">{{ translations?.MinActivitiesCount?.label
+                                        }}</label>
+                                    <input id="MinActivitiesCount" type="number" formControlName="MinActivitiesCount"
+                                        class="form-input"
+                                        placeholder="{{ translations?.MinActivitiesCount?.label }}" />
+                                </div>
+
+                                <div>
+                                    <label for="MaxActivitiesCount">{{ translations?.MaxActivitiesCount?.label
+                                        }}</label>
+                                    <input id="MaxActivitiesCount" type="number" formControlName="MaxActivitiesCount"
+                                        class="form-input"
+                                        placeholder="{{ translations?.MaxActivitiesCount?.label }}" />
+                                </div>
+
+                                <div>
+                                    <label for="MaxEventPeriodInDays">{{ translations?.MaxEventPeriodInDays?.label
+                                        }}</label>
+                                    <input id="MaxEventPeriodInDays" type="number"
+                                        formControlName="MaxEventPeriodInDays" class="form-input"
+                                        placeholder="{{ translations?.MaxEventPeriodInDays?.label }}" />
+                                </div>
+
+                                <div>
+                                    <label for="EventSubmissionDateInDays">{{
+                                        translations?.EventSubmissionDateInDays?.label }}</label>
+                                    <input id="EventSubmissionDateInDays" type="number"
+                                        formControlName="EventSubmissionDateInDays" class="form-input"
+                                        placeholder="{{ translations?.EventSubmissionDateInDays?.label }}" />
+                                </div>
+
+                                <div>
+                                    <label for="MaxExtendEventDate">{{ translations?.MaxExtendEventDate?.label
+                                        }}</label>
+                                    <input id="MaxExtendEventDate" type="text" formControlName="MaxExtendEventDate"
+                                        class="form-input"
+                                        placeholder="{{ translations?.MaxExtendEventDate?.label }}" />
+                                </div>
+
+                                <div>
+                                    <label for="MaxFounders">{{ translations?.MaxFounders?.label }}</label>
+                                    <input id="MaxFounders" type="number" formControlName="MaxFounders"
+                                        class="form-input" placeholder="{{ translations?.MaxFounders?.label }}" />
+                                </div>
+
+                                <div>
+                                    <label for="DeleteDraftAutoInDays">{{ translations?.DeleteDraftAutoInDays?.label
+                                        }}</label>
+                                    <input id="DeleteDraftAutoInDays" type="number"
+                                        formControlName="DeleteDraftAutoInDays" class="form-input"
+                                        placeholder="{{ translations?.DeleteDraftAutoInDays?.label }}" />
+                                </div>
+
+                                <div>
+                                    <label for="DeleteDraftActive">{{ translations?.DeleteDraftActive?.label }}</label>
+                                    <select id="DeleteDraftActive" formControlName="DeleteDraftActive"
+                                        class="form-select text-white-dark">
+                                        <option [ngValue]="true">{{ translations?.Yes?.label }}</option>
+                                        <option [ngValue]="false">{{ translations?.No?.label }}</option>
+                                    </select>
+                                </div>
+
+                                <!-- Help / Info -->
+                                <div>
+                                    <label for="HelpFileName">{{ translations?.HelpFileName?.label }}</label>
+                                    <input id="HelpFileName" type="text" formControlName="HelpFileName"
+                                        class="form-input" placeholder="{{ translations?.HelpFileName?.label }}" />
+                                </div>
+
+                                <div class="sm:col-span-2">
+                                    <label for="CRServiceCode">{{ translations?.CRServiceCode?.label }}</label>
+                                    <input id="CRServiceCode" type="text" formControlName="CRServiceCode"
+                                        class="form-input" placeholder="{{ translations?.CRServiceCode?.label }}" />
+                                </div>
+
+                                <div class="sm:col-span-2">
+                                    <label for="VideoUrl">{{ translations?.VideoUrl?.label }}</label>
+                                    <input id="VideoUrl" type="url" formControlName="VideoUrl" class="form-input"
+                                        placeholder="{{ translations?.VideoUrl?.label }}" />
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label for="AiHelpTextAr">{{ translations?.AiHelpTextAr?.label }}</label>
+                                    <textarea id="AiHelpTextAr" formControlName="AiHelpTextAr" rows="4"
+                                        class="form-textarea w-full border border-gray-300 p-2 rounded-md"
+                                        placeholder="{{ translations?.AiHelpTextAr?.label }}"></textarea>
+                                </div>
+
+                                <div class="sm:col-span-2">
+                                    <label for="AiHelpTextEn">{{ translations?.AiHelpTextEn?.label }}</label>
+                                    <textarea id="AiHelpTextEn" formControlName="AiHelpTextEn" rows="4"
+                                        class="form-textarea w-full border border-gray-300 p-2 rounded-md"
+                                        placeholder="{{ translations?.AiHelpTextEn?.label }}"></textarea>
+                                </div>
+                                <!-- ServiceDescAr -->
+                                <div class="sm:col-span-2">
+                                    <label for="ServiceDescAr">{{ translations?.ServiceDescAr?.label }}
+                                        <span
+                                            *ngIf="ServiceDescAr?.invalid && (ServiceDescAr?.dirty || ServiceDescAr?.touched)"
+                                            class="text-red-500 font-bold">*</span>
+                                    </label>
+                                    <textarea name="DescriptionAr" row="4" id="ServiceDescAr" type="text"
+                                        formControlName="ServiceDescAr"
+                                        class="form-textarea-inline w-full border border-gray-300 p-2 rounded-md"
+                                        [placeholder]="translations?.ServiceDescAr?.label"
+                                        [ngClass]="{'is-invalid': ServiceDescAr?.invalid && (ServiceDescAr?.dirty || ServiceDescAr?.touched)}"></textarea>
+                                    <div *ngIf="ServiceDescAr?.invalid && (ServiceDescAr?.dirty || ServiceDescAr?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.ServiceDescAr?.validation }}
+                                    </div>
+                                </div>
+
+                                <!-- ServiceDescEn -->
+                                <div class="sm:col-span-2">
+                                    <label for="ServiceDescEn">{{ translations?.ServiceDescEn?.label }}
+                                        <span
+                                            *ngIf="ServiceDescEn?.invalid && (ServiceDescEn?.dirty || ServiceDescEn?.touched)"
+                                            class="text-red-500 font-bold">*</span>
+                                    </label>
+                                    <textarea name="DescriptionAr" row="4" id="ServiceDescEn" type="text"
+                                        formControlName="ServiceDescEn"
+                                        class="form-textarea-inline w-full border border-gray-300 p-2 rounded-md"
+                                        [placeholder]="translations?.ServiceDescEn?.label"
+                                        [ngClass]="{'is-invalid': ServiceDescEn?.invalid && (ServiceDescEn?.dirty || ServiceDescEn?.touched)}"></textarea>
+                                    <div *ngIf="ServiceDescEn?.invalid && (ServiceDescEn?.dirty || ServiceDescEn?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.ServiceDescEn?.validation }}
+                                    </div>
+                                </div>
+
+                                <!-- ServiceTermsAr -->
+                                <div class="sm:col-span-2">
+                                    <label for="ServiceTermsAr">{{ translations?.ServiceTermsAr?.label }}
+                                        <span
+                                            *ngIf="ServiceTermsAr?.invalid && (ServiceTermsAr?.dirty || ServiceTermsAr?.touched)"
+                                            class="text-red-500 font-bold">*</span>
+                                    </label>
+                                    <textarea name="DescriptionAr" row="4" id="ServiceTermsAr" type="text"
+                                        formControlName="ServiceTermsAr"
+                                        class="form-textarea-inline w-full border border-gray-300 p-2 rounded-md"
+                                        [placeholder]="translations?.ServiceTermsAr?.label"
+                                        [ngClass]="{'is-invalid': ServiceTermsAr?.invalid && (ServiceTermsAr?.dirty || ServiceTermsAr?.touched)}"></textarea>
+                                    <div *ngIf="ServiceTermsAr?.invalid && (ServiceTermsAr?.dirty || ServiceTermsAr?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.ServiceTermsAr?.validation }}
+                                    </div>
+                                </div>
+
+                                <!-- ServiceTermsEn -->
+                                <div class="sm:col-span-2">
+                                    <label for="ServiceTermsEn">{{ translations?.ServiceTermsEn?.label }}
+                                        <span
+                                            *ngIf="ServiceTermsEn?.invalid && (ServiceTermsEn?.dirty || ServiceTermsEn?.touched)"
+                                            class="text-red-500 font-bold">*</span>
+                                    </label>
+                                    <textarea name="DescriptionAr" row="4" id="ServiceTermsEn" type="text"
+                                        formControlName="ServiceTermsEn"
+                                        class="form-textarea-inline w-full border border-gray-300 p-2 rounded-md"
+                                        [placeholder]="translations?.ServiceTermsEn?.label"
+                                        [ngClass]="{'is-invalid': ServiceTermsEn?.invalid && (ServiceTermsEn?.dirty || ServiceTermsEn?.touched)}"></textarea>
+                                    <div *ngIf="ServiceTermsEn?.invalid && (ServiceTermsEn?.dirty || ServiceTermsEn?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.ServiceTermsEn?.validation }}
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="flex justify-end gap-2 pt-6">
+                                <button type="submit" class="btn btn-primary">
+                                    <icon-plus *ngIf="!isEditMode"></icon-plus>
+                                    <icon-edit *ngIf="isEditMode"></icon-edit>
+                                    <span class="m-1">{{ isEditMode ? translations?.edit?.label :
+                                        translations?.add?.label }}</span>
+                                </button>
+                                <button type="button" class="btn btn-primary" (click)="closeAddUserModal()">
+                                    <icon-x></icon-x>
+                                    <span class="m-1">{{ translations?.close?.label }}</span></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            <section *ngSwitchCase="'serviceFields'" id="serviceFields-section">
+                <app-service-fields></app-service-fields>
+            </section>
+            <section *ngSwitchCase="'userRoles'" id="userRoles-section">
+                <app-service-roles></app-service-roles>
+            </section>
+            <section *ngSwitchCase="'serviceStatuses'" id="serviceStatuses-section">
+                <app-service-statuses></app-service-statuses>
+            </section>
+            <section *ngSwitchCase="'serviceProcesses'" id="serviceProcesses-section">
+                <app-service-processes></app-service-processes>
+            </section>
+        </ng-container>
+    </main>
+</div>

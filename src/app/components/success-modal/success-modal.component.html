@@ -1,0 +1,29 @@
+<div cdkTrapFocus [cdkTrapFocusAutoCapture]="isOpen()">
+    <!-- Modal -->
+    <ngx-custom-modal #modal2 class="modal-top z-[9999]" [hideCloseButton]="true" [closeOnOutsideClick]="false">
+        <ng-template #modalBody>
+            <div class="flex items-center justify-center mb-2">
+                <div class="bg-green-300/25 p-6 rounded-full"><img
+                        src="/assets/images/icons/checked-ok-mark-accept-check-approved-svgrepo-com (2).svg" class="w-10"
+                        alt="approved icon"></div>
+            </div>
+            <p class="text-center text-3xl font-bold"> {{ title() }} </p>
+            <ng-container *ngIf="subtextTpl; else defaultSubtext">
+                <ng-container *ngTemplateOutlet="subtextTpl"></ng-container>
+            </ng-container>
+            <ng-template #defaultSubtext>
+                <div class="flex justify-center">
+                    <dl class="flex gap-2 justify-center">
+                        <dt>{{ subtext() }} </dt>
+                        <dd class="text-primary"> {{ requestNumber() }}</dd>
+                    </dl>
+                </div>
+            </ng-template>
+
+
+        </ng-template>
+        <ng-template #modalFooter>
+            <button type="button" (click)="onUserClose()" class="btn btn-primary mx-auto">موافق</button>
+        </ng-template>
+    </ngx-custom-modal>
+</div>

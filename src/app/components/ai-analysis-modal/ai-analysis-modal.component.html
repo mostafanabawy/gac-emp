@@ -1,0 +1,29 @@
+<div cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
+    <ngx-custom-modal #modal22 class="modal-top large-modal overflow-auto z-[9999]" id="aiAnalysis" [closeOnOutsideClick]="false" [hideCloseButton]="true">
+        <ng-template #modalHeader>
+            <div class="p-2 border-b border-gray-200 flex justify-between bg-primary">
+                
+                <h2 class="text-xl">{{ translations()?.aiAnalysisTitle.label }}</h2>
+                <button (click)="onUserClose('no')">
+                    <icon-x class="h-8 text-white cursor-pointer hover:opacity-90"></icon-x>
+                </button>
+            </div>
+        </ng-template>
+        <ng-template #modalBody>
+            @if(fileData()){
+                <div [innerHTML]="fileData()?.[fieldName()].DocumentSummary || fileData()?.[fieldName()].analysisHtml" class="max-h-[calc(100vh-235.6px)] overflow-y-scroll custom-scrollbar h-full p-2">
+    
+                </div>
+            }
+            
+           
+        </ng-template>
+        <ng-template #modalFooter>
+            <button type="button" (click)="onUserClose('no')"
+                class="btn btn-outline-dark hover:bg-primary hover:text-white">
+            {{ translations()?.close.label }}
+            </button>
+           <!--  <button class="btn btn-primary ltr:ml-4 rtl:mr-4">ارسال الطلب</button> -->
+        </ng-template>
+    </ngx-custom-modal>
+</div>

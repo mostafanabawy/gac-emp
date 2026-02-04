@@ -1,0 +1,612 @@
+<div id="editDataModel">
+    <!-- Modal -->
+    <ngx-custom-modal #modal40 class="modal-top z-[9999] large-modal" [closeOnOutsideClick]="false"
+        [hideCloseButton]="true">
+        <ng-template #modalHeader>
+            <div class="p-2 border-b border-gray-200 flex justify-between bg-primary">
+                <h2 class="text-lg min-[340px]:text-xl sm:text-2xl md:text-3xl p-2 flex items-center ps-2 text-white">
+                    كشف التعديلات التي تمت على الطلب
+                </h2>
+                <button (click)="onUserClose('no')">
+                    <icon-x class="h-8 text-white cursor-pointer hover:opacity-90"></icon-x>
+                </button>
+            </div>
+        </ng-template>
+        <ng-template #modalBody>
+            <div class="ps-2">
+                <dl class="my-2">
+                    <div class="flex flex-wrap gap-2">
+                        <dt class="">
+                            <span class="font-bold">
+                                رقم الطلب:
+                            </span>
+                        </dt>
+                        <dd class="text-green-800 direction-ltr">
+                            {{ newApplicationService.requestData()?.ApplicationNumber || ApplicationNumber() }}
+                        </dd>
+                    </div>
+                    @if(newApplicationService.requestData()?.FkProcessID_TitleEn ||
+                    newApplicationService.requestData()?.FkProcessID_TitleAr || FkProcessID()){
+                    <div class="flex flex-wrap gap-2">
+                        <dt class="">
+                            <span class="font-bold">
+                                نوع الإجراء:
+                            </span>
+                        </dt>
+                        <dd class="text-green-800">
+                            @if(store.locale === 'en'){
+                            {{ newApplicationService.requestData()?.FkProcessID_TitleEn || FkProcessID() }}
+                            }@else {
+                            {{ newApplicationService.requestData()?.FkProcessID_TitleAr || FkProcessID() }}
+                            }
+                            <!--  {{ allApplicationsService.ProcessID() }} -->
+                        </dd>
+                    </div>
+                    }
+
+                </dl>
+            </div>
+
+            <div>
+                <!-- Enhanced Navigation with Search and Export -->
+                <div
+                    class="mt-3 mb-5 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                    <!-- Tab Navigation -->
+                    <nav class="flex flex-wrap border-b border-gray-200 dark:border-gray-700" role="tablist">
+                        <ng-container>
+                            <button id="fields" role="tab"
+                                class="-mb-[1px] flex items-center border-transparent text-gray-600 dark:text-gray-400 p-4 py-3 !outline-none transition duration-300 hover:border-b-2 hover:!border-primary hover:text-primary font-semibold text-lg relative"
+                                [ngClass]="{ 'border-b-2 !border-primary text-primary bg-primary/5': selectedTab.toLowerCase() === 'fields'.toLowerCase() }"
+                                (click)="tabChange('fields')">
+                                <svg class="w-5 h-5 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                    </path>
+                                </svg>
+                                الحقول
+                                @if(filteredFieldRows().length > 0) {
+                                <span
+                                    class="bg-primary text-white text-xs rounded-full px-2 py-1 ms-2">{{filteredFieldRows().length}}</span>
+                                } @else if(fieldRows().length > 0) {
+                                <span
+                                    class="bg-gray-400 text-white text-xs rounded-full px-2 py-1 ms-2">{{fieldRows().length}}</span>
+                                }
+                            </button>
+                            <button id="tables" role="tab"
+                                class="-mb-[1px] flex items-center border-transparent text-gray-600 dark:text-gray-400 p-4 py-3 !outline-none transition duration-300 hover:border-b-2 hover:!border-primary hover:text-primary font-semibold text-lg relative"
+                                [ngClass]="{ 'border-b-2 !border-primary text-primary bg-primary/5': selectedTab.toLowerCase() === 'tables'.toLowerCase() }"
+                                (click)="tabChange('tables')">
+                                <svg class="w-5 h-5 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 10h18M3 14h18m-9-4v8m-7 0V4a1 1 0 011-1h16a1 1 0 011 1v16a1 1 0 01-1 1H4a1 1 0 01-1-1z">
+                                    </path>
+                                </svg>
+                                الجداول
+                                @if(filteredTablesRows().length > 0) {
+                                <span
+                                    class="bg-primary text-white text-xs rounded-full px-2 py-1 ms-2">{{filteredTablesRows().length}}</span>
+                                } @else if(tablesRows().length > 0) {
+                                <span
+                                    class="bg-gray-400 text-white text-xs rounded-full px-2 py-1 ms-2">{{tablesRows().length}}</span>
+                                }
+                            </button>
+                            <button id="attachments" role="tab"
+                                class="-mb-[1px] flex items-center border-transparent text-gray-600 dark:text-gray-400 p-4 py-3 !outline-none transition duration-300 hover:border-b-2 hover:!border-primary hover:text-primary font-semibold text-lg relative"
+                                [ngClass]="{ 'border-b-2 !border-primary text-primary bg-primary/5': selectedTab.toLowerCase() === 'attachments'.toLowerCase() }"
+                                (click)="tabChange('attachments')">
+                                <svg class="w-5 h-5 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13">
+                                    </path>
+                                </svg>
+                                المرفقات
+                                @if(filteredAttachmentRows().length > 0) {
+                                <span
+                                    class="bg-primary text-white text-xs rounded-full px-2 py-1 ms-2">{{filteredAttachmentRows().length}}</span>
+                                } @else if(attachmentRows().length > 0) {
+                                <span
+                                    class="bg-gray-400 text-white text-xs rounded-full px-2 py-1 ms-2">{{attachmentRows().length}}</span>
+                                }
+                            </button>
+                        </ng-container>
+                    </nav>
+
+                    <!-- Search and Export Controls -->
+                    <div class="p-4 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-col gap-4">
+                            <!-- Search Row -->
+                            <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+                                <!-- Text Search -->
+                                <div class="relative flex-1 max-w-md">
+                                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <input type="text" [value]="getCurrentSearchTerm()" (input)="onSearch($event)"
+                                        (keyup.enter)="performSearch()"
+                                        class="block w-full ps-10 pe-10 py-2.5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary dark:focus:border-primary transition-colors duration-200"
+                                        placeholder="البحث في جميع الحقول...">
+                                    @if(getCurrentSearchTerm()) {
+                                    <button type="button" (click)="clearSearch()"
+                                        class="absolute inset-y-0 end-0 flex items-center pe-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                    }
+                                </div>
+
+                                <!-- Search and Export Buttons -->
+                                <div class="flex items-center gap-2">
+                                    <!-- Search Button -->
+                                    <button type="button" (click)="performSearch()" [disabled]="isSearching()"
+                                        class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-primary focus:ring-4 focus:ring-blue-300 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                                        @if(isSearching()) {
+                                        <svg class="w-4 h-4 me-2 animate-spin" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor"
+                                                d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                            </path>
+                                        </svg>
+                                        جاري البحث...
+                                        } @else {
+                                        <svg class="w-4 h-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                        </svg>
+                                        بحث
+                                        }
+                                    </button>
+                                    @if(getActiveFiltersCount() > 0) {
+                                    <span
+                                        class="text-sm text-gray-600 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 px-3 py-1 rounded-full border border-blue-200 dark:border-blue-800 flex items-center">
+                                        <svg class="w-4 h-4 me-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z">
+                                            </path>
+                                        </svg>
+                                        {{getActiveFiltersCount()}} فلتر نشط - النتائج: {{getCurrentTabResultsCount()}}
+                                    </span>
+                                    }
+                                    <button type="button" (click)="exportToExcel()"
+                                        [disabled]="(selectedTab === 'fields' && filteredFieldRows().length === 0) || 
+                                                       (selectedTab === 'tables' && filteredTablesRows().length === 0) || 
+                                                       (selectedTab === 'attachments' && filteredAttachmentRows().length === 0)"
+                                        class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-primary  rounded-lg transition-all duration-200 shadow-sm hover:shadow-md   disabled:opacity-50 disabled:cursor-not-allowed export-btn">
+                                        <svg class="w-4 h-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                            </path>
+                                        </svg>
+                                        تصدير Excel
+                                        @if(selectedTab === 'fields' && filteredFieldRows().length > 0) {
+                                        ({{filteredFieldRows().length}}) }
+                                        @if(selectedTab === 'tables' && filteredTablesRows().length > 0) {
+                                        ({{filteredTablesRows().length}}) }
+                                        @if(selectedTab === 'attachments' && filteredAttachmentRows().length > 0) {
+                                        ({{filteredAttachmentRows().length}}) }
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Date Filter Row -->
+                            <div class="flex flex-col gap-3">
+                                <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                                    <div
+                                        class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                            </path>
+                                        </svg>
+                                        فلترة بالتاريخ:
+                                    </div>
+
+                                    <!-- Date From -->
+                                    <div class="flex items-center gap-2">
+                                        <label class="text-sm text-gray-600 dark:text-gray-400">من:</label>
+                                        <input mwlFlatpickr [value]="getCurrentDateFrom()" type="text" readonly
+                                            placeholder="اختر التاريخ" class="date-input cursor-pointer">
+                                    </div>
+
+                                    <!-- Date To -->
+                                    <div class="flex items-center gap-2">
+                                        <label class="text-sm text-gray-600 dark:text-gray-400">إلى:</label>
+                                        <input mwlFlatpickr [value]="getCurrentDateTo()" type="text" readonly
+                                            placeholder="اختر التاريخ" class="date-input cursor-pointer">
+                                    </div>
+
+                                    <!-- Clear Filters -->
+                                    @if(getCurrentDateFrom() || getCurrentDateTo()) {
+                                    <button type="button" (click)="clearDateFilters()" class="filter-badge clear">
+                                        <svg class="w-3 h-3 me-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                        مسح التاريخ
+                                    </button>
+                                    }
+
+                                    @if(getActiveFiltersCount() > 0) {
+                                    <button type="button" (click)="clearAllFilters()" class="filter-badge clear-all">
+                                        <svg class="w-3 h-3 me-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                            </path>
+                                        </svg>
+                                        مسح جميع الفلاتر
+                                    </button>
+                                    }
+                                </div>
+
+                                <!-- Quick Date Presets -->
+                                <div class="flex flex-wrap gap-2 items-center">
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">فترات سريعة:</span>
+                                    <button type="button" (click)="setDatePreset('today')"
+                                        class="px-2 py-1 text-xs bg-primary  text-white  rounded border transition-colors duration-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/40">
+                                        اليوم
+                                    </button>
+                                    <button type="button" (click)="setDatePreset('yesterday')"
+                                        class="px-2 py-1 text-xs bg-primary  text-white  rounded border transition-colors duration-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/40">
+                                        أمس
+                                    </button>
+                                    <button type="button" (click)="setDatePreset('last7days')"
+                                        class="px-2 py-1 text-xs bg-primary  text-white  rounded border transition-colors duration-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/40">
+                                        آخر 7 أيام
+                                    </button>
+                                    <button type="button" (click)="setDatePreset('last30days')"
+                                        class="px-2 py-1 text-xs bg-primary  text-white  rounded border transition-colors duration-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/40">
+                                        آخر 30 يوم
+                                    </button>
+                                    <button type="button" (click)="setDatePreset('thisMonth')"
+                                        class="px-2 py-1 text-xs bg-primary  text-white  rounded border transition-colors duration-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/40">
+                                        هذا الشهر
+                                    </button>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full max-w-full overflow-x-auto">
+                    <div
+                        class="w-full bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                        @if(selectedTab === 'fields'){
+                        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                                <svg class="w-5 h-5 me-2 text-primary" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                    </path>
+                                </svg>
+                                تعديلات الحقول
+                                <span
+                                    class="ms-2 text-sm font-normal text-gray-500 dark:text-gray-400">({{filteredFieldRows().length}}
+                                    عنصر)</span>
+                            </h3>
+                        </div>
+                        <ng-datatable [rows]="filteredFieldRows()" [columns]="fieldCols" [sortable]="true"
+                            class="w-full" [stickyHeader]="true" [showPageSize]="true" [pageSize]="10"
+                            skin="whitespace-nowrap table-hover bh-cursor-pointer bh-table-compact modern-table"
+                            [height]="'400px'" [noDataContent]="getNoDataMessage()"
+                            [paginationInfo]="store.locale === 'en'? 'Showing {0} to {1} of {2} entries': 'عرض {0} إلى {1} من {2}'"
+                            firstArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
+                            lastArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg> '
+                            previousArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
+                            nextArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'>
+                            <ng-template [slot]="'serialNumber'" let-value="data" let-index="index">
+                                <div
+                                    class="text-center font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 px-2 py-1 rounded">
+                                    {{ value.serialNumber }}
+                                </div>
+                            </ng-template>
+                            <ng-template [slot]="'FKStatusOld'" let-value="data">
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                    @if(store.locale === 'en'){
+                                    {{ value.StatusOld_En}}
+                                    }@else {
+                                    {{ value.StatusOld_Ar}}
+                                    }
+                                </span>
+                            </ng-template>
+                            <ng-template [slot]="'FKStatusNew'" let-value="data">
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                                    @if(store.locale === 'en'){
+                                    {{ value.StatusNew_En}}
+                                    }@else {
+                                    {{ value.StatusNew_Ar}}
+                                    }
+                                </span>
+                            </ng-template>
+                            <ng-template [slot]="'FieldName'" let-value="data">
+                                <div class="font-medium text-gray-900 dark:text-white">
+                                    @if(store.locale === 'en'){
+                                    {{ value.FieldTitleEn}}
+                                    }@else {
+                                    {{ value.FieldTitleAr}}
+                                    }
+                                </div>
+                            </ng-template>
+
+                            <ng-template [slot]="'FieldValueWas'" let-value="data">
+                                <div *ngIf="store.locale === 'en'
+            ? (value.FieldTextValueENWas || value.FieldValueWas)
+            : (value.FieldTextValueWas || value.FieldValueWas)" class="max-w-xs truncate text-gray-600 dark:text-gray-400
+           bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded
+           border-l-2 border-red-400" [title]="store.locale === 'en'
+              ? (value.FieldTextValueENWas || value.FieldValueWas)
+              : (value.FieldTextValueWas || value.FieldValueWas)" [innerHTML]="store.locale === 'en'
+                 ? (value.FieldTextValueENWas || value.FieldValueWas)
+                 : (value.FieldTextValueWas || value.FieldValueWas)">
+                                </div>
+                            </ng-template>
+
+                            <ng-template [slot]="'FieldValueIs'" let-value="data">
+                                <div *ngIf="store.locale === 'en'
+            ? (value.FieldTextValueEN || value.FieldValueIs)
+            : (value.FieldTextValue || value.FieldValueIs)" class="max-w-xs truncate text-gray-600 dark:text-gray-400
+           bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded
+           border-l-2 border-green-400" [title]="store.locale === 'en'
+              ? (value.FieldTextValueEN || value.FieldValueIs)
+              : (value.FieldTextValue || value.FieldValueIs)" [innerHTML]="store.locale === 'en'
+                 ? (value.FieldTextValueEN || value.FieldValueIs)
+                 : (value.FieldTextValue || value.FieldValueIs)">
+                                </div>
+                            </ng-template>
+
+                            <ng-template [slot]="'DateModified'" let-value="data">
+                                <div class="text-sm text-gray-500 dark:text-gray-400">
+                                    <div class="font-medium">{{value.DateModified | date: 'dd/MM/yyyy'}}</div>
+                                    <div class="text-xs">{{value.DateModified | date: 'shortTime'}}</div>
+                                </div>
+                            </ng-template>
+                        </ng-datatable>
+                        }
+                        @if(selectedTab === 'attachments'){
+                        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                                <svg class="w-5 h-5 me-2 text-primary" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13">
+                                    </path>
+                                </svg>
+                                تعديلات المرفقات
+                                <span
+                                    class="ms-2 text-sm font-normal text-gray-500 dark:text-gray-400">({{filteredAttachmentRows().length}}
+                                    عنصر)</span>
+                            </h3>
+                        </div>
+                        <ng-datatable [rows]="filteredAttachmentRows()" [columns]="attachmentCols" [sortable]="true"
+                            class="w-full" [stickyHeader]="true" [showPageSize]="true" [pageSize]="10"
+                            skin="whitespace-nowrap table-hover bh-cursor-pointer bh-table-compact modern-table"
+                            [height]="'400px'" [noDataContent]="getNoDataMessage()"
+                            [paginationInfo]="store.locale === 'en'? 'Showing {0} to {1} of {2} entries': 'عرض {0} إلى {1} من {2}'"
+                            firstArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
+                            lastArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg> '
+                            previousArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
+                            nextArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'>
+                            <ng-template [slot]="'serialNumber'" let-value="data" let-index="index">
+                                <div
+                                    class="text-center font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 px-2 py-1 rounded">
+                                    {{ value.serialNumber }}
+                                </div>
+                            </ng-template>
+                            <ng-template [slot]="'FKStatusOld'" let-value="data">
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                    @if(store.locale === 'en'){
+                                    {{ value.StatusOld_En}}
+                                    }@else {
+                                    {{ value.StatusOld_Ar}}
+                                    }
+                                </span>
+                            </ng-template>
+                            <ng-template [slot]="'FKStatusNew'" let-value="data">
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                                    @if(store.locale === 'en'){
+                                    {{ value.StatusNew_En}}
+                                    }@else {
+                                    {{ value.StatusNew_Ar}}
+                                    }
+                                </span>
+                            </ng-template>
+
+                            <ng-template [slot]="'FieldName'" let-value="data">
+                                <div class="font-medium text-gray-900 dark:text-white">
+                                    @if(store.locale === 'en'){
+                                    {{ value.FieldTitleEn}}
+                                    }@else {
+                                    {{ value.FieldTitleAr}}
+                                    }
+                                </div>
+                            </ng-template>
+                            <ng-template [slot]="'FieldValueWas'" let-value="data">
+                                @if(value.FieldName !== 'AttachmentDocID'){
+                                <div *ngIf="value.FieldValueWas" class="max-w-xs truncate text-gray-600 dark:text-gray-400 bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded border-l-2 border-red-400"
+                                    [title]="store.locale === 'en'? (value.FieldTextValueENWas || value.FieldValueWas) : (value.FieldTextValueWas || value.FieldValueWas)">
+                                    @if(store.locale === 'en'){
+                                    {{ value.FieldTextValueENWas || value.FieldValueWas}}
+                                    }@else {
+                                    {{ value.FieldTextValueWas || value.FieldValueWas}}
+                                    }
+                                </div>
+                                }
+                                @if(value.FieldName === 'AttachmentDocID' && value.FieldValueWas) {
+                                <button (click)="openFile(value.FieldValueWas)"
+                                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg">
+                                    عرض المرفق
+                                </button>
+                                }
+
+
+                            </ng-template>
+                            <ng-template [slot]="'FieldValueIs'" let-value="data">
+                                @if(value.FieldName !== 'AttachmentDocID'){
+                                <div *ngIf="value.FieldValueIs" class="max-w-xs truncate text-gray-600 dark:text-gray-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded border-l-2 border-green-400"
+                                    [title]="store.locale === 'en'? (value.FieldTextValueEN || value.FieldValueIs) : (value.FieldTextValue || value.FieldValueIs)">
+                                    @if(store.locale === 'en'){
+                                    {{ value.FieldTextValueEN || value.FieldValueIs}}
+                                    }@else {
+                                    {{ value.FieldTextValue || value.FieldValueIs }}
+                                    }
+                                </div>
+                                }@if(value.FieldName === 'AttachmentDocID' && value.FieldValueWas) {
+                                <button (click)="openFile(value.FieldValueWas)"
+                                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg">
+                                    عرض المرفق
+                                </button>
+                                }
+
+                            </ng-template>
+                            <ng-template [slot]="'DateModified'" let-value="data">
+                                <div class="text-sm text-gray-500 dark:text-gray-400">
+                                    <div class="font-medium">{{value.DateModified | date: 'dd/MM/yyyy'}}</div>
+                                    <div class="text-xs">{{value.DateModified | date: 'shortTime'}}</div>
+                                </div>
+                            </ng-template>
+                        </ng-datatable>
+                        }
+                        @if(selectedTab === 'tables'){
+                        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                                <svg class="w-5 h-5 me-2 text-primary" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 10h18M3 14h18m-9-4v8m-7 0V4a1 1 0 011-1h16a1 1 0 011 1v16a1 1 0 01-1 1H4a1 1 0 01-1-1z">
+                                    </path>
+                                </svg>
+                                تعديلات الجداول
+                                <span
+                                    class="ms-2 text-sm font-normal text-gray-500 dark:text-gray-400">({{filteredTablesRows().length}}
+                                    عنصر)</span>
+                            </h3>
+                        </div>
+                        <ng-datatable [rows]="filteredTablesRows()" [columns]="tablesCols" [sortable]="true"
+                            class="w-full" [stickyHeader]="true" [showPageSize]="true" [pageSize]="10"
+                            skin="whitespace-nowrap table-hover bh-cursor-pointer bh-table-compact modern-table"
+                            [height]="'400px'" [noDataContent]="getNoDataMessage()"
+                            [paginationInfo]="store.locale === 'en'? 'Showing {0} to {1} of {2} entries': 'عرض {0} إلى {1} من {2}'"
+                            firstArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
+                            lastArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg> '
+                            previousArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
+                            nextArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'>
+                            <ng-template [slot]="'serialNumber'" let-value="data">
+                                <div
+                                    class="text-center font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 px-2 py-1 rounded">
+                                    {{ value.serialNumber }}
+                                </div>
+                            </ng-template>
+                            <ng-template [slot]="'FKStatusOld'" let-value="data">
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                    @if(store.locale === 'en'){
+                                    {{ value.StatusOld_En}}
+                                    }@else {
+                                    {{ value.StatusOld_Ar}}
+                                    }
+                                </span>
+                            </ng-template>
+                            <ng-template [slot]="'FKStatusNew'" let-value="data">
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                                    @if(store.locale === 'en'){
+                                    {{ value.StatusNew_En}}
+                                    }@else {
+                                    {{ value.StatusNew_Ar}}
+                                    }
+                                </span>
+                            </ng-template>
+                            <ng-template [slot]="'FieldName'" let-value="data">
+                                <div class="font-medium text-gray-900 dark:text-white">
+                                    @if(store.locale === 'en'){
+                                    {{ value.FieldTitleEn || value.TableFieldTitleEn}}
+                                    }@else {
+                                    {{ value.FieldTitleAr || value.TableFieldTitleAr}}
+                                    }
+                                </div>
+                            </ng-template>
+
+                            <ng-template [slot]="'FieldValueWas'" let-value="data">
+                                @if(value.FieldName !== 'ComReg_DocId'){
+                                <div class="max-w-xs truncate text-gray-600 dark:text-gray-400 bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded border-l-2 border-red-400"
+                                    [title]="store.locale === 'en'? (value.FieldTextValueENWas || value.FieldValueWas) : (value.FieldTextValueWas || value.FieldValueWas)">
+                                    @if(store.locale === 'en'){
+                                    {{value.FieldTextValueENWas || value.FieldValueWas}}
+                                    }@else {
+                                    {{value.FieldTextValueWas || value.FieldValueWas}}
+                                    }
+                                </div>
+                                }@else {
+                                <button (click)="openFile(value.FieldValueWas)"
+                                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 hover:border-blue-300 transition-all duration-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800 dark:hover:bg-blue-900/40">
+                                    <svg class="w-3 h-3 me-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                        </path>
+                                    </svg>
+                                    عرض المستند
+                                </button>
+                                }
+                            </ng-template>
+                            <ng-template [slot]="'FieldValueIs'" let-value="data">
+                                @if(value.FieldName !== 'ComReg_DocId'){
+                                <div class="max-w-xs truncate text-gray-600 dark:text-gray-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded border-l-2 border-green-400"
+                                    [title]="store.locale === 'en'? (value.FieldTextValueEN || value.FieldValueIs) : (value.FieldTextValue || value.FieldValueIs)">
+                                    @if(store.locale === 'en'){
+                                    {{ value.FieldTextValueEN || value.FieldValueIs}}
+                                    }@else {
+                                    {{ value.FieldTextValue || value.FieldValueIs}}
+                                    }
+                                </div>
+                                }@else {
+                                <button (click)="openFile(value.FieldValueIs)"
+                                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-green-600 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 hover:border-green-300 transition-all duration-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800 dark:hover:bg-green-900/40">
+                                    <svg class="w-3 h-3 me-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                        </path>
+                                    </svg>
+                                    عرض المستند
+                                </button>
+                                }
+                            </ng-template>
+                            <ng-template [slot]="'DateModified'" let-value="data">
+                                <div class="text-sm text-gray-500 dark:text-gray-400">
+                                    <div class="font-medium">{{value.DateModified | date: 'dd/MM/yyyy'}}</div>
+                                    <div class="text-xs">{{value.DateModified | date: 'shortTime'}}</div>
+                                </div>
+                            </ng-template>
+                        </ng-datatable>
+                        }
+                    </div>
+                </div>
+            </div>
+
+
+
+        </ng-template>
+        <!--   <ng-template #modalFooter>
+            <div class="flex flex-col sm:flex-row gap-1 w-full justify-end items-start">
+                <button type="button" (click)="onUserClose('yes')"
+                    class="btn btn-primary mx-1 px-3 sm:px-5 md:px-8 lg:px-10">
+
+                </button>
+                <button type="button" (click)="onUserClose('no')"
+                    class="btn btn-outline-dark px-5 sm:px-5 md:px-8 lg:px-12 hover:bg-primary hover:text-white ">
+
+                </button>
+            </div>
+        </ng-template> -->
+    </ngx-custom-modal>
+</div>

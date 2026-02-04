@@ -1,0 +1,19 @@
+<div cdkTrapFocus [cdkTrapFocusAutoCapture]="true" class="reject-modal">
+    <!-- Modal -->
+    <ngx-custom-modal #modal11 class="modal-top z-[9999]" [closeOnOutsideClick]="false">
+        <ng-template #modalHeader>
+            <h2 class="text-3xl p-2 flex items-center"> ملاحظة الرفض</h2>
+        </ng-template>
+        <ng-template #modalBody>
+            <p class="text-center text-xl font-bold ltr:text-left rtl:text-right mb-3"> 
+                الطلب غير مستوفي الشوط
+            </p>
+
+
+        </ng-template>
+        <ng-template #modalFooter>
+            <button type="button" (click)="onUserClose('no')"
+                class="btn btn-primary px-12 hover:bg-primary hover:text-white mx-auto">اغلاق</button>
+        </ng-template>
+    </ngx-custom-modal>
+</div>

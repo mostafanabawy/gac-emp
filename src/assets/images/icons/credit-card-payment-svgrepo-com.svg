@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="18.471" height="16.623" viewBox="0 0 18.471 16.623">
+  <g id="credit-card-payment-svgrepo-com" transform="translate(0 -25.6)">
+    <g id="Group_56889" data-name="Group 56889" transform="translate(0 30.217)">
+      <g id="Group_56888" data-name="Group 56888" transform="translate(0 0)">
+        <path id="Path_78278" data-name="Path 78278" d="M16.623,153.6H1.847A1.847,1.847,0,0,0,0,155.447v8.312a1.847,1.847,0,0,0,1.847,1.847H16.623a1.847,1.847,0,0,0,1.847-1.847v-8.312A1.847,1.847,0,0,0,16.623,153.6Zm.924,10.159a.925.925,0,0,1-.924.924H1.847a.925.925,0,0,1-.924-.924v-8.312a.925.925,0,0,1,.924-.924H16.623a.925.925,0,0,1,.924.924v8.312Z" transform="translate(0 -153.6)" fill="#861a37"/>
+      </g>
+    </g>
+    <g id="Group_56891" data-name="Group 56891" transform="translate(4.138 25.6)">
+      <g id="Group_56890" data-name="Group 56890" transform="translate(0 0)">
+        <path id="Path_78279" data-name="Path 78279" d="M124.719,26.667a1.847,1.847,0,0,0-2.455-.893l-7.55,3.521H116.9l5.755-2.683a.925.925,0,0,1,1.227.447l1.043,2.237h1.019Z" transform="translate(-114.714 -25.6)" fill="#861a37"/>
+      </g>
+    </g>
+    <g id="Group_56893" data-name="Group 56893" transform="translate(1.847 32.064)">
+      <g id="Group_56892" data-name="Group 56892">
+        <path id="Path_78280" data-name="Path 78280" d="M54.894,204.8H52.124a.923.923,0,0,0-.924.924v1.847a.923.923,0,0,0,.924.924h2.771a.923.923,0,0,0,.924-.924v-1.847A.923.923,0,0,0,54.894,204.8Zm0,2.771H52.124v-1.847h2.771Z" transform="translate(-51.2 -204.8)" fill="#861a37"/>
+      </g>
+    </g>
+    <g id="Group_56895" data-name="Group 56895" transform="translate(1.847 38.529)">
+      <g id="Group_56894" data-name="Group 56894" transform="translate(0 0)">
+        <rect id="Rectangle_1304" data-name="Rectangle 1304" width="9.235" height="0.924" fill="#861a37"/>
+      </g>
+    </g>
+    <g id="Group_56897" data-name="Group 56897" transform="translate(12.006 37.605)">
+      <g id="Group_56896" data-name="Group 56896">
+        <path id="Path_78281" data-name="Path 78281" d="M336.032,358.4a1.366,1.366,0,0,1-1.847,0,2.487,2.487,0,1,0,1.847,0Zm-1.847,1.847a.462.462,0,1,1,.462-.462A.462.462,0,0,1,334.185,360.247Zm1.847,0a.462.462,0,1,1,.462-.462A.462.462,0,0,1,336.032,360.247Z" transform="translate(-332.8 -358.4)" fill="#861a37"/>
+      </g>
+    </g>
+  </g>
+</svg>

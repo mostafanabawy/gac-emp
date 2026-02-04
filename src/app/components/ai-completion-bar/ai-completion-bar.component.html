@@ -1,0 +1,40 @@
+<!-- Container for the inline AI status indicator -->
+<div class="flex items-center space-x-2 text-sm text-gray-500 font-medium">
+
+    <!-- AI Icon (Styled with your application's primary color: red-700) -->
+    <span class=" w-4 h-4 shrink-0 transition-opacity duration-500" title="AI Processing" [ngClass]="{
+            'text-red-700': percentage() < 75,
+            'text-green-700': percentage() >= 75
+        }">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93h2c0 3.32 2.69 6 6 6v2.93zM18.36 16.83a8 8 0 0 0 0-9.66l-1.42 1.42a6 6 0 0 1 0 6.82l1.42 1.42zM12 4.07V1h2v3.07a8 8 0 0 0-4 0zM5.64 7.17l1.42 1.42a6 6 0 0 1 6.82 0l1.42-1.42a8 8 0 0 0-9.66 0zM12 10.5c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5z" />
+        </svg>
+    </span>
+
+    <!-- Percentage Text Animation (w-12 ensures space for 100%) -->
+    <span class="text-right" [ngClass]="{
+            'text-red-700': percentage() < 75,
+            'text-green-700': percentage() >= 75
+        }">
+        <!-- CountUp animates the number when the percentage input changes -->
+        <span [countUp]="percentage()" [options]="countUpOptions" class="font-bold"></span>%
+    </span>
+
+    <!-- Progress Bar Track -->
+    <div class="w-32 h-1.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+        <!-- Progress Bar Fill: Animated using CSS transition and [style.width] -->
+        <div class="h-full rounded-full transition-all duration-1000 ease-out" [ngClass]="{
+            'bg-red-700': percentage() < 75,
+            'bg-green-700': percentage() >= 75
+        }" [style.width]="progressBarWidth()"></div>
+    </div>
+
+    <!-- Status Text -->
+    <span class="w-20 text-xs shrink-0" [ngClass]="{
+            'text-red-700': percentage() < 75,
+            'text-green-700': percentage() >= 75
+        }">
+        {{ percentage() < 75 ? 'غير مطابق' : 'مطابق' }} </span>
+
+</div>

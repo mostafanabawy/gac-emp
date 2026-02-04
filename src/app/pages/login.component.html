@@ -1,0 +1,126 @@
+<main>
+    <div>
+        <div class="absolute inset-0 bg-[#F0EEE7]">
+            <!--    <img src="/assets/images/auth/bg-gradient.png" alt="image" class="h-full w-full object-cover" /> -->
+        </div>
+        <div
+            class="relative flex min-h-screen items-center justify-center  bg-cover bg-center bg-no-repeat px-6 py-10 dark:bg-[#060818] sm:px-16">
+            <!--
+            bg-[url(/assets/images/auth/map.png)]   
+            <img src="/assets/images/auth/coming-soon-object1.png" alt="image"
+                class="absolute left-0 top-1/2 h-full max-h-[893px] -translate-y-1/2" />
+            <img src="/assets/images/auth/coming-soon-object2.png" alt="image"
+                class="absolute left-24 top-0 h-40 md:left-[30%]" />
+            <img src="/assets/images/auth/coming-soon-object3.png" alt="image"
+                class="absolute right-0 top-0 h-[300px]" />
+            <img src="/assets/images/auth/polygon-object.svg" alt="image" class="absolute bottom-0 end-[28%]" /> -->
+            <div
+                class="relative flex w-full max-w-[1502px] flex-col shadow-lg justify-between overflow-hidden rounded-md backdrop-blur-lg dark:bg-black/50 lg:min-h-[500px] lg:flex-row-reverse lg:gap-10 xl:gap-0 bg-[#FFFFFF80]">
+                <div
+                    class="relative hidden w-full items-center justify-center bg-primary p-5 lg:inline-flex lg:max-w-[835px] xl:-ms-28 ltr:xl:skew-x-[-14deg] rtl:xl:skew-x-[14deg] ltr:direction-rtl rtl:direction-ltr">
+
+                    <div class="rtl:xl:-skew-x-[14deg] ltr:xl:skew-x-[14deg]">
+                        <div class="ms-10 block w-48 lg:w-72">
+                            <img src="/assets/images/auth/login.svg" alt="Cover Image" class="w-full" />
+                        </div>
+                        <a routerLink="/" class="mt-24 hidden w-full max-w-[430px] lg:block" aria-label="home page">
+                            <img src="/assets/images/logo-2022.png" alt="Logo" class="w-2/6 mx-auto p-[6px] object-contain object-center rounded" />
+                        </a>
+                    </div>
+                </div>
+                <div
+                    class="relative flex w-full flex-col items-center justify-center gap-6 px-4 pb-16 pt-6 sm:px-6 lg:max-w-[667px]">
+                    <div
+                        class="flex w-full max-w-[440px] items-center gap-2 lg:absolute lg:end-6 lg:top-6 lg:max-w-full">
+                        <a routerLink="/" class="block w-8 lg:hidden">
+                            <img src="/assets/images/logo-2022.png" alt="Logo" class="mx-auto w-10 p-[6px] object-contain object-center rounded bg-primary" />
+                        </a>
+                        <div class="dropdown ms-auto w-max">
+                            <div hlMenu>
+                                <button type="button"
+                                    class="flex items-center gap-2.5 rounded-lg border border-white-dark/30 bg-white ps-2 pe-3 py-1.5 text-white-dark hover:border-primary hover:text-primary dark:bg-black"
+                                    (click)="changeLanguage(store.index.locale == 'ae' ? {code: 'en', name: 'English'} : {code: 'ae', name: 'Arabic'})">
+                                    <div>
+                                        <img [src]="'/assets/images/flags/'+ (store.index.locale.toUpperCase() == 'AE' ? 'EN' : 'AE') + '.svg'"
+                                            alt="image" class="h-5 w-5 rounded-full object-cover" />
+                                    </div>
+                                    <div class="text-base font-bold uppercase">
+                                        @if(store.index.locale == 'ae'){
+                                        EN
+                                        }@else{
+                                        ع
+                                        }
+                                    </div>
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full max-w-[440px] lg:mt-16">
+                        <div class="mb-10">
+                            <h1 class="text-3xl font-extrabold !leading-snug text-primary md:text-4xl">
+                                {{ 'Sign in' | translate}}
+                            </h1>
+                        </div>
+                        <form class="space-y-5 dark:text-white" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                            <div>
+                                <label for="Username" class="text-base">{{ translations()?.Username?.label }}</label>
+                                <div class="relative text-white-dark">
+                                    <input id="Username" formControlName="Username" type="text"
+                                        [placeholder]="translations()?.userNamePlaceHolder?.label"
+                                        class="form-input ps-10 placeholder:text-sm" />
+                                    <span class="absolute start-4 top-1/2 -translate-y-1/2">
+                                        <icon-user [fill]="true" />
+                                    </span>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="Password" class="text-base">{{ translations()?.Password?.label }}</label>
+                                <div class="relative text-white-dark">
+                                    <input id="Password" formControlName="Password" type="password"
+                                        [placeholder]="translations()?.passwordPlaceHolder?.label"
+                                        class="form-input ps-10 placeholder:text-sm" />
+                                    <span class="absolute start-4 top-1/2 -translate-y-1/2">
+                                        <icon-lock-dots [fill]="true" />
+                                    </span>
+                                </div>
+                            </div>
+                            <button type="submit"
+                                class="btn btn-primary !mt-6 w-full border-0 ltr:text-base rtl:text-sm shadow-[0_10px_20px_-10px_rgba(138,23,62,0.44)]">
+                                {{ translations()?.SignIn?.label}}
+                            </button>
+                            <button type="button" (click)="loginWithMinistryAccount()"
+                                class="btn bg-[#60583d] text-white ltr:text-base rtl:text-sm !mt-4 w-full border-0 shadow-[0_10px_20px_-10px_#60583d44]">
+                                {{ translations()?.MinistryLogin?.label}}
+                            </button>
+                        </form>
+
+                        <div class="dark:text-white mt-3">
+                            <a routerLink="/auth/cover-register"
+                                class="text-primary ltr:ml-1 rtl:mr-1 ltr:text-lg rtl:text-lg hover:underline transition  dark:hover:text-white">
+                                {{ translations()?.ForgetPassword?.label }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 absolute bottom-1">
+                        <a [href]="store.index.locale === 'ae' ? 'https://www.msy.gov.qa/%d9%85%d9%86-%d9%86%d8%ad%d9%86/%d8%b1%d8%a4%d9%8a%d8%a9-%d8%a7%d9%84%d9%88%d8%b2%d8%a7%d8%b1%d8%a9/' : 'https://www.msy.gov.qa/en/about-us/'"
+                            class="hover:underline" target="_blank">
+                            {{ translations()?.aboutUs?.label || 'About Us' }}
+                        </a>
+
+                        <a [href]="store.index.locale === 'ae' ? 'https://www.msy.gov.qa/الخدمات/' : 'https://www.msy.gov.qa/en/services/'"
+                            class="hover:underline" target="_blank">
+                            {{ translations()?.navbarServices?.label || 'Services' }}
+                        </a>
+
+                        <a [href]="store.index.locale === 'ae' ? 'https://www.msy.gov.qa/المراكز-الشبابية/' : 'https://www.msy.gov.qa/en/youth-centers/'"
+                            class="hover:underline" target="_blank">
+                            {{ translations()?.YouthCenters?.label || 'Youth Centers' }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>

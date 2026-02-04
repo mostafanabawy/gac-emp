@@ -1,0 +1,6 @@
+<dl class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-6 text-sm text-gray-700 dark:text-gray-300 p-3 rounded-lg">
+    <div *ngFor="let item of dataToDisplay() | keyvalue : noSort" [ngClass]="{'md:col-span-3': isLongText(item.value)}">
+        <dt class="font-medium text-[#4B5563] mb-1 dark:text-white text-[17px]"> {{ item.key }} </dt>
+        <dd class="text-wrap break-all text-[17px]"> {{ item.value }} </dd>
+    </div>
+</dl>

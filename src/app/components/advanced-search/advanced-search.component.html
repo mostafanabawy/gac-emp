@@ -1,0 +1,100 @@
+<form [formGroup]="searchForm" (ngSubmit)="submitForm()">
+    <div class="flex items-center justify-between">
+        <h2 class="text-3xl font-bold my-3 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            {{translations()?.search?.label}}
+        </h2>
+
+        <button type="button" (click)="toggleAdvancedSearchView()"
+            class="btn flex items-center gap-2 shadow-sm hover:shadow-md transition-all"
+            [ngClass]="isAdvancedSearchCollapsed() ? 'btn-outline-primary' : 'btn-primary'">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
+            {{ isAdvancedSearchCollapsed() ? translations()?.search?.label : translations()?.AdvancedSearch?.label }}
+
+        </button>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+        <div>
+            <label class="text-gray-600" for="ApplicationNumber">
+                {{translations()?.requestNumber?.label}}
+            </label>
+            <input type="text" name="ApplicationNumber" id="ApplicationNumber"
+                class="form-input border border-[#7070705D] " formControlName="ApplicationNumber" dir="ltr">
+        </div>
+        <div>
+            <label class="text-gray-600" for="ApplicantQID">
+                {{translations()?.ApplicantQIDTitleInput?.label}}
+            </label>
+            <input type="text" name="ApplicantQID" id="ApplicantQID" class="form-input border border-[#7070705D] "
+                formControlName="ApplicantQID">
+        </div>
+        <div>
+            <label class="text-gray-600" for="ApplicantName">
+                {{ translations()?.ApplicantNameTitleInput?.label }}
+            </label>
+            <input type="text" name="ApplicantName" id="ApplicantName" class="form-input border border-[#7070705D] "
+                formControlName="ApplicantName">
+        </div>
+        <div>
+            <label class="text-gray-600" for="ServiceID">
+                {{translations()?.ServiceType?.label}}
+            </label>
+            <ng-select type="text" name="ServiceID" id="ServiceID" formControlName="ServiceID"
+                class="border border-[#7070705D] custom-multiselect cursor-pointer" [searchable]="true"
+                [clearable]="false" [multiple]="true" bindValue="ServiceID" [items]="serviceIDLookup() || []"
+                [bindLabel]="store.index.locale == 'en'? 'ServiceTitleEn': 'ServiceTitleAr'"
+                [placeholder]="translations()?.LookupDefault.label"></ng-select>
+        </div>
+        <div>
+            <label class="text-gray-600" for="FkProcessID">
+                {{ translations()?.ProcessID?.label }}
+            </label>
+            <ng-select type="text" name="FkProcessID" id="FkProcessID" class="form-input border border-[#7070705D] "
+                [clearable]="false" formControlName="FkProcessID" bindValue="LookupID" [items]="FkProcessLookup() || []"
+                [searchable]="true" [bindLabel]="store.index.locale == 'en'? 'TitleEn': 'TitleAr'"
+                class="custom-multiselect cursor-pointer" [multiple]="true"
+                [placeholder]="FkProcessLookup() && store.index.locale === 'en'? FkProcessLookup()[0]?.TitleEn: FkProcessLookup()[0]?.TitleAr"></ng-select>
+
+        </div>
+        <div>
+            <label class="text-gray-600" for="FkStatusID">
+                {{translations()?.Status?.label}}
+            </label>
+            <ng-select type="text" name="FkStatusID" id="FkStatusID" class="form-input border border-[#7070705D]"
+                [clearable]="false" formControlName="FkStatusID" bindValue="LookupID" [items]="FkStatusLookup() || []"
+                [searchable]="true" [bindLabel]="store.index.locale == 'en'? 'TitleEn': 'TitleAr'"
+                class="custom-multiselect cursor-pointer" [multiple]="true"
+                [placeholder]="FkStatusLookup() && store.index.locale === 'en'? FkStatusLookup()[0]?.TitleEn: FkStatusLookup()[0]?.TitleAr"></ng-select>
+        </div>
+
+
+    </div>
+    <div class="flex justify-between mt-3 items-end">
+        <div class="flex gap-2">
+            <button class="btn btn-primary">
+                {{translations()?.search?.label}}
+            </button>
+            <button class="btn border border-gray-500 text-gray-700" type="button" (click)="resetData()">
+                {{ translations()?.Reset?.label }}
+            </button>
+        </div>
+        <button (click)="toggleSearchView()"
+            class="btn btn-outline-primary flex items-center gap-2 shadow-sm hover:shadow-md transition-all ltr:ml-auto rtl:mr-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            {{ isSearchCollapsed()? translations()?.ShowSearch?.label : translations()?.HideSearch?.label}}
+        </button>
+    </div>
+</form>

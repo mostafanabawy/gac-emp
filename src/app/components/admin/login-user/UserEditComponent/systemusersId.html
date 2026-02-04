@@ -1,0 +1,333 @@
+<app-bread-crumps [pageName]="translations?.SystemUsers?.label" [url]="itemURL"></app-bread-crumps>
+
+<div class="flex flex-col lg:flex-row min-h-screen bg-gray-100 gap-6 mt-1">
+    <aside
+        class="bg-white shadow-md flex flex-col rounded-t-lg h-fit top-[140px] right-0 transition-all duration-300"
+        role="complementary" aria-label="page sections">
+        <div class="bg-[#60583d] flex items-center justify-between w-full p-4 rounded-t-lg">
+            <h2 class="text-xl font-semibold mb-1 text-white py-2 px-3 flex-1"
+                [ngClass]="sidebarCollapsed ? 'hidden' : 'block'">{{ translations?.Modification?.label }}</h2>
+            <button type="button" (click)="toggleSidebar()" class="collapse-button-custom"
+                [ngClass]="(sidebarCollapsed || isMobileScreen) ? 'mx-auto' : ''"
+                [title]="(sidebarCollapsed || isMobileScreen) ? 'توسيع القائمة' : 'طي القائمة'">
+                <img *ngIf="!sidebarCollapsed" src="/assets/images/r-side.svg" alt="طي القائمة"
+                    class="w-6 h-6 transition-all duration-300">
+                <img *ngIf="sidebarCollapsed" src="/assets/images/l-slide.svg" alt="توسيع القائمة"
+                    class="w-4 h-4 transition-all duration-300">
+            </button>
+        </div>
+        <nav aria-label="page sections first list" class="w-full">
+            <ul class="mt-1 space-y-3 w-full px-3">
+                <li>
+                    <button (click)="changeTab('personal')" aria-label="personal information section" [ngClass]="{
+                        'text-primary font-semibold active-section': activeTab() === 'personal'
+                    }" class="items-center p-3 duration-200 border-b-[1px] border-[#CDCDCD] text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2"
+                        [ngClass]="sidebarCollapsed ? 'border-none' : ''">
+                        <div [title]="sidebarCollapsed ? translations?.PersonalInfo?.label : ''"
+                            class="border p-2 rounded-full border-gray-600"
+                            [ngClass]="activeTab() === 'personal' ? 'border-primary' : ''">
+                            <icon-info-circle></icon-info-circle>
+                        </div>
+                        <span [ngClass]="{
+                            'hidden': sidebarCollapsed,
+                            'flex-1': !sidebarCollapsed,
+                            'text-primary font-semibold active-section': activeTab() === 'personal' && !sidebarCollapsed
+                        }">{{ translations?.PersonalInfo?.label }}</span>
+                    </button>
+                </li>
+
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-6 bg-white rounded-lg shadow-md order-2 md:order-none">
+        <div class="mb-4">
+            <button type="button" (click)="goBackToPreviousTab()" class="btn btn-primary px-4 py-2 rounded ms-auto">
+                <icon-arrow-left class="me-2"></icon-arrow-left>
+                {{ translations?.back?.label }}
+            </button>
+        </div>
+        <ng-container [ngSwitch]="activeTab()">
+            <!-- Personal Info -->
+            <section *ngSwitchCase="'personal'" id="personal-section">
+                <div class="card">
+                    <h2 class="text-2xl font-bold border-b pb-3 mb-3">{{ translations?.PersonalInfo?.label }}</h2>
+                    <div class="card-body">
+                        <form [formGroup]="addUserForm" (ngSubmit)="submitUpdateUser()">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                                <div>
+                                    <label for="AddUsername">
+                                        {{ translations?.Username?.label }}
+                                        <span *ngIf="!username?.value" class="text-red-500 font-bold">*</span>
+                                    </label>
+
+                                    <input autocomplete="off" id="AddUsername" type="text" class="form-input w-full"
+                                        formControlName="Username" [placeholder]="translations?.Username?.label"
+                                        [ngClass]="{
+                            'is-invalid': username?.invalid && (username?.dirty || username?.touched)
+                            }" />
+
+                                    <div *ngIf="username?.invalid && (username?.dirty || username?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.Username?.validation }}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="AddPassword">{{ translations?.Password?.label }}
+                                        <span *ngIf="!password?.value" class="text-red-500 font-bold">*</span>
+                                    </label>
+                                    <input autocomplete="off" id="AddPassword" type="password" class="form-input w-full"
+                                        formControlName="Password" [placeholder]="translations?.Password?.label"
+                                        [ngClass]="{'is-invalid': password?.invalid && (password?.dirty || password?.touched)}" />
+                                    <div *ngIf="password?.invalid && (password?.dirty || password?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.Password?.validation }}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="AddAdName">{{ translations?.AdName?.label }}</label>
+                                    <input id="AddAdName" type="text" class="form-input w-full" formControlName="AdName"
+                                        [placeholder]="translations?.AdName?.label" />
+                                </div>
+
+                                <div>
+                                    <label for="AddName">{{ translations?.NameAr?.label }}
+                                        <span *ngIf="!nameAR?.value" class="text-red-500 font-bold">*</span>
+                                    </label>
+                                    <input id="AddName" type="text" class="form-input w-full" formControlName="Name"
+                                        [placeholder]="translations?.NameAr?.label"
+                                        [ngClass]="{'is-invalid': nameAR?.invalid && (nameAR?.dirty || nameAR?.touched)}" />
+                                    <div *ngIf="nameAR?.invalid && (nameAR?.dirty || nameAR?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.NameAr?.validation }}
+                                    </div>
+
+                                </div>
+
+                                <div>
+                                    <label for="AddNameEn">{{ translations?.NameEn?.label }}
+                                        <span *ngIf="!nameEn?.value" class="text-red-500 font-bold">*</span>
+                                    </label>
+                                    <input id="AddNameEn" type="text" class="form-input w-full" formControlName="NameEn"
+                                        [placeholder]="translations?.NameEn?.label"
+                                        [ngClass]="{'is-invalid': nameEn?.invalid && (nameEn?.dirty || nameEn?.touched)}" />
+                                    <div *ngIf="nameEn?.invalid && (nameEn?.dirty || nameEn?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.NameEn?.validation }}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="AddPhone">{{ translations?.Phone?.label }}</label>
+                                    <input id="AddPhone" type="text" class="form-input w-full" formControlName="Phone"
+                                        [placeholder]="translations?.Phone?.label"
+                                        [ngClass]="{'is-invalid': phone?.invalid && (phone?.dirty || phone?.touched)}" />
+                                    <div *ngIf="phone?.invalid && (phone?.dirty || phone?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.Phone?.validation }}
+                                    </div>
+
+                                </div>
+
+                                <div>
+                                    <label for="AddEmail">{{ translations?.Email?.label }}</label>
+                                    <input id="AddEmail" type="email" class="form-input w-full" formControlName="Email"
+                                        [placeholder]="translations?.Email?.label"
+                                        [ngClass]="{'is-invalid': email?.invalid && (email?.dirty || email?.touched)}" />
+                                    <div *ngIf="email?.invalid && (email?.dirty || email?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.Email?.validation }}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="AddFkTitleID">{{ translations?.FkTitleID?.label }}
+                                        <span *ngIf="title?.value == -1" class="text-red-500 font-bold">*</span>
+                                    </label>
+                                    <ng-select id="AddFkTitleID" class="w-full" [items]="Title" bindValue="LookupID"
+                                        formControlName="FkTitleID" [placeholder]="translations?.FkTitleID?.label"
+                                        [ngClass]="{'is-invalid': title?.invalid && (title?.dirty || title?.touched)}"
+                                        aria-labelledby="AddFkTitleID-label">
+                                        <span id="AddFkTitleID-label" class="sr-only">{{ translations?.FkTitleID?.label
+                                            }}</span>
+                                        <ng-template ng-label-tmp let-item="item">
+                                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                                        </ng-template>
+                                        <ng-template ng-option-tmp let-item="item">
+                                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                                        </ng-template>
+                                    </ng-select>
+                                    <div *ngIf="title?.invalid && (title?.dirty || title?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.FkTitleID?.validation }}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="AddFkRoleID">{{ translations?.Role?.label }}
+                                        <span *ngIf="role?.value == -1" class="text-red-500 font-bold">*</span>
+                                    </label>
+                                    <ng-select id="AddFkRoleID" class="w-full" [items]="Roles" bindValue="LookupID"
+                                        (change)="onRoleChange($event)" [placeholder]="translations?.Role?.label"
+                                        [ngClass]="{'is-invalid': role?.invalid && (role?.dirty || role?.touched)}"
+                                        formControlName="FkRoleID" aria-labelledby="AddFkRoleID-label">
+                                        <span id="AddFkRoleID-label" class="sr-only">{{ translations?.Role?.label
+                                            }}</span>
+                                        <ng-template ng-label-tmp let-item="item">
+                                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                                        </ng-template>
+                                        <ng-template ng-option-tmp let-item="item">
+                                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                                        </ng-template>
+                                    </ng-select>
+                                    <div *ngIf="role?.invalid && (role?.dirty || role?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.FkRoleID?.validation }}
+                                    </div>
+                                </div>
+
+                                <div *ngIf="showSections">
+                                    <label for="AddFkSectionId">{{ translations?.Section?.label || 'القسم'
+                                        }}</label>
+                                    <ng-select (change)="onSectionChange($event)" id="AddFkSectionId" class="w-full"
+                                        [items]="Sections" bindValue="LookupID"
+                                        [placeholder]="translations?.Section?.label || 'القسم'"
+                                        formControlName="FkSectionId" [searchFn]="customSearchFn"
+                                        aria-labelledby="AddFkSectionId-label">
+                                        <span id="AddFkSectionId-label" class="sr-only">{{
+                                            translations?.Section?.label
+                                            || 'القسم'
+                                            }}</span>
+                                        <ng-template ng-label-tmp let-item="item">
+                                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                                        </ng-template>
+                                        <ng-template ng-option-tmp let-item="item">
+                                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                                        </ng-template>
+                                    </ng-select>
+                                </div>
+
+                                <div *ngIf="showClubs">
+                                    <label for="AddFkClubID">{{ translations?.Club?.label || 'النادي' }}</label>
+                                    <ng-select id="AddFkClubID" class="w-full" [items]="Clubses" bindValue="LookupID"
+                                        [placeholder]="translations?.Club?.label || 'النادي'" formControlName="FkClubID"
+                                        aria-labelledby="AddFkClubID-label">
+                                        <span id="AddFkClubID-label" class="sr-only">{{ translations?.Club?.label ||
+                                            'النادي'
+                                            }}</span>
+                                        <ng-template ng-label-tmp let-item="item">
+                                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                                        </ng-template>
+                                        <ng-template ng-option-tmp let-item="item">
+                                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                                        </ng-template>
+                                    </ng-select>
+                                </div>
+
+                                <div>
+                                    <label for="AddReceiveNotifications">
+                                        {{ translations?.Notifications?.label }}
+                                        <span *ngIf="!receiveNotifications.value || receiveNotifications?.value == -1"
+                                            class="text-red-500 font-bold">*</span>
+
+                                    </label>
+
+
+                                    <ng-select id="AddReceiveNotifications" class="w-full" [items]="Notifications"
+                                        bindValue="LookupID" [placeholder]="translations?.Notifications?.label "
+                                        formControlName="ReceiveNotifications" [ngClass]=""
+                                        (change)="onNotificationsChange($event)"
+                                        aria-labelledby="AddReceiveNotifications-label">
+                                        <span id="AddReceiveNotifications-label" class="sr-only">{{
+                                            translations?.Notifications?.label }}</span>
+                                        <ng-template ng-label-tmp let-item="item">
+                                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                                        </ng-template>
+                                        <ng-template ng-option-tmp let-item="item">
+                                            {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                                        </ng-template>
+                                    </ng-select>
+                                    <div *ngIf="receiveNotifications?.invalid && (receiveNotifications?.dirty || receiveNotifications?.touched)"
+                                        class="text-red-500 text-sm mt-1">
+                                        {{ translations?.ReceiveNotifications?.validation }}
+                                    </div>
+                                </div>
+
+                                <div *ngIf="showNotifications" class="col-span-1">
+                                    <label>{{ translations?.NotificationTime?.label }}
+                                        <span *ngIf="isSpecificTime && !notificationTime?.value"
+                                            class="text-red-500 font-bold">
+                                            *
+                                        </span>
+                                    </label>
+                                    <div class="flex items-center gap-4">
+                                        <label class="flex items-center gap-1">
+                                            <input type="radio" [value]="false"
+                                                formControlName="ReceiveNotificationsAtspecificTime"
+                                                (change)="onTimeTypeChange()" [disabled]="!isSpecificTime" [ngClass]="{
+                                 'is-invalid': isSpecificTime && notificationTime?.invalid && (notificationTime?.dirty || notificationTime?.touched)
+                                  }" />
+                                            {{ translations?.AllTimes?.label }}
+                                        </label>
+
+                                        <label class="flex items-center gap-1">
+                                            <input type="radio" [value]="true"
+                                                formControlName="ReceiveNotificationsAtspecificTime"
+                                                (change)="onTimeTypeChange()" />
+                                            {{ translations?.SpecificTime?.label }}
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <ng-container *ngIf="showTimeFields">
+                                    <div>
+                                        <label>
+                                            {{ translations?.NotificationTimeStart?.label }}
+                                            <span *ngIf="addUserForm.get('NotificationTimeStart')?.hasError('required')"
+                                                class="text-red-500">*</span>
+                                        </label>
+                                        <input type="time" class="form-input w-full"
+                                            [ngClass]="{ 'is-invalid': addUserForm.get('NotificationTimeStart')?.invalid && (addUserForm.get('NotificationTimeStart')?.dirty || addUserForm.get('NotificationTimeStart')?.touched) }"
+                                            formControlName="NotificationTimeStart">
+
+                                    </div>
+                                    <div>
+                                        <label>
+                                            {{ translations?.NotificationTimeEnd?.label }}
+                                            <span *ngIf="addUserForm.get('NotificationTimeEnd')?.hasError('required')"
+                                                class="text-red-500">*</span>
+                                        </label>
+                                        <input type="time"
+                                            [ngClass]="{ 'is-invalid': addUserForm.get('NotificationTimeEnd')?.invalid && (addUserForm.get('NotificationTimeEnd')?.dirty || addUserForm.get('NotificationTimeEnd')?.touched) }"
+                                            class="form-input w-full" formControlName="NotificationTimeEnd">
+
+                                    </div>
+
+                                </ng-container>
+
+                            </div>
+                            <!-- Status -->
+                            <div class="mt-4">
+                                <label for="Status" class="block text-sm text-gray-600">{{
+                                    translations?.Activited?.label }}</label>
+                                <select id="Status" formControlName="Activited"
+                                    class="form-select w-full border rounded p-2 text-white-dark">
+                                    <option [ngValue]="true">{{ translations?.Active?.label }}</option>
+                                    <option [ngValue]="false">{{ translations?.NotActive?.label }}</option>
+                                </select>
+                            </div>
+                            <!-- Submit -->
+                            <div class="flex justify-end gap-2 pt-6">
+                                <button type="submit" class="btn btn-primary px-4 py-2 rounded">{{
+                                    translations?.update?.label }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </ng-container>
+    </main>
+</div>

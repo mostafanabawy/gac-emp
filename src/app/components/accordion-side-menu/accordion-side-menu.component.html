@@ -1,0 +1,34 @@
+<li class="accordion menu nav-item">
+    <button type="button" class="nav-link group w-full"
+        [ngClass]="{ active: activeDropdown.includes(item.itemId.toString()) }"
+        (click)="toggleAccordion(item.itemId.toString())">
+        <div class="flex items-center">
+
+            <span class="text-black dark:text-[#506690] dark:group-hover:text-white-dark ltr:pl-3 rtl:pr-3">
+                {{ store.locale === 'en'? item.TitleEn: item.TitleAr }}
+            </span>
+        </div>
+        <div [ngClass]="{ 'rtl:rotate-90 -rotate-90': !activeDropdown.includes('dashboard') }">
+            <icon-caret-down />
+        </div>
+    </button>
+    <div [@slideDownUp]="!activeDropdown.includes(item.itemId.toString())" class="accordion-content">
+        <ul class="sub-menu text-gray-500">
+            <ng-container *ngFor="let child of item.children">
+                <li *ngIf="!child.children">
+                    <a [routerLink]="isService()? child.ItemURL.split('?')[0] :child.ItemURL" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: true }" (click)="toggleMobileMenu(); isService()? navigateToDetails(child): ''">
+                        {{ store.locale === 'en'? child.TitleEn :child.TitleAr }}</a>
+                </li>
+                <li *ngIf="child.children && child.children[0].MenuStyle !== 'Tabs'">
+                    @if(child.children[0].MenuStyle === 'List'){
+                        <app-accordion-side-menu [item]="child" [isService]="true"></app-accordion-side-menu>
+                        
+                    }@else {
+                        <app-accordion-side-menu [item]="child" [isService]="false"></app-accordion-side-menu>
+                    }
+                </li>
+            </ng-container>
+        </ul>
+    </div>
+</li>

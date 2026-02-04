@@ -1,0 +1,16 @@
+<div [ngClass]="{'bg-gray-100': isDisabled()}">
+  <quill-editor
+  class="w-full"
+    #editor
+    [formControl]="form"
+    [modules]="modules"
+    [readOnly]="isDisabled()"
+    format="html"
+    style="height:200px"
+    (onEditorChanged)="onContentChanged($event)"
+    (onBlur)="onBlur()"
+    [placeholder]="placeHolder() || ''"
+    [id]="quillID()"
+  >
+  </quill-editor>
+</div>

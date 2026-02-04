@@ -1,0 +1,791 @@
+<app-bread-crumps [pageName]="translations?.SystemUsers?.label" [url]="itemURL"></app-bread-crumps>
+
+<div *ngIf="showAddUserModal"
+    class="fixed inset-0 overflow-auto zindex-88 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="w-full h-full overflow-auto flex items-center justify-center p-4">
+        <div
+            class="bg-white dark:bg-[#0e1726] rounded-lg shadow-lg w-[95%] md:w-[1200px] max-h-[90vh] overflow-y-auto p-8">
+            <div class="flex justify-between close-popup">
+
+                <h3 class="text-xl font-bold mb-6" id="addAttachmentModalLabel">
+                    {{ translations?.add?.label }}
+                </h3>
+                <button type="button" (click)="closeAddUserModal()" class="bg-primary text-white">
+                    <icon-x></icon-x>
+                </button>
+            </div>
+
+            <form [formGroup]="addUserForm" (ngSubmit)="submitAddUser()">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                    <div>
+                        <label for="AddUsername">
+                            {{ translations?.Username?.label }}
+                            <span *ngIf="!username?.value" class="text-red-500 font-bold">*</span>
+                        </label>
+
+                        <input autocomplete="off" id="AddUsername" type="text" class="form-input w-full"
+                            formControlName="Username" [placeholder]="translations?.Username?.label" [ngClass]="{
+                            'is-invalid': username?.invalid && (username?.dirty || username?.touched)
+                            }" />
+
+                        <div *ngIf="username?.invalid && (username?.dirty || username?.touched)"
+                            class="text-red-500 text-sm mt-1">
+                            {{ translations?.Username?.validation }}
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <label for="AddPassword">{{ translations?.Password?.label }}
+                            <span *ngIf="!password?.value" class="text-red-500 font-bold">*</span>
+                        </label>
+                        <input autocomplete="off" id="AddPassword" type="password" class="form-input w-full"
+                            formControlName="Password" [placeholder]="translations?.Password?.label"
+                            [ngClass]="{'is-invalid': password?.invalid && (password?.dirty || password?.touched)}" />
+                        <div *ngIf="password?.invalid && (password?.dirty || password?.touched)"
+                            class="text-red-500 text-sm mt-1">
+                            {{ translations?.Password?.validation }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="AddAdName">{{ translations?.AdName?.label }}</label>
+                        <input id="AddAdName" type="text" class="form-input w-full" formControlName="AdName"
+                            [placeholder]="translations?.AdName?.label" />
+                    </div>
+
+                    <div>
+                        <label for="AddName">{{ translations?.NameAr?.label }}
+                            <span *ngIf="!nameAR?.value" class="text-red-500 font-bold">*</span>
+                        </label>
+                        <input id="AddName" type="text" class="form-input w-full" formControlName="Name"
+                            [placeholder]="translations?.NameAr?.label"
+                            [ngClass]="{'is-invalid': nameAR?.invalid && (nameAR?.dirty || nameAR?.touched)}" />
+                        <div *ngIf="nameAR?.invalid && (nameAR?.dirty || nameAR?.touched)"
+                            class="text-red-500 text-sm mt-1">
+                            {{ translations?.NameAr?.validation }}
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <label for="AddNameEn">{{ translations?.NameEn?.label }}
+                            <span *ngIf="!nameEn?.value" class="text-red-500 font-bold">*</span>
+                        </label>
+                        <input id="AddNameEn" type="text" class="form-input w-full" formControlName="NameEn"
+                            [placeholder]="translations?.NameEn?.label"
+                            [ngClass]="{'is-invalid': nameEn?.invalid && (nameEn?.dirty || nameEn?.touched)}" />
+                        <div *ngIf="nameEn?.invalid && (nameEn?.dirty || nameEn?.touched)"
+                            class="text-red-500 text-sm mt-1">
+                            {{ translations?.NameEn?.validation }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="AddPhone">{{ translations?.Phone?.label }}</label>
+                        <input id="AddPhone" type="text" class="form-input w-full" formControlName="Phone"
+                            [placeholder]="translations?.Phone?.label"
+                            [ngClass]="{'is-invalid': phone?.invalid && (phone?.dirty || phone?.touched)}" />
+                        <div *ngIf="phone?.invalid && (phone?.dirty || phone?.touched)"
+                            class="text-red-500 text-sm mt-1">
+                            {{ translations?.Phone?.validation }}
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <label for="AddEmail">{{ translations?.Email?.label }}</label>
+                        <input id="AddEmail" type="email" class="form-input w-full" formControlName="Email"
+                            [placeholder]="translations?.Email?.label"
+                            [ngClass]="{'is-invalid': email?.invalid && (email?.dirty || email?.touched)}" />
+                        <div *ngIf="email?.invalid && (email?.dirty || email?.touched)"
+                            class="text-red-500 text-sm mt-1">
+                            {{ translations?.Email?.validation }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="AddFkTitleID">{{ translations?.FkTitleID?.label }}
+                            <span *ngIf="title?.value == -1" class="text-red-500 font-bold">*</span>
+                        </label>
+                        <ng-select id="AddFkTitleID" class="w-full" [items]="Title" bindValue="LookupID"
+                            formControlName="FkTitleID" [placeholder]="translations?.FkTitleID?.label" [ngClass]="{'is-invalid': title?.invalid && (title?.dirty || title?.touched)}"
+                            aria-labelledby="AddFkTitleID-label">
+                            <span id="AddFkTitleID-label" class="sr-only">{{ translations?.FkTitleID?.label }}</span>
+                            <ng-template ng-label-tmp let-item="item">
+                                {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                            </ng-template>
+                            <ng-template ng-option-tmp let-item="item">
+                                {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                            </ng-template>
+                        </ng-select>
+                         <div *ngIf="title?.invalid && (title?.dirty || title?.touched)"
+                            class="text-red-500 text-sm mt-1">
+                            {{ translations?.FkTitleID?.validation }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="AddFkRoleID">{{ translations?.Role?.label }}
+                            <span *ngIf="role?.value == -1" class="text-red-500 font-bold">*</span>
+                        </label>
+                        <ng-select id="AddFkRoleID" class="w-full" [items]="Roles" bindValue="LookupID"
+                            (change)="onRoleChange($event)" [placeholder]="translations?.Role?.label" [ngClass]="{'is-invalid': role?.invalid && (role?.dirty || role?.touched)}"
+                            formControlName="FkRoleID" aria-labelledby="AddFkRoleID-label">
+                            <span id="AddFkRoleID-label" class="sr-only">{{ translations?.Role?.label }}</span>
+                            <ng-template ng-label-tmp let-item="item">
+                                {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                            </ng-template>
+                            <ng-template ng-option-tmp let-item="item">
+                                {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                            </ng-template>
+                        </ng-select>
+                        <div *ngIf="role?.invalid && (role?.dirty || role?.touched)"
+                            class="text-red-500 text-sm mt-1">
+                            {{ translations?.FkRoleID?.validation }}
+                        </div>
+                    </div>
+
+                    <div *ngIf="showSections">
+                        <label for="AddFkSectionId">{{ translations?.Section?.label }}</label>
+                        <ng-select (change)="onSectionChange($event)" id="AddFkSectionId" class="w-full"
+                            [items]="Sections" bindValue="LookupID"
+                            [placeholder]="translations?.Section?.label" formControlName="FkSectionId"
+                            [searchFn]="customSearchFn" aria-labelledby="AddFkSectionId-label">
+                            <span id="AddFkSectionId-label" class="sr-only">{{ translations?.Section?.label
+                                }}</span>
+                            <ng-template ng-label-tmp let-item="item">
+                                {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                            </ng-template>
+                            <ng-template ng-option-tmp let-item="item">
+                                {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                            </ng-template>
+                        </ng-select>
+                    </div>
+
+                    <div *ngIf="showClubs">
+                        <label for="AddFkClubID">{{ translations?.Club?.label || 'النادي' }}</label>
+                        <ng-select id="AddFkClubID" class="w-full" [items]="Clubses" bindValue="LookupID"
+                            [placeholder]="translations?.Club?.label || 'النادي'" formControlName="FkClubID"
+                            aria-labelledby="AddFkClubID-label">
+                            <span id="AddFkClubID-label" class="sr-only">{{ translations?.Club?.label || 'النادي'
+                                }}</span>
+                            <ng-template ng-label-tmp let-item="item">
+                                {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                            </ng-template>
+                            <ng-template ng-option-tmp let-item="item">
+                                {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                            </ng-template>
+                        </ng-select>
+                    </div>
+
+                    <div>
+                        <label for="AddReceiveNotifications">
+                            {{ translations?.Notifications?.label }}
+                            <span *ngIf="receiveNotifications?.value == -1"
+                                class="text-red-500 font-bold">*</span>
+
+                        </label>
+
+
+                        <ng-select id="AddReceiveNotifications" class="w-full" [items]="Notifications"
+                            bindValue="LookupID" [placeholder]="translations?.Notifications?.label "
+                            formControlName="ReceiveNotifications" (change)="onNotificationsChange($event)"
+                            aria-labelledby="AddReceiveNotifications-label">
+                            <span id="AddReceiveNotifications-label" class="sr-only">{{
+                                translations?.Notifications?.label }}</span>
+                            <ng-template ng-label-tmp let-item="item">
+                                {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                            </ng-template>
+                            <ng-template ng-option-tmp let-item="item">
+                                {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                            </ng-template>
+                        </ng-select>
+                        <div *ngIf="receiveNotifications?.invalid && (receiveNotifications?.dirty || receiveNotifications?.touched)"
+                            class="text-red-500 text-sm mt-1">
+                            {{ translations?.ReceiveNotifications?.validation }}
+                        </div>
+                    </div>
+
+                    <div *ngIf="showNotifications" class="col-span-1">
+                        <label>{{ translations?.NotificationTime?.label }}
+                            <span *ngIf="isSpecificTime && !notificationTime?.value" class="text-red-500 font-bold">
+                                *
+                            </span>
+                        </label>
+                        <div class="flex items-center gap-4">
+                            <label class="flex items-center gap-1">
+                                <input type="radio" [value]="false" formControlName="ReceiveNotificationsAtspecificTime"
+                                    (change)="onTimeTypeChange()" [disabled]="!isSpecificTime" [ngClass]="{
+                                 'is-invalid': isSpecificTime && notificationTime?.invalid && (notificationTime?.dirty || notificationTime?.touched)
+                                  }" />
+                                {{ translations?.AllTimes?.label }}
+                            </label>
+
+                            <label class="flex items-center gap-1">
+                                <input type="radio" [value]="true" formControlName="ReceiveNotificationsAtspecificTime"
+                                    (change)="onTimeTypeChange()" />
+                                {{ translations?.SpecificTime?.label }}
+                            </label>
+                        </div>
+                    </div>
+
+                    <ng-container *ngIf="showTimeFields">
+                        <div>
+                            <label>
+                                {{ translations?.NotificationTimeStart?.label }}
+                                <span *ngIf="addUserForm.get('NotificationTimeStart')?.hasError('required')"
+                                    class="text-red-500">*</span>
+                            </label>
+                            <input type="time" class="form-input w-full"
+                                [ngClass]="{ 'is-invalid': addUserForm.get('NotificationTimeStart')?.invalid && (addUserForm.get('NotificationTimeStart')?.dirty || addUserForm.get('NotificationTimeStart')?.touched) }"
+                                formControlName="NotificationTimeStart">
+
+                        </div>
+                        <div>
+                            <label>
+                                {{ translations?.NotificationTimeEnd?.label }}
+                                <span *ngIf="addUserForm.get('NotificationTimeEnd')?.hasError('required')"
+                                    class="text-red-500">*</span>
+                            </label>
+                            <input type="time"
+                                [ngClass]="{ 'is-invalid': addUserForm.get('NotificationTimeEnd')?.invalid && (addUserForm.get('NotificationTimeEnd')?.dirty || addUserForm.get('NotificationTimeEnd')?.touched) }"
+                                class="form-input w-full" formControlName="NotificationTimeEnd">
+
+                        </div>
+
+                    </ng-container>
+
+                </div>
+
+                <div class="mt-2">
+                    <label for="AddStatus">{{ translations?.Activited?.label }}</label>
+                    <select id="AddStatus" formControlName="Activited" class="form-select text-white-dark"
+                        aria-labelledby="AddStatus-label">
+                        <span id="AddStatus-label" class="sr-only">{{ translations?.Activited?.label }}</span>
+                        <option [ngValue]="true">{{ translations?.Active?.label }}</option>
+                        <option [ngValue]="false">{{ translations?.NotActive?.label }}</option>
+                    </select>
+                </div>
+
+
+                <div class="flex justify-end gap-2 pt-6">
+                    <button type="submit" class="btn btn-primary">{{
+                        translations?.save?.label }}</button>
+                    <button type="button" class="btn btn-primary" (click)="closeAddUserModal()">{{
+                        translations?.close?.label }}</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+<form class="mb-5 rounded-md border border-[#ebedf2] bg-white p-4 dark:border-[#191e3a] dark:bg-[#0e1726]"
+    [formGroup]="usersForm" (ngSubmit)="onSubmit()">
+
+    <div class="flex justify-between items-center mb-5">
+        <h2 class="text-lg font-bold">{{ translations?.search?.label }}</h2>
+        <button type="button" class="btn text-white bg-primary" (click)="openAddUserModal()"
+            title="{{ translations?.AddUser?.label }}">
+            <i class="fa fa-plus me-1" aria-hidden="true"></i>{{ translations?.AddUser?.label }}
+        </button>
+
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div>
+            <label for="LoginName">{{ translations?.Username?.label }}</label>
+            <input id="LoginName" type="text" formControlName="Username" class="form-input"
+                [placeholder]="translations?.Username?.label " />
+        </div>
+
+        <div>
+            <label for="UserName">{{ translations?.Title?.label }}</label>
+            <input id="UserName" type="text" formControlName="Name" class="form-input"
+                [placeholder]="translations?.Title?.label" />
+        </div>
+
+        <div>
+            <label for="Phone">{{ translations?.Phone?.label }}</label>
+            <input id="Phone" type="text" formControlName="Phone" class="form-input"
+                [placeholder]="translations?.Phone?.label " />
+        </div>
+
+        <div>
+            <label for="Email">{{ translations?.Email?.label }}</label>
+            <input id="Email" type="email" formControlName="Email" class="form-input"
+                [placeholder]="translations?.Email?.label " />
+        </div>
+
+        <div>
+            <label for="FkRoleID">{{ translations?.Role?.label }}</label>
+            <ng-select [items]="Roles" id="FkRoleID" bindLabel="TitleEn" bindValue="LookupID"
+                [placeholder]="translations?.Role?.label" formControlName="FkRoleID" [searchFn]="customSearchFn"
+                aria-labelledby="FkRoleID-label">
+                <span id="FkRoleID-label" class="sr-only">{{ translations?.Role?.label }}</span>
+                <ng-template ng-label-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+            </ng-select>
+        </div>
+
+        <div>
+            <label for="FkSectionId">{{ translations?.Section?.label }}</label>
+            <ng-select id="FkSectionId" [items]="Sections" bindLabel="TitleEn" bindValue="LookupID"
+                [placeholder]="translations?.Section?.label " formControlName="FkSectionId" [searchFn]="customSearchFn"
+                aria-labelledby="FkSectionId-label">
+                <span id="FkSectionId-label" class="sr-only">{{ translations?.Section?.label }}</span>
+                <ng-template ng-label-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+            </ng-select>
+        </div>
+
+        <div>
+            <label for="FkClubID">{{ translations?.Club?.label }}</label>
+            <ng-select id="FkClubID" [items]="Clubses" bindLabel="TitleEn" bindValue="LookupID"
+                [placeholder]="translations?.Club?.label " formControlName="FkClubID" [searchFn]="customSearchFn"
+                aria-labelledby="FkClubID-label">
+                <span id="FkClubID-label" class="sr-only">{{ translations?.Club?.label }}</span>
+                <ng-template ng-label-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+            </ng-select>
+        </div>
+
+        <div>
+            <label for="Notifications">{{ translations?.Notifications?.label }}
+
+            </label>
+            <ng-select [items]="Notifications" id="Notifications" bindLabel="TitleEn" [items]="Notifications"
+                bindLabel="TitleEn" bindValue="LookupID" formControlName="ReceiveNotifications"
+                [searchFn]="customSearchFn" aria-labelledby="Notifications-label">
+                <span id="Notifications-label" class="sr-only">{{ translations?.Notifications?.label }}</span>
+                <ng-template ng-label-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+                <ng-template ng-option-tmp let-item="item">
+                    {{ translate.currentLang === 'ae' ? item.TitleAr : item.TitleEn }}
+                </ng-template>
+            </ng-select>
+        </div>
+
+        <div>
+            <label for="Status">{{ translations?.Activited?.label }}</label>
+            <select id="Status" formControlName="Activited" class="form-select text-white-dark"
+                aria-labelledby="Status-label">
+                <span id="Status-label" class="sr-only">{{ translations?.Activited?.label }}</span>
+                <option [ngValue]="null">{{ translations?.AllStatus?.label }}</option>
+                <option [ngValue]="true">{{ translations?.Active?.label }}</option>
+                <option [ngValue]="false">{{ translations?.NotActive?.label }}</option>
+            </select>
+        </div>
+
+        <div class="col-span-full flex justify-center gap-3 mt-5">
+            <button type="submit" class="btn btn-primary" title="{{ translations?.Search?.label || 'بحث' }}">
+                <icon-search class="me-2"></icon-search>
+                <span>{{ translations?.search?.label || 'بحث' }}</span>
+            </button>
+
+            <button type="button" class="btn btn-primary" (click)="onReset()"
+                title="{{ translations?.Reset?.label || 'مسح' }}">
+                <icon-restore class="me-2"></icon-restore>
+                {{ translations?.Reset?.label || 'مسح' }}
+            </button>
+
+            <button type="button" class="btn btn-primary" (click)="exportTOExcel()"
+                title="{{ translations?.ExportReport?.label || 'تصدير' }}">
+                <icon-file class="me-2"></icon-file>
+                {{ translations?.ExportReport?.label || 'تصدير' }}
+            </button>
+        </div>
+    </div>
+</form>
+
+<!-- أزرار الأعمدة والترتيب والتقرير -->
+<div class="space-y-3 mb-4">
+    <div *ngIf="rows.length > 0 && !isLoading" class="flex justify-between items-center p-3 gap-3 bg-white rounded-lg shadow-sm border border-gray-200">
+        <!-- Empty space for alignment -->
+        <div></div>
+
+        <!-- أزرار العرض والترتيب والأعمدة -->
+        <div class="flex gap-2">
+            <!-- أزرار تبديل العرض -->
+            <div class="flex gap-1 border border-gray-300 rounded-lg">
+                <button (click)="toggleViewMode('table')"
+                    [ngClass]="viewMode === 'table' ? 'bg-primary text-white' : 'bg-white text-gray-600 hover:bg-gray-100'"
+                    class="px-3 py-2 rounded transition-all flex items-center gap-2"
+                    [title]="translations?.TableView?.label || 'عرض الجدول'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                </button>
+                <button (click)="toggleViewMode('cards')"
+                    [ngClass]="viewMode === 'cards' ? 'bg-primary text-white' : 'bg-white text-gray-600 hover:bg-gray-100'"
+                    class="px-3 py-2 rounded transition-all flex items-center gap-2"
+                    [title]="translations?.CardsView?.label || 'عرض الكروت'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- زر الترتيب -->
+            <div class="relative hide-on-small-screen">
+                <button (click)="openDropdown('sort'); $event.stopPropagation()"
+                    class="btn flex items-center gap-2 relative toggle-sort-btn shadow-sm hover:shadow-md transition-shadow"
+                    [ngClass]="toggleSortDropdown ? 'btn-primary' : 'btn-outline-primary'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                    </svg>
+                    {{ translations?.sort?.label || 'ترتيب' }}
+                </button>
+
+                <!-- Dropdown للترتيب -->
+                <div *ngIf="toggleSortDropdown"
+                    class="absolute top-full mt-2 rtl:left-0 ltr:right-0 bg-white border border-gray-300 rounded-lg shadow-xl z-50 p-4 w-72 dropdown-container"
+                    (click)="$event.stopPropagation()">
+
+                    <!-- زر إعادة تعيين -->
+                    <div class="mb-3 pb-3 border-b border-gray-200">
+                        <button (click)="resetSort()"
+                            class="w-full px-3 py-2 text-sm font-medium text-white bg-primary rounded hover:bg-primary/90 transition flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            {{ translations?.ResetSort?.label || 'إعادة تعيين الترتيب' }}
+                        </button>
+                    </div>
+
+                    <!-- اختيار العمود -->
+                    <div class="mb-3">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ translations?.SortBy?.label || 'ترتيب حسب' }}
+                        </label>
+                        <ng-select [items]="sortableColumns" bindLabel="title" [(ngModel)]="selectedSortColumn"
+                            (change)="onSortColumnChange($event)"
+                            [placeholder]="translations?.SelectColumn?.placeholder || 'اختر عمود'" class="custom-multiselect"
+                            [clearable]="false">
+                        </ng-select>
+                    </div>
+
+                    <!-- اتجاه الترتيب -->
+                    <div class="border-t border-gray-200 pt-3">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            {{ translations?.Direction?.label || 'الاتجاه' }}
+                        </label>
+                        <div class="flex gap-2">
+                            <button (click)="setSortDirection(1)"
+                                [class.bg-primary]="currentSortDirection === 1"
+                                [class.text-white]="currentSortDirection === 1"
+                                [class.bg-gray-100]="currentSortDirection !== 1"
+                                [class.text-gray-700]="currentSortDirection !== 1"
+                                class="flex-1 px-3 py-2 text-sm font-medium rounded hover:opacity-90 transition flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 15l7-7 7 7" />
+                                </svg>
+                                {{ translations?.Ascending?.label || 'تصاعدي' }}
+                            </button>
+                            <button (click)="setSortDirection(2)"
+                                [class.bg-primary]="currentSortDirection === 2"
+                                [class.text-white]="currentSortDirection === 2"
+                                [class.bg-gray-100]="currentSortDirection !== 2"
+                                [class.text-gray-700]="currentSortDirection !== 2"
+                                class="flex-1 px-3 py-2 text-sm font-medium rounded hover:opacity-90 transition flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                                {{ translations?.Descending?.label || 'تنازلي' }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- زر الأعمدة -->
+            <div class="relative hide-on-small-screen">
+                <button (click)="openDropdown('columns'); $event.stopPropagation()"
+                    class="btn flex items-center gap-2 relative toggle-columns-btn shadow-sm hover:shadow-md transition-shadow"
+                    [ngClass]="toggleColumnsDropdown ? 'btn-primary' : 'btn-outline-primary'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+                    </svg>
+                    {{ translations?.columns?.label || 'أعمدة' }}
+                </button>
+
+                <!-- Dropdown للتحكم في الأعمدة -->
+                <div *ngIf="toggleColumnsDropdown"
+                    class="absolute top-full mt-2 rtl:left-0 ltr:right-0 bg-white border border-gray-300 rounded-lg shadow-xl z-50 p-4 w-64 max-h-96 overflow-y-auto dropdown-container"
+                    (click)="$event.stopPropagation()">
+
+                    <!-- زر إعادة تعيين -->
+                    <div class="mb-3 pb-3 border-b border-gray-200">
+                        <button (click)="resetColumns()"
+                            class="w-full px-3 py-2 text-sm font-medium text-white bg-primary rounded hover:bg-primary/90 transition flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            {{ translations?.Reset?.label || 'إعادة تعيين' }}
+                        </button>
+                    </div>
+
+                    <div class="flex gap-2 mb-3 pb-3 border-b border-gray-200">
+                        <button (click)="selectAllColumns()"
+                            [ngClass]="{'bg-primary text-white': areAllColumnsVisible, 'bg-gray-100 text-gray-700': !areAllColumnsVisible}"
+                            class="flex-1 px-3 py-1.5 text-xs font-medium rounded hover:opacity-90 transition">
+                            {{ translations?.selectAll?.label || 'تحديد الكل' }}
+                        </button>
+                        <button (click)="hideAllColumns()"
+                            [ngClass]="{'bg-primary text-white': areAllColumnsHidden, 'bg-gray-100 text-gray-700': !areAllColumnsHidden}"
+                            class="flex-1 px-3 py-1.5 text-xs font-medium rounded hover:opacity-90 transition">
+                            {{ translations?.hideAll?.label || 'إخفاء الكل' }}
+                        </button>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label *ngFor="let col of allColumns"
+                            class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                            <input type="checkbox" [checked]="col.visible" (change)="toggleColumn(col.field)"
+                                class="w-4 h-4 text-primary rounded focus:ring-primary burgundy-checkbox">
+                            <span class="text-sm">{{ col.title }}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Table View -->
+<app-fees-table *ngIf="viewMode === 'table'" 
+    [rows]="rows" 
+    [cols]="cols" 
+    [isLoading]="isLoading"
+    [isArabic]="isArabic" 
+    [translations]="translations" 
+    [paginationInfo]="paginationInfo"
+    [currentSortField]="currentSortField" 
+    [currentSortDirection]="currentSortDirection" 
+    [expandedRow]="expandedRow"
+    [expandedRowDetails]="expandedRowDetails" 
+    [sortableColumns]="sortableColumns"
+    [selectedSortColumn]="selectedSortColumn"
+    [showPaymentLegend]="false"
+    [showStatusLegend]="false"
+    [showSubmissionLegend]="false"
+    [showDurationLegend]="false"
+    [showEscalationLegend]="false"
+    [showDutyFreeLegend]="false"
+    [showLateRoleLegend]="false"
+    [dutyFreeTypes]="[]"
+    [lateRoles]="[]"
+    [rowIdentifierField]="'ID'"
+    [hideExpandIconWhenLicenseEmpty]="false"
+    [featuredFields]="['ActivitedText']"
+    (onSort)="onSortChange($event)" 
+    (onPageChange)="onPageChange($event)"
+    (onPageSizeChange)="onPageSizeChange($event)" 
+    (onActionClick)="handleActionClick($event)"
+    (onRowExpand)="toggleRowExpand($event)">
+</app-fees-table>
+
+<!-- Cards View -->
+<div *ngIf="viewMode === 'cards' && (rows.length > 0 || isLoading)" class="mt-6">
+    <!-- Loading Skeleton -->
+    <div *ngIf="isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div *ngFor="let _ of [].constructor(6)" class="bg-white rounded-xl shadow-md p-6 animate-pulse">
+            <div class="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
+            <div class="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+            <div class="h-3 bg-gray-200 rounded w-2/3"></div>
+        </div>
+    </div>
+
+    <!-- Cards Grid -->
+    <div *ngIf="!isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div *ngFor="let row of rows; let i = index"
+            class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-6 border border-gray-200 hover:border-primary cursor-pointer"
+            (click)="editUser(row.ID)">
+
+            <!-- Header -->
+            <div class="flex justify-between items-start mb-4 pb-3 border-b border-gray-200">
+                <div class="flex-1">
+                    <h3 class="text-lg font-bold text-gray-800 mb-1">
+                        {{ row.AllName }}
+                    </h3>
+                    <p class="text-sm text-gray-500">
+                        {{ row.Username }}
+                    </p>
+                </div>
+                <div class="flex flex-col gap-1 items-end">
+                    <!-- Status Badge -->
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md" 
+                        [ngClass]="getStatusBadgeClass(row)">
+                        <svg *ngIf="row.Activited" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                        </svg>
+                        <svg *ngIf="!row.Activited" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                        </svg>
+                        {{ getStatusText(row) }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Details Grid -->
+            <div class="space-y-2.5">
+                <!-- Row 1: Phone & Email -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex flex-col">
+                        <span class="text-xs text-gray-500 mb-1">{{ translations?.Phone?.label }}</span>
+                        <span class="text-sm font-semibold text-gray-800 rtl:text-right ltr:text-left force-ltr">{{ row.Phone || '-' }}</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xs text-gray-500 mb-1">{{ translations?.Email?.label }}</span>
+                        <span class="text-sm font-semibold text-gray-800 break-all">{{ row.Email || '-' }}</span>
+                    </div>
+                </div>
+
+                <!-- Row 2: Role & Section -->
+                <div class="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100">
+                    <div class="flex flex-col">
+                        <span class="text-xs text-gray-500 mb-1">{{ translations?.Role?.label }}</span>
+                        <span class="text-sm font-medium text-gray-800">{{ row.Title_Role || '-' }}</span>
+                    </div>
+                    <div class="flex flex-col" *ngIf="row.Title_Section">
+                        <span class="text-xs text-gray-500 mb-1">{{ translations?.Section?.label }}</span>
+                        <span class="text-sm font-medium text-gray-800">{{ row.Title_Section || '-' }}</span>
+                    </div>
+                </div>
+
+                <!-- Row 3: Club & Notifications (if available) -->
+                <div *ngIf="row.Title_Club || row.Title_Notification" class="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100">
+                    <div class="flex flex-col" *ngIf="row.Title_Club">
+                        <span class="text-xs text-gray-500 mb-1">{{ translations?.Club?.label }}</span>
+                        <span class="text-sm font-medium text-gray-800">{{ row.Title_Club || '-' }}</span>
+                    </div>
+                    <div class="flex flex-col" *ngIf="row.Title_Notification">
+                        <span class="text-xs text-gray-500 mb-1">{{ translations?.Notifications?.label }}</span>
+                        <span class="text-sm font-medium text-gray-800">{{ row.Title_Notification || '-' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center">
+                <span class="text-xs text-gray-500">
+                    {{ translations?.Serial?.label }}: {{ row.Serial }}
+                </span>
+                <button class="text-primary hover:text-primary/80 transition" (click)="editUser(row.ID); $event.stopPropagation()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination for Cards View -->
+    <div class="mt-6 p-4 bg-white rounded-xl shadow-md flex flex-col sm:flex-row justify-between items-center gap-3 border border-gray-200">
+        <div class="text-sm text-gray-600">
+            {{ paginationInfoText }}
+        </div>
+
+        <div class="flex items-center gap-2">
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === 1" (click)="onPageChange(1)">
+                «
+            </button>
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === 1" (click)="onPageChange(paginationInfo.CurrentPage - 1)">
+                ‹
+            </button>
+
+            <div class="flex gap-1">
+                <ng-container *ngFor="let page of getPageNumbers()">
+                    <span *ngIf="page === -1" class="px-2 text-gray-400">...</span>
+                    <button *ngIf="page !== -1"
+                        class="w-9 h-9 flex items-center justify-center rounded-full border transition font-medium"
+                        [ngClass]="{'bg-primary text-white border-primary': page === paginationInfo.CurrentPage, 'border-gray-300 text-gray-600 hover:bg-primary hover:text-white hover:border-primary': page !== paginationInfo.CurrentPage}"
+                        (click)="onPageChange(page)">
+                        {{ page }}
+                    </button>
+                </ng-container>
+            </div>
+
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === paginationInfo.TotalPages"
+                (click)="onPageChange(paginationInfo.CurrentPage + 1)">
+                ›
+            </button>
+            <button
+                class="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 text-gray-500 hover:bg-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+                [disabled]="paginationInfo.CurrentPage === paginationInfo.TotalPages"
+                (click)="onPageChange(paginationInfo.TotalPages)">
+                »
+            </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <label for="cardPageSize" class="text-sm text-gray-600 whitespace-nowrap">
+                {{ translations?.rowsPerPage?.label || (isArabic ? 'عدد الصفوف:' : 'Rows:') }}
+            </label>
+            <select id="cardPageSize"
+                class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-primary focus:border-primary bg-white"
+                [(ngModel)]="paginationInfo.PageSize" (ngModelChange)="onPageSizeChange($event)">
+                <option [value]="10">10</option>
+                <option [value]="20">20</option>
+                <option [value]="50">50</option>
+                <option [value]="100">100</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- No Data Message -->
+<div *ngIf="rows.length === 0 && !isLoading"
+    class="mt-6 p-8 bg-white rounded-xl border-2 border-dashed border-gray-300 text-center">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+    </svg>
+    <h3 class="text-xl font-semibold text-gray-700 mb-2">
+        {{ isArabic ? 'لا توجد بيانات' : 'No Data Found' }}
+    </h3>
+    <p class="text-gray-500 mb-4">
+        {{ isArabic ? 'لم يتم العثور على نتائج. يرجى تعديل معايير البحث والمحاولة مرة أخرى.' : 'No results found. Please adjust your search criteria and try again.' }}
+    </p>
+</div>
