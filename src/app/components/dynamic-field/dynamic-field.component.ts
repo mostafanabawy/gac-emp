@@ -489,6 +489,15 @@ export class DynamicFieldComponent implements OnInit {
           this.invalidateLookupCache();
         })
       }
+      let relevantLookup = this.field.LookupValues?.find(lookup => {
+        return lookup.RelevantLookupInternalFieldName && lookup.RelevantLookupId
+      })
+      if (relevantLookup) {
+        this.form!.get(relevantLookup.RelevantLookupInternalFieldName!)?.valueChanges.subscribe((value: any) => {
+          this.invalidateLookupCache();
+        })
+      }
+
 
     }
     if (this.field.FieldType === 19) {
@@ -2057,7 +2066,7 @@ export class DynamicFieldComponent implements OnInit {
                     if (correctService) {
                       Swal.fire({
                         icon: 'error',
-                        title: this.translations()?.fileIncorrectServiceMsg.label.replace('[serviceName]', this.store.index.locale === 'en' ? correctService.TitleEn: correctService.TitleAr),
+                        title: this.translations()?.fileIncorrectServiceMsg.label.replace('[serviceName]', this.store.index.locale === 'en' ? correctService.TitleEn : correctService.TitleAr),
                         showConfirmButton: true,
                         showCancelButton: true,
                         confirmButtonText: this.translations()?.incorrectServiceConfirmBtnName.label,
@@ -3156,12 +3165,12 @@ export class DynamicFieldComponent implements OnInit {
 
   openAnalysisModel = signal(false);
   triggerAiAnalysis(fileID: string) {
-    if(!this.fileService.fileAnalysisData()[this.field.InternalFieldName]){
+    if (!this.fileService.fileAnalysisData()[this.field.InternalFieldName]) {
       this.fileService.readFileAnalysis(fileID).subscribe((res: any) => {
         this.fileService.fileAnalysisData.set({ ...this.fileService.fileAnalysisData(), [this.field.InternalFieldName]: res })
         this.openAnalysisModel.set(true)
       })
-    }else{
+    } else {
       this.openAnalysisModel.set(true)
     }
   }

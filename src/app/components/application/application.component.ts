@@ -7046,8 +7046,9 @@ export class ApplicationComponent {
                     formArray.at(formArray.value.length - 1).get(field.InternalFieldName)?.patchValue(-1);
                 }
 
-                lookups!.map(lookup => {
+                lookups = lookups!.map(lookup => {
                     lookup.isFiltered = !lookup.RelevantLookupId?.includes(`${value}`) && lookup.LookupID !== -1
+                    return lookup;
                 })
 
 
