@@ -24,7 +24,7 @@
                             <img src="/assets/images/auth/login.svg" alt="Cover Image" class="w-full" />
                         </div>
                         <a routerLink="/" class="mt-24 hidden w-full max-w-[430px] lg:block" aria-label="home page">
-                            <img src="/assets/images/logo-2023.png" alt="Logo" class="w-2/6 mx-auto p-[6px] object-contain object-center rounded" />
+                            <img src="/assets/images/logo-2022.png" alt="Logo" class="w-2/6 mx-auto p-[6px] object-contain object-center rounded bg-white" />
                         </a>
                     </div>
                 </div>
@@ -32,8 +32,8 @@
                     class="relative flex w-full flex-col items-center justify-center gap-6 px-4 pb-16 pt-6 sm:px-6 lg:max-w-[667px]">
                     <div
                         class="flex w-full max-w-[440px] items-center gap-2 lg:absolute lg:end-6 lg:top-6 lg:max-w-full">
-                        <a routerLink="/" class="block w-8 lg:hidden">
-                            <img src="/assets/images/logo-2023.png" alt="Logo" class="mx-auto w-10 p-[6px] object-contain object-center rounded bg-primary" />
+                        <a routerLink="/" class="block lg:hidden">
+                            <img src="/assets/images/logo-2022.png" alt="Logo" class="mx-auto p-[6px] object-contain object-center rounded w-24" />
                         </a>
                         <div class="dropdown ms-auto w-max">
                             <div hlMenu>
@@ -103,19 +103,19 @@
                         </div>
                     </div>
                     <div class="flex gap-2 absolute bottom-1">
-                        <a [href]="store.index.locale === 'ae' ? 'https://www.msy.gov.qa/%d9%85%d9%86-%d9%86%d8%ad%d9%86/%d8%b1%d8%a4%d9%8a%d8%a9-%d8%a7%d9%84%d9%88%d8%b2%d8%a7%d8%b1%d8%a9/' : 'https://www.msy.gov.qa/en/about-us/'"
+                        <a [href]="store.index.locale === 'ae' ? 'https://www.customs.gov.qa/Arabic/About/Pages/Project_management.aspx' : 'https://www.customs.gov.qa/english/about/pages/project_management.aspx'"
                             class="hover:underline" target="_blank">
                             {{ translations()?.aboutUs?.label || 'About Us' }}
                         </a>
 
-                        <a [href]="store.index.locale === 'ae' ? 'https://www.msy.gov.qa/الخدمات/' : 'https://www.msy.gov.qa/en/services/'"
+                        <a [href]="store.index.locale === 'ae' ? 'https://www.customs.gov.qa/Arabic/Services/Pages/Employees-Portal.aspx' : 'https://www.customs.gov.qa/english/services/pages/employees-portal.aspx'"
                             class="hover:underline" target="_blank">
                             {{ translations()?.navbarServices?.label || 'Services' }}
                         </a>
 
-                        <a [href]="store.index.locale === 'ae' ? 'https://www.msy.gov.qa/المراكز-الشبابية/' : 'https://www.msy.gov.qa/en/youth-centers/'"
+                        <a [href]="store.index.locale === 'ae' ? 'https://www.customs.gov.qa/arabic/contact/pages/customs-outlets-map.aspx' : 'https://www.customs.gov.qa/english/contact/pages/customs-outlets-map.aspx'"
                             class="hover:underline" target="_blank">
-                            {{ translations()?.YouthCenters?.label || 'Youth Centers' }}
+                            {{ translations()?.customsTerminals?.label || 'Youth Centers' }}
                         </a>
                     </div>
                 </div>

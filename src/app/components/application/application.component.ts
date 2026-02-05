@@ -373,9 +373,9 @@ export class ApplicationComponent {
                         'FkSexID': [this.newApplicationService.newRequestData()?.FkSexID].find(value => value !== -1) || 0 || 0,
                         "FkApplicantTypeID": this.newApplicationService.requestData()?.ApplicantType || this.newApplicationService.newRequestData()?.ApplicantType || 0,
                         "FkEventID": this.newApplicationService.requestData()?.EventType || this.newApplicationService.newRequestData()?.EventType || 0,
-                        "TotalSecondaryActivties": this.newApplicationService.requestData()?.ServiceTables.filter((rData: any) => rData.SourceTableID === 2801).length || this.newApplicationService.newRequestData()?.ServiceTables.filter((rData: any) => rData.SourceTableID === 2801).length || 0,
-                        "FKActivityAllIds": this.newApplicationService.requestData()?.ServiceTables.filter((rData: any) => rData.SourceTableID === 2801).map((rData: any) => rData.FKActivityID).join(',') || this.newApplicationService.newRequestData()?.ServiceTables.filter((rData: any) => rData.SourceTableID === 2801).map((rData: any) => rData.FKActivityID).join(',') || 0,
-                        "FkMembershipTypeID": this.newApplicationService.requestData()?.ServiceTables.filter((rData: any) => rData.SourceTableID === 2802)?.[0].FKType || this.newApplicationService.newRequestData()?.ServiceTables.filter((rData: any) => rData.SourceTableID === 2802)?.[0].FKType || 0
+                        "TotalSecondaryActivties": this.newApplicationService.requestData()?.ServiceTables?.filter((rData: any) => rData.SourceTableID === 2801).length || this.newApplicationService.newRequestData()?.ServiceTables?.filter((rData: any) => rData.SourceTableID === 2801).length || 0,
+                        "FKActivityAllIds": this.newApplicationService.requestData()?.ServiceTables?.filter((rData: any) => rData.SourceTableID === 2801).map((rData: any) => rData.FKActivityID).join(',') || this.newApplicationService.newRequestData()?.ServiceTables?.filter((rData: any) => rData.SourceTableID === 2801).map((rData: any) => rData.FKActivityID).join(',') || 0,
+                        "FkMembershipTypeID": this.newApplicationService.requestData()?.ServiceTables?.filter((rData: any) => rData.SourceTableID === 2802)?.[0].FKType || this.newApplicationService.newRequestData()?.ServiceTables?.filter((rData: any) => rData.SourceTableID === 2802)?.[0].FKType || 0
                     }
                     if (this.firstCalculate) {
                         this.newApplicationService.getFees(payload, 'field.ApiFieldAddress').subscribe((res: any) => {
@@ -1064,6 +1064,17 @@ export class ApplicationComponent {
                                 },
                                 error: (err: any) => {
                                     console.log(err);
+                                }
+                            })
+                        }
+
+                        if ([4, 6, 19].includes(field.FieldType)) {
+                            this.setupRelevantLookupFilter(field.LookupValues!, currentTabFields, field);
+                        }
+                        if (field.FieldType === 8) {
+                            field.TableServiceFields!.forEach((tableField) => {
+                                if ([4, 6, 19].includes(tableField.FieldType)) {
+                                    this.setupRelevantLookupFilter(tableField.LookupValues!, currentTabFields, tableField, field);
                                 }
                             })
                         }
@@ -3309,7 +3320,7 @@ export class ApplicationComponent {
             return [];
 
         }
-        
+
 
         return validators;
     }
@@ -7024,7 +7035,7 @@ export class ApplicationComponent {
         }
     }
     setupRelevantLookupFilter(lookups: LookupValue[], allFields: FieldJson[], field: FieldJson | TableServiceField, tableFieldJson?: FieldJson) {
-        if(!lookups || lookups.length === 0) return;
+        if (!lookups || lookups.length === 0) return;
         let relevantLookup = lookups.find(lookup => {
             return lookup.RelevantLookupInternalFieldName && lookup.RelevantLookupId
         })
@@ -7050,6 +7061,7 @@ export class ApplicationComponent {
                     lookup.isFiltered = !lookup.RelevantLookupId?.includes(`${value}`) && lookup.LookupID !== -1
                     return lookup;
                 })
+
 
 
             })

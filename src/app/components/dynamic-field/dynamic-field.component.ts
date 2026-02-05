@@ -497,9 +497,23 @@ export class DynamicFieldComponent implements OnInit {
           this.invalidateLookupCache();
         })
       }
-
-
     }
+
+    if (this.field.FieldType === 8) {
+      this.field.TableServiceFields?.forEach((tableField) => {
+        if ([4, 6, 19].includes(tableField.FieldType)) {
+          let relevantLookup = tableField.LookupValues?.find(lookup => {
+            return lookup.RelevantLookupInternalFieldName && lookup.RelevantLookupId
+          })
+          if (relevantLookup) {
+            this.form!.get(relevantLookup.RelevantLookupInternalFieldName!)?.valueChanges.subscribe((value: any) => {
+              this.invalidateLookupCache();
+            })
+          }
+        }
+      })
+    }
+
     if (this.field.FieldType === 19) {
       this.setupLookupSanitizer(this.field);
     }
