@@ -7024,6 +7024,7 @@ export class ApplicationComponent {
         }
     }
     setupRelevantLookupFilter(lookups: LookupValue[], allFields: FieldJson[], field: FieldJson | TableServiceField, tableFieldJson?: FieldJson) {
+        if(!lookups || lookups.length === 0) return;
         let relevantLookup = lookups.find(lookup => {
             return lookup.RelevantLookupInternalFieldName && lookup.RelevantLookupId
         })
