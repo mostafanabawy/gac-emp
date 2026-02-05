@@ -483,7 +483,7 @@ export class DynamicFieldComponent implements OnInit {
     }
 
     if (this.field.FieldType === 6) {
-      let isClub = this.field.LookupValues!.find((lv: any) => !!lv.FkClubID)
+      let isClub = this.field.LookupValues?.find((lv: any) => !!lv.FkClubID)
       if (isClub) {
         this.form.get('FkClubID')?.valueChanges.subscribe((val: any) => {
           this.invalidateLookupCache();
