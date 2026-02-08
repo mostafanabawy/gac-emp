@@ -1496,7 +1496,13 @@ export class ApplicationComponent {
 
                     if (this.store.auth.user && field.FieldAddress) {
                         let fieldKey: any;
-                        if (field.FieldAddress.startsWith('SSO')) {
+                        if (field.FieldAddress.startsWith('SSO') || field.FieldAddress?.toLowerCase().startsWith('login.')) {
+                            if (field.FieldAddress.startsWith('SSO')) {
+
+                                field.FieldAddress = field.FieldAddress.replace(/SSO\./g, '');
+                            } else {
+                                field.FieldAddress = field.FieldAddress?.replace(/Login\./, '')
+                            }
 
                             field.FieldAddress = field.FieldAddress.replace(/SSO\./g, '');
                             if (field.FieldAddress.includes(',') && this.store.index.locale === 'en') {
@@ -1515,17 +1521,22 @@ export class ApplicationComponent {
                             }
                             if (fieldKey) {
                                 if (control) {
+                                    const toLower = (val: any): any =>
+                                        typeof val === 'string' ? val?.toLowerCase() : val;
                                     if (field.FieldType === 6) {
                                         let newVal = field.LookupValues!.find((lv) => {
                                             return [
+                                                lv.LookupID,
                                                 lv.ISOLookupID,
-                                                lv.ISOTitleAr?.toLowerCase(),
-                                                lv.ISOTitleEn?.toLowerCase(),
-                                                lv.TitleAr?.toLowerCase(),
-                                                lv.TitleEn?.toLowerCase(),
-                                                lv.TitleEn.toLowerCase(),
-                                                lv.TitleAr.toLowerCase()
-                                            ].includes(this.store.auth.user[fieldKey]?.toLowerCase())
+                                                toLower(lv.ISOTitleAr),
+                                                toLower(lv.ISOTitleEn),
+                                                toLower(lv.TitleAr),
+                                                toLower(lv.TitleEn),
+                                                toLower(lv.TitleEn),
+                                                toLower(lv.TitleAr)
+                                            ].includes(
+                                                toLower(this.store.auth.user[fieldKey])
+                                            )
                                         });
                                         if (newVal) {
                                             control.patchValue(newVal.LookupID);
@@ -1541,7 +1552,7 @@ export class ApplicationComponent {
                                 }
                             }
                         }
-                        if (field.FieldAddress.includes('FkClubID')) {
+                        /* if (field.FieldAddress.includes('FkClubID')) {
                             if (control) {
                                 if (field.FieldType === 6) {
                                     let newVal = field.LookupValues!.find((lv) => {
@@ -1568,7 +1579,7 @@ export class ApplicationComponent {
                                     control.patchValue(this.store.auth.user[fieldKey]);
                                 }
                             }
-                        }
+                        } */
                     }
 
 
