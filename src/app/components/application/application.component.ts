@@ -7061,12 +7061,7 @@ export class ApplicationComponent {
                 }
             }) */
             this.wizardForm!.get(relevantLookup.RelevantLookupInternalFieldName!)?.valueChanges.subscribe(value => {
-                if (!("ServiceTableFieldID" in field)) {
-                    this.wizardForm!.get(field.InternalFieldName)?.patchValue(-1);
-                } else {
-                    let formArray = this.wizardForm?.get(tableFieldJson!.InternalFieldName) as FormArray
-                    formArray.at(formArray.value.length - 1).get(field.InternalFieldName)?.patchValue(-1);
-                }
+                
 
                 lookups = lookups!.map(lookup => {
                     lookup.isFiltered = !lookup.RelevantLookupId?.includes(`${value}`) && lookup.LookupID !== -1

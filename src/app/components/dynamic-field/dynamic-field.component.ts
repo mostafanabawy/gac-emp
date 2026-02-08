@@ -2,7 +2,7 @@ import { Component, Input, OnInit, Output, EventEmitter, signal, ChangeDetectorR
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Store } from '@ngrx/store';
-import { of, Subject, switchMap, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, of, skip, Subject, switchMap, takeUntil } from 'rxjs';
 import { basic, timeBasic } from 'src/app/helpers/date-helper';
 import { FileActionsService } from 'src/app/service/file-actions.service';
 import { LocalizationService } from 'src/app/service/localization.service';
@@ -493,8 +493,21 @@ export class DynamicFieldComponent implements OnInit {
         return lookup.RelevantLookupInternalFieldName && lookup.RelevantLookupId
       })
       if (relevantLookup) {
-        this.form!.get(relevantLookup.RelevantLookupInternalFieldName!)?.valueChanges.subscribe((value: any) => {
+        this.form!.get(relevantLookup.RelevantLookupInternalFieldName!)?.valueChanges.pipe(
+          debounceTime(300),
+          distinctUntilChanged((prev, curr) => {
+            return JSON.stringify(prev) === JSON.stringify(curr)
+          }),
+          skip(1),
+          takeUntil(this.destroy$)
+        ).subscribe((value: any) => {
           this.invalidateLookupCache();
+          let isValValid = this.filteredLookupValues()?.find((lv: any) => lv.LookupID === value)
+          if (isValValid){
+            this.form?.get(this.field.InternalFieldName)?.patchValue(isValValid.LookupID)
+          }else{
+            this.form?.get(this.field.InternalFieldName)?.patchValue(-1)
+          }
         })
       }
     }
@@ -506,7 +519,14 @@ export class DynamicFieldComponent implements OnInit {
             return lookup.RelevantLookupInternalFieldName && lookup.RelevantLookupId
           })
           if (relevantLookup) {
-            this.form!.get(relevantLookup.RelevantLookupInternalFieldName!)?.valueChanges.subscribe((value: any) => {
+            this.form!.get(relevantLookup.RelevantLookupInternalFieldName!)?.valueChanges.pipe(
+              debounceTime(300),
+              distinctUntilChanged((prev, curr) => {
+                return JSON.stringify(prev) === JSON.stringify(curr)
+              }),
+              skip(1),
+              takeUntil(this.destroy$)
+            ).subscribe((value: any) => {
               this.invalidateLookupCache();
             })
           }
