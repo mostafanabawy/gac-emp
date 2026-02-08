@@ -168,7 +168,7 @@
 
 
             <li class="mr-4 float-left">
-                <a href="/English/Services/Pages/Employees-Portal.aspx" title="Employee Portal" target="_self"
+                <a [href]="'https://www.customs.gov.qa/' + (store.index.locale === 'en'? '/english': '/arabic') + 'Services/Pages/Employees-Portal.aspx'" target="_blank" title="Employee Portal"
                     class="text-white">
                     {{ translations()?.employeePortal.label}}
                 </a>
@@ -178,7 +178,7 @@
             </li>
 
             <li class="mr-4 float-left">
-                <a href="/English/Pages/PrivacyPolicy.aspx" title="Terms of use" target="_self" class="text-white">
+                <a [href]="'https://www.customs.gov.qa' + (store.index.locale === 'en'? '/english': '/arabic') + '/Pages/PrivacyPolicy.aspx'" target="_blank" title="Terms of use" class="text-white">
                     {{ translations()?.termsOfUse.label}}
                 </a>
             </li>
@@ -187,7 +187,7 @@
             </li>
 
             <li class="mr-4 float-left">
-                <a href="/English/QualityPortal/Pages/default.aspx" title="Quality Policy" target="_self"
+                <a [href]="'https://www.customs.gov.qa' + (store.index.locale === 'en'? '/english': '/arabic') + '/QualityPortal/Pages/default.aspx'" target="_blank" title="Quality Policy"
                     class="text-white">
                     {{ translations()?.qualityPolicy.label}}
                 </a>
