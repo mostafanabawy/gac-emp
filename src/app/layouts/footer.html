@@ -1,25 +1,17 @@
 ﻿<div>
-    <div class="flex flex-col md:flex-row ps-5 justify-evenly mx-auto w-full gap-3">
-        <div class="grid grid-cols-5">
+    <div class="flex flex-col md:flex-row ps-5 justify-between mx-auto w-full gap-3 ltr:pr-10 rtl:pl-10">
+        <!-- <div class="grid grid-cols-5">
             <div class="col-span-5 md:col-span-4 ps-5 mx-auto mb-2 md:mb-0 md:mx-0 space-y-4">
                 <img class="h-24 block p-[6px] object-contain object-center rounded" src="/assets/images/logo-2022.png"
                     alt="">
                 <div class="flex mx-auto md:mx-0 gap-2">
                     <img src="https://www.msy.gov.qa/wp-content/themes/msy/assets/images/qgcc.png"
                         class="rounded-xl overflow-hidden w-36" alt="Qatar Government Contact Center">
-                    <a class="mada_logo" target="_blank"
-                        href="https://monitor.mada.org.qa/website/ar/ExWKZfLBpPHfzeMR3cNmLptiZNlBJgbfZjcxfAzqaESzc87OjdI7h7ClWBIe">
-                        <img src="https://monitor.mada.org.qa/acc/ar/ExWKZfLBpPHfzeMR3cNmLptiZNlBJgbfZjcxfAzqaESzc87OjdI7h7ClWBIe"
-                            class="w-12" alt="اعتماد مدى للنفاذ الرقمي"></a>
+
                 </div>
             </div>
-           <!--  <div class="col-span-5 md:col-span-4 ps-5 pe-6">
-                <button class="btn bg-[#60583d] text-white w-full hover:opacity-85">
-                    <span> {{"footer.ratingBtn" | translate}} </span>
-                </button>
-            </div> -->
-        </div>
-        @if(tabsMenuData() && tabsMenuData().length > 0){
+        </div> -->
+        <!--  @if(tabsMenuData() && tabsMenuData().length > 0){
         <div class="flex flex-col text-center md:text-start">
             <h3 class="text-primary font-bold text-xl">
                 {{ 'applciationsPage.mainTabs.myApplications' | translate }}
@@ -35,78 +27,96 @@
                 }
             </ul>
         </div>
-        }
-        @if(servicesMenuData() && servicesMenuData().length > 0){
-        <div class="text-center md:text-start col-span-2">
-            <h3 class="text-primary font-bold text-xl">
-                {{ 'footer.usedServices' | translate}}
-            </h3>
-            <ul class="space-y-2 mt-3 me-3">
-                @for(item of servicesMenuData().slice(0,5); track $index){
-                <li>
-                    <a routerLink="/Services/NewRequest" class="footer-link hover:text-primary"
-                        (click)="navigateToDetails(item, $event)">
-                        {{ store.index.locale === 'en' ? item.ServiceTitleEn : item.ServiceTitleAr }}
-                    </a>
-                </li>
-                }
+        } -->
+        <div class="flex flex-col md:flex-row gap-10">
 
-            </ul>
+            <div>
+                <div class="flex justify-center md:justify-start">
+                    <!--iframe style="margin-top: -150px;" id="MapFrame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3676.714370438764!2d51.51922306363575!3d25.31765436478559!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e45c4c96cb73671%3A0x2b01fe68d8e127b7!2sGeneral+Authority+of+Customs!5e0!3m2!1sen!2sqa!4v1563451590008!5m2!1sen!2sqa" width="600" height="450" frameborder="0" style="border:0" allowfullscreen class="MapFrame"></iframe-->
+                    <img class="w-80 h-32" alt="Customs Location" src="/assets/images/CustomsMapFooter.jfif"
+                        data-themekey="#">
+                </div>
+            </div>
+            <div class="text-center md:text-start">
+                <h3
+                    class="font-bold text-lg flex items-center gap-1 justify-center ltr:md:justify-end rtl:md:justify-start ltr:flex-row-reverse rtl:flex-row">
+                    {{ 'breadCrumb.link3' | translate }}
+                </h3>
+                <ul class="my-2">
+                    <li>
+                        <a routerLink="ComplaintsRequests" class="footer-link hover:text-primary mt-2" (click)="selectedLink({
+        'id': 99,
+        'TitleAr': 'طلبات الشكاوى',
+        'TitleEn': 'Complaints Requests',
+        'itemId': 78,
+        'Icon': '',
+        'ItemOrderID': 1,
+        'PositionID': 2829,
+        'PositionName': 'Middle',
+        'ItemURL': 'ComplaintsRequests',
+        'ItemURLEn': '',
+        'IsDefaultItem': true,
+        'MenuStyleID': 2853,
+        'MenuStyle': 'Submenu Dropdown',
+        'InboxType': 'ComplaintsRequests',
+        'HomeItem': false,
+        'TabStyleID': 2846,
+        'TabStyle': 'RequestCard',
+        'Statuses': '2878,2879,2880,2881',
+        'ExtraCondition': '',
+        'Services': '7008',
+        'ServicesType': 'ComplaintService',
+        'ItemLevel': 2,
+        'ServiceID': 0,
+        'FKProcessID': '',
+        'parentId': 48
+    }, $event)">
+                            {{translations()?.complaintRequests.label}}
+                        </a>
+                    </li>
+                    <li
+                        class="text-primary font-bold my-3 direction-ltr text-base flex gap-2 items-center rtl:flex-row-reverse justify-center md:justify-start">
+                        <span>
+                            <img src="/assets/images/faq/helpTel.svg" target="_blank" class="w-4" alt="phone icon">
+                        </span>
+                        +974 444 574 57
+                    </li>
+
+
+                    <li
+                        class="text-primary font-bold my-3 direction-ltr text-base flex gap-2 items-center rtl:flex-row-reverse justify-center md:justify-start">
+                        <icon-printer class="w-4 text-black"></icon-printer>
+                        +974 444 572 47
+                    </li>
+
+
+                    <li class="email pl-4 mb-2">
+                        <a href="" class="flex gap-2 items-center justify-center md:justify-start">
+                            <icon-mail class="w-4"></icon-mail>
+                            {{'info.pr@customs.gov.qa'}}
+                        </a>
+                    </li>
+                    <li>
+                        {{ translations()?.address.label}}
+                    </li>
+
+                    <!-- <li class="my-2">
+                        <a routerLink="FAQS" class="footer-link hover:text-primary">
+                            {{ translations()?.faqLink.label}}
+                        </a>
+                    </li> -->
+                </ul>
+
+            </div>
         </div>
-        }
-        <div class="text-center md:text-start">
-            <h3
-                class="font-bold text-lg flex items-center gap-1 justify-center ltr:md:justify-end rtl:md:justify-start ltr:flex-row-reverse rtl:flex-row">
-                {{ 'breadCrumb.link3' | translate }}
-                <span>
-                    <img src="/assets/images/faq/helpTel.svg" target="_blank" class="w-4" alt="phone icon">
-                </span>
-            </h3>
-            <ul>
-                <li class="text-primary font-bold my-3 direction-ltr text-base md:rtl:text-end">+974 4021 111</li>
-                <!-- <li class="my-2">
-                    <a routerLink="FAQS" class="footer-link hover:text-primary">
-                        {{ translations()?.faqLink.label}}
-                    </a>
-                </li> -->
-                <li>
-                    <a routerLink="ComplaintsRequests" class="footer-link hover:text-primary" (click)="selectedLink({
-    'id': 99,
-    'TitleAr': 'طلبات الشكاوى',
-    'TitleEn': 'Complaints Requests',
-    'itemId': 78,
-    'Icon': '',
-    'ItemOrderID': 1,
-    'PositionID': 2829,
-    'PositionName': 'Middle',
-    'ItemURL': 'ComplaintsRequests',
-    'ItemURLEn': '',
-    'IsDefaultItem': true,
-    'MenuStyleID': 2853,
-    'MenuStyle': 'Submenu Dropdown',
-    'InboxType': 'ComplaintsRequests',
-    'HomeItem': false,
-    'TabStyleID': 2846,
-    'TabStyle': 'RequestCard',
-    'Statuses': '2878,2879,2880,2881',
-    'ExtraCondition': '',
-    'Services': '7008',
-    'ServicesType': 'ComplaintService',
-    'ItemLevel': 2,
-    'ServiceID': 0,
-    'FKProcessID': '',
-    'parentId': 48
-}, $event)">
-                        {{translations()?.complaintRequests.label}}
-                    </a>
-                </li>
-            </ul>
-            <h3 class="text-primary font-bold text-xl mt-3">
+        <div>
+            <h3 class="text-primary font-bold text-xl mt-3 text-center md:text-start">
                 {{ 'footer.social' | translate}}
             </h3>
             <ul class="flex gap-3 my-3 justify-center md:justify-start">
                 <li>
-                    <a href="https://www.instagram.com/msyqatar/" target="_blank" aria-label="Follow us on Instagram">
+                    <a href="https://www.instagram.com/qatar_customs/" target="_blank"
+                        aria-label="Follow us on Instagram">
                         <div
                             class="border-[#707070] border p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60 flex items-center justify-center rounded-full">
                             <img src="/assets/images/faq/insta.svg" class="w-4 " alt="instagram icon">
@@ -114,7 +124,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="https://twitter.com/msyqatar" target="_blank" aria-label="Follow us on Twitter">
+                    <a href="https://twitter.com/@Qatar_Customs" target="_blank" aria-label="Follow us on Twitter">
                         <div
                             class="border-[#707070] border p-2 flex hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60 items-center justify-center rounded-full">
                             <img src="/assets/images/faq/twitter-x.svg" class="w-4 " alt="twitter icon">
@@ -122,19 +132,69 @@
                     </a>
                 </li>
                 <li>
-                    <a href="https://www.msy.gov.qa/%d8%aa%d9%88%d8%a7%d8%b5%d9%84-%d9%85%d8%b9%d9%86%d8%a7/"
-                        aria-label="Contact us by phone">
+                    <a href="https://www.youtube.com/channel/UCUmFuQIFtnHbhBxy_ETtpNA/featured"
+                        aria-label="Go to YouTube">
                         <div
                             class="border-[#707070] border p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60 flex items-center justify-center rounded-full">
-                            <img src="/assets/images/faq/tel.svg" class="w-4 " alt="contact us icon">
+                            <img src="/assets/images/icons/32px-YouTube_full-color_icon_(2017).svg.png" class="w-4 h-4"
+                                alt="youtube icon">
+
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.facebook.com/customs.gov.qa" aria-label="follow us on facebook">
+                        <div
+                            class="border-[#707070] border p-2 hover:bg-white-light/90 dark:bg-dark/40 dark:hover:bg-dark/60 flex items-center justify-center rounded-full">
+                            <icon-facebook class="h-4 " alt="facebook icon"></icon-facebook>
                         </div>
                     </a>
                 </li>
             </ul>
+            <div class="flex justify-center md:justify-start">
+                <img alt="na" class="d-block qdgov p-2 bg-primary rounded"
+                    src="https://www.customs.gov.qa/Style Library/Portal_Images/qatardigital.png">
+            </div>
         </div>
 
     </div>
-    <div class="px-6 text-center text-white bg-[#595959] py-7" [ngClass]=" store.index.locale == 'en'? 'text-base': ''">
-        {{
-        'footer.copyright' | translate}} {{ currYear }}</div>
+    <div class="px-6 text-white bg-[#595959] py-7 flex justify-between"
+        [ngClass]=" store.index.locale == 'en'? 'text-base': ''">
+        <span>
+            {{
+            'footer.copyright' | translate}} {{ currYear }}
+        </span>
+        <ul class="footer-links clearfix mb-0 mx-9">
+
+
+            <li class="mr-4 float-left">
+                <a href="/English/Services/Pages/Employees-Portal.aspx" title="Employee Portal" target="_self"
+                    class="text-white">
+                    {{ translations()?.employeePortal.label}}
+                </a>
+            </li>
+            <li class="mr-4 float-left">
+                -
+            </li>
+
+            <li class="mr-4 float-left">
+                <a href="/English/Pages/PrivacyPolicy.aspx" title="Terms of use" target="_self" class="text-white">
+                    {{ translations()?.termsOfUse.label}}
+                </a>
+            </li>
+            <li class="mr-4 float-left">
+                -
+            </li>
+
+            <li class="mr-4 float-left">
+                <a href="/English/QualityPortal/Pages/default.aspx" title="Quality Policy" target="_self"
+                    class="text-white">
+                    {{ translations()?.qualityPolicy.label}}
+                </a>
+            </li>
+
+
+        </ul>
+
+    </div>
 </div>

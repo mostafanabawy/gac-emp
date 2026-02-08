@@ -59,12 +59,7 @@ export class FooterComponent {
             });
     }
     ngOnInit() {
-        this.licenseService.search({
-            "ReportName": "RequestsCount"
-        }).subscribe((res: any) => {
-            console.log(res);
-            this.servicesMenuData.set(res.resultData)
-        })
+        
     }
     selectedLink(item: any, event: any) {
         event.preventDefault();
