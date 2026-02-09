@@ -66,6 +66,7 @@ export class ApplicationTypesComponent {
   // Regular expression to detect Arabic characters
   tabData = input.required<any>();
   overrideSet: boolean = false;
+  private lastRunTime = 0;
   constructor(
     private storeData: Store<AppState>,
     public allApplicationsService: AllApplicationsService,
@@ -76,6 +77,9 @@ export class ApplicationTypesComponent {
     this.initStore();
     effect(() => {
       if (this.tabData()) {
+        const now = Date.now();
+        if (now - this.lastRunTime < 500) return;
+        this.lastRunTime = now;
         this.currentPage.set(1);
         this.applicationTypes.set(this.tabData());
         let activeTabData = this.applicationTypes().find((item: any) => item.HomeItem)
@@ -109,7 +113,7 @@ export class ApplicationTypesComponent {
               this.totalPages.set(Math.ceil(pagingInfo.TotalRows / this.itemsPerPage()));
               this.totalRows.set(pagingInfo.TotalRows);
               this.dataPage.update(d => d + 1);
-              
+
               if (this.dataPage() <= pagingInfo.TotalPages && ![2852, 2855].includes(getAll.TabStyleID)) {
                 this.loadCardsData({ PageSize: this.pageSize(), PageNum: this.dataPage() }, this.activeTab);
               }
