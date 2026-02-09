@@ -5839,6 +5839,7 @@ export class ApplicationComponent {
 
     scrollTo(id: string, event: Event): void {
         event.preventDefault();
+        this.disableScrollScan = true;
         // Store the clicked element (the 'a' tag)
         const clickedElement = event.currentTarget as HTMLElement;
 
@@ -5871,13 +5872,16 @@ export class ApplicationComponent {
                     } else {
                         (element as HTMLElement).focus(); // Fallback to focusing the section itself
                     }
+                    this.disableScrollScan = false;
                 }
             }, 600); // Adjust delay as needed, slightly longer than your scroll behavior duration
         }
     }
 
+    private disableScrollScan = false
     @HostListener('window:scroll', [])
     onWindowScroll() {
+        if (this.disableScrollScan) return
         let sectionIds: any = [];
         this.visibleNavigationTabs()!.forEach((tab) => {
             sectionIds.push(...tab.TabSections.map((section) => section.SectionID));
