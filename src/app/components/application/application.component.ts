@@ -5837,9 +5837,11 @@ export class ApplicationComponent {
         });
     }
 
-    scrollTo(id: string, event: Event): void {
+    scrollTo(id: string, event: Event, section?: any): void {
         event.preventDefault();
-        this.disableScrollScan = true;
+        if (!this.activeDropdown.includes(id)) {
+            this.disableScrollScan = true;
+        }
         // Store the clicked element (the 'a' tag)
         const clickedElement = event.currentTarget as HTMLElement;
 
@@ -5848,6 +5850,15 @@ export class ApplicationComponent {
 
         const element = document.getElementById(id);
         if (element) {
+            this.activeSection = `${id}`;
+            const parentTab = this.visibleNavigationTabs()!.find(tab =>
+                tab.TabSections.some(sec => sec.SectionID.toString() === id)
+            );
+
+            if (parentTab) {
+                let activeTabId = parentTab.NavigationTabID;
+                this.activeDropdown = [activeTabId.toString()];
+            }
             // Get distance from top of document to the element
             const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
 
