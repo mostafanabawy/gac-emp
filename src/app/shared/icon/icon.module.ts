@@ -171,6 +171,8 @@ import { UndoComponent } from './icon-undo';
 import { ChevronDownComponent } from './chevron-down';
 import { BoltCircleComponent } from './bolt-circle';
 import { TransferCircleHorizontalComponent } from './transfer-circle-horizontal';
+import { IconLocationArrowLeftComponent } from './location-arrow-left';
+import { IconLocationArrowRightComponent } from './location-arrow-right';
 
 @NgModule({
     imports: [CommonModule],
@@ -345,10 +347,14 @@ import { TransferCircleHorizontalComponent } from './transfer-circle-horizontal'
         QuestionCircleComponent,
         ChevronDownComponent,
         BoltCircleComponent,
-        TransferCircleHorizontalComponent
+        TransferCircleHorizontalComponent,
+        IconLocationArrowLeftComponent,
+        IconLocationArrowRightComponent
     ],
     exports: [
         IconMenuAppsComponent,
+        IconLocationArrowRightComponent,
+        IconLocationArrowLeftComponent,
         RedoComponent,
         BoltCircleComponent,
         UndoComponent,

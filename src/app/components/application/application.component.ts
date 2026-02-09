@@ -15,7 +15,7 @@ import { MenuLinksService } from 'src/app/service/menu-links.service';
 import { NewApplicationService } from 'src/app/service/new-application.service';
 import { ServiceSelectService } from 'src/app/service/service-select.service';
 import { WizardServiceService } from 'src/app/service/wizard-service.service';
-import { reverseChevron, toggleAnimation } from 'src/app/shared/animations';
+import { reverseChevron, slideDownUp, toggleAnimation } from 'src/app/shared/animations';
 import { CustomValidators } from 'src/app/validators/custom-validators';
 import { AppState } from 'src/types/auth.types';
 import { Action, ActionDetail, ActionGroup, FieldJson, GetServiceFieldsByActionsApiResponse, LookupValue, NavigationTab, ResponseBody, ServiceApiPayload, TableServiceField, TabSection } from 'src/types/newApplication.types';
@@ -27,6 +27,7 @@ interface ApplicationTab {
     title: string;
     content: string;
     icon: string;
+    tabSections: any;
     isActive: boolean;
     isCompleted: boolean;
     isAccessible: boolean;
@@ -46,7 +47,7 @@ interface UploadedFile {
 @Component({
     selector: 'app-application',
     templateUrl: './application.component.html',
-    animations: [toggleAnimation, reverseChevron],
+    animations: [toggleAnimation, reverseChevron, slideDownUp],
 
 })
 export class ApplicationComponent {
@@ -806,6 +807,7 @@ export class ApplicationComponent {
                         title: this.store.index.locale == 'en' ? parsed.NavigationTabs[index].TitleEn : parsed.NavigationTabs[index].TitleAr,
                         content: '',
                         icon: this.setIcon(parsed.NavigationTabs[index].TitleEn),
+                        tabSections: parsed.NavigationTabs[index].TabSections,
                         isActive: false,
                         isCompleted: false,
                         isAccessible: false,
@@ -1357,6 +1359,7 @@ export class ApplicationComponent {
                         title: this.store.index.locale == 'en' ? parsed.NavigationTabs[index].TitleEn : parsed.NavigationTabs[index].TitleAr,
                         content: '',
                         icon: this.setIcon(parsed.NavigationTabs[index].TitleEn),
+                        tabSections: parsed.NavigationTabs[index].TabSections,
                         isActive: false,
                         isCompleted: false,
                         isAccessible: false,
@@ -1504,7 +1507,6 @@ export class ApplicationComponent {
                                 field.FieldAddress = field.FieldAddress?.replace(/Login\./, '')
                             }
 
-                            field.FieldAddress = field.FieldAddress.replace(/SSO\./g, '');
                             if (field.FieldAddress.includes(',') && this.store.index.locale === 'en') {
                                 fieldKey = field.FieldAddress.split(',')[1];
 
@@ -5849,7 +5851,7 @@ export class ApplicationComponent {
             const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
 
             // Adjust by header height (replace 120 with your header height in px)12
-            const offsetPosition = elementPosition - 120;
+            const offsetPosition = elementPosition - 200;
 
             window.scrollTo({
                 top: offsetPosition,
@@ -5873,15 +5875,27 @@ export class ApplicationComponent {
             }, 600); // Adjust delay as needed, slightly longer than your scroll behavior duration
         }
     }
+
     @HostListener('window:scroll', [])
     onWindowScroll() {
-        const sectionIds = this.visibleNavigationTabs()!.map((tab) => tab.NavigationTabID.toString());
+        let sectionIds: any = [];
+        this.visibleNavigationTabs()!.forEach((tab) => {
+            sectionIds.push(...tab.TabSections.map((section) => section.SectionID));
+        })
         for (let id of sectionIds) {
             const el = document.getElementById(`${id}`);
             if (el) {
                 const rect = el.getBoundingClientRect();
                 if (rect.top <= 300 && rect.bottom >= 300) {
                     this.activeSection = `${id}`;
+                    const parentTab = this.visibleNavigationTabs()!.find(tab =>
+                        tab.TabSections.some(sec => sec.SectionID === id)
+                    );
+
+                    if (parentTab) {
+                        let activeTabId = parentTab.NavigationTabID;
+                        this.activeDropdown = [activeTabId.toString()];
+                    }
                     break;
                 }
             }
@@ -6366,8 +6380,9 @@ export class ApplicationComponent {
         console.log(this.visibleNavigationTabs());
         console.log(this.currentTab());
     } */
-    changeTab(index: number) {
+    changeTab(index: number, tabID: any) {
         this.currentTabIndex.update(() => { return index })
+        this.activeDropdown = [tabID.toString()]
     }
     showCustomLoader(): void {
         const customLoaderHtml = `
@@ -7106,5 +7121,13 @@ export class ApplicationComponent {
             this.fileService.fileAnalysisData.set({ ...this.fileService.fileAnalysisData(), 'request': res })
             this.openAnalysisModel.set(true)
         })
+    }
+    activeDropdown: string[] = [''];
+    toggleAccordion(name: string, parent?: string) {
+        if (this.activeDropdown.includes(name)) {
+            this.activeDropdown = this.activeDropdown.filter((d) => d !== name);
+        } else {
+            this.activeDropdown = [name];
+        }
     }
 }
