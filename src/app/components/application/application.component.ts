@@ -5872,8 +5872,8 @@ export class ApplicationComponent {
                     } else {
                         (element as HTMLElement).focus(); // Fallback to focusing the section itself
                     }
-                    this.disableScrollScan = false;
                 }
+                this.disableScrollScan = false;
             }, 600); // Adjust delay as needed, slightly longer than your scroll behavior duration
         }
     }
