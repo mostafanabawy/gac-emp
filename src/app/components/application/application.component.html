@@ -28,8 +28,8 @@
           <li class="accordion menu nav-item" *ngIf="!tabVisible[tab.tabID]">
             <button type="button"
               class="nav-link group w-full text-lg focus:ring-opacity-50 flex gap-2 items-center p-3 pb-4"
-              [ngClass]="{ active: activeDropdown.includes(tab.tabID.toString()) }"
-              (click)="toggleAccordion(tab.tabID.toString())">
+              [ngClass]="{ 'text-primary font-semibold active-section': activeDropdown.includes(tab.tabID.toString()) && sidebarCollapsed }"
+              (click)="sidebarCollapsed? scrollTo(tab.tabSections[0].SectionID, $event) :toggleAccordion(tab.tabID.toString())">
               <div [title]="sidebarCollapsed? tab.title : ''" class="inline-flex items-center gap-3"
                 [ngClass]="activeSection == tab.tabID ? 'border-primary': ''">
                 <ng-container *ngIf="tab.icon === 'attachment'" aria-label="attachments tab">
@@ -167,11 +167,13 @@
                 {{ tab.title }}
               </span>
             </button>
+            @if (!sidebarCollapsed) {
             <div [@slideDownUp]="!activeDropdown.includes(tab.tabID.toString())" class="accordion-content">
               <ul class="sub-menu text-gray-500">
                 <ng-container *ngFor="let child of getAllSections(tab.tabID)">
                   <li>
-                    <a [href]="'#'+ child.SectionID" (click)="scrollTo(child.SectionID, $event)" aria-label="attachments section"
+                    <a [href]="'#'+ child.SectionID" (click)="scrollTo(child.SectionID, $event)"
+                      aria-label="attachments section"
                       class="items-center p-3 duration-200 text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2"
                       [class.border-none]="sidebarCollapsed" [title]="sidebarCollapsed? tab.TitleEn : ''"
                       [class]="sidebarCollapsed ? 'mx-auto !p-2 !my-0 w-full' : ''">
@@ -191,6 +193,7 @@
                 </ng-container>
               </ul>
             </div>
+            }
           </li>
           <!--  <li *ngIf="!tabVisible[tab.tabID]">
             <a [href]="'#'+ tab.tabID" (click)="scrollTo(tab.tabID, $event)" [ngClass]="{
@@ -361,11 +364,13 @@
       </button>
     </div>
     <nav aria-label="page sections first list" class="w-full overflow-scroll hide-scrollbar">
-      <ul class="mt-1 space-y-3 w-full px-3" [class]="sidebarCollapsed ? 'mx-auto !p-0 !my-0 !space-y-0' : ''">
+      <ul class="mt-1 space-y-3 w-full px-3"
+        [class]="sidebarCollapsed ? 'mx-auto !p-0 !my-0 !space-y-0 flex flex-col items-center' : ''">
         @if(visibleTabs()){
         <div *ngFor="let tab of visibleTabs(); let i = index">
-          <button
+          <button [title]="sidebarCollapsed? tab.title : ''"
             (click)="!tab.isAccessible ? '' : changeTab(visibleTabs()!.indexOf(tab) + 1, tab.tabID) ; !tab.isAccessible ? '' : scrollToTop()"
+            [ngClass]="{ 'text-primary font-semibold active-section': activeDropdown.includes(tab.tabID.toString()) && sidebarCollapsed }"
             class="tab-item-custom relative" [class.active]="tab.isActive" [class.completed]="tab.isCompleted"
             [class.disabled]="!tab.isAccessible" [class.collapsed]="sidebarCollapsed">
             <div class="flex items-center w-full justify-between">
@@ -516,11 +521,11 @@
               </div>
             </div>
 
-            <div *ngIf="sidebarCollapsed" class="tab-tooltip">
+            <!-- <div *ngIf="sidebarCollapsed" class="tab-tooltip">
               {{ tab.title }}
-            </div>
+            </div> -->
           </button>
-
+          @if (!sidebarCollapsed) {
           <div [@slideDownUp]="!activeDropdown.includes(tab.tabID.toString())" class="accordion-content">
             <ul class="sub-menu text-gray-500">
               <ng-container *ngFor="let child of currentTabSections() | sortByOrder: 'SectionOrder'">
@@ -546,6 +551,7 @@
               </ng-container>
             </ul>
           </div>
+          }
           <!-- <div class="connector-line absolute ltr:left-6 rtl:right-6 z-10" [class.completed-line]="tab.isCompleted"
           [class.active-line]="tab.isActive" *ngIf="i < visibleTabs()!.length - 1"></div> -->
           <!-- [ngClass]="{'ltr:!left-1/2 rtl:!right-1/2': isMobileScreen || sidebarCollapsed}" -->
