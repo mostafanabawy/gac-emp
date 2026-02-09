@@ -519,15 +519,14 @@ export class DynamicFieldComponent implements OnInit {
             return lookup.RelevantLookupInternalFieldName && lookup.RelevantLookupId
           })
           if (relevantLookup) {
-            this.form!.get(relevantLookup.RelevantLookupInternalFieldName!)?.valueChanges.pipe(
-              debounceTime(300),
-              distinctUntilChanged((prev, curr) => {
-                return JSON.stringify(prev) === JSON.stringify(curr)
-              }),
-              skip(1),
-              takeUntil(this.destroy$)
-            ).subscribe((value: any) => {
+            this.form!.get(relevantLookup.RelevantLookupInternalFieldName!)?.valueChanges.subscribe((value: any) => {
               this.invalidateLookupCache();
+              let isValValid = this.filteredLookupValues(tableField)?.find((lv: any) => lv.LookupID === value)
+              if (isValValid) {
+                this.form?.get(this.field.InternalFieldName)?.get(tableField.InternalFieldName)?.patchValue(isValValid.LookupID)
+              } else {
+                this.form?.get(this.field.InternalFieldName)?.get(tableField.InternalFieldName)?.patchValue(-1)
+              }
             })
           }
         }
