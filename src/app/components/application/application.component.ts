@@ -7076,7 +7076,7 @@ export class ApplicationComponent {
                 }
             }) */
             this.wizardForm!.get(relevantLookup.RelevantLookupInternalFieldName!)?.valueChanges.subscribe(value => {
-                
+
 
                 lookups = lookups!.map(lookup => {
                     lookup.isFiltered = !lookup.RelevantLookupId?.includes(`${value}`) && lookup.LookupID !== -1
@@ -7129,5 +7129,11 @@ export class ApplicationComponent {
         } else {
             this.activeDropdown = [name];
         }
+    }
+    allSections = computed(() => this.visibleNavigationTabs()?.flatMap(tab => tab.TabSections));
+    getAllSections(id: any) {
+        let allSections: any = []
+        allSections = this.allSections()?.filter(section => section.FKNavigationTabID === id && section.FieldsJson[0].VisibilityActionID === 0);
+        return allSections || [];
     }
 }

@@ -169,7 +169,7 @@
             </button>
             <div [@slideDownUp]="!activeDropdown.includes(tab.tabID.toString())" class="accordion-content">
               <ul class="sub-menu text-gray-500">
-                <ng-container *ngFor="let child of tab.tabSections">
+                <ng-container *ngFor="let child of getAllSections(tab.tabID)">
                   <li>
                     <a [href]="'#'+ child.SectionID" (click)="scrollTo(child.SectionID, $event)" aria-label="attachments section"
                       class="items-center p-3 duration-200 text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2"
@@ -523,7 +523,7 @@
 
           <div [@slideDownUp]="!activeDropdown.includes(tab.tabID.toString())" class="accordion-content">
             <ul class="sub-menu text-gray-500">
-              <ng-container *ngFor="let child of tab.tabSections">
+              <ng-container *ngFor="let child of currentTabSections() | sortByOrder: 'SectionOrder'">
                 <li>
                   <a [href]="'#'+ child.SectionID" (click)="scrollTo(child.SectionID, $event)"
                     aria-label="attachments section"
