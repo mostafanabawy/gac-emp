@@ -175,7 +175,9 @@
                     <a [href]="'#'+ child.SectionID" (click)="scrollTo(child.SectionID, $event)"
                       aria-label="attachments section"
                       class="items-center p-3 duration-200 text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2"
-                      [class.border-none]="sidebarCollapsed" [title]="sidebarCollapsed? tab.TitleEn : ''"
+                      [ngClass]="{
+                    'text-primary font-semibold active-section': activeSection == child.SectionID
+                  }" [class.border-none]="sidebarCollapsed" [title]="sidebarCollapsed? tab.TitleEn : ''"
                       [class]="sidebarCollapsed ? 'mx-auto !p-2 !my-0 w-full' : ''">
                       @if(activeSection == child.SectionID){
                       @if (store.index.locale == 'en') {
