@@ -20,6 +20,7 @@ import html2canvas from 'html2canvas-pro';
 import { environment } from 'src/environments/environment';
 import { MenuLinksService } from 'src/app/service/menu-links.service';
 import { Router } from '@angular/router';
+import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-dynamic-field',
   templateUrl: './dynamic-field.component.html'
@@ -503,9 +504,9 @@ export class DynamicFieldComponent implements OnInit {
         ).subscribe((value: any) => {
           this.invalidateLookupCache();
           let isValValid = this.filteredLookupValues()?.find((lv: any) => lv.LookupID === value)
-          if (isValValid){
+          if (isValValid) {
             this.form?.get(this.field.InternalFieldName)?.patchValue(isValValid.LookupID)
-          }else{
+          } else {
             this.form?.get(this.field.InternalFieldName)?.patchValue(-1)
           }
         })
@@ -3777,5 +3778,55 @@ export class DynamicFieldComponent implements OnInit {
 
       queryParams: { ServiceID: listItem.ServiceID }
     });
+  }
+  exportTOExcel() {
+    const isArabic = this.store.index.locale === 'ae';
+    const headerMap: Record<string, string> = {};
+
+    const excludedFields = ['currentIndex', 'actions', 'expand'];
+    this.expandedFields.forEach(col => {
+      if (col.field && col.title && !excludedFields.includes(col.field)) {
+        headerMap[col.field] = col.title;
+      }
+    });
+
+    const data = this.rows().map((item: any) => {
+      const row: any = {};
+      Object.keys(headerMap).forEach(field => {
+        let value: any;
+        let tableField = this.field.TableServiceFields?.find((f: any) => f.InternalFieldName === field);
+        if (tableField && tableField.FieldType === 10) {
+          const imageUrl = `${this.fileUrl[field + item.currentIndex] || ''}`;
+
+          // SheetJS supports simple strings or cell objects. 
+          // To make it a clickable link, we'll format it as a string for now, 
+          // or post-process the worksheet.
+          value = imageUrl;
+        } else {
+          value = item[field];
+        }
+
+        row[headerMap[field]] = value ?? '';
+      });
+      return row;
+    });
+    const ws = XLSX.utils.json_to_sheet(data);
+
+    // تطبيق RTL على الـ worksheet
+    if (isArabic) {
+      ws['!views'] = [{ RTL: true }];
+    }
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, isArabic ? this.field.TitleAr : this.field.TitleEn);
+
+    if (isArabic) {
+      if (!wb.Workbook) wb.Workbook = {};
+      if (!wb.Workbook.Views) wb.Workbook.Views = [];
+      wb.Workbook.Views[0] = { RTL: true };
+    }
+
+    const filename = isArabic ? `${this.field.TitleAr}.xlsx` : `${this.field.TitleEn}.xlsx`;
+    XLSX.writeFile(wb, filename);
+
   }
 }

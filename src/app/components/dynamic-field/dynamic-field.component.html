@@ -35,7 +35,8 @@
         }
         @if (field.ApiFieldAddress.includes('cp=') && field.InternalFieldName === 'CommercialLicenseNumber' &&
         control?.value) {
-        <button class="text-primary underline" (click)="openCpModal()" [title]="translations()?.CommercialPermitOpenBtn.label"
+        <button class="text-primary underline" (click)="openCpModal()"
+            [title]="translations()?.CommercialPermitOpenBtn.label"
             [attr.aria-label]="translations()?.CommercialPermitOpenBtn.label">
             <icon-eye class="h-6 text-primary"></icon-eye>
         </button>
@@ -45,7 +46,8 @@
 
         @if(field.ApiFieldAddress.includes('cr=') && field.InternalFieldName === 'CommercialRegistrationNo' &&
         control?.value) {
-        <button class="text-primary underline" (click)="openCrModal()" [title]="translations()?.CommercialRegOpenBtn.label"
+        <button class="text-primary underline" (click)="openCrModal()"
+            [title]="translations()?.CommercialRegOpenBtn.label"
             [attr.aria-label]="translations()?.CommercialRegOpenBtn.label">
 
             <icon-eye class="h-6 text-primary"></icon-eye>
@@ -524,7 +526,7 @@
                         <!-- Button -->
                         <ng-container
                             *ngIf="tableField.FieldType === 14 && tableField.InternalFieldName.toLocaleLowerCase().includes('add') && !editFlag() && !closeAddRow">
-                            <div class="flex-1">
+                            <div class="flex-1 flex flex-wrap justify-between">
                                 <button type="button" [id]="tableField.InternalFieldName" [disabled]="fileLoading()"
                                     [ngClass]="{'cursor-not-allowed bg-opacity-80': fileLoading()}"
                                     class="btn btn-primary cursor-pointer" (click)="onAddButtonClick()">
@@ -535,12 +537,24 @@
                                     {{ tableField.TitleAr }}
                                     }
                                 </button>
+                                @if(rows().length > 0){
+                                <button type="button" (click)="exportTOExcel()"
+                                    aria-label="translations()?.exportToExcel?.label"
+                                    class="btn btn-primary flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    {{ translations()?.ExportReport?.label }}
+                                </button>
+                                }
                             </div>
                         </ng-container>
 
                         <ng-container *ngIf="editFlag() && tableField.FieldType === 14 
                         && tableField.InternalFieldName.toLocaleLowerCase().includes('edit')">
-                            <div class="flex-1">
+                            <div class="flex-1 flex justify-between flex-wrap">
                                 <button type="button" [id]="tableField.InternalFieldName" [disabled]="fileLoading()"
                                     [ngClass]="{'cursor-not-allowed bg-opacity-80': fileLoading()}"
                                     class="btn btn-primary cursor-pointer flex gap-2" (click)="applyEdit()">
@@ -551,6 +565,18 @@
                                     {{ tableField.TitleAr }}
                                     }
                                 </button>
+                                @if(rows().length > 0){
+                                <button type="button" (click)="exportTOExcel()"
+                                    aria-label="translations()?.exportToExcel?.label"
+                                    class="btn btn-primary flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    {{ translations()?.ExportReport?.label }}
+                                </button>
+                                }
                             </div>
                         </ng-container>
                         <ng-container *ngIf="tableField.FieldType === 17">
@@ -719,6 +745,7 @@
 
         <div class="w-full max-w-full overflow-x-auto">
             <div class="w-full">
+
                 <ng-datatable [rows]="rows()" [columns]="cols" [sortable]="true" class="w-full" [stickyHeader]="true"
                     [showPageSize]="false" skin="whitespace-nowrap table-hover" [height]="'200px'"
                     [noDataContent]="translations()?.noDataContent.label"
