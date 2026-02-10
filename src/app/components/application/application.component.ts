@@ -5137,11 +5137,12 @@ export class ApplicationComponent {
                             }
 
                             if (this.apiBody.FKServiceID !== 7008) {
+                                let mainTab = this.findByServices(this.menuLinksService.menuResponse(), this.apiBody.FKServiceID)?.TitleEn
                                 if (res.FkStatusID === 10) {
                                     this.router.navigate(['/Inbox'],
                                         {
                                             state: {
-                                                mainTab: history.state.mainTab,
+                                                mainTab: mainTab || history.state.mainTab,
                                                 branchTab: history.state.branchTab,
                                                 restoreTabs: true
                                             }
@@ -5151,7 +5152,7 @@ export class ApplicationComponent {
                                     this.router.navigate(['/Inbox'],
                                         {
                                             state: {
-                                                mainTab: history.state.mainTab,
+                                                mainTab: mainTab || history.state.mainTab,
                                                 branchTab: history.state.branchTab,
                                                 restoreTabs: true
                                             }
@@ -5253,11 +5254,12 @@ export class ApplicationComponent {
                             }
                             /*   */
                             if (this.apiBody.FKServiceID !== 7008) {
+                                let mainTab = this.findByServices(this.menuLinksService.menuResponse(), this.apiBody.FKServiceID)?.TitleEn
                                 if (res.FkStatusID === 10) {
                                     this.router.navigate(['/Inbox'],
                                         {
                                             state: {
-                                                mainTab: history.state.mainTab,
+                                                mainTab: mainTab || history.state.mainTab,
                                                 branchTab: history.state.branchTab,
                                                 restoreTabs: true
                                             }
@@ -5267,7 +5269,7 @@ export class ApplicationComponent {
                                     this.router.navigate(['/Inbox'],
                                         {
                                             state: {
-                                                mainTab: history.state.mainTab,
+                                                mainTab: mainTab || history.state.mainTab,
                                                 branchTab: history.state.branchTab,
                                                 restoreTabs: true
                                             }
@@ -5364,11 +5366,12 @@ export class ApplicationComponent {
                             msg = this.store.index.locale === 'en' ? action.SuperMsgEn : action.SuperMsgAr
                         }
                         if (this.apiBody.FKServiceID !== 7008) {
+                            let mainTab = this.findByServices(this.menuLinksService.menuResponse(), this.apiBody.FKServiceID)?.TitleEn
                             if (res.FkStatusID === 10) {
                                 this.router.navigate(['/Inbox'],
                                     {
                                         state: {
-                                            mainTab: history.state.mainTab,
+                                            mainTab: mainTab || history.state.mainTab,
                                             branchTab: history.state.branchTab,
                                             restoreTabs: true
                                         }
@@ -5378,7 +5381,7 @@ export class ApplicationComponent {
                                 this.router.navigate(['/Inbox'],
                                     {
                                         state: {
-                                            mainTab: history.state.mainTab,
+                                            mainTab: mainTab || history.state.mainTab,
                                             branchTab: history.state.branchTab,
                                             restoreTabs: true
                                         }
@@ -5475,11 +5478,12 @@ export class ApplicationComponent {
                                 msg = this.store.index.locale === 'en' ? action.SuperMsgEn : action.SuperMsgAr
                             }
                             if (this.apiBody.FKServiceID !== 7008) {
+                                let mainTab = this.findByServices(this.menuLinksService.menuResponse(), this.apiBody.FKServiceID)?.TitleEn
                                 if (res.FkStatusID === 10) {
                                     this.router.navigate(['/Inbox'],
                                         {
                                             state: {
-                                                mainTab: history.state.mainTab,
+                                                mainTab: mainTab || history.state.mainTab,
                                                 branchTab: history.state.branchTab,
                                                 restoreTabs: true
                                             }
@@ -5489,7 +5493,7 @@ export class ApplicationComponent {
                                     this.router.navigate(['/Inbox'],
                                         {
                                             state: {
-                                                mainTab: history.state.mainTab,
+                                                mainTab: mainTab || history.state.mainTab,
                                                 branchTab: history.state.branchTab,
                                                 restoreTabs: true
                                             }
@@ -5582,11 +5586,12 @@ export class ApplicationComponent {
                             msg = this.store.index.locale === 'en' ? action.SuperMsgEn : action.SuperMsgAr
                         }
                         if (this.apiBody.FKServiceID !== 7008) {
+                            let mainTab = this.findByServices(this.menuLinksService.menuResponse(), this.apiBody.FKServiceID)?.TitleEn
                             if (res.FkStatusID === 10) {
                                 this.router.navigate(['/Inbox'],
                                     {
                                         state: {
-                                            mainTab: history.state.mainTab,
+                                            mainTab: mainTab || history.state.mainTab,
                                             branchTab: history.state.branchTab,
                                             restoreTabs: true
                                         }
@@ -5596,7 +5601,7 @@ export class ApplicationComponent {
                                 this.router.navigate(['/Inbox'],
                                     {
                                         state: {
-                                            mainTab: history.state.mainTab,
+                                            mainTab: mainTab || history.state.mainTab,
                                             branchTab: history.state.branchTab,
                                             restoreTabs: true
                                         }
@@ -7122,6 +7127,23 @@ export class ApplicationComponent {
 
             if (item.children?.length) {
                 const found = this.findByServiceId(item.children, targetId);
+                if (found) return found;
+            }
+        }
+
+        return null;
+    }
+    findByServices(tree: any[], serviceId: any): any | null {
+        // ensure serviceId is a number
+        const targetId = Number(serviceId);
+
+        for (const item of tree) {
+            if (item.Services.includes(targetId)) {
+                return item;
+            }
+
+            if (item.children?.length) {
+                const found = this.findByServices(item.children, targetId);
                 if (found) return found;
             }
         }
