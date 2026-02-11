@@ -336,7 +336,7 @@
                             <textarea [id]="tableField.InternalFieldName"
                                 [formControlName]="tableField.InternalFieldName" rows="3" class="form-input w-full"
                                 [readonly]="(shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || (this.shouldBeDim() && !field.isGDXVal)"
-                                (keyup)="enforceMaxLength($event, field.MAX_Length)" [ngClass]="{'!border-2 rounded-md !border-red-500': getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required') && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched,
+                                (keyup)="enforceMaxLength($event, field.MAX_Length, tableField)" [ngClass]="{'!border-2 rounded-md !border-red-500': getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required') && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched,
                                     'bg-gray-100 !cursor-not-allowed md:col-span-2': (shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || (this.shouldBeDim() && !field.isGDXVal)
                                 }">
                                     </textarea>
