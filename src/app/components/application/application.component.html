@@ -8,7 +8,7 @@
   @if (editApp()) {
 
   <aside
-    class="bg-white shadow-md flex flex-col items-center rounded-t-lg h-fit sticky top-[140px] right-0 transition-all duration-300 max-h-[600px]"
+    class="bg-white shadow-md flex flex-col items-center rounded-t-lg h-fit sticky top-[155px] right-0 transition-all duration-300 max-h-[600px]"
     role="complementary" aria-label="page sections">
     <div class="bg-[#60583d] flex items-center justify-between w-full p-4 rounded-t-lg">
       <h2 class="text-xl font-semibold mb-1 text-white py-2 px-3 flex-1"
@@ -351,7 +351,7 @@
   }@else{
 
   <aside
-    class="bg-white shadow-md flex flex-col items-center rounded-t-lg h-fit sticky top-[140px] right-0 transition-all duration-300 max-h-[600px]"
+    class="bg-white shadow-md flex flex-col items-center rounded-t-lg h-fit sticky top-[155px] right-0 transition-all duration-300 max-h-[600px]"
     role="complementary" aria-label="page sections">
     <div class="bg-[#60583d] flex items-center justify-between w-full p-4 rounded-t-lg">
       <h2 class="text-xl font-semibold mb-1 text-white py-2 px-3 flex-1"
@@ -534,9 +534,10 @@
                 <li>
                   <a [href]="'#'+ child.SectionID" (click)="scrollTo(child.SectionID, $event)"
                     aria-label="attachments section"
-                    class="items-center p-3 duration-200 text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2"
-                    [class.border-none]="sidebarCollapsed" [title]="sidebarCollapsed? tab.TitleEn : ''"
-                    [class]="sidebarCollapsed ? 'mx-auto !p-2 !my-0 w-full' : ''">
+                    class="items-center p-3 duration-200 text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2 tab-item-custom"
+                    [class.border-none]="sidebarCollapsed" [title]="sidebarCollapsed? tab.TitleEn : ''" [ngClass]="{
+                    'active !text-[#60583d]': activeSection == child.SectionID
+                  }" [class]="sidebarCollapsed ? 'mx-auto !p-2 !my-0 w-full' : ''">
                     @if(activeSection == child.SectionID){
                     @if (store.index.locale == 'en') {
                     <icon-location-arrow-right class="w-4 text-primary"></icon-location-arrow-right>
