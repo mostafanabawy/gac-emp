@@ -371,7 +371,7 @@
         @if(visibleTabs()){
         <div *ngFor="let tab of visibleTabs(); let i = index">
           <button [title]="sidebarCollapsed? tab.title : ''"
-            (click)="!tab.isAccessible ? '' : changeTab(visibleTabs()!.indexOf(tab) + 1, tab.tabID) ; !tab.isAccessible ? '' : scrollToTop()"
+            (click)="!tab.isAccessible ? '' : toggleAccordion(tab.tabID.toString())"
             [ngClass]="{ 'text-primary font-semibold active-section': activeDropdown.includes(tab.tabID.toString()) && sidebarCollapsed }"
             class="tab-item-custom relative" [class.active]="tab.isActive" [class.completed]="tab.isCompleted"
             [class.disabled]="!tab.isAccessible" [class.collapsed]="sidebarCollapsed">
@@ -530,9 +530,9 @@
           @if (!sidebarCollapsed) {
           <div [@slideDownUp]="!activeDropdown.includes(tab.tabID.toString())" class="accordion-content">
             <ul class="sub-menu text-gray-500">
-              <ng-container *ngFor="let child of currentTabSections() | sortByOrder: 'SectionOrder'">
+              <ng-container *ngFor="let child of tab.tabSections | sortByOrder: 'SectionOrder'">
                 <li>
-                  <a [href]="'#'+ child.SectionID" (click)="scrollTo(child.SectionID, $event)"
+                  <a [href]="'#'+ child.SectionID" (click)="!tab.isAccessible ? '' : changeTab(visibleTabs()!.indexOf(tab) + 1,  child.SectionID, $event)"
                     aria-label="attachments section"
                     class="items-center p-3 duration-200 text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2 tab-item-custom"
                     [class.border-none]="sidebarCollapsed" [title]="sidebarCollapsed? tab.TitleEn : ''" [ngClass]="{

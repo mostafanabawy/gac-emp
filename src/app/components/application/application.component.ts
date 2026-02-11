@@ -5877,7 +5877,7 @@ export class ApplicationComponent {
             // Use a slight delay to allow smooth scroll to complete
             setTimeout(() => {
                 if (element) {
-                    clickedElement.blur();
+                    clickedElement?.blur();
                     element.focus();
                     // Announce the new section for screen readers
                     // This is more advanced, might require a live region or similar,
@@ -6400,9 +6400,12 @@ export class ApplicationComponent {
         console.log(this.visibleNavigationTabs());
         console.log(this.currentTab());
     } */
-    changeTab(index: number, tabID: any) {
+    changeTab(index: number, sectionID: any, event: any) {
+        event.preventDefault();
         this.currentTabIndex.update(() => { return index })
-        this.activeDropdown = [tabID.toString()]
+        setTimeout(() => {
+            this.scrollTo(sectionID, event)
+        }, 100)
     }
     showCustomLoader(): void {
         const customLoaderHtml = `
