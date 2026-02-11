@@ -1573,7 +1573,12 @@ export class DynamicFieldComponent implements OnInit {
 
   groupTableServiceFieldsByRow(fields: TableServiceField[]): TableServiceField[][] {
     const grouped: TableServiceField[][] = [];
-    fields.forEach(field => {
+    let sortedFields = fields.sort((a, b) => {
+      const orderA = a.OrderID ?? Infinity;
+      const orderB = b.OrderID ?? Infinity;
+      return orderA - orderB
+    })
+    sortedFields.forEach(field => {
       let row = grouped.find((r: TableServiceField[]) => r.length > 0 && r[0].RowID === field.RowID);
       if (!row) {
         row = [];
