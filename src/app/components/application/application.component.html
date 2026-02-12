@@ -33,7 +33,7 @@
     }" type="button" (click)="toggleMenu(currentPhase()?.TitleEn)" hlMenuButton>
         {{ store.index.locale === 'en' ? currentPhase()?.TitleEn : currentPhase()?.TitleAr }}
         <span [@reverseChevron]="(!!openMenus[currentPhase()?.TitleEn]).toString()">
-          @if(phaseIDs().length > 1){
+          @if(phaseIDs() && phaseIDs().length > 1){
             <icon-chevron-down class="w-4 h-4"></icon-chevron-down>
           }
         </span>
