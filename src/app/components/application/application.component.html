@@ -10,9 +10,13 @@
   <aside
     class="bg-white shadow-md flex flex-col items-center rounded-t-lg h-fit sticky top-[155px] right-0 transition-all duration-300 max-h-[600px]"
     role="complementary" aria-label="page sections">
-    <div class="bg-[#60583d] flex items-center justify-between w-full p-4 rounded-t-lg">
+
+    <div class="bg-[#60583d] flex items-center justify-between w-full p-4 rounded-t-lg border-b-4 border-stone-700">
       <h2 class="text-xl font-semibold mb-1 text-white py-2 px-3 flex-1"
-        [ngClass]="sidebarCollapsed ? 'hidden hidden-show' : 'block'">{{translations()?.sideMenuHeader.label}}</h2>
+        [ngClass]="sidebarCollapsed ? 'hidden hidden-show' : 'block'">
+        {{translations()?.sideMenuHeader.label}}
+      </h2>
+
       <button type="button" (click)="toggleSidebar()" class="collapse-button-custom"
         [ngClass]="(sidebarCollapsed || isMobileScreen) ? 'mx-auto' : ''"
         [title]="(sidebarCollapsed || isMobileScreen) ? 'توسيع القائمة' : 'طي القائمة'">
@@ -22,6 +26,30 @@
           class="w-4 h-4 transition-all duration-300">
       </button>
     </div>
+    @if(phaseIDs() && phaseIDs().length > 0){
+    <div hlMenu class="!block relative w-full" #processMenuWrapper>
+      <button class="rounded bg-[#60583d] text-white font-bold px-6 py-3 rounded-t-lg shadow-lg transition-all text-base my-2 flex gap-1
+        w-full items-center justify-between" [ngClass]="{'!border-primary bg-gray-200':  openMenus[currentPhase()?.TitleEn]
+    }" type="button" (click)="toggleMenu(currentPhase()?.TitleEn)" hlMenuButton>
+        {{ store.index.locale === 'en' ? currentPhase()?.TitleEn : currentPhase()?.TitleAr }}
+        <span [@reverseChevron]="(!!openMenus[currentPhase()?.TitleEn]).toString()">
+          <icon-chevron-down class="w-4 h-4"></icon-chevron-down>
+        </span>
+      </button>
+      <ul *hlMenuItems @toggleAnimation
+        class="top-14 absolute w-full !py-0 font-semibold shadow-sm shadow-primary bg-white text-dark left-0 right-0 z-[999] focus:!outline-none">
+        @for(phase of phaseIDs(); track $index){
+        <li>
+          <button class="block w-full text-gray-600 hover:text-primary px-3 py-2 rounded-md xl:text-base" [ngClass]="{
+                '!active !text-primary font-bold !border-primary !bg-primary/5': phase.LookupID === currentPhaseIndex()
+              }" (click)="changePhase(phase.LookupID)" *hlMenuItem="let menuItem">
+            {{ store.index.locale == 'en' ? phase.TitleEn : phase.TitleAr }}
+          </button>
+        </li>
+        }
+      </ul>
+    </div>
+    }
     <nav aria-label="page sections first list" class="w-full overflow-scroll hide-scrollbar">
       <ul class="mt-1 space-y-3 w-full px-3" [class]="sidebarCollapsed ? 'mx-auto !p-0 !my-0 !space-y-0' : ''">
         <ng-container *ngFor="let tab of visibleTabs()">
@@ -353,7 +381,7 @@
   <aside
     class="bg-white shadow-md flex flex-col items-center rounded-t-lg h-fit sticky top-[155px] right-0 transition-all duration-300 max-h-[600px]"
     role="complementary" aria-label="page sections">
-    <div class="bg-[#60583d] flex items-center justify-between w-full p-4 rounded-t-lg">
+    <div class="bg-[#60583d] flex items-center justify-between w-full p-4 rounded-t-lg border-b-4 border-stone-700">
       <h2 class="text-xl font-semibold mb-1 text-white py-2 px-3 flex-1"
         [ngClass]="sidebarCollapsed ? 'hidden hidden-show' : 'block'">{{translations()?.sideMenuHeader.label}}</h2>
       <button type="button" (click)="toggleSidebar()" class="collapse-button-custom"
@@ -365,6 +393,30 @@
           class="w-4 h-4 transition-all duration-300">
       </button>
     </div>
+    @if(phaseIDs() && phaseIDs().length > 0){
+    <div hlMenu class="!block relative w-full" #processMenuWrapper>
+      <button class="rounded bg-[#60583d] text-white font-bold px-6 py-3 rounded-t-lg shadow-lg transition-all text-base my-2 flex gap-1
+        w-full items-center justify-between" [ngClass]="{'!border-primary bg-gray-200':  openMenus[currentPhase()?.TitleEn]
+    }" type="button" (click)="toggleMenu(currentPhase()?.TitleEn)" hlMenuButton>
+        {{ store.index.locale === 'en' ? currentPhase()?.TitleEn : currentPhase()?.TitleAr }}
+        <span [@reverseChevron]="(!!openMenus[currentPhase()?.TitleEn]).toString()">
+          <icon-chevron-down class="w-4 h-4"></icon-chevron-down>
+        </span>
+      </button>
+      <ul *hlMenuItems @toggleAnimation
+        class="top-14 absolute w-full !py-0 font-semibold shadow-sm shadow-primary bg-white text-dark left-0 right-0 z-[999] focus:!outline-none">
+        @for(phase of phaseIDs(); track $index){
+        <li>
+          <button class="block w-full text-gray-600 hover:text-primary px-3 py-2 rounded-md xl:text-base" [ngClass]="{
+                '!active !text-primary font-bold !border-primary !bg-primary/5': phase.LookupID === currentPhaseIndex()
+              }" (click)="changePhase(phase.LookupID)" *hlMenuItem="let menuItem">
+            {{ store.index.locale == 'en' ? phase.TitleEn : phase.TitleAr }}
+          </button>
+        </li>
+        }
+      </ul>
+    </div>
+    }
     <nav aria-label="page sections first list" class="w-full overflow-scroll hide-scrollbar">
       <ul class="mt-1 space-y-3 w-full px-3"
         [class]="sidebarCollapsed ? 'mx-auto !p-0 !my-0 !space-y-0 flex flex-col items-center' : ''">
@@ -585,7 +637,7 @@
               [confirmBtnName]="translations()?.validationMsgBtn.label"
               [isOpened]="serviceSelectModalFlag()"></app-service-select-modal>
             }
-<!-- 'top-[155px]': phaseIDs() && phaseIDs()!.length > 0,
+            <!-- 'top-[155px]': phaseIDs() && phaseIDs()!.length > 0,
                     'top-[155px]': phaseIDs() && phaseIDs()!.length === 0 -->
             <div
               class="flex flex-wrap gap-2 mb-8 bg-gray-100 border border-gray-200 rounded px-1 py-3 font-bold sticky top-[155px] z-[99]"
@@ -1029,19 +1081,7 @@
 
   <ng-container *ngIf="phaseIDs() && phaseIDs().length > 0; else noPhases">
     <div class="flex-1 w-full min-w-0 relative">
-      <ul class="flex flex-col md:flex-row gap-2 bg-gray-100">
-        @for(phase of phaseIDs(); track $index){
-        <li>
-          <button
-            class="rounded border border-[#60583d] shadow shadow-[#60583d] bg-[#60583d] text-white text-base px-5 py-2 my-2"
-            [ngClass]="{
-              '!bg-white !text-black': phase.LookupID === currentPhaseIndex()
-            }" (click)="changePhase(phase.LookupID)">
-            {{ store.index.locale == 'en' ? phase.TitleEn : phase.TitleAr }}
-          </button>
-        </li>
-        }
-      </ul>
+
       @if(currentPhase()){
       <div class="phase-section">
 
