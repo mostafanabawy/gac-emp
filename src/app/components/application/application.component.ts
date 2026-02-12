@@ -7108,8 +7108,8 @@ export class ApplicationComponent {
             phasesWithTabs[phase] = tabs.filter(tab => tab.StepID === phase)
         })
         this.phasesWithTabs.set(phasesWithTabs);
-        this.phaseIDs.set(phaseIDs);
-        this.currentPhaseIndex.set(phases[0]);
+        this.phaseIDs.set(phaseIDs.sort((a: any, b: any) => a-b));
+        this.currentPhaseIndex.set(phases[phases.length -1]);
         this.applicationTabs = phasesWithTabs[this.currentPhaseIndex()].map((tab: any, index: number) => {
             return {
                 id: tab.TabOrder,
