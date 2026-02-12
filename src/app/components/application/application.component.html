@@ -587,7 +587,7 @@
                   <a [href]="'#'+ child.SectionID"
                     (click)="!tab.isAccessible ? '' : changeTab(visibleTabs()!.indexOf(tab) + 1,  child.SectionID, $event)"
                     aria-label="attachments section"
-                    class="items-center p-3 duration-200 text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2 tab-item-custom"
+                    class="items-center p-3 duration-200 text-lg pb-4 flex gap-2 tab-item-custom"
                     [class.border-none]="sidebarCollapsed" [title]="sidebarCollapsed? tab.TitleEn : ''" [ngClass]="{
                     'active !text-[#60583d]': activeSection == child.SectionID && tab.isActive,
                     '!text-primary': activeSection == child.SectionID && tab.isCompleted
