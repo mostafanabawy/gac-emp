@@ -825,8 +825,11 @@ export class ApplicationComponent {
 
                 this.navigationTabs.set(parsed.NavigationTabs.sort((a, b) => a.TabOrder - b.TabOrder));
                 if (this.navigationTabs() && !this.navigationTabs()?.every((tab) => !tab.StepID)) {
-                    let phases = [...new Set(this.navigationTabs()?.map(item => item.StepID))];
-                    this.transformTabs(this.navigationTabs()!, phases);
+                    this.allApplicationService.getLookup({ "LookupTypeID": 5 }).subscribe((res: any) => {
+                        this.allApplicationService.lookupValues.set(res.result.items)
+                        let phases = [...new Set(this.navigationTabs()?.map(item => item.StepID))];
+                        this.transformTabs(this.navigationTabs()!, phases);
+                    })
                 }
 
                 //to be changed
@@ -1351,7 +1354,7 @@ export class ApplicationComponent {
                 this.wizardForm!.reset();
             }
 
-            this.newApplicationService.getUI(this.apiBody!).subscribe((res: ResponseBody) => {
+            this.newApplicationService.getUI(this.apiBody!).subscribe(async (res: ResponseBody) => {
                 let allTabFields: any = []
                 res.NavigationTabs.forEach((tab) => {
                     tab.TabSections.forEach(section => {
@@ -1380,6 +1383,8 @@ export class ApplicationComponent {
                 })
                 this.navigationTabs.set(parsed.NavigationTabs.sort((a, b) => a.TabOrder - b.TabOrder));
                 if (this.navigationTabs() && !this.navigationTabs()?.every((tab) => !tab.StepID)) {
+                    let res = await firstValueFrom(this.allApplicationService.getLookup({ "LookupTypeID": 5 }))
+                    this.allApplicationService.lookupValues.set(res.result.items)
                     let phases = [...new Set(this.navigationTabs()?.map(item => item.StepID))];
                     this.transformTabs(this.navigationTabs()!, phases);
                 }
@@ -7153,13 +7158,11 @@ export class ApplicationComponent {
     phaseIDs = signal<any[]>([]);
     transformTabs(tabs: NavigationTab[], phases: any[]) {
         const allFields: FieldJson[] = this.extractFields(this.navigationTabs());
-        let processField = allFields.find((field) => {
-            return field.InternalFieldName === 'FkProcessID'
-        })!
+        let processField = this.allApplicationService.lookupValues()
         let phaseIDs: any = [];
         let phasesWithTabs: any = {}
         phases.forEach(phase => {
-            let phaseObj = processField.LookupValues?.find((lookup: any) => lookup.LookupID === phase);
+            let phaseObj = processField?.find((lookup: any) => lookup.LookupID === phase);
             if (phaseObj) {
                 phaseIDs.push(phaseObj)
             }
@@ -7170,6 +7173,7 @@ export class ApplicationComponent {
         this.phasesWithTabs.set(phasesWithTabs);
         this.phaseIDs.set(phaseIDs.sort((a: any, b: any) => a - b));
         this.currentPhaseIndex.set(phases[phases.length - 1]);
+        debugger;
         this.applicationTabs = phasesWithTabs[this.currentPhaseIndex()].map((tab: any, index: number) => {
             return {
                 id: tab.TabOrder,
