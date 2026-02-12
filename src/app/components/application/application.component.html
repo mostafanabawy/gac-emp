@@ -34,7 +34,7 @@
         {{ store.index.locale === 'en' ? currentPhase()?.TitleEn : currentPhase()?.TitleAr }}
         <span [@reverseChevron]="(!!openMenus[currentPhase()?.TitleEn]).toString()">
           @if(phaseIDs() && phaseIDs().length > 1){
-            <icon-chevron-down class="w-4 h-4"></icon-chevron-down>
+          <icon-chevron-down class="w-4 h-4"></icon-chevron-down>
           }
         </span>
       </button>
@@ -401,9 +401,9 @@
         w-full items-center justify-between" [ngClass]="{'!border-primary bg-gray-200':  openMenus[currentPhase()?.TitleEn]
     }" type="button" (click)="toggleMenu(currentPhase()?.TitleEn)" hlMenuButton>
         {{ store.index.locale === 'en' ? currentPhase()?.TitleEn : currentPhase()?.TitleAr }}
-        <span [@reverseChevron]="(!!openMenus[currentPhase()?.TitleEn]).toString()">
-          <icon-chevron-down class="w-4 h-4"></icon-chevron-down>
-        </span>
+        @if(phaseIDs() && phaseIDs().length > 1){
+        <icon-chevron-down class="w-4 h-4"></icon-chevron-down>
+        }
       </button>
       <ul *hlMenuItems @toggleAnimation
         class="top-14 absolute w-full !py-0 font-semibold shadow-sm shadow-primary bg-white text-dark left-0 right-0 z-[999] focus:!outline-none">
