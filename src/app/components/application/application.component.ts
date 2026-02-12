@@ -4756,9 +4756,7 @@ export class ApplicationComponent {
                     this.lastGroup.updateValueAndValidity({ emitEvent: false });
                     lastGroupDisabled = true;
                 }
-                if (!isValid) {
-                    break;
-                }
+                
             }
 
             // --- CASE 3: STANDARD FIELDS ---
@@ -4785,21 +4783,21 @@ export class ApplicationComponent {
                 } else {
                     this.executeFocusAndAlert(field, targetAttachment);
                 }
+                if (!isValid) {
+                    if (lastGroupDisabled) {
+                        Object.entries(this.lastGroup!.controls).forEach(([key, control]) => {
+                            control.setValidators(backupValidators[key]);
+                            control.setAsyncValidators(backupAsyncValidators[key]);
+                            control.updateValueAndValidity({ emitEvent: false });
+                        });
+                        this.lastGroup!.updateValueAndValidity({ emitEvent: false });
+                    }
+                }
                 return; // Stop the loop at the first error
             }
         }
         console.log('isValid: ', isValid);
         console.log('isPopup: ', this.isPopup);
-        if (!isValid) {
-            if (lastGroupDisabled) {
-                Object.entries(this.lastGroup!.controls).forEach(([key, control]) => {
-                    control.setValidators(backupValidators[key]);
-                    control.setAsyncValidators(backupAsyncValidators[key]);
-                    control.updateValueAndValidity({ emitEvent: false });
-                });
-                this.lastGroup!.updateValueAndValidity({ emitEvent: false });
-            }
-        }
 
         if (action.ClickConditionId) {
             console.log(action.ClickConditionId);
