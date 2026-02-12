@@ -2680,7 +2680,6 @@ export class DynamicFieldComponent implements OnInit {
     })
   }
   validateTable() {
-    debugger;
     const formArray = this.getFormArray(this.field.InternalFieldName)!
     const lastElementIndex = formArray.length - 1;
     const lastElementControls = (formArray.at(lastElementIndex) as FormGroup).controls;
