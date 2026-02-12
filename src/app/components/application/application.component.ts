@@ -5850,21 +5850,45 @@ export class ApplicationComponent {
         this.visibleNavigationTabs()!.forEach((tab) => {
             sectionIds.push(...tab.TabSections.map((section) => section.SectionID));
         })
-        for (let id of sectionIds) {
-            const el = document.getElementById(`${id}`);
-            if (el) {
-                const rect = el.getBoundingClientRect();
-                if (rect.top <= 490 && rect.bottom >= 490) {
-                    this.activeSection = `${id}`;
-                    const parentTab = this.visibleNavigationTabs()!.find(tab =>
-                        tab.TabSections.some(sec => sec.SectionID === id)
-                    );
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
 
-                    if (parentTab) {
-                        let activeTabId = parentTab.NavigationTabID;
-                        this.activeDropdown = [activeTabId.toString()];
+        // 2. The height of the visible window
+        const windowHeight = window.innerHeight;
+
+        // 3. The total height of the entire document
+        const documentHeight = document.documentElement.scrollHeight;
+
+        // 4. Logic: (Scrolled distance + Window Height) >= Total Height
+        // We use a 50px buffer because some mobile browsers or zoom levels make it hard to hit the exact pixel.
+        const isAtBottom = (scrollTop + windowHeight) >= (documentHeight - 50);
+        if (isAtBottom && sectionIds.length > 0) {
+            const lastId = sectionIds[sectionIds.length - 1];
+            this.activeSection = `${lastId}`;
+            const parentTab = this.visibleNavigationTabs()!.find(tab =>
+                tab.TabSections.some(sec => sec.SectionID === lastId)
+            );
+
+            if (parentTab) {
+                let activeTabId = parentTab.NavigationTabID;
+                this.activeDropdown = [activeTabId.toString()];
+            }
+        } else {
+            for (let id of sectionIds) {
+                const el = document.getElementById(`${id}`);
+                if (el) {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top <= 490 && rect.bottom >= 490) {
+                        this.activeSection = `${id}`;
+                        const parentTab = this.visibleNavigationTabs()!.find(tab =>
+                            tab.TabSections.some(sec => sec.SectionID === id)
+                        );
+
+                        if (parentTab) {
+                            let activeTabId = parentTab.NavigationTabID;
+                            this.activeDropdown = [activeTabId.toString()];
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         }
