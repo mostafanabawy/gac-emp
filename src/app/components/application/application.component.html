@@ -42,7 +42,7 @@
         <li>
           <button class="block w-full text-gray-600 hover:text-primary px-3 py-2 rounded-md xl:text-base" [ngClass]="{
                 '!active !text-primary font-bold !border-primary !bg-primary/5': phase.LookupID === currentPhaseIndex()
-              }" (click)="changePhase(phase.LookupID)" *hlMenuItem="let menuItem">
+              }" (click)="changePhase(phase.LookupID); scrollToTop();" *hlMenuItem="let menuItem">
             {{ store.index.locale == 'en' ? phase.TitleEn : phase.TitleAr }}
           </button>
         </li>
