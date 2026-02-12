@@ -4756,7 +4756,7 @@ export class ApplicationComponent {
                     this.lastGroup.updateValueAndValidity({ emitEvent: false });
                     lastGroupDisabled = true;
                 }
-                
+
             }
 
             // --- CASE 3: STANDARD FIELDS ---
@@ -5603,8 +5603,13 @@ export class ApplicationComponent {
             focusable = hostElement.querySelector<HTMLElement>('.ng-select-container') || hostElement;
         }
 
-        // 4. UI Feedback
-        focusable.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const elementPosition = hostElement.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - 300;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
         (document.activeElement as HTMLElement)?.blur();
 
         Swal.fire({
@@ -5849,7 +5854,7 @@ export class ApplicationComponent {
             const el = document.getElementById(`${id}`);
             if (el) {
                 const rect = el.getBoundingClientRect();
-                if (rect.top <= 300 && rect.bottom >= 300) {
+                if (rect.top <= 490 && rect.bottom >= 490) {
                     this.activeSection = `${id}`;
                     const parentTab = this.visibleNavigationTabs()!.find(tab =>
                         tab.TabSections.some(sec => sec.SectionID === id)
