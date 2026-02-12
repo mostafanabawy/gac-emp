@@ -1082,11 +1082,13 @@
   <ng-container *ngIf="phaseIDs() && phaseIDs().length > 0; else noPhases">
     <div class="flex-1 w-full min-w-0 relative">
 
-      @if(currentPhase()){
-      <div class="phase-section">
+      @for(phase of phaseIDs(); track $index){
+      <div class="phase-section" [ngClass]="{
+        'hidden': phase.LookupID !== currentPhaseIndex()
+      }">
 
         <ng-container *ngTemplateOutlet="tabsContent; 
-              context: { tabs: phasesWithTabs()[currentPhase().LookupID] }">
+              context: { tabs: phasesWithTabs()[phase.LookupID] }">
         </ng-container>
       </div>
       }

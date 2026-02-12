@@ -4726,6 +4726,39 @@ export class ApplicationComponent {
                     isValidField = false;
                 }
                 // ... include your specific table row logic here ...
+                let isTableReq = this.ServiceFieldsByActionsApiResponse.items[ActionDetailsID].find((item) => {
+                    return item.ServiceFieldID === field.ServiceFieldID
+                })?.FieldRequired
+                if (formArray.length > 1 && isTableReq) {
+                    isValid = this.validateRowsForMissingData(formArray, field);
+                }
+                Object.keys(formArray.controls).slice(0, -1).forEach((key: any, index: any) => {
+                    field.TableServiceFields?.forEach((tableField: any) => {
+                        if (formArray?.at(index)?.get(tableField.InternalFieldName)) {
+                            this.shouldBeRequired(tableField, formArray!.at(index).get(tableField.InternalFieldName) as FormControl, index, field)
+                        }
+                    })
+                })
+                this.lastGroup = formArray.at(formArray.length - 1) as FormGroup<any>;
+                if (this.lastGroup.invalid) {
+                    backupValidators = Object.fromEntries(
+                        Object.entries(this.lastGroup.controls).map(([key, control]) => [key, control.validator])
+                    );
+                    backupAsyncValidators = Object.fromEntries(
+                        Object.entries(this.lastGroup.controls).map(([key, control]) => [key, control.asyncValidator])
+                    );
+                    // Remove and store the group
+                    this.lastGroup = formArray.at(formArray.length - 1) as FormGroup;
+                    Object.values(this.lastGroup.controls).forEach(control => {
+                        control.clearValidators();
+                        control.updateValueAndValidity({ emitEvent: false });
+                    });
+                    this.lastGroup.updateValueAndValidity({ emitEvent: false });
+                    lastGroupDisabled = true;
+                }
+                if (!isValid) {
+                    break;
+                }
             }
 
             // --- CASE 3: STANDARD FIELDS ---
@@ -7108,8 +7141,8 @@ export class ApplicationComponent {
             phasesWithTabs[phase] = tabs.filter(tab => tab.StepID === phase)
         })
         this.phasesWithTabs.set(phasesWithTabs);
-        this.phaseIDs.set(phaseIDs.sort((a: any, b: any) => a-b));
-        this.currentPhaseIndex.set(phases[phases.length -1]);
+        this.phaseIDs.set(phaseIDs.sort((a: any, b: any) => a - b));
+        this.currentPhaseIndex.set(phases[phases.length - 1]);
         this.applicationTabs = phasesWithTabs[this.currentPhaseIndex()].map((tab: any, index: number) => {
             return {
                 id: tab.TabOrder,
