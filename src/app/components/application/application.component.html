@@ -629,21 +629,16 @@
       <div class="main-content !mr-0">
 
         @if(navigationTabs()){
-        <div *ngIf="navigationTabs()!.length > 0 && wizardForm" class="p-3 md:p-4 bg-white rounded-lg">
+        <div *ngIf="navigationTabs()!.length > 0 && wizardForm" class="p-3 md:p-4 pt-2 bg-white rounded-lg">
 
 
-          <form [formGroup]="wizardForm" class="mt-4 md:mt-8 space-y-4 md:space-y-6">
+          <form [formGroup]="wizardForm" class="space-y-4 md:space-y-6">
             @if (editApp()) {
-            @if(btnRelatedServices()){
-            <app-service-select-modal [services]="btnRelatedServices()" [title]="clickedActionTitle()"
-              [confirmBtnName]="translations()?.validationMsgBtn.label"
-              [isOpened]="serviceSelectModalFlag()"></app-service-select-modal>
-            }
+
             <!-- 'top-[155px]': phaseIDs() && phaseIDs()!.length > 0,
                     'top-[155px]': phaseIDs() && phaseIDs()!.length === 0 -->
-            <div
-              class="flex flex-wrap gap-2 mb-8 bg-gray-100 border border-gray-200 rounded px-1 py-3 font-bold sticky top-[155px] z-[99]"
-              [ngClass]="{
+            <div class="flex flex-wrap gap-2 mb-8 bg-gray-100 border border-gray-200 rounded px-1 py-3 font-bold 
+              sticky top-[155px] z-[99]" [ngClass]="{
                     'shadow-lg': shouldApplyShadow, 
                     'shadow-none': !shouldApplyShadow
                   }" *ngIf="actions && actions.length > 0">
@@ -974,6 +969,11 @@
                 </div>
               </div>
             </ng-container>
+            @if(btnRelatedServices()){
+            <app-service-select-modal [services]="btnRelatedServices()" [title]="clickedActionTitle()"
+              [confirmBtnName]="translations()?.validationMsgBtn.label"
+              [isOpened]="serviceSelectModalFlag()"></app-service-select-modal>
+            }
             <app-services-log-modal [isOpened]="allApplicationService.isLogData()"
               (closed)="onUserClose($event)"></app-services-log-modal>
             <app-related-applications-modal [isOpened]="allApplicationService.isRelatedRequestsData()"
