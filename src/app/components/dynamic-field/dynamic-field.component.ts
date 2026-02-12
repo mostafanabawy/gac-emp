@@ -520,6 +520,11 @@ export class DynamicFieldComponent implements OnInit {
             (this.form?.get(this.field.InternalFieldName) as FormArray)?.at(-1).get(tableField.InternalFieldName)?.patchValue(value)
           })
         }
+        if(tableField.FieldType === 3){
+          (this.form?.get(this.field.InternalFieldName) as FormArray)?.at(-1).get(tableField.InternalFieldName)?.valueChanges.subscribe((value: any) => {
+            (this.form?.get(this.field.InternalFieldName) as FormArray)?.at(-1).get(tableField.InternalFieldName)?.patchValue(value)
+          })
+        }
         if ([4, 6, 19].includes(tableField.FieldType)) {
           let relevantLookup = tableField.LookupValues?.find(lookup => {
             return lookup.RelevantLookupInternalFieldName && lookup.RelevantLookupId
