@@ -532,7 +532,8 @@
             <ul class="sub-menu text-gray-500">
               <ng-container *ngFor="let child of tab.tabSections | sortByOrder: 'SectionOrder'">
                 <li>
-                  <a [href]="'#'+ child.SectionID" (click)="!tab.isAccessible ? '' : changeTab(visibleTabs()!.indexOf(tab) + 1,  child.SectionID, $event)"
+                  <a [href]="'#'+ child.SectionID"
+                    (click)="!tab.isAccessible ? '' : changeTab(visibleTabs()!.indexOf(tab) + 1,  child.SectionID, $event)"
                     aria-label="attachments section"
                     class="items-center p-3 duration-200 text-lg pb-4 focus:text-primary focus:ring-opacity-50 flex gap-2 tab-item-custom"
                     [class.border-none]="sidebarCollapsed" [title]="sidebarCollapsed? tab.TitleEn : ''" [ngClass]="{
@@ -568,169 +569,45 @@
   </aside>
   }
 
-  <!-- Main Content -->
-  <div class="flex-1 w-full min-w-0 relative">
-    <div class="main-content !mr-0">
+  <ng-template #tabsContent let-tabsList="tabs">
+    <!-- Main Content -->
+    <div class="flex-1 w-full min-w-0 relative">
+      <div class="main-content !mr-0">
 
-      @if(navigationTabs()){
-      <div *ngIf="navigationTabs()!.length > 0 && wizardForm" class="p-3 md:p-4 bg-white rounded-lg">
+        @if(navigationTabs()){
+        <div *ngIf="navigationTabs()!.length > 0 && wizardForm" class="p-3 md:p-4 bg-white rounded-lg">
 
 
-        <form [formGroup]="wizardForm" class="mt-4 md:mt-8 space-y-4 md:space-y-6">
-          @if (editApp()) {
-          @if(btnRelatedServices()){
-          <app-service-select-modal [services]="btnRelatedServices()" [title]="clickedActionTitle()"
-            [confirmBtnName]="translations()?.validationMsgBtn.label"
-            [isOpened]="serviceSelectModalFlag()"></app-service-select-modal>
-          }
-
-          <div
-            class="flex flex-wrap gap-2 mb-8 bg-gray-100 border border-gray-200 rounded px-1 py-3 font-bold sticky top-[155px] z-[99]"
-            [ngClass]="{
-                  'shadow-lg': shouldApplyShadow, 
-                  'shadow-none': !shouldApplyShadow
-                }" *ngIf="actions && actions.length > 0">
-            <ng-container *ngFor="let action of displayActions() | sortByOrder: 'ActionSortOrder'">
-              @if(!action.isDropdown){
-              <button [disabled]="apiLoading" [ngClass]="{
-                                    '': action.TitleEN === 'Send Request',
-                                    '!bg-opacity-80 cursor-not-allowed': apiLoading || calcApiLoading
-                        }"
-                class="py-2 px-4 font-semibold bg-white border border-gray-200 hover:text-primary hover:underline rounded-md flex gap-1 items-center"
-                (click)="handleAction(action)">
-                @if(action.ActionID === 865 || action.ActionID === 1841 || action.ActionID === 1881 || action.ActionID
-                === 1867){
-                <img src="/assets/images/icons/clipboard-remove-svgrepo-com.svg" alt="remove icon" class="h-4">
-                }@else if (action.ActionID === 1989 || action.ActionID === 1990 || action.ActionID === 1991 ||
-                action.ActionID === 1723 || action.ActionID === 1992 || action.ActionID === 1848 || action.ActionID ===
-                1900 || action.ActionID === 1880 || action.ActionID === 863 || action.ActionID === 1998){
-                <img src="/assets/images/icons/revoke57187.svg" alt="cancel icon" class="h-4">
-                }@else if(action.ActionID === 861 || action.ActionID === 1845 || action.ActionID === 1884){
-                <img src="/assets/images/icons/edit-svgrepo-com.svg" alt="edit icon" class="h-4">
-                }@else if (action.ActionID === 862) {
-                <img src="/assets/images/icons/send-svgrepo-com.svg" alt="send icon" class="h-4">
-                }@else if (action.ActionID === 1724) {
-                <img src="/assets/images/icons/copy-com.svg" alt="copy icon" class="h-4">
-                }@else if(action.ActionID === 1850 || action.ActionID === 1844 || action.ActionID === 1993 ||
-                action.ActionID === 1996 || action.ActionID === 1869 || action.ActionID === 1879 || action.ActionID ===
-                1872){
-                <img src="/assets/images/icons/Group 57145.svg" alt="renew icon" class="h-4" />
-                }@else if (action.ActionID === 1832 || action.ActionID === 1851){
-                <img src="/assets/images/icons/credit-card-payment-svgrepo-com.svg" alt="pay icon" class="h-4" />
-                }@else if (action.ActionID === 864){
-                <icon-circle-check class="text-green-600 h-5"></icon-circle-check>
-                }@else if ( action.ActionID === 1995){
-                <img src="/assets/images/icons/add-icon.svg" alt="add icon" class="h-4">
-                }@else if(action.ActionID === 1871){
-                <img src="/assets/images/icons/property-transfer.svg" alt="property transfer icon" class="h-4">
-                }@else if (action.ActionID === 1985 || action.ActionID === 1984) {
-                <img src="/assets/images/icons/Star.svg" class="h-4" alt="star icon for rating">
-                }@else if (action.ActionID === 1842 || action.ActionID === 1843 || action.ActionID === 1993 ||
-                action.ActionID === 1852 || action.ActionID === 1901) {
-                <img src="/assets/images/icons/printer57135.svg" alt="print icon">
-                }@else if(action.ActionID === 1856) {
-                <icon-pencil class="text-primary h-4"></icon-pencil>
-                }@else if(action.ActionID === 1855) {
-                <icon-txt-file class="text-primary h-5"></icon-txt-file>
-                }@else if (action.ActionID === 1859 || action.ActionID === 1865) {
-                <icon-history-clock class="h-5 text-primary"></icon-history-clock>
-                }@else if (action.ActionID === 1877) {
-                <icon-transfer-circle-horizontal class="h-5 text-primary"></icon-transfer-circle-horizontal>
-                }
-
-                @if(store.index.locale == 'en'){
-                {{ action.TitleEN }}
-                }@else {
-                {{ action.TitleAR }}
-                }
-              </button>
-              }@else {
-              @if(action.groupID){
-              <div hlMenu class="!block relative">
-                <button
+          <form [formGroup]="wizardForm" class="mt-4 md:mt-8 space-y-4 md:space-y-6">
+            @if (editApp()) {
+            @if(btnRelatedServices()){
+            <app-service-select-modal [services]="btnRelatedServices()" [title]="clickedActionTitle()"
+              [confirmBtnName]="translations()?.validationMsgBtn.label"
+              [isOpened]="serviceSelectModalFlag()"></app-service-select-modal>
+            }
+<!-- 'top-[155px]': phaseIDs() && phaseIDs()!.length > 0,
+                    'top-[155px]': phaseIDs() && phaseIDs()!.length === 0 -->
+            <div
+              class="flex flex-wrap gap-2 mb-8 bg-gray-100 border border-gray-200 rounded px-1 py-3 font-bold sticky top-[155px] z-[99]"
+              [ngClass]="{
+                    'shadow-lg': shouldApplyShadow, 
+                    'shadow-none': !shouldApplyShadow
+                  }" *ngIf="actions && actions.length > 0">
+              <ng-container *ngFor="let action of displayActions() | sortByOrder: 'ActionSortOrder'">
+                @if(!action.isDropdown){
+                <button [disabled]="apiLoading" [ngClass]="{
+                                      '': action.TitleEN === 'Send Request',
+                                      '!bg-opacity-80 cursor-not-allowed': apiLoading || calcApiLoading
+                          }"
                   class="py-2 px-4 font-semibold bg-white border border-gray-200 hover:text-primary hover:underline rounded-md flex gap-1 items-center"
-                  [ngClass]="{' bg-gray-200':  openMenus[action.groupID],
-                      '!bg-opacity-80 cursor-not-allowed': apiLoading
-                          }" type="button" (click)="toggleMenu(action.groupID)" hlMenuButton>
-
-                  @if(action.actions[0].ActionID === 865 || action.actions[0].ActionID === 1841 ||
-                  action.actions[0].ActionID === 1881 ||
-                  action.actions[0].ActionID === 1867){
-                  <img src="/assets/images/icons/clipboard-remove-svgrepo-com.svg" alt="remove icon" class="h-4">
-                  }@else if (action.actions[0].ActionID === 1989 || action.actions[0].ActionID === 1990 ||
-                  action.actions[0].ActionID === 1991 ||
-                  action.actions[0].ActionID === 1723 || action.actions[0].ActionID === 1992 ||
-                  action.actions[0].ActionID === 1848 || action.actions[0].ActionID === 1900 ||
-                  action.actions[0].ActionID === 1880 || action.actions[0].ActionID === 863 ||
-                  action.actions[0].ActionID === 1998){
-                  <img src="/assets/images/icons/revoke57187.svg" alt="cancel icon" class="h-4">
-                  }@else if(action.actions[0].ActionID === 861 || action.actions[0].ActionID === 1845 ||
-                  action.actions[0].ActionID === 1884){
-                  <img src="/assets/images/icons/edit-svgrepo-com.svg" alt="edit icon" class="h-4">
-                  }@else if (action.actions[0].ActionID === 862) {
-                  <img src="/assets/images/icons/send-svgrepo-com.svg" alt="send icon" class="h-4">
-                  }@else if (action.actions[0].ActionID === 1724) {
-                  <img src="/assets/images/icons/copy-com.svg" alt="copy icon" class="h-4">
-                  }@else if(action.actions[0].ActionID === 1850 || action.actions[0].ActionID === 1844 ||
-                  action.actions[0].ActionID === 1993 || action.actions[0].ActionID === 1996 ||
-                  action.actions[0].ActionID === 1869 || action.actions[0].ActionID === 1879 ||
-                  action.actions[0].ActionID === 1872){
-                  <img src="/assets/images/icons/Group 57145.svg" alt="renew icon" class="h-4" />
-                  }@else if (action.actions[0].ActionID === 1832){
-                  <img src="/assets/images/icons/credit-card-payment-svgrepo-com.svg" alt="pay icon" class="h-4" />
-                  }@else if (action.actions[0].ActionID === 864){
-                  <icon-circle-check class="text-green-600 h-5"></icon-circle-check>
-                  }@else if ( action.actions[0].ActionID === 1995){
-                  <img src="/assets/images/icons/add-icon.svg" alt="add icon" class="h-4">
-                  }@else if(action.actions[0].ActionID === 1871){
-                  <img src="/assets/images/icons/property-transfer.svg" alt="property transfer icon" class="h-4">
-                  }@else if (action.actions[0].ActionID === 1985) {
-                  <img src="/assets/images/icons/Star.svg" class="h-4" alt="star icon for rating">
-                  }@else if (action.actions[0].ActionID === 1842 || action.actions[0].ActionID === 1843 ||
-                  action.actions[0].ActionID === 1993 || action.actions[0].ActionID === 1852 ||
-                  action.actions[0].ActionID === 1901) {
-                  <img src="/assets/images/icons/printer57135.svg" alt="print icon">
-                  }@else if (action.actions[0].ActionID === 1859 || action.actions[0].ActionID === 1865) {
-                  <icon-history-clock class="h-5 text-primary"></icon-history-clock>
-                  }@else if (action.actions[0].ActionID === 1997) {
-                  <icon-transfer-circle-horizontal class="h-5 text-primary"></icon-transfer-circle-horizontal>
-                  }
-
-                  @if(store.index.locale == 'en'){
-                  {{ action.groupTitleEN }}
-                  }@else {
-                  {{ action.groupTitleAR }}
-                  }
-                  <span [@reverseChevron]="(!!openMenus[action.groupID]).toString()">
-                    <icon-chevron-down class="w-4 h-4"
-                      [ngClass]="{'text-primary': !!openMenus[action.groupID]}"></icon-chevron-down>
-                  </span>
-                </button>
-                <ul *hlMenuItems @toggleAnimation
-                  class="top-11 absolute w-[250px] sm:w-[280px] !py-0 font-semibold shadow-lg shadow-primary bg-white text-dark ltr:right-0 rtl:right-0 z-[9999] border border-gray-200 rounded-md focus:!outline-none">
-                  @for (item of action.actions; track item.ActionID) {
-                  <button [disabled]="apiLoading"
-                    class="block w-full text-gray-600 hover:text-primary px-3 py-2 rounded-md xl:text-base ltr:text-left rtl:text-right"
-                    (click)="handleAction(item);" *hlMenuItem="let menuItem">
-                    {{store.index.locale === 'en'? item.TitleEN: item.TitleAR}}
-                  </button>
-                  }
-                </ul>
-              </div>
-              }@else{
-              <div hlMenu class="!block relative">
-                <button
-                  class="py-2 px-4 font-semibold bg-white border border-gray-200 hover:text-primary hover:underline rounded-md flex gap-1 items-center"
-                  [ngClass]="{' bg-gray-200':  openMenus[action.ActionID],
-                      '!bg-opacity-80 cursor-not-allowed': apiLoading
-                          }" type="button" (click)="toggleMenu(action.ActionID)" hlMenuButton>
-
-                  @if(action.ActionID === 865 || action.ActionID === 1841 || action.ActionID === 1881
-                  || action.ActionID === 1867){
+                  (click)="handleAction(action)">
+                  @if(action.ActionID === 865 || action.ActionID === 1841 || action.ActionID === 1881 || action.ActionID
+                  === 1867){
                   <img src="/assets/images/icons/clipboard-remove-svgrepo-com.svg" alt="remove icon" class="h-4">
                   }@else if (action.ActionID === 1989 || action.ActionID === 1990 || action.ActionID === 1991 ||
                   action.ActionID === 1723 || action.ActionID === 1992 || action.ActionID === 1848 || action.ActionID
-                  === 1900 || action.ActionID === 1880 || action.ActionID === 863 || action.ActionID === 1998){
+                  ===
+                  1900 || action.ActionID === 1880 || action.ActionID === 863 || action.ActionID === 1998){
                   <img src="/assets/images/icons/revoke57187.svg" alt="cancel icon" class="h-4">
                   }@else if(action.ActionID === 861 || action.ActionID === 1845 || action.ActionID === 1884){
                   <img src="/assets/images/icons/edit-svgrepo-com.svg" alt="edit icon" class="h-4">
@@ -740,9 +617,10 @@
                   <img src="/assets/images/icons/copy-com.svg" alt="copy icon" class="h-4">
                   }@else if(action.ActionID === 1850 || action.ActionID === 1844 || action.ActionID === 1993 ||
                   action.ActionID === 1996 || action.ActionID === 1869 || action.ActionID === 1879 || action.ActionID
-                  === 1872){
+                  ===
+                  1872){
                   <img src="/assets/images/icons/Group 57145.svg" alt="renew icon" class="h-4" />
-                  }@else if (action.ActionID === 1832){
+                  }@else if (action.ActionID === 1832 || action.ActionID === 1851){
                   <img src="/assets/images/icons/credit-card-payment-svgrepo-com.svg" alt="pay icon" class="h-4" />
                   }@else if (action.ActionID === 864){
                   <icon-circle-check class="text-green-600 h-5"></icon-circle-check>
@@ -755,6 +633,10 @@
                   }@else if (action.ActionID === 1842 || action.ActionID === 1843 || action.ActionID === 1993 ||
                   action.ActionID === 1852 || action.ActionID === 1901) {
                   <img src="/assets/images/icons/printer57135.svg" alt="print icon">
+                  }@else if(action.ActionID === 1856) {
+                  <icon-pencil class="text-primary h-4"></icon-pencil>
+                  }@else if(action.ActionID === 1855) {
+                  <icon-txt-file class="text-primary h-5"></icon-txt-file>
                   }@else if (action.ActionID === 1859 || action.ActionID === 1865) {
                   <icon-history-clock class="h-5 text-primary"></icon-history-clock>
                   }@else if (action.ActionID === 1877) {
@@ -766,257 +648,416 @@
                   }@else {
                   {{ action.TitleAR }}
                   }
-                  <span [@reverseChevron]="(!!openMenus[action.ActionID]).toString()">
-                    <icon-chevron-down class="w-4 h-4"
-                      [ngClass]="{'text-primary': !!openMenus[action.ActionID]}"></icon-chevron-down>
-                  </span>
                 </button>
-                <ul *hlMenuItems @toggleAnimation
-                  class="top-11 absolute w-[250px] sm:w-[280px] !py-0 font-semibold shadow-lg shadow-primary bg-white text-dark ltr:right-0 rtl:right-0 z-[9999] border border-gray-200 rounded-md focus:!outline-none">
-                  @for (item of filteredProcessList(action); track item.LookupID) {
-                  @if(!item.HasServiceID){
-                  <li *hlMenuItem="let menuItem">
+                }@else {
+                @if(action.groupID){
+                <div hlMenu class="!block relative">
+                  <button
+                    class="py-2 px-4 font-semibold bg-white border border-gray-200 hover:text-primary hover:underline rounded-md flex gap-1 items-center"
+                    [ngClass]="{' bg-gray-200':  openMenus[action.groupID],
+                        '!bg-opacity-80 cursor-not-allowed': apiLoading
+                            }" type="button" (click)="toggleMenu(action.groupID)" hlMenuButton>
+
+                    @if(action.actions[0].ActionID === 865 || action.actions[0].ActionID === 1841 ||
+                    action.actions[0].ActionID === 1881 ||
+                    action.actions[0].ActionID === 1867){
+                    <img src="/assets/images/icons/clipboard-remove-svgrepo-com.svg" alt="remove icon" class="h-4">
+                    }@else if (action.actions[0].ActionID === 1989 || action.actions[0].ActionID === 1990 ||
+                    action.actions[0].ActionID === 1991 ||
+                    action.actions[0].ActionID === 1723 || action.actions[0].ActionID === 1992 ||
+                    action.actions[0].ActionID === 1848 || action.actions[0].ActionID === 1900 ||
+                    action.actions[0].ActionID === 1880 || action.actions[0].ActionID === 863 ||
+                    action.actions[0].ActionID === 1998){
+                    <img src="/assets/images/icons/revoke57187.svg" alt="cancel icon" class="h-4">
+                    }@else if(action.actions[0].ActionID === 861 || action.actions[0].ActionID === 1845 ||
+                    action.actions[0].ActionID === 1884){
+                    <img src="/assets/images/icons/edit-svgrepo-com.svg" alt="edit icon" class="h-4">
+                    }@else if (action.actions[0].ActionID === 862) {
+                    <img src="/assets/images/icons/send-svgrepo-com.svg" alt="send icon" class="h-4">
+                    }@else if (action.actions[0].ActionID === 1724) {
+                    <img src="/assets/images/icons/copy-com.svg" alt="copy icon" class="h-4">
+                    }@else if(action.actions[0].ActionID === 1850 || action.actions[0].ActionID === 1844 ||
+                    action.actions[0].ActionID === 1993 || action.actions[0].ActionID === 1996 ||
+                    action.actions[0].ActionID === 1869 || action.actions[0].ActionID === 1879 ||
+                    action.actions[0].ActionID === 1872){
+                    <img src="/assets/images/icons/Group 57145.svg" alt="renew icon" class="h-4" />
+                    }@else if (action.actions[0].ActionID === 1832){
+                    <img src="/assets/images/icons/credit-card-payment-svgrepo-com.svg" alt="pay icon" class="h-4" />
+                    }@else if (action.actions[0].ActionID === 864){
+                    <icon-circle-check class="text-green-600 h-5"></icon-circle-check>
+                    }@else if ( action.actions[0].ActionID === 1995){
+                    <img src="/assets/images/icons/add-icon.svg" alt="add icon" class="h-4">
+                    }@else if(action.actions[0].ActionID === 1871){
+                    <img src="/assets/images/icons/property-transfer.svg" alt="property transfer icon" class="h-4">
+                    }@else if (action.actions[0].ActionID === 1985) {
+                    <img src="/assets/images/icons/Star.svg" class="h-4" alt="star icon for rating">
+                    }@else if (action.actions[0].ActionID === 1842 || action.actions[0].ActionID === 1843 ||
+                    action.actions[0].ActionID === 1993 || action.actions[0].ActionID === 1852 ||
+                    action.actions[0].ActionID === 1901) {
+                    <img src="/assets/images/icons/printer57135.svg" alt="print icon">
+                    }@else if (action.actions[0].ActionID === 1859 || action.actions[0].ActionID === 1865) {
+                    <icon-history-clock class="h-5 text-primary"></icon-history-clock>
+                    }@else if (action.actions[0].ActionID === 1997) {
+                    <icon-transfer-circle-horizontal class="h-5 text-primary"></icon-transfer-circle-horizontal>
+                    }
+
+                    @if(store.index.locale == 'en'){
+                    {{ action.groupTitleEN }}
+                    }@else {
+                    {{ action.groupTitleAR }}
+                    }
+                    <span [@reverseChevron]="(!!openMenus[action.groupID]).toString()">
+                      <icon-chevron-down class="w-4 h-4"
+                        [ngClass]="{'text-primary': !!openMenus[action.groupID]}"></icon-chevron-down>
+                    </span>
+                  </button>
+                  <ul *hlMenuItems @toggleAnimation
+                    class="top-11 absolute w-[250px] sm:w-[280px] !py-0 font-semibold shadow-lg shadow-primary bg-white text-dark ltr:right-0 rtl:right-0 z-[9999] border border-gray-200 rounded-md focus:!outline-none">
+                    @for (item of action.actions; track item.ActionID) {
                     <button [disabled]="apiLoading"
                       class="block w-full text-gray-600 hover:text-primary px-3 py-2 rounded-md xl:text-base ltr:text-left rtl:text-right"
-                      (click)="setDefaultProcess(item.LookupID, undefined, action)">
-                      {{store.index.locale === 'en'? item.TitleEn: item.TitleAr}}
+                      (click)="handleAction(item);" *hlMenuItem="let menuItem">
+                      {{store.index.locale === 'en'? item.TitleEN: item.TitleAR}}
                     </button>
-                  </li>
-                  }@else {
-                  <li>
-                    <div class="!block relative">
-                      <button [disabled]="apiLoading" *hlMenuItem="let menuItem"
-                        class="text-gray-600 hover:bg-gray-200 px-3 py-2 w-full ltr:text-left rtl:text-right flex items-center justify-between  border-transparent hover:border-primary xl:text-base"
-                        [ngClass]="{'!border-primary bg-gray-200':  openMenus[item.TitleEn]}" type="button"
-                        (click)="toggleMenu(item.TitleEn); setDefaultProcess(item.LookupID, item, action)">
-                        {{store.index.locale === 'en'? item.TitleEn: item.TitleAr}}
+                    }
+                  </ul>
+                </div>
+                }@else{
+                <div hlMenu class="!block relative">
+                  <button
+                    class="py-2 px-4 font-semibold bg-white border border-gray-200 hover:text-primary hover:underline rounded-md flex gap-1 items-center"
+                    [ngClass]="{' bg-gray-200':  openMenus[action.ActionID],
+                        '!bg-opacity-80 cursor-not-allowed': apiLoading
+                            }" type="button" (click)="toggleMenu(action.ActionID)" hlMenuButton>
 
-                      </button>
+                    @if(action.ActionID === 865 || action.ActionID === 1841 || action.ActionID === 1881
+                    || action.ActionID === 1867){
+                    <img src="/assets/images/icons/clipboard-remove-svgrepo-com.svg" alt="remove icon" class="h-4">
+                    }@else if (action.ActionID === 1989 || action.ActionID === 1990 || action.ActionID === 1991 ||
+                    action.ActionID === 1723 || action.ActionID === 1992 || action.ActionID === 1848 || action.ActionID
+                    === 1900 || action.ActionID === 1880 || action.ActionID === 863 || action.ActionID === 1998){
+                    <img src="/assets/images/icons/revoke57187.svg" alt="cancel icon" class="h-4">
+                    }@else if(action.ActionID === 861 || action.ActionID === 1845 || action.ActionID === 1884){
+                    <img src="/assets/images/icons/edit-svgrepo-com.svg" alt="edit icon" class="h-4">
+                    }@else if (action.ActionID === 862) {
+                    <img src="/assets/images/icons/send-svgrepo-com.svg" alt="send icon" class="h-4">
+                    }@else if (action.ActionID === 1724) {
+                    <img src="/assets/images/icons/copy-com.svg" alt="copy icon" class="h-4">
+                    }@else if(action.ActionID === 1850 || action.ActionID === 1844 || action.ActionID === 1993 ||
+                    action.ActionID === 1996 || action.ActionID === 1869 || action.ActionID === 1879 || action.ActionID
+                    === 1872){
+                    <img src="/assets/images/icons/Group 57145.svg" alt="renew icon" class="h-4" />
+                    }@else if (action.ActionID === 1832){
+                    <img src="/assets/images/icons/credit-card-payment-svgrepo-com.svg" alt="pay icon" class="h-4" />
+                    }@else if (action.ActionID === 864){
+                    <icon-circle-check class="text-green-600 h-5"></icon-circle-check>
+                    }@else if ( action.ActionID === 1995){
+                    <img src="/assets/images/icons/add-icon.svg" alt="add icon" class="h-4">
+                    }@else if(action.ActionID === 1871){
+                    <img src="/assets/images/icons/property-transfer.svg" alt="property transfer icon" class="h-4">
+                    }@else if (action.ActionID === 1985 || action.ActionID === 1984) {
+                    <img src="/assets/images/icons/Star.svg" class="h-4" alt="star icon for rating">
+                    }@else if (action.ActionID === 1842 || action.ActionID === 1843 || action.ActionID === 1993 ||
+                    action.ActionID === 1852 || action.ActionID === 1901) {
+                    <img src="/assets/images/icons/printer57135.svg" alt="print icon">
+                    }@else if (action.ActionID === 1859 || action.ActionID === 1865) {
+                    <icon-history-clock class="h-5 text-primary"></icon-history-clock>
+                    }@else if (action.ActionID === 1877) {
+                    <icon-transfer-circle-horizontal class="h-5 text-primary"></icon-transfer-circle-horizontal>
+                    }
 
-                    </div>
-                  </li>
-                  }
-                  }
-                </ul>
-              </div>
-              }
-              }
-            </ng-container>
-          </div>
-          <ng-container *ngFor="let currentTab of visibleNavigationTabs(); let i = index">
-            <div class="border border-gray-200 rounded p-4 relative" [ngClass]="{
-                    '!border-0 !p-0':  calculateVisibilityActionID(currentTab)
-                  }" #sectionEl>
-              <h2
-                class="text-2xl min-[340px]:text-3xl font-bold text-gray-800 mb-4 break-words text-wrap flex justify-between flex-wrap"
-                *ngIf=" (currentTab.TabSections.length===1 &&
-                      currentTab.TabSections[0].FieldsJson[0].VisibilityActionID> 0 &&
-                      atLeastOneFormControlHasValue(currentTab.TabSections[0].FieldsJson)) ||
-                      currentTab.TabSections[0].FieldsJson[0].VisibilityActionID === 0">
-
-                @if(store.index.locale == 'en'){
-                {{ currentTab.TitleEn }}
-                }@else {
-                {{ currentTab.TitleAr }}
-                }
-                @if (i== 0) {
-                <div class="space-y-4">
-                  @if( ![7008, 7005, 5015].includes(apiBody.FKServiceID)){
-                  <button (click)="openRequestAnalysis()"
-                    class="text-nowrap btn btn-primary text-base flex items-center gap-1 hover:shadow-none">
-                    <icon-stars class="w-5 h-5 self-start"></icon-stars>
-                    {{ translations()?.requestAnalysisBtn.label }}
+                    @if(store.index.locale == 'en'){
+                    {{ action.TitleEN }}
+                    }@else {
+                    {{ action.TitleAR }}
+                    }
+                    <span [@reverseChevron]="(!!openMenus[action.ActionID]).toString()">
+                      <icon-chevron-down class="w-4 h-4"
+                        [ngClass]="{'text-primary': !!openMenus[action.ActionID]}"></icon-chevron-down>
+                    </span>
                   </button>
-                  }
-                  @if ( requestConfidence().average) {
-                  <span class="text-sm flex gap-1 mt-1">
-                    {{translations()?.completionMsg.label}}
-                    <ai-completion-bar [percentage]="requestConfidence().average"></ai-completion-bar>
-                  </span>
-                  }
+                  <ul *hlMenuItems @toggleAnimation
+                    class="top-11 absolute w-[250px] sm:w-[280px] !py-0 font-semibold shadow-lg shadow-primary bg-white text-dark ltr:right-0 rtl:right-0 z-[9999] border border-gray-200 rounded-md focus:!outline-none">
+                    @for (item of filteredProcessList(action); track item.LookupID) {
+                    @if(!item.HasServiceID){
+                    <li *hlMenuItem="let menuItem">
+                      <button [disabled]="apiLoading"
+                        class="block w-full text-gray-600 hover:text-primary px-3 py-2 rounded-md xl:text-base ltr:text-left rtl:text-right"
+                        (click)="setDefaultProcess(item.LookupID, undefined, action)">
+                        {{store.index.locale === 'en'? item.TitleEn: item.TitleAr}}
+                      </button>
+                    </li>
+                    }@else {
+                    <li>
+                      <div class="!block relative">
+                        <button [disabled]="apiLoading" *hlMenuItem="let menuItem"
+                          class="text-gray-600 hover:bg-gray-200 px-3 py-2 w-full ltr:text-left rtl:text-right flex items-center justify-between  border-transparent hover:border-primary xl:text-base"
+                          [ngClass]="{'!border-primary bg-gray-200':  openMenus[item.TitleEn]}" type="button"
+                          (click)="toggleMenu(item.TitleEn); setDefaultProcess(item.LookupID, item, action)">
+                          {{store.index.locale === 'en'? item.TitleEn: item.TitleAr}}
 
+                        </button>
+
+                      </div>
+                    </li>
+                    }
+                    }
+                  </ul>
                 </div>
                 }
-              </h2>
-              <div *ngFor="let section of currentTab.TabSections; let i = index"
-                class="p-6 rounded-lg mb-6 border-b border-gray-400 rounded-b-none" [ngClass]="{ 'border-b-0 rounded-b-lg': i === currentTab.TabSections.length - 1,
-                          '!p-0 !mb-0 !border-0':  calculateVisibilityActionID(currentTab)
-                       }" [id]="section.SectionID">
-                @if (isSection[currentTab.NavigationTabID]) {
-                @if (section.FieldsJson[0].VisibilityActionID === 0) {
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                }
+              </ng-container>
+            </div>
+            <ng-container *ngFor="let currentTab of tabsList; let i = index">
+              <div class="border border-gray-200 rounded p-4 relative" [ngClass]="{
+                      '!border-0 !p-0':  calculateVisibilityActionID(currentTab)
+                    }" #sectionEl>
+                <h2
+                  class="text-2xl min-[340px]:text-3xl font-bold text-gray-800 mb-4 break-words text-wrap flex justify-between flex-wrap"
+                  *ngIf=" (currentTab.TabSections.length===1 &&
+                        currentTab.TabSections[0].FieldsJson[0].VisibilityActionID> 0 &&
+                        atLeastOneFormControlHasValue(currentTab.TabSections[0].FieldsJson)) ||
+                        currentTab.TabSections[0].FieldsJson[0].VisibilityActionID === 0">
+
                   @if(store.index.locale == 'en'){
-                  {{ section.TitleEn }}
+                  {{ currentTab.TitleEn }}
                   }@else {
-                  {{ section.TitleAr }}
+                  {{ currentTab.TitleAr }}
+                  }
+                  @if (i== 0) {
+                  <div class="space-y-4">
+                    @if( ![7008, 7005, 5015].includes(apiBody.FKServiceID)){
+                    <button (click)="openRequestAnalysis()"
+                      class="text-nowrap btn btn-primary text-base flex items-center gap-1 hover:shadow-none">
+                      <icon-stars class="w-5 h-5 self-start"></icon-stars>
+                      {{ translations()?.requestAnalysisBtn.label }}
+                    </button>
+                    }
+                    @if ( requestConfidence().average) {
+                    <span class="text-sm flex gap-1 mt-1">
+                      {{translations()?.completionMsg.label}}
+                      <ai-completion-bar [percentage]="requestConfidence().average"></ai-completion-bar>
+                    </span>
+                    }
+
+                  </div>
                   }
                 </h2>
-                <div class="flex flex-col gap-x-6 gap-y-4">
-                  <ng-container *ngFor="let row of getGroupedFieldsForSection(section.SectionOrder)">
-                    <div class="flex flex-wrap gap-6">
-                      @if(row && row.length){
-                      <app-dynamic-field *ngFor="let field of row" [field]="field" [form]="wizardForm"
-                        (emitLoadingState)="onFileLoading($event)"
-                        (isHidden)="onFieldHidden(field, $event, section.FKNavigationTabID)"
-                        [actions]="displayActions()" (fieldChanged)="onFieldChanged($event)"
-                        (uploadComplete)="uploadComplete($event)"
-                        [ngClass]="{ 'w-full': field.FieldType === 2 || field.FieldType === 9 || field.FieldType === 8 ||
-                                   checkScreenSizeForFields(), 'flex-1': field.FieldType !== 2, 'hidden': fieldVisibilityMap[field.InternalFieldName] || !field.FieldVisible }">
-                      </app-dynamic-field>
-                      }
+                <div *ngFor="let section of currentTab.TabSections; let i = index"
+                  class="p-6 rounded-lg mb-6 border-b border-gray-400 rounded-b-none" [ngClass]="{ 'border-b-0 rounded-b-lg': i === currentTab.TabSections.length - 1,
+                            '!p-0 !mb-0 !border-0':  calculateVisibilityActionID(currentTab)
+                         }" [id]="section.SectionID">
+                  @if (isSection[currentTab.NavigationTabID]) {
+                  @if (section.FieldsJson[0].VisibilityActionID === 0) {
+                  <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                    @if(store.index.locale == 'en'){
+                    {{ section.TitleEn }}
+                    }@else {
+                    {{ section.TitleAr }}
+                    }
+                  </h2>
+                  <div class="flex flex-col gap-x-6 gap-y-4">
+                    <ng-container *ngFor="let row of getGroupedFieldsForSection(section.SectionOrder)">
+                      <div class="flex flex-wrap gap-6">
+                        @if(row && row.length){
+                        <app-dynamic-field *ngFor="let field of row" [field]="field" [form]="wizardForm"
+                          (emitLoadingState)="onFileLoading($event)"
+                          (isHidden)="onFieldHidden(field, $event, section.FKNavigationTabID)"
+                          [actions]="displayActions()" (fieldChanged)="onFieldChanged($event)"
+                          (uploadComplete)="uploadComplete($event)"
+                          [ngClass]="{ 'w-full': field.FieldType === 2 || field.FieldType === 9 || field.FieldType === 8 ||
+                                     checkScreenSizeForFields(), 'flex-1': field.FieldType !== 2, 'hidden': fieldVisibilityMap[field.InternalFieldName] || !field.FieldVisible }">
+                        </app-dynamic-field>
+                        }
+                      </div>
+                    </ng-container>
+                  </div>
+                  }@else if(section.FieldsJson[0].VisibilityActionID !== 0 &&
+                  !atLeastOneFormControlHasValue(section.FieldsJson)) {
+
+                  <app-application-confirm-modal [title]="store.index.locale === 'en'? section.TitleEn: section.TitleAr"
+                    [confirmBtnName]="getConfirmButtonName(section)" [form]="wizardForm" [isOpened]="confirmModalFlag()"
+                    [actionID]="section.FieldsJson[0].VisibilityActionID || null">
+
+                    <div class="flex flex-col gap-x-6 gap-y-4">
+                      <ng-container *ngFor="let row of getGroupedFieldsForSection(section.SectionOrder)">
+                        <div class="flex flex-wrap gap-6">
+                          <app-dynamic-field *ngFor="let field of row" [field]="field" [form]="wizardForm"
+                            [actions]="displayActions()" (emitLoadingState)="onFileLoading($event)"
+                            (fieldChanged)="onFieldChanged($event)" (uploadComplete)="uploadComplete($event)"
+                            [ngClass]="{ 'w-full': field.FieldType === 2 || field.FieldType === 9 || field.FieldType === 8 ||
+                                checkScreenSizeForFields(), 'flex-1': field.FieldType !== 2, 'hidden': fieldVisibilityMap[field.InternalFieldName] }">
+                          </app-dynamic-field>
+                        </div>
+                      </ng-container>
                     </div>
-                  </ng-container>
-                </div>
-                }@else if(section.FieldsJson[0].VisibilityActionID !== 0 &&
-                !atLeastOneFormControlHasValue(section.FieldsJson)) {
+                  </app-application-confirm-modal>
 
-                <app-application-confirm-modal [title]="store.index.locale === 'en'? section.TitleEn: section.TitleAr"
-                  [confirmBtnName]="getConfirmButtonName(section)" [form]="wizardForm" [isOpened]="confirmModalFlag()"
-                  [actionID]="section.FieldsJson[0].VisibilityActionID || null">
-
+                  }@else if(section.FieldsJson[0].VisibilityActionID !== 0 &&
+                  atLeastOneFormControlHasValue(section.FieldsJson)){
+                  <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                    @if(store.index.locale == 'en'){
+                    {{ section.TitleEn }}
+                    }@else {
+                    {{ section.TitleAr }}
+                    }
+                  </h2>
                   <div class="flex flex-col gap-x-6 gap-y-4">
                     <ng-container *ngFor="let row of getGroupedFieldsForSection(section.SectionOrder)">
                       <div class="flex flex-wrap gap-6">
                         <app-dynamic-field *ngFor="let field of row" [field]="field" [form]="wizardForm"
                           [actions]="displayActions()" (emitLoadingState)="onFileLoading($event)"
+                          (isHidden)="onFieldHidden(field, $event, section.FKNavigationTabID)"
                           (fieldChanged)="onFieldChanged($event)" (uploadComplete)="uploadComplete($event)"
                           [ngClass]="{ 'w-full': field.FieldType === 2 || field.FieldType === 9 || field.FieldType === 8 ||
-                              checkScreenSizeForFields(), 'flex-1': field.FieldType !== 2, 'hidden': fieldVisibilityMap[field.InternalFieldName] }">
+                                checkScreenSizeForFields(), 'flex-1': field.FieldType !== 2, 'hidden': fieldVisibilityMap[field.InternalFieldName] }">
                         </app-dynamic-field>
                       </div>
                     </ng-container>
                   </div>
-                </app-application-confirm-modal>
-
-                }@else if(section.FieldsJson[0].VisibilityActionID !== 0 &&
-                atLeastOneFormControlHasValue(section.FieldsJson)){
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                  }
+                  }
+                </div>
+              </div>
+            </ng-container>
+            <app-services-log-modal [isOpened]="allApplicationService.isLogData()"
+              (closed)="onUserClose($event)"></app-services-log-modal>
+            <app-related-applications-modal [isOpened]="allApplicationService.isRelatedRequestsData()"
+              (closed)="onUserClose($event)"></app-related-applications-modal>
+            <app-edited-data-modal [isOpened]="newApplicationService.isAuditData()"
+              (closed)="onUserClose($event)"></app-edited-data-modal>
+            <app-ai-analysis-modal [isOpened]="openAnalysisModel()" (closed)="onUserClose($event)"
+              [fieldName]="'request'"></app-ai-analysis-modal>
+            }@else {
+            @if(currentTab()){
+            <div class="w-full">
+              <h2 class="text-2xl min-[340px]:text-3xl font-bold text-gray-800 mb-4">
+                @if(store.index.locale == 'en'){
+                {{ currentTab()!.TitleEn }}
+                }@else {
+                {{ currentTab()!.TitleAr }}
+                }
+              </h2>
+              <div *ngFor="let section of currentTabSections() | sortByOrder: 'SectionOrder' let i = index"
+                class="p-0 sm:p-3 md:p-6 rounded-lg mb-6 border-b border-gray-400 rounded-b-none w-full"
+                [ngClass]="{ 'border-b-0 rounded-b-lg': i === currentTabSections().length - 1 }"
+                [id]="section.SectionID">
+                <h2 class="text-lg min-[340px]:text-xl font-semibold text-gray-800 mb-4">
                   @if(store.index.locale == 'en'){
                   {{ section.TitleEn }}
                   }@else {
                   {{ section.TitleAr }}
                   }
                 </h2>
-                <div class="flex flex-col gap-x-6 gap-y-4">
+                <div class="flex flex-col gap-x-6 gap-y-4 w-full">
                   <ng-container *ngFor="let row of getGroupedFieldsForSection(section.SectionOrder)">
-                    <div class="flex flex-wrap gap-6">
+                    <div class="flex flex-wrap gap-6 w-full">
                       <app-dynamic-field *ngFor="let field of row" [field]="field" [form]="wizardForm"
-                        [actions]="displayActions()" (emitLoadingState)="onFileLoading($event)"
-                        (isHidden)="onFieldHidden(field, $event, section.FKNavigationTabID)"
+                        (isHidden)="onFieldHidden(field, $event, section.FKNavigationTabID)" [actions]="actions"
                         (fieldChanged)="onFieldChanged($event)" (uploadComplete)="uploadComplete($event)"
+                        style="width: 100%;" (emitLoadingState)="onFileLoading($event)"
                         [ngClass]="{ 'w-full': field.FieldType === 2 || field.FieldType === 9 || field.FieldType === 8 ||
-                              checkScreenSizeForFields(), 'flex-1': field.FieldType !== 2, 'hidden': fieldVisibilityMap[field.InternalFieldName] }">
+                                  checkScreenSizeForFields(), 'flex-1': field.FieldType !== 2, 'hidden': fieldVisibilityMap[field.InternalFieldName] || !field.FieldVisible }">
                       </app-dynamic-field>
                     </div>
                   </ng-container>
                 </div>
-                }
-                }
               </div>
             </div>
-          </ng-container>
-          <app-services-log-modal [isOpened]="allApplicationService.isLogData()"
-            (closed)="onUserClose($event)"></app-services-log-modal>
-          <app-related-applications-modal [isOpened]="allApplicationService.isRelatedRequestsData()"
-            (closed)="onUserClose($event)"></app-related-applications-modal>
-          <app-edited-data-modal [isOpened]="newApplicationService.isAuditData()"
-            (closed)="onUserClose($event)"></app-edited-data-modal>
-          <app-ai-analysis-modal [isOpened]="openAnalysisModel()" (closed)="onUserClose($event)"
-            [fieldName]="'request'"></app-ai-analysis-modal>
-          }@else {
-          @if(currentTab()){
-          <div class="w-full">
-            <h2 class="text-2xl min-[340px]:text-3xl font-bold text-gray-800 mb-4">
-              @if(store.index.locale == 'en'){
-              {{ currentTab()!.TitleEn }}
-              }@else {
-              {{ currentTab()!.TitleAr }}
-              }
-            </h2>
-            <div *ngFor="let section of currentTabSections() | sortByOrder: 'SectionOrder' let i = index"
-              class="p-0 sm:p-3 md:p-6 rounded-lg mb-6 border-b border-gray-400 rounded-b-none w-full"
-              [ngClass]="{ 'border-b-0 rounded-b-lg': i === currentTabSections().length - 1 }" [id]="section.SectionID">
-              <h2 class="text-lg min-[340px]:text-xl font-semibold text-gray-800 mb-4">
-                @if(store.index.locale == 'en'){
-                {{ section.TitleEn }}
-                }@else {
-                {{ section.TitleAr }}
+            }
+
+            <div class="flex flex-col sm:flex-row justify-end gap-2 mt-8">
+              <ng-container *ngFor="let action of actions | sortByOrder: 'ActionSortOrder'">
+                @if(visibleTabs()){
+                @if((action.TitleEN === 'Send Request' && currentTabIndex() === visibleTabs()!.length) ||
+                (action.TitleEN
+                === 'Save Draft' && shouldShowSaveDraft(action)) || (action.TitleEN === 'Previous' && currentTabIndex()
+                !== 1) || (action.TitleEN === 'Next' && currentTabIndex() !== visibleTabs()!.length)){
+
+                <button [disabled]="apiLoading" [ngClass]="{
+                                          'btn btn-primary': action.TitleEN === 'Send Request',
+                                          'bg-[#60583d] text-white': action.TitleEN === 'Save Draft',
+                                          'cursor-not-allowed': (action.TitleEN === 'Next' && currentTabIndex() === visibleTabs()!.length) || (action.TitleEN === 'Previous' && currentTabIndex() === 1),
+                                          'me-auto border btn-control previous-btn ': (action.TitleEN === 'Previous'),
+                                             'btn-control next-btn': (action.TitleEN === 'Next'),
+                                          '!bg-opacity-90': apiLoading || calcApiLoading
+                              }" class="py-2 px-4 rounded-md font-semibold flex gap-1 items-center justify-center"
+                  (click)="handleAction(action)">
+
+                  @if(store.index.locale == 'en'){
+                  {{ action.TitleEN }}
+                  }@else {
+                  {{ action.TitleAR }}
+                  }
+                </button>
+                }@else if(currentTabIndex() === visibleTabs()!.length && action.TitleEN !== 'Next' && action.TitleEN !==
+                'Previous'){
+                <button [disabled]="apiLoading" [ngClass]="{
+                                          '!bg-opacity-90': apiLoading || calcApiLoading,
+                                          'hidden': uiExtraHidden(action)
+                              }"
+                  class="py-2 px-4 btn btn-primary rounded-md font-semibold flex gap-1 items-center justify-center"
+                  (click)="handleAction(action)">
+                  @if(store.index.locale == 'en'){
+                  {{ action.TitleEN }}
+                  }@else {
+                  {{ action.TitleAR }}
+                  }
+                </button>
                 }
-              </h2>
-              <div class="flex flex-col gap-x-6 gap-y-4 w-full">
-                <ng-container *ngFor="let row of getGroupedFieldsForSection(section.SectionOrder)">
-                  <div class="flex flex-wrap gap-6 w-full">
-                    <app-dynamic-field *ngFor="let field of row" [field]="field" [form]="wizardForm"
-                      (isHidden)="onFieldHidden(field, $event, section.FKNavigationTabID)" [actions]="actions"
-                      (fieldChanged)="onFieldChanged($event)" (uploadComplete)="uploadComplete($event)"
-                      style="width: 100%;" (emitLoadingState)="onFileLoading($event)"
-                      [ngClass]="{ 'w-full': field.FieldType === 2 || field.FieldType === 9 || field.FieldType === 8 ||
-                                checkScreenSizeForFields(), 'flex-1': field.FieldType !== 2, 'hidden': fieldVisibilityMap[field.InternalFieldName] || !field.FieldVisible }">
-                    </app-dynamic-field>
-                  </div>
-                </ng-container>
-              </div>
+                }
+              </ng-container>
             </div>
-          </div>
-          }
+            <!-- <app-ai-popup [isOpened]="aiPopupFirstInitFlag()" (closed)="onAiPopupClosed($event)"></app-ai-popup> -->
+            }
+          </form>
+          <!-- <app-licenses-reminder-modal [isOpened]="true" status="pending" number="2" licenseNumber="2024-SALA- 000555"
+                       applicationType="طلب ترخيص شؤون رياضية" expiryDate="2025-12-02"></app-licenses-reminder-modal> -->
+          <!-- <app-licenses-reminder-modal [isOpened]="true" status="completed" number="2" licenseNumber="2024-SALA-000555"
+                       applicationType="طلب ترخيص شؤون رياضية" expiryDate="2025-12-02"></app-licenses-reminder-modal> -->
+          <!-- <app-reject-modal [isOpened]="true"></app-reject-modal> -->
+          <!--  <app-payment-modal [isOpened]="true" payment="start" licenseNumber="2024-SALA-000555" 
+                        title="تمت عملية الدفع بنجاح"
+                        amount="1000"></app-payment-modal> -->
+        </div>
+        }
 
-          <div class="flex flex-col sm:flex-row justify-end gap-2 mt-8">
-            <ng-container *ngFor="let action of actions | sortByOrder: 'ActionSortOrder'">
-              @if(visibleTabs()){
-              @if((action.TitleEN === 'Send Request' && currentTabIndex() === visibleTabs()!.length) || (action.TitleEN
-              === 'Save Draft' && shouldShowSaveDraft(action)) || (action.TitleEN === 'Previous' && currentTabIndex()
-              !== 1) || (action.TitleEN === 'Next' && currentTabIndex() !== visibleTabs()!.length)){
 
-              <button [disabled]="apiLoading" [ngClass]="{
-                                        'btn btn-primary': action.TitleEN === 'Send Request',
-                                        'bg-[#60583d] text-white': action.TitleEN === 'Save Draft',
-                                        'cursor-not-allowed': (action.TitleEN === 'Next' && currentTabIndex() === visibleTabs()!.length) || (action.TitleEN === 'Previous' && currentTabIndex() === 1),
-                                        'me-auto border btn-control previous-btn ': (action.TitleEN === 'Previous'),
-                                           'btn-control next-btn': (action.TitleEN === 'Next'),
-                                        '!bg-opacity-90': apiLoading || calcApiLoading
-                            }" class="py-2 px-4 rounded-md font-semibold flex gap-1 items-center justify-center"
-                (click)="handleAction(action)">
+      </div>
+    </div>
+  </ng-template>
 
-                @if(store.index.locale == 'en'){
-                {{ action.TitleEN }}
-                }@else {
-                {{ action.TitleAR }}
-                }
-              </button>
-              }@else if(currentTabIndex() === visibleTabs()!.length && action.TitleEN !== 'Next' && action.TitleEN !==
-              'Previous'){
-              <button [disabled]="apiLoading" [ngClass]="{
-                                        '!bg-opacity-90': apiLoading || calcApiLoading,
-                                        'hidden': uiExtraHidden(action)
-                            }"
-                class="py-2 px-4 btn btn-primary rounded-md font-semibold flex gap-1 items-center justify-center"
-                (click)="handleAction(action)">
-                @if(store.index.locale == 'en'){
-                {{ action.TitleEN }}
-                }@else {
-                {{ action.TitleAR }}
-                }
-              </button>
-              }
-              }
-            </ng-container>
-          </div>
-          <!-- <app-ai-popup [isOpened]="aiPopupFirstInitFlag()" (closed)="onAiPopupClosed($event)"></app-ai-popup> -->
-          }
-        </form>
-        <!-- <app-licenses-reminder-modal [isOpened]="true" status="pending" number="2" licenseNumber="2024-SALA- 000555"
-                     applicationType="طلب ترخيص شؤون رياضية" expiryDate="2025-12-02"></app-licenses-reminder-modal> -->
-        <!-- <app-licenses-reminder-modal [isOpened]="true" status="completed" number="2" licenseNumber="2024-SALA-000555"
-                     applicationType="طلب ترخيص شؤون رياضية" expiryDate="2025-12-02"></app-licenses-reminder-modal> -->
-        <!-- <app-reject-modal [isOpened]="true"></app-reject-modal> -->
-        <!--  <app-payment-modal [isOpened]="true" payment="start" licenseNumber="2024-SALA-000555" 
-                      title="تمت عملية الدفع بنجاح"
-                      amount="1000"></app-payment-modal> -->
+  <ng-container *ngIf="phaseIDs() && phaseIDs().length > 0; else noPhases">
+    <div class="flex-1 w-full min-w-0 relative">
+      <ul class="flex flex-col md:flex-row gap-2 bg-gray-100">
+        @for(phase of phaseIDs(); track $index){
+        <li>
+          <button
+            class="rounded border border-[#60583d] shadow shadow-[#60583d] bg-[#60583d] text-white text-base px-5 py-2 my-2"
+            [ngClass]="{
+              '!bg-white !text-black': phase.LookupID === currentPhaseIndex()
+            }" (click)="changePhase(phase.LookupID)">
+            {{ store.index.locale == 'en' ? phase.TitleEn : phase.TitleAr }}
+          </button>
+        </li>
+        }
+      </ul>
+      @if(currentPhase()){
+      <div class="phase-section">
+
+        <ng-container *ngTemplateOutlet="tabsContent; 
+              context: { tabs: phasesWithTabs()[currentPhase().LookupID] }">
+        </ng-container>
       </div>
       }
-
-
     </div>
-  </div>
+
+  </ng-container>
+
+  <ng-template #noPhases>
+    <ng-container *ngTemplateOutlet="tabsContent; 
+      context: { tabs: visibleNavigationTabs() }">
+    </ng-container>
+  </ng-template>
 
 </div>

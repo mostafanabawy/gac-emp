@@ -515,6 +515,12 @@ export class DynamicFieldComponent implements OnInit {
 
     if (this.field.FieldType === 8) {
       this.field.TableServiceFields?.forEach((tableField) => {
+        if(tableField.FieldType === 17){
+          this.form?.get(this.field.InternalFieldName)?.get(tableField.InternalFieldName)?.valueChanges.subscribe((value: any) => {
+            console.log(value);
+            debugger;
+          })
+        }
         if ([4, 6, 19].includes(tableField.FieldType)) {
           let relevantLookup = tableField.LookupValues?.find(lookup => {
             return lookup.RelevantLookupInternalFieldName && lookup.RelevantLookupId
@@ -2675,6 +2681,7 @@ export class DynamicFieldComponent implements OnInit {
     })
   }
   validateTable() {
+    debugger;
     const formArray = this.getFormArray(this.field.InternalFieldName)!
     const lastElementIndex = formArray.length - 1;
     const lastElementControls = (formArray.at(lastElementIndex) as FormGroup).controls;

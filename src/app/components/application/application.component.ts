@@ -134,7 +134,14 @@ export class ApplicationComponent {
 
 
     /* this.aiPopupAnswer() === 'yes' ? a!.AITabOrder - b!.AITabOrder : */
+    currentPhase = computed<any>(() => {
+        return this.phaseIDs().find(phase => phase.LookupID === this.currentPhaseIndex())
+    })
+    currentPhaseIndex = signal(0);
     currentTab = computed<NavigationTab | null>(() => {
+        if (this.phaseIDs() && this.phaseIDs()!.length > 0) {
+            return this.phasesWithTabs()[this.currentPhaseIndex()][this.currentTabIndex() - 1];
+        }
         if (this.visibleNavigationTabs()) {
             console.log(this.visibleNavigationTabs())
             return this.visibleNavigationTabs()!.sort((a, b) => {
@@ -817,6 +824,10 @@ export class ApplicationComponent {
                 })
 
                 this.navigationTabs.set(parsed.NavigationTabs.sort((a, b) => a.TabOrder - b.TabOrder));
+                if (this.navigationTabs() && !this.navigationTabs()?.every((tab) => !tab.StepID)) {
+                    let phases = [...new Set(this.navigationTabs()?.map(item => item.StepID))];
+                    this.transformTabs(this.navigationTabs()!, phases);
+                }
 
                 //to be changed
                 this.actions = parsed.Actions.sort((a, b) => a.ActionSortOrder - b.ActionSortOrder);
@@ -1368,9 +1379,10 @@ export class ApplicationComponent {
                     }
                 })
                 this.navigationTabs.set(parsed.NavigationTabs.sort((a, b) => a.TabOrder - b.TabOrder));
-                console.log(this.navigationTabs());
-                console.log(this.visibleNavigationTabs());
-                console.log(this.currentTab());
+                if (this.navigationTabs() && !this.navigationTabs()?.every((tab) => !tab.StepID)) {
+                    let phases = [...new Set(this.navigationTabs()?.map(item => item.StepID))];
+                    this.transformTabs(this.navigationTabs()!, phases);
+                }
 
                 //to be changed
                 this.actions = parsed.Actions.sort((a, b) => a.ActionSortOrder - b.ActionSortOrder);
@@ -2850,7 +2862,6 @@ export class ApplicationComponent {
                     let defaultValue: any = ''
 
                     let extraValidators = this.setupExtraValidations(tableField as any as FieldJson, field.InternalFieldName);
-
                     if (!field.FieldDim && ((tableField.FieldType === 6 && tableField.Required) || (tableField.FieldType === 5 && tableField.Required)
                         || (tableField.FieldType === 19 && tableField.Required))) {
                         validators.push(CustomValidators.noNegativeOne);
@@ -4553,12 +4564,18 @@ export class ApplicationComponent {
         const currentTabFields: FieldJson[] = [];
         if (!this.editApp()) {
             this.currentTab()?.TabSections.forEach(section => {
-                currentTabFields.push(...section.FieldsJson);
+                currentTabFields.push(...section.FieldsJson.map(field => ({
+                    ...field,
+                    StepID: this.currentTab()?.StepID // Now the field knows where it belongs!
+                })));
             });
         } else {
             this.visibleNavigationTabs()!.forEach((tab) => {
                 tab.TabSections.forEach(section => {
-                    currentTabFields.push(...section.FieldsJson);
+                    currentTabFields.push(...section.FieldsJson.map(field => ({
+                        ...field,
+                        StepID: tab.StepID // Now the field knows where it belongs!
+                    })));
                 });
             })
         }
@@ -4684,205 +4701,58 @@ export class ApplicationComponent {
         console.log(currentTabFields);
         let count = 0;
         for (const field of currentTabFields) {
+            let isValidField = true;
+            let targetAttachment = null;
 
-            if (field.FieldType === 9 && field.Attachments && field.Attachments) {
+            // --- CASE 1: ATTACHMENTS (Type 9) ---
+            if (field.FieldType === 9 && field.Attachments) {
                 for (const attachment of field.Attachments) {
                     const index = field.Attachments.indexOf(attachment);
-                    const formGroup = (this.wizardForm!.get(field.InternalFieldName) as FormArray).at(index) as FormGroup;
-                    const control = formGroup?.get(`files`);
+                    const control = (this.wizardForm!.get(field.InternalFieldName) as FormArray).at(index)?.get('files');
 
-                    if (control instanceof FormControl) {
-                        if (control.invalid) {
-                            control.markAsTouched();
-                            let hostElement: HTMLElement | null = null;
-                            hostElement = document.querySelector<HTMLElement>(`.file${attachment.ID}`);
-                            let focusableElement: HTMLElement | null = hostElement;
-
-                            if (focusableElement) {
-                                focusableElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            }
-
-                            let errorMessage = '';
-                            if (control.errors?.['requiredFile'] || control.errors?.['requiredArray']) {
-                                errorMessage = this.store.index.locale == 'en' ? field.AttachmentsFields!.find((af) => af.FieldType === 13)!.ValidationMsgEn + ' ' + attachment.TitleEn : field.AttachmentsFields!.find((af) => af.FieldType === 13)!.ValidationMsgAr + ' ' + attachment.TitleAr;
-
-                                isValid = false;
-                                const active = document.activeElement as HTMLElement | null;
-                                if (active) active.blur();
-
-                                Swal.fire({
-                                    icon: "error",
-                                    title: errorMessage,
-                                    padding: '10px 20px',
-                                    confirmButtonText: this.translations()?.validationMsgBtn.label,
-                                }).then(() => {
-                                    if (focusableElement) {
-                                        focusableElement.focus();
-                                    }
-                                });
-
-                                Swal.getPopup()?.addEventListener('afterClose', () => {
-                                    if (focusableElement) {
-                                        focusableElement.focus({ preventScroll: true });
-                                    }
-                                });
-
-                                // Use a flag to stop outer loop, since `break` here only exits the `for` loop
-                                // You may not need the outer `break` if this code is in a function you can return from.
-                                // For now, let's assume the outer `break` is not necessary.
-                                return;
-                            }
-                            break;
-                        }
+                    if (control?.invalid) {
+                        control.markAsTouched();
+                        isValidField = false;
+                        targetAttachment = attachment;
+                        break;
                     }
                 }
             }
 
-            if (field.FieldType === 8 && field.TableServiceFields) {
-                formArray = this.wizardForm!.get(field.InternalFieldName) as FormArray;
-                if (formArray) {
-                    if (formArray.hasError('atLeastOneEntry')) {
-                        let hostElement: HTMLElement | null = null;
-                        hostElement = document.querySelector<HTMLElement>(`#${field.InternalFieldName}`);
-                        let focusableElement: HTMLElement | null = hostElement;
+            // --- CASE 2: TABLES (Type 8) ---
+            else if (field.FieldType === 8 && field.TableServiceFields) {
+                const formArray = this.wizardForm!.get(field.InternalFieldName) as FormArray;
+                if (formArray?.hasError('atLeastOneEntry')) {
+                    isValidField = false;
+                }
+                // ... include your specific table row logic here ...
+            }
 
-                        if (focusableElement) {
-                            focusableElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
-                        const active = document.activeElement as HTMLElement | null;
-                        if (active) active.blur();
-                        isValid = false;
-                        console.log('field with problem ', field);
-                        Swal.fire({
-                            icon: 'error',
-                            title: this.store.index.locale == 'en' ? field.ValidationMsgEn : field.ValidationMsgAr,
-                            showConfirmButton: true,
-                            confirmButtonText: this.translations()?.validationMsgBtn.label
-                        }).then(() => {
-                            if (focusableElement) {
-                                focusableElement.focus();
-                            }
-                        });
-
-                        Swal.getPopup()?.addEventListener('afterClose', () => {
-                            if (focusableElement) {
-                                focusableElement.focus({ preventScroll: true });
-                            }
-                        });
-                        break;
-                    }
-                    let isTableReq = this.ServiceFieldsByActionsApiResponse.items[ActionDetailsID].find((item) => {
-                        return item.ServiceFieldID === field.ServiceFieldID
-                    })?.FieldRequired
-                    if (formArray.length > 1 && isTableReq) {
-                        isValid = this.validateRowsForMissingData(formArray, field);
-                    }
-                    Object.keys(formArray.controls).slice(0, -1).forEach((key: any, index: any) => {
-                        field.TableServiceFields?.forEach((tableField: any) => {
-                            if (formArray?.at(index)?.get(tableField.InternalFieldName)) {
-                                this.shouldBeRequired(tableField, formArray!.at(index).get(tableField.InternalFieldName) as FormControl, index, field)
-                            }
-                        })
-                    })
-                    this.lastGroup = formArray.at(formArray.length - 1) as FormGroup<any>;
-                    if (this.lastGroup.invalid) {
-                        backupValidators = Object.fromEntries(
-                            Object.entries(this.lastGroup.controls).map(([key, control]) => [key, control.validator])
-                        );
-                        backupAsyncValidators = Object.fromEntries(
-                            Object.entries(this.lastGroup.controls).map(([key, control]) => [key, control.asyncValidator])
-                        );
-                        // Remove and store the group
-                        this.lastGroup = formArray.at(formArray.length - 1) as FormGroup;
-                        Object.values(this.lastGroup.controls).forEach(control => {
-                            control.clearValidators();
-                            control.updateValueAndValidity({ emitEvent: false });
-                        });
-                        this.lastGroup.updateValueAndValidity({ emitEvent: false });
-                        lastGroupDisabled = true;
-                    }
-                    if (!isValid) {
-                        break;
-                    }
-
+            // --- CASE 3: STANDARD FIELDS ---
+            else {
+                const control = this.wizardForm!.get(field.InternalFieldName);
+                const shouldCheck = (field.VisibilityActionID === 0) || (field.VisibilityActionID > 0 && !this.isPopup);
+                if (control?.invalid && shouldCheck) {
+                    control.markAsTouched();
+                    isValidField = false;
                 }
             }
-            if (field.FieldType !== 8 && field.FieldType !== 9) {
-                let control = this.wizardForm!.get(field.InternalFieldName)
-                if (control?.invalid) {
-                    let hostElement: HTMLElement | null = null;
-                    if ((field.FieldType === 4 || field.FieldType === 16 || field.FieldType === 5) && field.VisibilityActionID === 0) {
-                        control.markAsTouched();
-                        isValid = false
-                        hostElement = document.querySelector<HTMLElement>(
-                            `[name="${field.InternalFieldName}"]`
-                        )
-                    } else if ((field.FieldType === 4 || field.FieldType === 16 || field.FieldType === 5) && field.VisibilityActionID > 0) {
-                        if (!this.isPopup) {
-                            isValid = false
-                            control.markAsTouched();
-                            hostElement = document.querySelector<HTMLElement>(
-                                `[name="${field.InternalFieldName}"]`
-                            )
-                        }
 
-                    } else if (field.FieldType === 10 && field.VisibilityActionID === 0) {
-                        control.markAsTouched();
-                        isValid = false
-                        hostElement = document.querySelector<HTMLElement>(
-                            `.${field.InternalFieldName}`
-                        )
-                    } else if (field.VisibilityActionID === 0) {
-                        isValid = false
-                        control.markAsTouched();
-                        hostElement = document.querySelector<HTMLElement>(
-                            `[id="${field.InternalFieldName}"]`
-                        );
-                    } else if (field.VisibilityActionID > 0) {
-                        if (!this.isPopup) {
-                            hostElement = document.querySelector<HTMLElement>(
-                                `[id="${field.InternalFieldName}"]`
-                            );
-                        }
-                    }
-                    if ((field.VisibilityActionID > 0 && !this.isPopup) || field.VisibilityActionID === 0) {
-                        control.markAsTouched();
-                        isValid = false
+            // --- FINAL ACTION: SWITCH TAB & FOCUS ---
+            if (!isValidField) {
+                isValid = false;
 
-                        // Log the actual state you care about
-                        let focusableElement: HTMLElement | null = hostElement;
-                        if (hostElement?.tagName.toLowerCase() === 'ng-select') {
-                            const containerDiv = hostElement.querySelector<HTMLElement>('.ng-select-container');
-                            if (containerDiv) {
-                                focusableElement = containerDiv;
-                            }
-                        }
+                // Check if we need to switch phases
+                const needsSwitch = this.phaseIDs()?.length > 0 && field.StepID !== this.currentPhaseIndex();
 
-                        if (focusableElement) {
-                            focusableElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
-                        // 2. Blur active element so Swal cannot restore focus to it later
-                        const active = document.activeElement as HTMLElement | null;
-                        if (active) active.blur();
-                        Swal.fire({
-                            icon: "error",
-                            title: `${this.store.index.locale == 'en' ? field.ValidationMsgEn : field.ValidationMsgAr}`,
-                            padding: '10px 20px',
-                            confirmButtonText: this.translations()?.validationMsgBtn.label,
-                        }).then(() => {
-                            if (focusableElement) {
-                                focusableElement.focus();
-                            }
-                        });
-                        // 4. Optionally, after Swal closes, restore focus to your input if needed
-                        Swal.getPopup()?.addEventListener('afterClose', () => {
-                            if (focusableElement) {
-                                focusableElement.focus({ preventScroll: true });
-                            }
-                        });
-                        break;
-                    }
+                if (needsSwitch) {
+                    this.changePhase(field.StepID);
+                    // The FIX: Wait for Angular to render the new tab's DOM
+                    setTimeout(() => this.executeFocusAndAlert(field, targetAttachment), 150);
+                } else {
+                    this.executeFocusAndAlert(field, targetAttachment);
                 }
+                return; // Stop the loop at the first error
             }
         }
         console.log('isValid: ', isValid);
@@ -5674,7 +5544,49 @@ export class ApplicationComponent {
     }
 
 
+    private executeFocusAndAlert(field: any, attachment?: any) {
+        const isEn = this.store.index.locale === 'en';
+        let selector = '';
+        let errorMessage = isEn ? field.ValidationMsgEn : field.ValidationMsgAr;
 
+        // 1. Determine Selector & Message
+        if (field.FieldType === 9 && attachment) {
+            selector = `.file${attachment.ID}`;
+            const af = field.AttachmentsFields!.find((f: any) => f.FieldType === 13);
+            errorMessage = isEn ? `${af.ValidationMsgEn} ${attachment.TitleEn}` : `${af.ValidationMsgAr} ${attachment.TitleAr}`;
+        } else if (field.FieldType === 10) {
+            selector = `.${field.InternalFieldName}`;
+        } else if ([4, 5, 16].includes(field.FieldType)) {
+            selector = `[name="${field.InternalFieldName}"]`;
+        } else {
+            selector = `[id="${field.InternalFieldName}"]`;
+        }
+
+        // 2. Find Element
+        const hostElement = document.querySelector<HTMLElement>(selector);
+        if (!hostElement) return;
+
+        // 3. Handle ng-select specifics
+        let focusable: HTMLElement = hostElement;
+        if (hostElement.tagName.toLowerCase() === 'ng-select') {
+            focusable = hostElement.querySelector<HTMLElement>('.ng-select-container') || hostElement;
+        }
+
+        // 4. UI Feedback
+        focusable.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        (document.activeElement as HTMLElement)?.blur();
+
+        Swal.fire({
+            icon: "error",
+            title: errorMessage,
+            confirmButtonText: this.translations()?.validationMsgBtn.label,
+        }).then(() => focusable.focus());
+
+        // Ensure focus after popup closes
+        Swal.getPopup()?.addEventListener('afterClose', () => {
+            focusable.focus({ preventScroll: true });
+        });
+    }
 
     getActiveTab(): ApplicationTab | undefined {
         return this.applicationTabs.find(tab => tab.isActive);
@@ -7175,5 +7087,61 @@ export class ApplicationComponent {
         let allSections: any = []
         allSections = this.allSections()?.filter(section => section.FKNavigationTabID === id && section.FieldsJson[0].VisibilityActionID === 0);
         return allSections || [];
+    }
+
+    phasesWithTabs = signal<any>({});
+    phaseIDs = signal<any[]>([]);
+    transformTabs(tabs: NavigationTab[], phases: any[]) {
+        const allFields: FieldJson[] = this.extractFields(this.navigationTabs());
+        let processField = allFields.find((field) => {
+            return field.InternalFieldName === 'FkProcessID'
+        })!
+        let phaseIDs: any = [];
+        let phasesWithTabs: any = {}
+        phases.forEach(phase => {
+            let phaseObj = processField.LookupValues?.find((lookup: any) => lookup.LookupID === phase);
+            if (phaseObj) {
+                phaseIDs.push(phaseObj)
+            }
+        })
+        phases.forEach(phase => {
+            phasesWithTabs[phase] = tabs.filter(tab => tab.StepID === phase)
+        })
+        this.phasesWithTabs.set(phasesWithTabs);
+        this.phaseIDs.set(phaseIDs);
+        this.currentPhaseIndex.set(phases[0]);
+        this.applicationTabs = phasesWithTabs[this.currentPhaseIndex()].map((tab: any, index: number) => {
+            return {
+                id: tab.TabOrder,
+                title: this.store.index.locale == 'en' ? tab.TitleEn : tab.TitleAr,
+                content: '',
+                icon: this.setIcon(tab.TitleEn),
+                tabSections: tab.TabSections,
+                isActive: index === 0,
+                isCompleted: false,
+                isAccessible: false,
+                tabID: tab.NavigationTabID,
+                aiTabOrder: tab.AITabOrder
+            }
+        })
+        this.updateVisibleTabs();
+    }
+    changePhase(id: any) {
+        this.currentPhaseIndex.set(id)
+        this.applicationTabs = this.phasesWithTabs()[this.currentPhaseIndex()].map((tab: any, index: number) => {
+            return {
+                id: tab.TabOrder,
+                title: this.store.index.locale == 'en' ? tab.TitleEn : tab.TitleAr,
+                content: '',
+                icon: this.setIcon(tab.TitleEn),
+                tabSections: tab.TabSections,
+                isActive: index === 0,
+                isCompleted: false,
+                isAccessible: index === 0,
+                tabID: tab.NavigationTabID,
+                aiTabOrder: tab.AITabOrder
+            }
+        })
+        this.updateVisibleTabs();
     }
 }

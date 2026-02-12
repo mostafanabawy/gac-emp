@@ -178,6 +178,7 @@ export type FieldJson = {
     RelevantRequiredOperator: string;
     RelevantRequiredValue: string;
     RelevantServiceFieldID: number;
+    StepID?: number;
     FieldDefaultValue: number;
     ClickVisibleTab: number;
     VisibilityMatrixRowId: number;
@@ -214,6 +215,7 @@ export type NavigationTab = {
     TitleAr: string;
     TitleEn: string;
     TabOrder: number;
+    StepID?: number;
     AITabOrder: number;
     Icon: string | null;
     FKServiceID: number;
