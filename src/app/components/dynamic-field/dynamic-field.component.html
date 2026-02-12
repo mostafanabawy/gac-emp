@@ -775,6 +775,11 @@
                         </button>
                     </ng-template>
                     }
+                    @if (tableField.FieldType === 17) {
+                    <ng-template [slot]="tableField.InternalFieldName" let-value="data">
+                        <div [innerHTML]="value[tableField.InternalFieldName]"></div>
+                    </ng-template>
+                    }
                     }
                     <ng-template slot="actions" let-value="data">
                         <div class="flex gap-1" *ngIf="!shouldBeDim()">
@@ -853,6 +858,13 @@
                                         <icon-search class="w-5 h-5"></icon-search>
                                     </button>
                                 </div>
+                                }@else if (tableField.FieldType === 17 && expandedField.field ===
+                                tableField.InternalFieldName) {
+                                    <span class="data-label">{{ expandedField.title }}</span>
+                                    <span
+                                        class="data-value border bg-slate-50 text-black rounded-md border-gray-300 p-2"
+                                        [innerHTML]="expandedRow()[expandedField.field]"></span>
+
                                 }@else if(expandedField.field === tableField.InternalFieldName) {
                                 <div class="data-item">
                                     <span class="data-label">{{ expandedField.title }}</span>
