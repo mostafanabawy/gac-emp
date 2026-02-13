@@ -7173,7 +7173,6 @@ export class ApplicationComponent {
         this.phasesWithTabs.set(phasesWithTabs);
         this.phaseIDs.set(phaseIDs.sort((a: any, b: any) => a - b));
         this.currentPhaseIndex.set(phases[phases.length - 1]);
-        debugger;
         this.applicationTabs = phasesWithTabs[this.currentPhaseIndex()].map((tab: any, index: number) => {
             return {
                 id: tab.TabOrder,
