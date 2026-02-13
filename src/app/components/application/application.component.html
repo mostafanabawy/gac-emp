@@ -8,7 +8,7 @@
   @if (editApp()) {
 
   <aside
-    class="bg-white shadow-md flex flex-col items-center rounded-t-lg h-fit sticky top-[155px] right-0 transition-all duration-300 max-h-[600px]"
+    class="bg-white shadow-md flex flex-col items-center rounded-t-lg h-fit sticky top-[155px] right-0 transition-all duration-300 max-h-[600px] z-[99]"
     role="complementary" aria-label="page sections">
 
     <div class="bg-[#60583d] flex items-center justify-between w-full p-4 rounded-t-lg border-b-4 border-stone-700">
@@ -30,8 +30,10 @@
     <div hlMenu class="!block relative w-full" #processMenuWrapper>
       <button class="rounded bg-[#60583d] text-white font-bold px-6 py-3 rounded-t-lg shadow-lg transition-all text-base my-2 flex gap-1
         w-full items-center justify-between" [ngClass]="{'!border-primary bg-gray-200':  openMenus[currentPhase()?.TitleEn]
-    }" type="button" (click)="toggleMenu(currentPhase()?.TitleEn)" hlMenuButton>
+    }" type="button" (click)="toggleMenu(currentPhase()?.TitleEn)" hlMenuButton [title]="sidebarCollapsed ? '' : store.index.locale === 'en' ? currentPhase()?.TitleEn : currentPhase()?.TitleAr">
+        @if(!sidebarCollapsed){
         {{ store.index.locale === 'en' ? currentPhase()?.TitleEn : currentPhase()?.TitleAr }}
+        }
         <span [@reverseChevron]="(!!openMenus[currentPhase()?.TitleEn]).toString()">
           @if(phaseIDs() && phaseIDs().length > 1){
           <icon-chevron-down class="w-4 h-4"></icon-chevron-down>
@@ -39,7 +41,7 @@
         </span>
       </button>
       <ul *hlMenuItems @toggleAnimation
-        class="top-14 absolute w-full !py-0 font-semibold shadow-sm shadow-primary bg-white text-dark left-0 right-0 z-[999] focus:!outline-none">
+        class="top-14 absolute w-full min-w-[200px] !py-0 font-semibold shadow-sm shadow-primary bg-white text-dark left-0 right-0 z-[999] focus:!outline-none">
         @for(phase of phaseIDs(); track $index){
         <li>
           <button class="block w-full text-gray-600 hover:text-primary px-3 py-2 rounded-md xl:text-base" [ngClass]="{
@@ -381,7 +383,7 @@
   }@else{
 
   <aside
-    class="bg-white shadow-md flex flex-col items-center rounded-t-lg h-fit sticky top-[155px] right-0 transition-all duration-300 max-h-[600px]"
+    class="bg-white shadow-md flex flex-col items-center rounded-t-lg h-fit sticky top-[155px] right-0 transition-all duration-300 max-h-[600px] z-[99]"
     role="complementary" aria-label="page sections">
     <div class="bg-[#60583d] flex items-center justify-between w-full p-4 rounded-t-lg border-b-4 border-stone-700">
       <h2 class="text-xl font-semibold mb-1 text-white py-2 px-3 flex-1"
@@ -399,14 +401,16 @@
     <div hlMenu class="!block relative w-full" #processMenuWrapper>
       <button class="rounded bg-[#60583d] text-white font-bold px-6 py-3 rounded-t-lg shadow-lg transition-all text-base my-2 flex gap-1
         w-full items-center justify-between" [ngClass]="{'!border-primary bg-gray-200':  openMenus[currentPhase()?.TitleEn]
-    }" type="button" (click)="toggleMenu(currentPhase()?.TitleEn)" hlMenuButton>
+    }" type="button" (click)="toggleMenu(currentPhase()?.TitleEn)" hlMenuButton [title]="sidebarCollapsed ? '' : store.index.locale === 'en' ? currentPhase()?.TitleEn : currentPhase()?.TitleAr">
+        @if(!sidebarCollapsed){
         {{ store.index.locale === 'en' ? currentPhase()?.TitleEn : currentPhase()?.TitleAr }}
+        }
         @if(phaseIDs() && phaseIDs().length > 1){
         <icon-chevron-down class="w-4 h-4"></icon-chevron-down>
         }
       </button>
       <ul *hlMenuItems @toggleAnimation
-        class="top-14 absolute w-full !py-0 font-semibold shadow-sm shadow-primary bg-white text-dark left-0 right-0 z-[999] focus:!outline-none">
+        class="top-14 absolute w-full min-w-[200px] !py-0 font-semibold shadow-sm shadow-primary bg-white text-dark left-0 right-0 z-[999] focus:!outline-none">
         @for(phase of phaseIDs(); track $index){
         <li>
           <button class="block w-full text-gray-600 hover:text-primary px-3 py-2 rounded-md xl:text-base" [ngClass]="{
