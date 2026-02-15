@@ -2393,7 +2393,7 @@ export class DynamicFieldComponent implements OnInit {
                           matchResult = matchResult ? matchResult[0] : '';
                           if (matchResult) {
                             // Regex: Match any character that is NOT a Unicode Letter (\p{L}) or a space (\s)
-                            // at the START (^) or END ($) of the string.
+                            // at the START (^) or END ($) of the string.12
                             // The 'g' flag ensures it applies globally (to both start and end).
                             // The 'u' flag is necessary for \p{L} to correctly match Arabic characters.
                             matchResult = matchResult.replace(/^[^(\p{L}|\s)]+|[^(\p{L}|\s)]+$/gu, '').trim();
