@@ -100,6 +100,10 @@ export class DefaultComponent implements OnInit, ControlValueAccessor {
   // --- ControlValueAccessor Methods ---
 
   writeValue(value: any): void {
+    console.log(value);
+    if (value && this.form) {
+      this.form.setValue(value, { emitEvent: false });
+    }
   }
 
   registerOnChange(fn: any): void {
