@@ -39,7 +39,7 @@ export class AllApplicationsTableComponent implements OnInit {
     { field: 'FkProcessID_TitleAr', title: 'نوع الإجراء', sort: true, visible: true, width: '180px' },
     { field: 'ApprovedLicense', title: 'رقم الرخصة', sort: true, visible: false, width: '180px', isNumber: true },
     { field: 'CreationDate', title: 'تاريخ الإنشاء', sort: true, visible: true, width: '150px' },
-    { field: 'Actions', title: 'الإجراءات', sort: false, visible: true, fixed: true, width: '200px' },
+    { field: 'actionsEdit', title: 'الإجراءات', sort: false, visible: true, fixed: true, width: '200px' },
     // الأعمدة المخفية
   ];
   translations = signal<any>('')
@@ -167,12 +167,12 @@ export class AllApplicationsTableComponent implements OnInit {
           this.allApplicationsService.disableTabs.set(false);
           let isNoActions = this.allApplicationsService.cardsData().slice((this.CurrentPage() - 1) * this.PageSize(), ((this.CurrentPage() - 1) * this.PageSize()) + this.PageSize()).every((item: any) => item.Actions === null || item.Actions === undefined || item.Actions.length === 0);
           if (isNoActions) {
-            let actions = this.cols.find(c => c.field === 'Actions')
+            let actions = this.cols.find(c => c.field === 'actionsEdit')
             if (actions) {
               actions.visible = false
             }
           } else {
-            let actions = this.cols.find(c => c.field === 'Actions')
+            let actions = this.cols.find(c => c.field === 'actionsEdit')
             if (actions) {
               actions.visible = true
             }
@@ -253,11 +253,11 @@ export class AllApplicationsTableComponent implements OnInit {
       { field: 'ApprovedLicense', title: t?.licenseNumber?.label || 'رقم الرخصة', sort: true, visible: false, width: '180px', isNumber: true },
       { field: 'CreationDate', title: t?.CreationDate?.label || 'تاريخ الإنشاء', sort: true, visible: true, width: '150px' },
       { field: 'ai', title: t?.aiAnalysisTitle.label, sort: false, visible: true, fixed: true, width: '60px' },
-      { field: 'Actions', title: t?.actions?.label || (this.isArabic ? 'الإجراءات' : 'Actions'), sort: false, visible: true, fixed: true, width: '200px' },
+      { field: 'actionsEdit', title: t?.actions?.label || (this.isArabic ? 'الإجراءات' : 'actionsEdit'), sort: false, visible: true, fixed: true, width: '200px' },
     ];
 
     this.allColumns = this.cols
-      .filter(col => col.field !== 'expand' && col.field !== 'serial' && col.field !== 'Actions' && col.field !== 'openRequest' && col.field !== 'checkbox')
+      .filter(col => col.field !== 'expand' && col.field !== 'serial' && col.field !== 'actionsEdit' && col.field !== 'openRequest' && col.field !== 'checkbox')
       .map(col => ({ ...col }));
 
     // حفظ الحالة الافتراضية للأعمدة
@@ -343,12 +343,12 @@ export class AllApplicationsTableComponent implements OnInit {
         this.CurrentPage.set(pagingInfo.CurrentPage);
         let isNoActions = this.allApplicationsService.cardsData().slice((this.CurrentPage() - 1) * this.PageSize(), ((this.CurrentPage() - 1) * this.PageSize()) + this.PageSize()).every((item: any) => item.Actions === null || item.Actions === undefined || item.Actions.length === 0);
         if (isNoActions) {
-          let actions = this.cols.find(c => c.field === 'Actions')
+          let actions = this.cols.find(c => c.field === 'actionsEdit')
           if (actions) {
             actions.visible = false
           }
         } else {
-          let actions = this.cols.find(c => c.field === 'Actions')
+          let actions = this.cols.find(c => c.field === 'actionsEdit')
           if (actions) {
             actions.visible = true
           }
