@@ -102,8 +102,10 @@ export class DefaultComponent implements OnInit, ControlValueAccessor {
 
   writeValue(value: any): void {
     console.log(value);
-    if (value && this.form && !this.isTable()) {
+    if (value && this.form) {
       this.form.setValue(value, { emitEvent: false });
+    }else{
+      this.form.setValue('', { emitEvent: false });
     }
   }
 
