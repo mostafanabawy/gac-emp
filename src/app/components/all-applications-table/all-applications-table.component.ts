@@ -39,7 +39,7 @@ export class AllApplicationsTableComponent implements OnInit {
     { field: 'FkProcessID_TitleAr', title: 'نوع الإجراء', sort: true, visible: true, width: '180px' },
     { field: 'ApprovedLicense', title: 'رقم الرخصة', sort: true, visible: false, width: '180px', isNumber: true },
     { field: 'CreationDate', title: 'تاريخ الإنشاء', sort: true, visible: true, width: '150px' },
-    { field: 'actions', title: 'الإجراءات', sort: false, visible: true, fixed: true, width: '200px' },
+    { field: 'actionsEdit', title: 'الإجراءات', sort: false, visible: true, fixed: true, width: '200px' },
     // الأعمدة المخفية
   ];
   translations = signal<any>('')
@@ -241,12 +241,12 @@ export class AllApplicationsTableComponent implements OnInit {
       { field: 'ApprovedLicense', title: t?.licenseNumber?.label || 'رقم الرخصة', sort: true, visible: false, width: '180px', isNumber: true },
       { field: 'CreationDate', title: t?.CreationDate?.label || 'تاريخ الإنشاء', sort: true, visible: true, width: '150px' },
       { field: 'ai', title: t?.aiAnalysisTitle.label, sort: false, visible: true, fixed: true, width: '60px' },
-      { field: 'actions', title: t?.actions?.label || (this.isArabic ? 'الإجراءات' : 'Actions'), sort: false, visible: true, fixed: true, width: '200px' },
+      { field: 'Actions', title: t?.actions?.label || (this.isArabic ? 'الإجراءات' : 'Actions'), sort: false, visible: true, fixed: true, width: '200px' },
       // الأعمدة المخفية
     ];
 
     this.allColumns = this.cols
-      .filter(col => col.field !== 'expand' && col.field !== 'serial' && col.field !== 'actions' && col.field !== 'openRequest')
+      .filter(col => col.field !== 'expand' && col.field !== 'serial' && col.field !== 'actionsEdit' && col.field !== 'openRequest')
       .map(col => ({ ...col }));
 
     // حفظ الحالة الافتراضية للأعمدة

@@ -276,8 +276,7 @@
             <thead class="bg-gray-50 relative z-[1]">
                 <tr>
                     <ng-container *ngFor="let col of cols">
-                        <th *ngIf="col.visible === true"
-                            (click)="col.sort && handleSort(col.field)" [ngClass]="{
+                        <th *ngIf="col.visible === true" (click)="col.sort && handleSort(col.field)" [ngClass]="{
                                 'cursor-pointer select-none': col.sort, 
                                 'text-primary font-semibold': currentSortField === col.field,
                                 'hide-on-mobile': shouldHideOnMobile(col.field)
@@ -325,8 +324,7 @@
                 <ng-container *ngIf="isLoading; else tableRows">
                     <tr *ngFor="let _ of [].constructor(5)">
                         <ng-container *ngFor="let col of cols">
-                            <td *ngIf="col.visible === true"
-                                class="border-b px-4 py-3">
+                            <td *ngIf="col.visible === true" class="border-b px-4 py-3">
                                 <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
                             </td>
                         </ng-container>
@@ -339,8 +337,8 @@
                         <!-- Main Row -->
                         <tr class="hover:bg-gray-50 transition">
                             <ng-container *ngFor="let col of cols">
-                                <td *ngIf="col.visible === true"
-                                    class="px-4 py-3 border-b text-sm text-gray-700" [ngClass]="{
+                                <td *ngIf="col.visible === true" class="px-4 py-3 border-b text-sm text-gray-700"
+                                    [ngClass]="{
                                         'text-end font-mono': col.isNumber,
                                         'hide-on-mobile': shouldHideOnMobile(col.field)
                                     }"
@@ -389,10 +387,8 @@
                                             @if(empLookup()){
                                             <ng-select type="text" name="userName" id="userName" appendTo="body"
                                                 class="border border-[#7070705D] custom-multiselect cursor-pointer !z-10 min-w-full"
-                                                [searchable]="true" [clearable]="false"
-                                                #userSelect
-                                                [(ngModel)]="selectedEmp"
-                                                [bindValue]="isArabic? 'NameEn': 'Name'"
+                                                [searchable]="true" [clearable]="false" #userSelect
+                                                [(ngModel)]="selectedEmp" [bindValue]="isArabic? 'NameEn': 'Name'"
                                                 (change)="handleActionClick($event, row, true)"
                                                 [items]="empLookup() || []" [bindLabel]="isArabic? 'NameEn': 'Name'"
                                                 [placeholder]="translations?.LookupDefault.label"
@@ -403,17 +399,21 @@
                                     <ng-container *ngSwitchCase="'ai'">
                                         <div class="flex items-center gap-1 w-fit">
                                             @if( ![7008, 7005, 5015].includes(row.ServiceID)){
-                                                <button [title]="translations.requestAnalysisBtn.label" class="flex items-center justify-center gap-2 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition cursor-pointer" (click)="emitAnalysis(row)">
-                                                    <icon-stars class="w-5 h-5"></icon-stars>
-                                                    {{translations?.analysisBtnInTable.label}}
-                                                </button>
+                                            <button [title]="translations.requestAnalysisBtn.label"
+                                                class="flex items-center justify-center gap-2 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition cursor-pointer"
+                                                (click)="emitAnalysis(row)">
+                                                <icon-stars class="w-5 h-5"></icon-stars>
+                                                {{translations?.analysisBtnInTable.label}}
+                                            </button>
                                             }@else{
-                                                <span class="text-xl">-</span>
+                                            <span class="text-xl">-</span>
                                             }
                                         </div>
                                     </ng-container>
                                     <!-- Actions Column -->
                                     <ng-container *ngSwitchCase="'actions'">
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'actionsEdit'">
                                         <div class="flex items-center gap-1">
                                             <!-- Show first 2 actions as buttons -->
                                             <ng-container
@@ -422,8 +422,7 @@
                                                 <button
                                                     (click)="handleActionClick(action, row); $event.stopPropagation()"
                                                     class="flex items-center justify-center px-2 py-1 text-xs rounded hover:bg-gray-100 hover:scale-110 transition cursor-pointer
-                                                    !w-fit"
-                                                    [title]="isArabic ? action.TitleAR : action.TitleEN">
+                                                    !w-fit" [title]="isArabic ? action.TitleAR : action.TitleEN">
                                                     <!-- {{ (isArabic ? action.TitleAR : action.TitleEN) | slice:0:8 }}{{
                                                     (isArabic ? action.TitleAR : action.TitleEN)?.length > 8 ? '...' :
                                                     '' }} -->
@@ -447,14 +446,16 @@
                                                         class="flex-shrink-0 !h-4 !w-4">
                                                     }@else if(action.ActionID === 1850 || action.ActionID === 1844 ||
                                                     action.ActionID === 1993 ||
-                                                    action.ActionID === 1996 || action.ActionID === 1869 || action.ActionID === 1872){
+                                                    action.ActionID === 1996 || action.ActionID === 1869 ||
+                                                    action.ActionID === 1872){
                                                     <img src="/assets/images/icons/Group 57145.svg" alt="renew icon"
                                                         class="flex-shrink-0 !h-4 !w-4" />
                                                     }@else if (action.ActionID === 1832){
                                                     <img src="/assets/images/icons/credit-card-payment-svgrepo-com.svg"
                                                         alt="pay icon" class="flex-shrink-0 !h-4 !w-4" />
                                                     }@else if (action.ActionID === 864){
-                                                    <icon-circle-check class="flex-shrink-0 text-green-600 !h-5 !w-5"></icon-circle-check>
+                                                    <icon-circle-check
+                                                        class="flex-shrink-0 text-green-600 !h-5 !w-5"></icon-circle-check>
                                                     }@else if ( action.ActionID === 1995){
                                                     <img src="/assets/images/icons/add-icon.svg" alt="add icon"
                                                         class="flex-shrink-0 h-4 w-4">
@@ -462,14 +463,15 @@
                                                     <img src="/assets/images/icons/property-transfer.svg"
                                                         alt="property transfer icon" class="flex-shrink-0 !h-4 !w-4">
                                                     }@else if (action.ActionID === 1985 || action.ActionID === 1984) {
-                                                    <img src="/assets/images/icons/Star.svg" class="flex-shrink-0 !h-4 !w-4"
-                                                        alt="star icon for rating">
+                                                    <img src="/assets/images/icons/Star.svg"
+                                                        class="flex-shrink-0 !h-4 !w-4" alt="star icon for rating">
                                                     }@else if (action.ActionID === 1842 || action.ActionID === 1843 ||
                                                     action.ActionID === 1993 || action.ActionID === 1852 ||
                                                     action.ActionID === 1901) {
                                                     <img src="/assets/images/icons/printer57135.svg" alt="print icon">
                                                     }@else if (action.ActionID === 1859 || action.ActionID === 1865) {
-                                                    <icon-history-clock class="flex-shrink-0 !h-5 !w-5 text-primary"></icon-history-clock>
+                                                    <icon-history-clock
+                                                        class="flex-shrink-0 !h-5 !w-5 text-primary"></icon-history-clock>
                                                     }
                                                 </button>
                                                 }
@@ -516,7 +518,8 @@
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
                                                     viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                        stroke-width="2"
+                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                 </svg>
                                             </button>
                                         </div>
@@ -598,7 +601,8 @@
                                             {{ getCellValue(row, col) }}
                                         </span>
                                         <!-- Status Column with Badge (for licenses) -->
-                                        <span *ngIf="col.field.includes('Status') && (showStatusLegend || isFeaturedField(col.field))"
+                                        <span
+                                            *ngIf="col.field.includes('Status') && (showStatusLegend || isFeaturedField(col.field))"
                                             [ngClass]="getStatusBadgeClass(row)" [title]="getCellValue(row, col)">
                                             {{ getCellValue(row, col) }}
                                         </span>
@@ -617,13 +621,18 @@
                                         <!-- Featured Fields: ActivitedText (حالة المستخدم) -->
                                         <span *ngIf="isFeaturedField(col.field) && col.field === 'ActivitedText'"
                                             class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md"
-                                            [ngClass]="getActivitedBadgeClass(row)"
-                                            [title]="getCellValue(row, col)">
-                                            <svg *ngIf="row.ActivitedOriginal || row.Activited" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                                            [ngClass]="getActivitedBadgeClass(row)" [title]="getCellValue(row, col)">
+                                            <svg *ngIf="row.ActivitedOriginal || row.Activited"
+                                                xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5"
+                                                fill="currentColor" viewBox="0 0 24 24">
+                                                <path
+                                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                                             </svg>
-                                            <svg *ngIf="!(row.ActivitedOriginal || row.Activited)" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                                            <svg *ngIf="!(row.ActivitedOriginal || row.Activited)"
+                                                xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5"
+                                                fill="currentColor" viewBox="0 0 24 24">
+                                                <path
+                                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
                                             </svg>
                                             {{ getCellValue(row, col) }}
                                         </span>
@@ -650,7 +659,7 @@
                                         <span *ngIf="isFeaturedField(col.field) && col.field === 'FeesValue'"
                                             class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-bold shadow-md bg-gradient-to-br from-green-50 to-green-100 text-green-800 border-2 border-green-300"
                                             [title]="getCellValue(row, col)">
-                                     
+
                                             {{ getCellValue(row, col) }}
                                         </span>
                                         <!-- Featured Fields: Active (حالة التفعيل) -->
@@ -658,26 +667,40 @@
                                             class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-bold shadow-md border-2"
                                             [ngClass]="row.Active ? 'bg-gradient-to-br from-green-50 to-green-100 text-green-800 border-green-300' : 'bg-gradient-to-br from-red-50 to-red-100 text-red-800 border-red-300'"
                                             [title]="row.Active ? (isArabic ? 'مفعل' : 'Active') : (isArabic ? 'غير مفعل' : 'Inactive')">
-                                            <svg *ngIf="row.Active" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                            <svg *ngIf="row.Active" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4"
+                                                fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd"
+                                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                                    clip-rule="evenodd" />
                                             </svg>
-                                            <svg *ngIf="!row.Active" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                            <svg *ngIf="!row.Active" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4"
+                                                fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd"
+                                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                                    clip-rule="evenodd" />
                                             </svg>
-                                            {{ row.Active ? (isArabic ? 'مفعل' : 'Active') : (isArabic ? 'غير مفعل' : 'Inactive') }}
+                                            {{ row.Active ? (isArabic ? 'مفعل' : 'Active') : (isArabic ? 'غير مفعل' :
+                                            'Inactive') }}
                                         </span>
                                         <!-- AddMoreThanOne Column with Badge -->
                                         <span *ngIf="col.field === 'AddMoreThanOne'"
                                             class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm"
                                             [ngClass]="row.AddMoreThanOne ? 'bg-gradient-to-br from-blue-50 to-blue-100 text-blue-800 border-2 border-blue-300' : 'bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800 border-2 border-gray-300'"
                                             [title]="row.AddMoreThanOne ? (isArabic ? 'نعم' : 'Yes') : (isArabic ? 'لا' : 'No')">
-                                            <svg *ngIf="row.AddMoreThanOne" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                            <svg *ngIf="row.AddMoreThanOne" xmlns="http://www.w3.org/2000/svg"
+                                                class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd"
+                                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                                    clip-rule="evenodd" />
                                             </svg>
-                                            <svg *ngIf="!row.AddMoreThanOne" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                            <svg *ngIf="!row.AddMoreThanOne" xmlns="http://www.w3.org/2000/svg"
+                                                class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd"
+                                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                                    clip-rule="evenodd" />
                                             </svg>
-                                            {{ row.AddMoreThanOne ? (isArabic ? 'نعم' : 'Yes') : (isArabic ? 'لا' : 'No') }}
+                                            {{ row.AddMoreThanOne ? (isArabic ? 'نعم' : 'Yes') : (isArabic ? 'لا' :
+                                            'No') }}
                                         </span>
                                         <!-- Number Columns -->
                                         <span
@@ -691,7 +714,8 @@
                                             col) }}</span>
 
                                         <!-- Status Column without badge (for fees) -->
-                                        <span *ngIf="col.field.includes('Status') && !showStatusLegend && !isFeaturedField(col.field)"
+                                        <span
+                                            *ngIf="col.field.includes('Status') && !showStatusLegend && !isFeaturedField(col.field)"
                                             class="cell-content" [title]="getCellValue(row, col)">{{ getCellValue(row,
                                             col) }}</span>
                                     </span>
@@ -710,7 +734,8 @@
                                         <label class="block text-xs font-semibold text-gray-500 mb-1">{{ detail.label
                                             }}:</label>
                                         <span class="block text-xs md:text-sm text-gray-800 break-words overflow-auto"
-                                            [ngClass]="{'force-ltr font-mono text-end': detail.isNumber}">{{ detail.value
+                                            [ngClass]="{'force-ltr font-mono text-end': detail.isNumber}">{{
+                                            detail.value
                                             || '-' }}</span>
                                     </div>
                                 </div>
@@ -727,7 +752,8 @@
     </div>
 
     <!-- Pagination -->
-    <div *ngIf="!hidePagination" class="p-4 flex flex-col lg:flex-row justify-between items-center gap-4 border-t border-gray-200">
+    <div *ngIf="!hidePagination"
+        class="p-4 flex flex-col lg:flex-row justify-between items-center gap-4 border-t border-gray-200">
         <!-- Pagination Info -->
         <div class="text-sm text-gray-600 order-1 lg:order-1">
             {{ paginationInfoText }}

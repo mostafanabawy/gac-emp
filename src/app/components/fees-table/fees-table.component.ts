@@ -117,7 +117,7 @@ export class FeesTableComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   getCellValue(row: any, col: any): string {
-    if (col.field === 'expand' || col.field.includes('DutyFree') || col.field === 'serial' || col.field === 'actions' || col.field === 'openRequest' || col.field === 'attachmentDetails') {
+    if (col.field === 'expand' || col.field.includes('DutyFree') || col.field === 'serial' || col.field === 'actions' || col.field === 'actionsEdit' || col.field === 'openRequest' || col.field === 'attachmentDetails') {
       return '';
     }
 
