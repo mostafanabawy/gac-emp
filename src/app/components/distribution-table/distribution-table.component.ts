@@ -45,7 +45,7 @@ export class DistributionTableComponent {
     { field: 'ServiceID', title: 'نوع الخدمة', sort: true, visible: true, width: '250px' },
     { field: 'FkProcessID_TitleAr', title: 'نوع الإجراء', sort: true, visible: true, width: '180px' },
     { field: 'users', title: 'الموظف', sort: false, visible: true, fixed: true, width: '200px' },
-    { field: 'actions', title: 'الإجراءات', sort: false, visible: true, fixed: true, width: '200px' },
+    { field: 'actionsEdit', title: 'الإجراءات', sort: false, visible: true, fixed: true, width: '200px' },
   ];
   /* { field: 'ApprovedLicense', title: 'رقم الرخصة' },
   { field: 'FkStatusID', title: 'حالة الطلب' },
@@ -1731,12 +1731,12 @@ export class DistributionTableComponent {
       { field: 'ApprovedLicense', title: t?.licenseNumber?.label || 'رقم الرخصة', sort: true, visible: false, width: '180px', isNumber: true },
       { field: 'users', title: t?.employeeTableLabel?.label || 'الموظف', sort: false, visible: true, fixed: true, width: '200px' },
       { field: 'ai', title: t?.aiAnalysisTitle.label, sort: false, visible: true, fixed: true, width: '60px' },
-      { field: 'actions', title: t?.tableActionsKey?.label || 'الإجراءات', sort: false, visible: true, fixed: true, width: '200px' },
+      { field: 'actionsEdit', title: t?.tableActionsKey?.label || 'الإجراءات', sort: false, visible: true, fixed: true, width: '200px' },
       // الأعمدة المخفية
     ];
 
     this.allColumns = this.cols
-      .filter(col => col.field !== 'expand' && col.field !== 'serial' && col.field !== 'actions' && col.field !== 'openRequest')
+      .filter(col => col.field !== 'expand' && col.field !== 'serial' && col.field !== 'actionsEdit' && col.field !== 'openRequest')
       .map(col => ({ ...col }));
 
     // حفظ الحالة الافتراضية للأعمدة

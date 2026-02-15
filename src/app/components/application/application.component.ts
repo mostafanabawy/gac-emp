@@ -5866,7 +5866,7 @@ export class ApplicationComponent {
         // 4. Logic: (Scrolled distance + Window Height) >= Total Height
         // We use a 50px buffer because some mobile browsers or zoom levels make it hard to hit the exact pixel.
         const isAtBottom = (scrollTop + windowHeight) >= (documentHeight - 50);
-        if (isAtBottom && sectionIds.length > 0) {
+        if (isAtBottom && sectionIds.length > 0 && (this.editApp() || (!this.editApp() && this.currentTabIndex() === this.navigationTabs()!.length - 1))) {
             const lastId = sectionIds[sectionIds.length - 1];
             this.activeSection = `${lastId}`;
             const parentTab = this.visibleNavigationTabs()!.find(tab =>
