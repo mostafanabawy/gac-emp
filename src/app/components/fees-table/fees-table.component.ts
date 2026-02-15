@@ -443,7 +443,8 @@ export class FeesTableComponent implements OnInit, OnDestroy, OnChanges {
 
     // Check if there's any hidden column that has a value for this row
     const hasDetails = this.cols.some(col => {
-      if (col.fixed || col.field === 'expand' || col.field === 'serial' || col.field === 'checkbox') return false;
+      // Don't count columns that are ALWAYS visible/fixed as "hidden details"
+      if (col.fixed || col.field === 'expand' || col.field === 'serial' || col.field === 'checkbox' || col.field === 'Actions' || col.field === 'actionsEdit') return false;
 
       const isHidden = isMobile
         ? (col.visible === false || this.shouldHideOnMobile(col.field))
@@ -458,13 +459,9 @@ export class FeesTableComponent implements OnInit, OnDestroy, OnChanges {
 
     if (!hasDetails) return false;
 
-    if (!this.hideExpandIconWhenLicenseEmpty) {
-      return true;
-    }
-
-    // Hide icon if license is empty, null, undefined, or equals '-'
-    const license = row.ApprovedLicense;
-    return license && license !== '-' && license !== '' && license !== null && license !== undefined;
+    // Fix: If there are details to show, we should show the expand icon 
+    // regardless of the license being empty, otherwise hidden columns are inaccessible.
+    return true;
   }
 
   ngOnDestroy() {

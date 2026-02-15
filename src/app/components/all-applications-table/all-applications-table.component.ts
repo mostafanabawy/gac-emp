@@ -245,7 +245,7 @@ export class AllApplicationsTableComponent implements OnInit {
     ];
 
     this.allColumns = this.cols
-      .filter(col => col.field !== 'expand' && col.field !== 'serial' && col.field !== 'actionsEdit' && col.field !== 'openRequest' && col.field !== 'checkbox')
+      .filter(col => col.field !== 'expand' && col.field !== 'serial' && col.field !== 'Actions' && col.field !== 'openRequest' && col.field !== 'checkbox')
       .map(col => ({ ...col }));
 
     // حفظ الحالة الافتراضية للأعمدة
