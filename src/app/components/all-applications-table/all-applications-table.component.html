@@ -298,7 +298,7 @@
             {{ store.index.locale === 'en' ? row.FkProcessID_TitleEn : row.FkProcessID_TitleAr }}
           </p>
           @if( ![7008, 7005, 5015].includes(row.ServiceID)){
-          <button (click)="openRequestAnalysis(row)"
+          <button (click)="openRequestAnalysis(row); $event.stopPropagation()"
             class="ltr:ml-auto rtl:mr-auto flex items-center gap-2 btn btn-primary hover:shadow-none text-nowrap">
             <icon-stars class="w-5 h-5 self-start"></icon-stars>
             {{ translations()?.analysisBtnInTable.label }}
