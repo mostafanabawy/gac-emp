@@ -516,12 +516,16 @@ export class DynamicFieldComponent implements OnInit {
     if (this.field.FieldType === 8) {
       this.field.TableServiceFields?.forEach((tableField) => {
         if(tableField.FieldType === 17){
-          (this.form?.get(this.field.InternalFieldName) as FormArray)?.at(-1).get(tableField.InternalFieldName)?.valueChanges.subscribe((value: any) => {
+          (this.form?.get(this.field.InternalFieldName) as FormArray)?.at(-1).get(tableField.InternalFieldName)?.valueChanges.pipe(
+            distinctUntilChanged()
+          ).subscribe((value: any) => {
             (this.form?.get(this.field.InternalFieldName) as FormArray)?.at(-1).get(tableField.InternalFieldName)?.patchValue(value)
           })
         }
         if(tableField.FieldType === 3){
-          (this.form?.get(this.field.InternalFieldName) as FormArray)?.at(-1).get(tableField.InternalFieldName)?.valueChanges.subscribe((value: any) => {
+          (this.form?.get(this.field.InternalFieldName) as FormArray)?.at(-1).get(tableField.InternalFieldName)?.valueChanges.pipe(
+            distinctUntilChanged()
+          ).subscribe((value: any) => {
             (this.form?.get(this.field.InternalFieldName) as FormArray)?.at(-1).get(tableField.InternalFieldName)?.patchValue(value)
           })
         }

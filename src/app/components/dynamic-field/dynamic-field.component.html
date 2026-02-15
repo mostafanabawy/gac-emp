@@ -597,7 +597,7 @@
             }"></quill-editor> -->
                             <div>
                                 <app-my-editor [formControlName]="tableField.InternalFieldName"
-                                    [quillID]="tableField.InternalFieldName"
+                                    [quillID]="tableField.InternalFieldName" [isTable]="true"
                                     [placeHolder]="store.index.locale == 'en'? tableField.DescriptionEn: tableField.DescriptionAr"
                                     [isDisabled]="shouldBeDim()"
                                     [ngClass]="{'direction-ltr': !isArabic, 'direction-rtl': isArabic, '!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en'}"></app-my-editor>
@@ -1166,7 +1166,7 @@
         <div>
             <app-my-editor [formControlName]="field.InternalFieldName" [quillID]="field.InternalFieldName"
                 [placeHolder]="store.index.locale == 'en'? field.DescriptionEn: field.DescriptionAr"
-                [isDisabled]="shouldBeDim()"
+                [isDisabled]="shouldBeDim()" [isTable]="false"
                 [ngClass]="{'direction-ltr': !isArabic, 'direction-rtl': isArabic, '!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en'}"></app-my-editor>
         </div>
     </ng-container>

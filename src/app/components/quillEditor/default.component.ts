@@ -39,6 +39,7 @@ export class DefaultComponent implements OnInit, ControlValueAccessor {
   onChange: any = () => { };
   onTouched: any = () => { };
   isDisabled = input<any>();
+  isTable = input.required<any>();
   modules: any;
   placeHolder = input<any>();
   quillID = input<any>();
@@ -101,7 +102,7 @@ export class DefaultComponent implements OnInit, ControlValueAccessor {
 
   writeValue(value: any): void {
     console.log(value);
-    if (value && this.form) {
+    if (value && this.form && !this.isTable()) {
       this.form.setValue(value, { emitEvent: false });
     }
   }
