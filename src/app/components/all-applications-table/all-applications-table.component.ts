@@ -39,7 +39,7 @@ export class AllApplicationsTableComponent implements OnInit {
     { field: 'FkProcessID_TitleAr', title: 'نوع الإجراء', sort: true, visible: true, width: '180px' },
     { field: 'ApprovedLicense', title: 'رقم الرخصة', sort: true, visible: false, width: '180px', isNumber: true },
     { field: 'CreationDate', title: 'تاريخ الإنشاء', sort: true, visible: true, width: '150px' },
-    { field: 'actionsEdit', title: 'الإجراءات', sort: false, visible: true, fixed: true, width: '200px' },
+    { field: 'Actions', title: 'الإجراءات', sort: false, visible: true, fixed: true, width: '200px' },
     // الأعمدة المخفية
   ];
   translations = signal<any>('')
@@ -165,6 +165,18 @@ export class AllApplicationsTableComponent implements OnInit {
           this.allApplicationsService.tableLoader.set(false);
           this.tableLoader = false
           this.allApplicationsService.disableTabs.set(false);
+          let isNoActions = this.allApplicationsService.cardsData().slice((this.CurrentPage() - 1) * this.PageSize(), ((this.CurrentPage() - 1) * this.PageSize()) + this.PageSize()).every((item: any) => item.Actions === null || item.Actions === undefined || item.Actions.length === 0);
+          if (isNoActions) {
+            let actions = this.cols.find(c => c.field === 'Actions')
+            if (actions) {
+              actions.visible = false
+            }
+          } else {
+            let actions = this.cols.find(c => c.field === 'Actions')
+            if (actions) {
+              actions.visible = true
+            }
+          }
         })
       }
     }, { allowSignalWrites: true });
@@ -329,6 +341,18 @@ export class AllApplicationsTableComponent implements OnInit {
         this.TotalRows.set(pagingInfo.TotalRows);
         this.PageSize.set(pagingInfo.PageSize);
         this.CurrentPage.set(pagingInfo.CurrentPage);
+        let isNoActions = this.allApplicationsService.cardsData().slice((this.CurrentPage() - 1) * this.PageSize(), ((this.CurrentPage() - 1) * this.PageSize()) + this.PageSize()).every((item: any) => item.Actions === null || item.Actions === undefined || item.Actions.length === 0);
+        if (isNoActions) {
+          let actions = this.cols.find(c => c.field === 'Actions')
+          if (actions) {
+            actions.visible = false
+          }
+        } else {
+          let actions = this.cols.find(c => c.field === 'Actions')
+          if (actions) {
+            actions.visible = true
+          }
+        }
       },
       error: (err) => {
         console.error('Error loading cards data:', err);
