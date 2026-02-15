@@ -242,11 +242,10 @@ export class AllApplicationsTableComponent implements OnInit {
       { field: 'CreationDate', title: t?.CreationDate?.label || 'تاريخ الإنشاء', sort: true, visible: true, width: '150px' },
       { field: 'ai', title: t?.aiAnalysisTitle.label, sort: false, visible: true, fixed: true, width: '60px' },
       { field: 'Actions', title: t?.actions?.label || (this.isArabic ? 'الإجراءات' : 'Actions'), sort: false, visible: true, fixed: true, width: '200px' },
-      // الأعمدة المخفية
     ];
 
     this.allColumns = this.cols
-      .filter(col => col.field !== 'expand' && col.field !== 'serial' && col.field !== 'actionsEdit' && col.field !== 'openRequest')
+      .filter(col => col.field !== 'expand' && col.field !== 'serial' && col.field !== 'Actions' && col.field !== 'openRequest' && col.field !== 'checkbox')
       .map(col => ({ ...col }));
 
     // حفظ الحالة الافتراضية للأعمدة
@@ -1570,10 +1569,10 @@ export class AllApplicationsTableComponent implements OnInit {
 
       return {
         label: col.title,
-        value: value || '-',
+        value: value,
         isNumber: col.isNumber || false // إضافة معلومة نوع البيانات
       };
-    }).filter(detail => detail.value && detail.value !== '-'); // Only show fields that have values
+    }).filter(detail => detail.value !== undefined && detail.value !== null && detail.value !== '' && detail.value !== '-'); // Only show fields that have values
   }
 
   getPageNumbers(): number[] {

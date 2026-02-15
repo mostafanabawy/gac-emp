@@ -95,13 +95,21 @@ export class FeesTableComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   get visibleColumnsCount(): number {
-    return this.cols.filter(col => col.visible === true).length;
+    let count = this.cols.filter(col => col.visible === true).length;
+    if (!this.shouldShowExpandColumn) {
+      count--;
+    }
+    return count;
+  }
+
+  get shouldShowExpandColumn(): boolean {
+    return this.rows.some(row => this.shouldShowExpandIcon(row));
   }
 
   get hasHiddenColumns(): boolean {
     const isMobile = window.innerWidth <= 768;
     return this.cols.some(col => {
-      if (col.fixed) return false;
+      if (col.fixed || col.field === 'expand' || col.field === 'serial' || col.field === 'checkbox') return false;
       if (isMobile) {
         return col.visible === false || this.shouldHideOnMobile(col.field);
       } else {
@@ -117,7 +125,7 @@ export class FeesTableComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   getCellValue(row: any, col: any): string {
-    if (col.field === 'expand' || col.field.includes('DutyFree') || col.field === 'serial' || col.field === 'actions' || col.field === 'actionsEdit' || col.field === 'openRequest' || col.field === 'attachmentDetails') {
+    if (col.field === 'checkbox' || col.field === 'expand' || col.field.includes('DutyFree') || col.field === 'serial' || col.field === 'Serial' || col.field === 'actions' || col.field === 'actionsEdit' || col.field === 'Actions' || col.field === 'openRequest' || col.field === 'attachmentDetails' || col.field === 'ai') {
       return '';
     }
 
@@ -431,8 +439,27 @@ export class FeesTableComponent implements OnInit, OnDestroy, OnChanges {
 
   // Check if expand icon should be shown for this row
   shouldShowExpandIcon(row: any): boolean {
+    const isMobile = window.innerWidth <= 768;
+
+    // Check if there's any hidden column that has a value for this row
+    const hasDetails = this.cols.some(col => {
+      if (col.fixed || col.field === 'expand' || col.field === 'serial' || col.field === 'checkbox') return false;
+
+      const isHidden = isMobile
+        ? (col.visible === false || this.shouldHideOnMobile(col.field))
+        : (col.visible === false);
+
+      if (isHidden) {
+        const val = row[col.field];
+        return val !== undefined && val !== null && val !== '' && val !== '-';
+      }
+      return false;
+    });
+
+    if (!hasDetails) return false;
+
     if (!this.hideExpandIconWhenLicenseEmpty) {
-      return true; // Always show if the feature is not enabled
+      return true;
     }
 
     // Hide icon if license is empty, null, undefined, or equals '-'

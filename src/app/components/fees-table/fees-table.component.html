@@ -276,7 +276,8 @@
             <thead class="bg-gray-50 relative z-[1]">
                 <tr>
                     <ng-container *ngFor="let col of cols">
-                        <th *ngIf="col.visible === true" (click)="col.sort && handleSort(col.field)" [ngClass]="{
+                        <th *ngIf="col.visible === true && (col.field !== 'expand' || shouldShowExpandColumn)"
+                            (click)="col.sort && handleSort(col.field)" [ngClass]="{
                                 'cursor-pointer select-none': col.sort, 
                                 'text-primary font-semibold': currentSortField === col.field,
                                 'hide-on-mobile': shouldHideOnMobile(col.field)
@@ -337,8 +338,8 @@
                         <!-- Main Row -->
                         <tr class="hover:bg-gray-50 transition">
                             <ng-container *ngFor="let col of cols">
-                                <td *ngIf="col.visible === true" class="px-4 py-3 border-b text-sm text-gray-700"
-                                    [ngClass]="{
+                                <td *ngIf="col.visible === true && (col.field !== 'expand' || shouldShowExpandColumn)"
+                                    class="px-4 py-3 border-b text-sm text-gray-700" [ngClass]="{
                                         'text-end font-mono': col.isNumber,
                                         'hide-on-mobile': shouldHideOnMobile(col.field)
                                     }"
@@ -414,6 +415,8 @@
                                     <ng-container *ngSwitchCase="'actions'">
                                     </ng-container>
                                     <ng-container *ngSwitchCase="'actionsEdit'">
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'Actions'">
                                         <div class="flex items-center gap-1">
                                             <!-- Show first 2 actions as buttons -->
                                             <ng-container
@@ -528,7 +531,7 @@
                                     <!-- زر التوسيع -->
                                     <ng-container *ngSwitchCase="'expand'">
                                         <div class="flex items-center justify-center">
-                                            <button aria-label="Expand Row"
+                                            <button *ngIf="shouldShowExpandIcon(row)" aria-label="Expand Row"
                                                 class="flex items-center justify-center w-8 h-8 rounded-full border border-gray-300 text-gray-600 hover:bg-primary hover:text-white hover:border-primary transition cursor-pointer"
                                                 (click)="toggleRowExpand(row); $event.stopPropagation()">
                                                 <!-- Arrow Down Icon (Closed State) -->
