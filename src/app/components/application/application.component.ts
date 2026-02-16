@@ -5849,11 +5849,24 @@ export class ApplicationComponent {
 
     private disableScrollScan = false
     @HostListener('window:scroll', [])
+    @HostListener('window:scroll', [])
     onWindowScroll() {
         if (this.disableScrollScan) return
         let sectionIds: any = [];
         this.visibleNavigationTabs()!.forEach((tab) => {
-            sectionIds.push(...tab.TabSections.map((section) => section.SectionID));
+            sectionIds.push(...tab.TabSections.map(section => {
+                if (section.FieldsJson[0].VisibilityActionID > 0) {
+                    if (this.atLeastOneFormControlHasValue(section.FieldsJson)) {
+                        return section
+                    } else {
+                        return {}
+                    }
+                } else if (section.FieldsJson[0].VisibilityActionID === 0) {
+                    return section
+                } else {
+                    return {}
+                }
+            }).filter(section => Object.keys(section).length > 0).map((section: any) => section.SectionID));
         })
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
 
@@ -5869,9 +5882,13 @@ export class ApplicationComponent {
         if (isAtBottom && sectionIds.length > 0 && (this.editApp() || (!this.editApp() && this.currentTabIndex() === this.navigationTabs()!.length - 1))) {
             const lastId = sectionIds[sectionIds.length - 1];
             this.activeSection = `${lastId}`;
-            const parentTab = this.visibleNavigationTabs()!.find(tab =>
-                tab.TabSections.some(sec => sec.SectionID === lastId)
-            );
+            const parentTab = this.visibleNavigationTabs()!.find((tab, index) => {
+                let isParent = tab.TabSections.some(sec => sec.SectionID === lastId)
+                if (isParent && index === 0) {
+                    this.scrollActiveAnchorIntoView(null, tab.NavigationTabID.toString());
+                }
+                return isParent
+            });
 
             if (parentTab) {
                 let activeTabId = parentTab.NavigationTabID;
@@ -5882,10 +5899,15 @@ export class ApplicationComponent {
                 const el = document.getElementById(`${id}`);
                 if (el) {
                     const rect = el.getBoundingClientRect();
-                    if (rect.top <= 490 && rect.bottom >= 490) {
+                    if (rect.top <= 300 && rect.bottom >= 300) {
                         this.activeSection = `${id}`;
-                        const parentTab = this.visibleNavigationTabs()!.find(tab =>
-                            tab.TabSections.some(sec => sec.SectionID === id)
+                        const parentTab = this.visibleNavigationTabs()!.find((tab, index) => {
+                            let isParent = tab.TabSections.some(sec => sec.SectionID === id)
+                            if (isParent && index === 0) {
+                                this.scrollActiveAnchorIntoView(null, tab.NavigationTabID.toString());
+                            }
+                            return isParent
+                        }
                         );
 
                         if (parentTab) {
@@ -5906,7 +5928,19 @@ export class ApplicationComponent {
         }
     }
 
-    scrollActiveAnchorIntoView(activeSectionId: string | null): void {
+    @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+    scrollActiveAnchorIntoView(activeSectionId: string | null, activeTabId?: string): void {
+        if (activeTabId && this.scrollContainer) {
+            const navEl = this.scrollContainer.nativeElement;
+
+            // Condition: Only scroll to top if we aren't already there
+            if (navEl.scrollTop > 0) {
+                navEl.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+        }
         if (!activeSectionId) {
             return;
         }
@@ -5928,6 +5962,7 @@ export class ApplicationComponent {
                 block: 'nearest'
             });
         }
+
     }
 
     getConfirmButtonName(section: any): string {
