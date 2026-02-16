@@ -7150,7 +7150,19 @@ export class ApplicationComponent {
     allSections = computed(() => this.visibleNavigationTabs()?.flatMap(tab => tab.TabSections));
     getAllSections(id: any) {
         let allSections: any = []
-        allSections = this.allSections()?.filter(section => section.FKNavigationTabID === id && section.FieldsJson[0].VisibilityActionID === 0);
+        allSections = this.allSections()?.map(section => {
+            if(section.FKNavigationTabID === id && section.FieldsJson[0].VisibilityActionID > 0){
+                if(this.atLeastOneFormControlHasValue(section.FieldsJson)){
+                    return section
+                }else{
+                    return {}
+                }
+            }else if(section.FKNavigationTabID === id && section.FieldsJson[0].VisibilityActionID === 0){
+                return section
+            }else{
+                return {}
+            }
+        }).filter(section => Object.keys(section).length > 0);
         return allSections || [];
     }
 
