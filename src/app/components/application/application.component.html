@@ -54,7 +54,7 @@
       </ul>
     </div>
     }
-    <nav aria-label="page sections first list" class="w-full overflow-scroll hide-scrollbar">
+    <nav #scrollContainer aria-label="page sections first list" class="w-full overflow-scroll hide-scrollbar">
       <ul class="mt-1 space-y-3 w-full px-3" [class]="sidebarCollapsed ? 'mx-auto !p-0 !my-0 !space-y-0' : ''">
         <ng-container *ngFor="let tab of visibleTabs()">
           <li class="accordion menu nav-item" *ngIf="!tabVisible[tab.tabID]">
@@ -423,7 +423,7 @@
       </ul>
     </div>
     }
-    <nav aria-label="page sections first list" class="w-full overflow-scroll hide-scrollbar">
+    <nav #scrollContainer aria-label="page sections first list" class="w-full overflow-scroll hide-scrollbar">
       <ul class="mt-1 space-y-3 w-full px-3"
         [class]="sidebarCollapsed ? 'mx-auto !p-0 !my-0 !space-y-0 flex flex-col items-center' : ''">
         @if(visibleTabs()){
