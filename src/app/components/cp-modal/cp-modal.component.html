@@ -196,21 +196,23 @@
 
         <ng-template #modalFooter>
             <div class="flex flex-row gap-4 w-full justify-end items-center p-3 border-t border-gray-200">
-                <button [disabled]="loader()" [ngClass]="{'bg-opacity-85 cursor-not-allowed': loader()}"
-                    class="bg-primary text-white font-bold py-2 px-6 rounded-md flex items-center gap-2 transition duration-150"
-                    (click)="printData()">
-                    @if(loader()){
-                    <span
-                        class="animate-spin border-2 border-white border-l-transparent rounded-full w-5 h-5 inline-block align-middle mx-1"></span>
-                    }
-                    <icon-printer class="h-4 text-white"></icon-printer> طباعة
-                </button>
-                <button [disabled]="loader()" [ngClass]="{'cursor-not-allowed': loader()}"
-                    class="bg-primary text-white font-bold py-2 px-6 rounded-md flex items-center gap-2 transition duration-150"
-                    (click)="autoCompleteData('yes')">
-                    إنعكاس على الطلب
-                    <icon-pencil class="h-4 text-white"></icon-pencil>
-                </button>
+                @if(!statusMessage()){
+                    <button [disabled]="loader()" [ngClass]="{'bg-opacity-85 cursor-not-allowed': loader()}"
+                        class="bg-primary text-white font-bold py-2 px-6 rounded-md flex items-center gap-2 transition duration-150"
+                        (click)="printData()">
+                        @if(loader()){
+                        <span
+                            class="animate-spin border-2 border-white border-l-transparent rounded-full w-5 h-5 inline-block align-middle mx-1"></span>
+                        }
+                        <icon-printer class="h-4 text-white"></icon-printer> طباعة
+                    </button>
+                    <button [disabled]="loader()" [ngClass]="{'cursor-not-allowed': loader()}"
+                        class="bg-primary text-white font-bold py-2 px-6 rounded-md flex items-center gap-2 transition duration-150"
+                        (click)="autoCompleteData('yes')">
+                        إنعكاس على الطلب
+                        <icon-pencil class="h-4 text-white"></icon-pencil>
+                    </button>
+                }
                 <button [disabled]="loader()" [ngClass]="{'cursor-not-allowed': loader()}"
                     class="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-6 rounded-md flex items-center gap-2 transition duration-150"
                     (click)="onUserClose('no')">

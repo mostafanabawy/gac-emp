@@ -34,7 +34,7 @@
         </button>
         }
         @if (field.ApiFieldAddress.includes('cp=') && field.InternalFieldName === 'CommercialLicenseNumber' &&
-        control?.value) {
+        control?.value && hasNoLetters(control?.value)) {
         <button class="text-primary underline" (click)="openCpModal()"
             [title]="translations()?.CommercialPermitOpenBtn.label"
             [attr.aria-label]="translations()?.CommercialPermitOpenBtn.label">
@@ -45,7 +45,7 @@
         }
 
         @if(field.ApiFieldAddress.includes('cr=') && field.InternalFieldName === 'CommercialRegistrationNo' &&
-        control?.value) {
+        control?.value && hasNoLetters(control?.value)) {
         <button class="text-primary underline" (click)="openCrModal()"
             [title]="translations()?.CommercialRegOpenBtn.label"
             [attr.aria-label]="translations()?.CommercialRegOpenBtn.label">
