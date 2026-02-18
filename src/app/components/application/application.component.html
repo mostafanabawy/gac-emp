@@ -8,7 +8,7 @@
   @if (editApp()) {
 
   <aside
-    class="bg-white shadow-md flex flex-col items-center rounded-t-lg h-fit sticky top-[155px] right-0 transition-all duration-300 max-h-[600px] z-[99]"
+    class="bg-white shadow-md flex flex-col items-center rounded-t-lg h-fit sticky stick-top right-0 transition-all duration-300 max-h-[600px] z-[99]"
     role="complementary" aria-label="page sections">
 
     <div class="bg-[#60583d] flex items-center justify-between w-full p-4 rounded-t-lg border-b-4 border-stone-700">
@@ -30,7 +30,8 @@
     <div hlMenu class="!block relative w-full" #processMenuWrapper>
       <button class="rounded bg-[#60583d] text-white font-bold px-6 py-3 rounded-t-lg shadow-lg transition-all text-base my-2 flex gap-1
         w-full items-center justify-between" [ngClass]="{'!border-primary bg-gray-200':  openMenus[currentPhase()?.TitleEn]
-    }" type="button" (click)="toggleMenu(currentPhase()?.TitleEn)" hlMenuButton [title]="sidebarCollapsed ? '' : store.index.locale === 'en' ? currentPhase()?.TitleEn : currentPhase()?.TitleAr">
+    }" type="button" (click)="toggleMenu(currentPhase()?.TitleEn)" hlMenuButton
+        [title]="sidebarCollapsed ? '' : store.index.locale === 'en' ? currentPhase()?.TitleEn : currentPhase()?.TitleAr">
         @if(!sidebarCollapsed){
         {{ store.index.locale === 'en' ? currentPhase()?.TitleEn : currentPhase()?.TitleAr }}
         }
@@ -383,7 +384,7 @@
   }@else{
 
   <aside
-    class="bg-white shadow-md flex flex-col items-center rounded-t-lg h-fit sticky top-[155px] right-0 transition-all duration-300 max-h-[600px] z-[99]"
+    class="bg-white shadow-md flex flex-col items-center rounded-t-lg h-fit sticky stick-top right-0 transition-all duration-300 max-h-[600px] z-[99]"
     role="complementary" aria-label="page sections">
     <div class="bg-[#60583d] flex items-center justify-between w-full p-4 rounded-t-lg border-b-4 border-stone-700">
       <h2 class="text-xl font-semibold mb-1 text-white py-2 px-3 flex-1"
@@ -401,7 +402,8 @@
     <div hlMenu class="!block relative w-full" #processMenuWrapper>
       <button class="rounded bg-[#60583d] text-white font-bold px-6 py-3 rounded-t-lg shadow-lg transition-all text-base my-2 flex gap-1
         w-full items-center justify-between" [ngClass]="{'!border-primary bg-gray-200':  openMenus[currentPhase()?.TitleEn]
-    }" type="button" (click)="toggleMenu(currentPhase()?.TitleEn)" hlMenuButton [title]="sidebarCollapsed ? '' : store.index.locale === 'en' ? currentPhase()?.TitleEn : currentPhase()?.TitleAr">
+    }" type="button" (click)="toggleMenu(currentPhase()?.TitleEn)" hlMenuButton
+        [title]="sidebarCollapsed ? '' : store.index.locale === 'en' ? currentPhase()?.TitleEn : currentPhase()?.TitleAr">
         @if(!sidebarCollapsed){
         {{ store.index.locale === 'en' ? currentPhase()?.TitleEn : currentPhase()?.TitleAr }}
         }
@@ -642,9 +644,11 @@
             <!-- 'top-[155px]': phaseIDs() && phaseIDs()!.length > 0,
                     'top-[155px]': phaseIDs() && phaseIDs()!.length === 0 -->
             <div class="flex flex-wrap gap-2 mb-8 bg-gray-100 border border-gray-200 rounded px-1 py-3 font-bold 
-              sticky top-[155px] z-[99]" [ngClass]="{
+              sticky stick-top z-[99]" [ngClass]="{
                     'shadow-lg': shouldApplyShadow, 
-                    'shadow-none': !shouldApplyShadow
+                    'shadow-none': !shouldApplyShadow,
+                    'stick-top': !sidebarCollapsed,
+                  'top-[66px]': sidebarCollapsed
                   }" *ngIf="actions && actions.length > 0">
               <ng-container *ngFor="let action of displayActions() | sortByOrder: 'ActionSortOrder'">
                 @if(!action.isDropdown){

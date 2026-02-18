@@ -2510,3 +2510,7 @@ app-fees-table ::ng-deep table {
 .checkbox-item:hover {
     color: #1f2937;
 }
+
+.stick-top{
+    top: 155px;
+}
