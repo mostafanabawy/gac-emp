@@ -88,8 +88,11 @@ export class DynamicFieldComponent implements OnInit {
               if (Object.prototype.hasOwnProperty.call(obj, key)) {
                 let tableField = this.field.TableServiceFields?.find((tableField) => tableField.InternalFieldName === key)
                 if (tableField && (tableField.FieldType === 6 || tableField.FieldType === 4 || tableField.FieldType === 19)) {
-                  let newVal = tableField.LookupValues!.find((Lookup) => Lookup.LookupID === obj[key]) ||
-                    (this.store.index.locale === 'en' ? this.newApplicationService.requestData()?.[this.field.InternalFieldName]?.[index]?.[`${tableField.InternalFieldName}_TitleEn`] : this.newApplicationService.requestData()?.[this.field.InternalFieldName]?.[index]?.[`${tableField.InternalFieldName}_TitleAr`]);
+                  let newVal = tableField.LookupValues!
+                    .find((Lookup) => Lookup.LookupID === obj[key]) ||
+                    (this.store.index.locale === 'en'
+                      ? this.newApplicationService.requestData()?.[this.field.InternalFieldName]?.[index]?.[`${tableField.InternalFieldName}_TitleEn`]
+                      : this.newApplicationService.requestData()?.[this.field.InternalFieldName]?.[index]?.[`${tableField.InternalFieldName}_TitleAr`]);
 
                   if (newVal?.ValueCategoryAr || newVal?.ValueCategoryEn) {
                     let category = this.store.index.locale === 'en' ? newVal?.ValueCategoryEn : newVal?.ValueCategoryAr
@@ -3850,5 +3853,22 @@ export class DynamicFieldComponent implements OnInit {
   }
   hasNoLetters(value: string): boolean {
     return !/\p{L}/u.test(value);
+  }
+
+  getCategory(tableField: TableServiceField, value: any) {
+      let category = this.store.index.locale === 'en'?
+      tableField.LookupValues!
+      .find((Lookup) => Lookup.TitleEn === value)?.ValueCategoryEn 
+      : tableField.LookupValues!
+      .find((Lookup) => Lookup.TitleAr === value)?.ValueCategoryAr;
+    return category
+  }
+  getCategoryValue(tableField: TableServiceField, value: any) {
+    let category = this.store.index.locale === 'en'?
+    tableField.LookupValues!
+    .find((Lookup) => Lookup.TitleEn === value)?.TitleEn 
+    : tableField.LookupValues!
+    .find((Lookup) => Lookup.TitleAr === value)?.TitleAr;
+  return category
   }
 }

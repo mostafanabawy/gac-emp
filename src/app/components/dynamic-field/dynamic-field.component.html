@@ -873,10 +873,29 @@
                                 tableField.InternalFieldName) {
                                 <div class="data-item">
                                     <span class="data-label">{{ expandedField.title }}</span>
-                                    <span class="data-value border bg-slate-50 text-black rounded-md border-gray-300 p-2"
+                                    <span
+                                        class="data-value border bg-slate-50 text-black rounded-md border-gray-300 p-2"
                                         [innerHTML]="expandedRow()[expandedField.field]"></span>
                                 </div>
 
+                                }@else if ([4, 6, 19].includes(tableField.FieldType)) {
+                                @if(getCategory(tableField, expandedRow()[expandedField.field])){
+                                <div class="data-item">
+                                    <span class="data-label">{{ getCategory(tableField,
+                                        expandedRow()[expandedField.field]) }}</span>
+                                    <span
+                                        class="data-value border bg-slate-50 text-black rounded-md border-gray-300 p-2">{{
+                                        getCategoryValue(tableField, expandedRow()[expandedField.field]) }}</span>
+                                </div>
+                                }@else if(expandedField.field ===
+                                tableField.InternalFieldName){
+                                <div class="data-item">
+                                    <span class="data-label">{{ expandedField.title }}</span>
+                                    <span
+                                        class="data-value border bg-slate-50 text-black rounded-md border-gray-300 p-2">{{
+                                        expandedRow()[expandedField.field] }}</span>
+                                </div>
+                                }
                                 }@else if(expandedField.field === tableField.InternalFieldName) {
                                 <div class="data-item">
                                     <span class="data-label">{{ expandedField.title }}</span>
