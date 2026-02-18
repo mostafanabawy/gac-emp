@@ -413,7 +413,105 @@
                                     </ng-container>
                                     <!-- Actions Column -->
                                     <ng-container *ngSwitchCase="'actions'"></ng-container>
-                                    <ng-container *ngSwitchCase="'Actions'"></ng-container>
+                                    <ng-container *ngSwitchCase="'Actions'">
+                                        <div class="flex items-center gap-1">
+                                            <!-- Show first 2 actions as buttons -->
+                                            <ng-container
+                                                *ngFor="let action of row.Actions?.slice(0, 2); let i = index">
+                                                @if(action.ActionID !== 1877){
+                                                <button
+                                                    (click)="handleActionClick(action, row); $event.stopPropagation()"
+                                                    class="flex items-center justify-center px-2 py-1 text-xs rounded hover:bg-gray-100 hover:scale-110 transition cursor-pointer
+                                                    !w-fit" [title]="isArabic ? action.TitleAR : action.TitleEN">
+                                                    <!-- {{ (isArabic ? action.TitleAR : action.TitleEN) | slice:0:8 }}{{
+                                                    (isArabic ? action.TitleAR : action.TitleEN)?.length > 8 ? '...' :
+                                                    '' }} -->
+                                                    @if(action.ActionID === 865 || action.ActionID === 1841){
+                                                    <img src="/assets/images/icons/clipboard-remove-svgrepo-com.svg"
+                                                        alt="remove icon" class="flex-shrink-0 h-4 w-4">
+                                                    }@else if (action.ActionID === 1989 || action.ActionID === 1990 ||
+                                                    action.ActionID === 1991 ||
+                                                    action.ActionID === 1723 || action.ActionID === 1992 ||
+                                                    action.ActionID === 1848 || action.ActionID === 1900){
+                                                    <img src="/assets/images/icons/revoke57187.svg" alt="cancel icon"
+                                                        class="flex-shrink-0 h-4 w-4">
+                                                    }@else if(action.ActionID === 861 || action.ActionID === 1845){
+                                                    <img src="/assets/images/icons/edit-svgrepo-com.svg" alt="edit icon"
+                                                        class="flex-shrink-0 h-4 w-4">
+                                                    }@else if (action.ActionID === 862) {
+                                                    <img src="/assets/images/icons/send-svgrepo-com.svg" alt="send icon"
+                                                        class="flex-shrink-0 h-4 w-4">
+                                                    }@else if (action.ActionID === 1724) {
+                                                    <img src="/assets/images/icons/copy-com.svg" alt="copy icon"
+                                                        class="flex-shrink-0 !h-4 !w-4">
+                                                    }@else if(action.ActionID === 1850 || action.ActionID === 1844 ||
+                                                    action.ActionID === 1993 ||
+                                                    action.ActionID === 1996 || action.ActionID === 1869 ||
+                                                    action.ActionID === 1872){
+                                                    <img src="/assets/images/icons/Group 57145.svg" alt="renew icon"
+                                                        class="flex-shrink-0 !h-4 !w-4" />
+                                                    }@else if (action.ActionID === 1832){
+                                                    <img src="/assets/images/icons/credit-card-payment-svgrepo-com.svg"
+                                                        alt="pay icon" class="flex-shrink-0 !h-4 !w-4" />
+                                                    }@else if (action.ActionID === 864){
+                                                    <icon-circle-check
+                                                        class="flex-shrink-0 text-green-600 !h-5 !w-5"></icon-circle-check>
+                                                    }@else if ( action.ActionID === 1995){
+                                                    <img src="/assets/images/icons/add-icon.svg" alt="add icon"
+                                                        class="flex-shrink-0 h-4 w-4">
+                                                    }@else if(action.ActionID === 1871){
+                                                    <img src="/assets/images/icons/property-transfer.svg"
+                                                        alt="property transfer icon" class="flex-shrink-0 !h-4 !w-4">
+                                                    }@else if (action.ActionID === 1985 || action.ActionID === 1984) {
+                                                    <img src="/assets/images/icons/Star.svg"
+                                                        class="flex-shrink-0 !h-4 !w-4" alt="star icon for rating">
+                                                    }@else if (action.ActionID === 1842 || action.ActionID === 1843 ||
+                                                    action.ActionID === 1993 || action.ActionID === 1852 ||
+                                                    action.ActionID === 1901) {
+                                                    <img src="/assets/images/icons/printer57135.svg" alt="print icon">
+                                                    }@else if (action.ActionID === 1859 || action.ActionID === 1865) {
+                                                    <icon-history-clock
+                                                        class="flex-shrink-0 !h-5 !w-5 text-primary"></icon-history-clock>
+                                                    }
+                                                </button>
+                                                }
+                                            </ng-container>
+
+                                            <!-- Dropdown for more actions if there are more than 2 -->
+                                            <div *ngIf="row.Actions?.length > 2" class="relative">
+                                                <button [attr.popovertarget]="row[rowIdentifierField]"
+                                                    (click)="toggleActionMenu(row[rowIdentifierField]); $event.stopPropagation()"
+                                                    [style.anchor-name]="'--anchor-' + row[rowIdentifierField]"
+                                                    class="flex items-center justify-center w-7 h-7 rounded-full bg-gray-100 text-gray-600 hover:bg-primary hover:text-white transition cursor-pointer"
+                                                    [title]="isArabic ? 'المزيد' : 'More'">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                                    </svg>
+                                                </button>
+
+                                                <!-- Actions dropdown menu -->
+                                                <div popover [id]="row[rowIdentifierField]"
+                                                    *ngIf="openActionMenus[row[rowIdentifierField]]"
+                                                    [style.position-anchor]="'--anchor-' + row[rowIdentifierField]"
+                                                    class="absolute top-full mt-1 left-0 bg-white border border-gray-300 rounded-lg shadow-xl z-[9999] min-w-[150px] native-popover-menu transform translate-x-1/2"
+                                                    (click)="$event.stopPropagation()">
+                                                    <ng-container *ngFor="let action of row.Actions?.slice(2)">
+                                                        @if(action.ActionID !== 1877){
+                                                        <button
+                                                            (click)="handleActionClick(action, row); toggleActionMenu(row[rowIdentifierField]); $event.stopPropagation()"
+                                                            class="block w-full text-right px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary transition">
+                                                            {{ isArabic ? action.TitleAR : action.TitleEN }}
+                                                        </button>
+                                                        }
+                                                    </ng-container>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </ng-container>
                                     <ng-container *ngSwitchCase="'actionsEdit'">
                                         <div class="flex items-center gap-1">
                                             <!-- Show first 2 actions as buttons -->
