@@ -43,7 +43,7 @@
                     </form>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5 px-10 auto-rows-min">
-                    @if(!tabLoader()){
+                    @if(!tabLoader() && paginatedApplications().length !== 0){
                     @if(cardsData().length > 0){
                     @for (card of paginatedApplications(); track $index) {
                     <app-single-application-card [allData]="card" [evalRes]="evalResSignal()"
@@ -231,7 +231,7 @@
                     } -->
                 </form>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5 auto-rows-min">
-                    @if(!tabLoader()){
+                    @if(!tabLoader() && paginatedApplications().length !== 0){
 
                     @if(cardsData().length > 0){
                     @for (card of paginatedApplications(); track $index) {
