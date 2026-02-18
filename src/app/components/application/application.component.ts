@@ -316,10 +316,11 @@ export class ApplicationComponent {
 
         this.initStore();
         this.translations.set(this.localizationService.getTranslations());
-
+        /* gdx modified */
+        /* (!this.editApp() || this.apiBody.FKCurrentStatusID === 0 || this.apiBody.FKCurrentStatusID === 2 ||
+                !this.apiBody.FKCurrentStatusID) && */
         effect(() => {
-            if ((!this.editApp() || this.apiBody.FKCurrentStatusID === 0 || this.apiBody.FKCurrentStatusID === 2 ||
-                !this.apiBody.FKCurrentStatusID) && this.getUIResponse()) {
+            if (this.getUIResponse()) {
                 const allFields: FieldJson[] = [];
                 this.visibleNavigationTabs()!.forEach((tab) => {
                     tab.TabSections.forEach((section) => {
@@ -383,7 +384,7 @@ export class ApplicationComponent {
                         "FkEventID": this.newApplicationService.requestData()?.EventType || this.newApplicationService.newRequestData()?.EventType || 0,
                         "TotalSecondaryActivties": this.newApplicationService.requestData()?.ServiceTables?.filter((rData: any) => rData.SourceTableID === 2801).length || this.newApplicationService.newRequestData()?.ServiceTables?.filter((rData: any) => rData.SourceTableID === 2801).length || 0,
                         "FKActivityAllIds": this.newApplicationService.requestData()?.ServiceTables?.filter((rData: any) => rData.SourceTableID === 2801).map((rData: any) => rData.FKActivityID).join(',') || this.newApplicationService.newRequestData()?.ServiceTables?.filter((rData: any) => rData.SourceTableID === 2801).map((rData: any) => rData.FKActivityID).join(',') || 0,
-                        "FkMembershipTypeID": this.newApplicationService.requestData()?.ServiceTables?.filter((rData: any) => rData.SourceTableID === 2802)?.[0].FKType || this.newApplicationService.newRequestData()?.ServiceTables?.filter((rData: any) => rData.SourceTableID === 2802)?.[0].FKType || 0
+                        "FkMembershipTypeID": this.newApplicationService.requestData()?.ServiceTables?.filter((rData: any) => rData.SourceTableID === 2802)?.[0]?.FKType || this.newApplicationService.newRequestData()?.ServiceTables?.filter((rData: any) => rData.SourceTableID === 2802)?.[0]?.FKType || 0
                     }
                     if (this.firstCalculate) {
                         this.newApplicationService.getFees(payload, 'field.ApiFieldAddress').subscribe((res: any) => {
@@ -1940,11 +1941,12 @@ export class ApplicationComponent {
 
                                     const [year, month, day] = res.CommercialPermitInfogetCommercialPermitInfoResponse1.commercialPermit.expiryDate.split("T")[0].split("-");
                                     const formattedExpiryDate = `${day}/${month}/${year}`;
-
-                                    if (formattedExpiryDate === expireDate?.value) {
-                                        this.currentTabIsValid['cp'] = true;
-                                        this.newApplicationService.CPResultResponse.set(res);
-                                    } else {
+                                    /* gdx modified */
+                                    /* if (formattedExpiryDate === expireDate?.value) { */
+                                    this.currentTabIsValid['cp'] = true;
+                                    this.newApplicationService.rowsFromApi.set([]);
+                                    this.newApplicationService.CPResultResponse.set(res);
+                                    /* } else {
                                         if (this.currentTab()!.TabSections[0].FieldsJson[0].FieldType !== 9 || this.apiBody?.FKCurrentStatusID !== null) {
                                             Swal.fire({
                                                 icon: 'error',
@@ -1981,7 +1983,7 @@ export class ApplicationComponent {
                                             })
                                         }
                                         this.currentTabIsValid['cp'] = false
-                                    }
+                                    } */
                                 }
                             } catch (error) {
 
@@ -2001,7 +2003,7 @@ export class ApplicationComponent {
                                         const inputElement = document.getElementById(fieldId);
 
                                         if (inputElement) {
-                                            // 1. Find the parent container of both the input and the button
+                                            // 1. Find the parent container of both the input and the button12
                                             const container = inputElement.parentElement;
 
                                             // 2. Look for the button with the 'clear' label inside that container
@@ -2026,7 +2028,8 @@ export class ApplicationComponent {
                             // Handle error
                         }
                     });
-                    return;
+                    // gdx modified
+                   // return;
                 }
 
                 // This logic runs only if a CP change didn't trigger an API call.
@@ -2087,11 +2090,15 @@ export class ApplicationComponent {
 
                                         const [year, month, day] = res.result.expiryDate.split("T")[0].split("-");
                                         const formattedExpiryDate = `${day}/${month}/${year}`;
-                                        if (!cpSignal && formattedExpiryDate === sotredExpireDate) {
+                                        /* gdx modified */
+                                        /* && formattedExpiryDate === sotredExpireDate */
+                                        if (!cpSignal) {
                                             this.currentTabIsValid['cr'] = true;
+                                            this.newApplicationService.rowsFromApi.set([]);
                                             this.newApplicationService.CRResultResponse.set(res);
                                         } else if (cpSignal) {
                                             this.currentTabIsValid['cr'] = true;
+                                            this.newApplicationService.rowsFromApi.set([]);
                                             this.newApplicationService.CRResultResponse.set(res);
                                         } else {
                                             if (this.currentTab()!.TabSections[0].FieldsJson[0].FieldType !== 9 || this.apiBody?.FKCurrentStatusID !== null) {
@@ -2556,9 +2563,10 @@ export class ApplicationComponent {
                         control.patchValue('');
                     }
                 } */
-                if (field.InternalFieldName === 'CommercialRegistry_Expire_Date' && !this.newApplicationService.CPResultResponse()) {
+               /* gdx modified */
+                /* if (field.InternalFieldName === 'CommercialRegistry_Expire_Date' && !this.newApplicationService.CPResultResponse()) {
                     return;
-                }
+                } */
                 // Skip the first run for the specific source
                 if (this[sourceInfo.patchFlagKey]) {
                     // Resolve the value from the source
@@ -2592,9 +2600,12 @@ export class ApplicationComponent {
                                 }
                             }
                         } else {
-                            if (field.InternalFieldName === 'CommercialRegistry_Expire_Date') {
+                            if (field.InternalFieldName === 'CommercialRegistry_Expire_Date' || field.FieldType === 3) {
+                                /* gdx modified */
                                 field.isGDXVal = true;
-                                control.patchValue(new Intl.DateTimeFormat('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(value)));
+                                const [year, month, day] = value.split("T")[0].split("-");
+                                const formattedExpiryDate = `${day}/${month}/${year}`;
+                                control.patchValue(formattedExpiryDate);
                             } else {
                                 field.isGDXVal = true;
                                 control.patchValue(value);
@@ -4505,7 +4516,7 @@ export class ApplicationComponent {
         }
     }
     checkScreenSize() {
-        this.isMobileScreen = window.innerWidth < 992;
+        this.isMobileScreen = window.innerWidth < 1024;
         if (this.isMobileScreen) {
             this.sidebarCollapsed = true;
         } else {
@@ -5849,7 +5860,6 @@ export class ApplicationComponent {
 
     private disableScrollScan = false
     @HostListener('window:scroll', [])
-    @HostListener('window:scroll', [])
     onWindowScroll() {
         if (this.disableScrollScan) return
         let sectionIds: any = [];
@@ -7175,26 +7185,36 @@ export class ApplicationComponent {
         })
     }
     activeDropdown: string[] = [''];
-    toggleAccordion(name: string, parent?: string) {
+    toggleAccordion(name: string, element: any, parent?: string) {
+
         if (this.activeDropdown.includes(name)) {
             this.activeDropdown = this.activeDropdown.filter((d) => d !== name);
         } else {
             this.activeDropdown = [name];
+            setTimeout(() => {
+                // Find the container for this specific tab's content
+                const content = document.querySelector('.accordion-content');
+                if (content) {
+                    const firstLink = content.querySelector('a') as HTMLElement;
+                    firstLink?.focus();
+                }
+            }, 0);
         }
+
     }
     allSections = computed(() => this.visibleNavigationTabs()?.flatMap(tab => tab.TabSections));
     getAllSections(id: any) {
         let allSections: any = []
         allSections = this.allSections()?.map(section => {
-            if(section.FKNavigationTabID === id && section.FieldsJson[0].VisibilityActionID > 0){
-                if(this.atLeastOneFormControlHasValue(section.FieldsJson)){
+            if (section.FKNavigationTabID === id && section.FieldsJson[0].VisibilityActionID > 0) {
+                if (this.atLeastOneFormControlHasValue(section.FieldsJson)) {
                     return section
-                }else{
+                } else {
                     return {}
                 }
-            }else if(section.FKNavigationTabID === id && section.FieldsJson[0].VisibilityActionID === 0){
+            } else if (section.FKNavigationTabID === id && section.FieldsJson[0].VisibilityActionID === 0) {
                 return section
-            }else{
+            } else {
                 return {}
             }
         }).filter(section => Object.keys(section).length > 0);
