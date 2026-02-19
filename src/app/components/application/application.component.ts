@@ -7185,7 +7185,7 @@ export class ApplicationComponent {
         })
     }
     activeDropdown: string[] = [''];
-    toggleAccordion(name: string, element: any, parent?: string) {
+    toggleAccordion(name: string) {
 
         if (this.activeDropdown.includes(name)) {
             this.activeDropdown = this.activeDropdown.filter((d) => d !== name);
