@@ -7191,14 +7191,7 @@ export class ApplicationComponent {
             this.activeDropdown = this.activeDropdown.filter((d) => d !== name);
         } else {
             this.activeDropdown = [name];
-            setTimeout(() => {
-                // Find the container for this specific tab's content
-                const content = document.querySelector('.accordion-content');
-                if (content) {
-                    const firstLink = content.querySelector('a') as HTMLElement;
-                    firstLink?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }, 0);
+           
         }
 
     }
