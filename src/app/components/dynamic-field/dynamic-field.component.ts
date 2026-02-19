@@ -3285,6 +3285,24 @@ export class DynamicFieldComponent implements OnInit {
         this.shouldBeDim.set(true);
         this.field.FieldDim = true
         this.closeAddRow = true;
+        let shouldShowActions = this.newApplicationService.openDimFields() ? this.field.CorrectionDim : (this.field.FieldDim || this.field.isGDXVal);
+        // Initialize the cols property with your constant and dynamic fields
+        if (!shouldShowActions) {
+          this.cols = [
+            ...this.cols,
+            { field: 'actions', title: this.translations()?.tableActionsKey.label }
+          ];
+        } else {
+          this.cols = this.cols.map((col) => {
+            if (col.field === 'actions') {
+              return {}
+            }else{
+              return col
+            }
+          }).filter((col) => {
+            return Object.keys(col).length > 0
+          })
+        }
 
       }
 
@@ -3856,19 +3874,19 @@ export class DynamicFieldComponent implements OnInit {
   }
 
   getCategory(tableField: TableServiceField, value: any) {
-      let category = this.store.index.locale === 'en'?
+    let category = this.store.index.locale === 'en' ?
       tableField.LookupValues!
-      .find((Lookup) => Lookup.TitleEn === value)?.ValueCategoryEn 
+        .find((Lookup) => Lookup.TitleEn === value)?.ValueCategoryEn
       : tableField.LookupValues!
-      .find((Lookup) => Lookup.TitleAr === value)?.ValueCategoryAr;
+        .find((Lookup) => Lookup.TitleAr === value)?.ValueCategoryAr;
     return category
   }
   getCategoryValue(tableField: TableServiceField, value: any) {
-    let category = this.store.index.locale === 'en'?
-    tableField.LookupValues!
-    .find((Lookup) => Lookup.TitleEn === value)?.TitleEn 
-    : tableField.LookupValues!
-    .find((Lookup) => Lookup.TitleAr === value)?.TitleAr;
-  return category
+    let category = this.store.index.locale === 'en' ?
+      tableField.LookupValues!
+        .find((Lookup) => Lookup.TitleEn === value)?.TitleEn
+      : tableField.LookupValues!
+        .find((Lookup) => Lookup.TitleAr === value)?.TitleAr;
+    return category
   }
 }
