@@ -7196,7 +7196,7 @@ export class ApplicationComponent {
                 const content = document.querySelector('.accordion-content');
                 if (content) {
                     const firstLink = content.querySelector('a') as HTMLElement;
-                    firstLink?.focus();
+                    firstLink?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }, 0);
         }
