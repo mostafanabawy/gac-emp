@@ -67,6 +67,7 @@ export class ApplicationTypesComponent {
   tabData = input.required<any>();
   overrideSet: boolean = false;
   private lastRunTime = 0;
+  showLoaderIfLazyLoad = signal<boolean>(false);
   constructor(
     private storeData: Store<AppState>,
     public allApplicationsService: AllApplicationsService,
@@ -113,8 +114,8 @@ export class ApplicationTypesComponent {
               this.totalPages.set(Math.ceil(pagingInfo.TotalRows / this.itemsPerPage()));
               this.totalRows.set(pagingInfo.TotalRows);
               this.dataPage.update(d => d + 1);
-
               if (this.dataPage() <= pagingInfo.TotalPages && ![2852, 2855].includes(getAll.TabStyleID)) {
+                this.showLoaderIfLazyLoad.set(true)
                 this.loadCardsData({ PageSize: this.pageSize(), PageNum: this.dataPage() }, this.activeTab);
               }
             },
@@ -215,6 +216,8 @@ export class ApplicationTypesComponent {
           this.dataPage.update(d => d + 1);
           if (this.dataPage() <= pagingInfo.TotalPages) {
             this.loadCardsData({ PageSize: this.pageSize(), PageNum: this.dataPage() }, inboxType)
+          }else{
+            this.showLoaderIfLazyLoad.set(false);
           }
 
         },
