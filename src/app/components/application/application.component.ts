@@ -80,7 +80,9 @@ export class ApplicationComponent {
             this._activeSection = id;
 
             // 2. Call the function to scroll the anchor into view
-            this.scrollActiveAnchorIntoView(id);
+            setTimeout(() => {
+                this.scrollActiveAnchorIntoView(id);
+            }, 400)
         }
     }
     get activeSection(): string | null {
@@ -5891,7 +5893,6 @@ export class ApplicationComponent {
         const isAtBottom = (scrollTop + windowHeight) >= (documentHeight - 50);
         if (isAtBottom && sectionIds.length > 0 && (this.editApp() || (!this.editApp() && this.currentTabIndex() === this.navigationTabs()!.length - 1))) {
             const lastId = sectionIds[sectionIds.length - 1];
-            this.activeSection = `${lastId}`;
             const parentTab = this.visibleNavigationTabs()!.find((tab, index) => {
                 let isParent = tab.TabSections.some(sec => sec.SectionID === lastId)
                 if (isParent && index === 0) {
@@ -5904,13 +5905,14 @@ export class ApplicationComponent {
                 let activeTabId = parentTab.NavigationTabID;
                 this.activeDropdown = [activeTabId.toString()];
             }
+            this.activeSection = `${lastId}`;
+
         } else {
             for (let id of sectionIds) {
                 const el = document.getElementById(`${id}`);
                 if (el) {
                     const rect = el.getBoundingClientRect();
                     if (rect.top <= 300 && rect.bottom >= 300) {
-                        this.activeSection = `${id}`;
                         const parentTab = this.visibleNavigationTabs()!.find((tab, index) => {
                             let isParent = tab.TabSections.some(sec => sec.SectionID === id)
                             if (isParent && index === 0) {
@@ -5924,6 +5926,8 @@ export class ApplicationComponent {
                             let activeTabId = parentTab.NavigationTabID;
                             this.activeDropdown = [activeTabId.toString()];
                         }
+                        this.activeSection = `${id}`;
+
                         break;
                     }
                 }
