@@ -537,6 +537,24 @@ export class VeryAdvancedSearchComponent {
       this.allApplicationsService.cardsData.set(res.Data || [])
       let pagingInfo = JSON.parse(res.PagingInfo);
       this.paginationInfo.emit(pagingInfo);
+      let dataToBeSent = this.allApplicationsService.cardsData().filter((item: any, index: number) => {
+        let actionsToBeSent = (item.Actions && item.Actions.length) ? item.Actions.filter((item: any) => {
+          return !!item.ShowConditionId
+        }) : [];
+        this.allApplicationsService.cardsData()[index].apiActions = actionsToBeSent
+        return actionsToBeSent.length > 0
+      })
+      dataToBeSent = dataToBeSent.map((item: any) => {
+        return {
+          RequestID: item.RequestID,
+          ActionDetailsIDs: item.apiActions.map((action: any) => action.ActionDetailsID)
+        }
+      })
+      if (dataToBeSent.length > 0) {
+        this.allApplicationsService.EvaluateActionConditionBulk(dataToBeSent).subscribe((evalRes: any) => {
+          this.allApplicationsService.evalResSignal.set(evalRes);
+        })
+      }
       this.allApplicationsService.tableLoader.set(false);
       this.allApplicationsService.disableTabs.set(false);
     })
@@ -563,6 +581,24 @@ export class VeryAdvancedSearchComponent {
       this.allApplicationsService.cardsData.set(res.Data || [])
       let pagingInfo = JSON.parse(res.PagingInfo);
       this.paginationInfo.emit(pagingInfo);
+      let dataToBeSent = this.allApplicationsService.cardsData().filter((item: any, index: number) => {
+            let actionsToBeSent = (item.Actions && item.Actions.length) ? item.Actions.filter((item: any) => {
+              return !!item.ShowConditionId
+            }) : [];
+            this.allApplicationsService.cardsData()[index].apiActions = actionsToBeSent
+            return actionsToBeSent.length > 0
+          })
+          dataToBeSent = dataToBeSent.map((item: any) => {
+            return {
+              RequestID: item.RequestID,
+              ActionDetailsIDs: item.apiActions.map((action: any) => action.ActionDetailsID)
+            }
+          })
+          if (dataToBeSent.length > 0) {
+            this.allApplicationsService.EvaluateActionConditionBulk(dataToBeSent).subscribe((evalRes: any) => {
+              this.allApplicationsService.evalResSignal.set(evalRes);
+            })
+          }
       this.allApplicationsService.tableLoader.set(false);
       this.allApplicationsService.disableTabs.set(false);
     })

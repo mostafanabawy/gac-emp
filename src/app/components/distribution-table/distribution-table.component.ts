@@ -53,8 +53,39 @@ export class DistributionTableComponent {
   */
   translations = signal<any>('')
   rows = computed<any>(() => {
-    return this.allApplicationsService.cardsData()
+    let rows = this.allApplicationsService.cardsData()
+
+    rows.forEach((row: any) => {
+      if (row.Actions && row.Actions.length > 0) {
+        row.Actions.forEach((action: any) => {
+          if (this.allApplicationsService.evalResSignal().length > 0) {
+            if (!!action.ShowConditionId) {
+              action.visible = this.checkEval(row.RequestID, action.ActionDetailsID);
+            } else {
+              action.visible = true
+            }
+          } else {
+            action.visible = true
+          }
+        })
+      }
+    });
+    let isNoActions = this.allApplicationsService.cardsData().every((item: any) => item.Actions === null || item.Actions === undefined || item.Actions.length === 0 || item.Actions.every((action: any) => !action.visible));
+    if (isNoActions) {
+      let actions = this.cols.find(c => c.field === 'Actions')
+      if (actions) {
+        actions.visible = false
+      }
+    } else {
+      let actions = this.cols.find(c => c.field === 'Actions')
+      if (actions) {
+        actions.visible = true
+      }
+    }
+
+    return rows
   });
+  evalResSignal = signal<any>([]);
   isWideScreen: boolean = false;
   originalRows: any = [];
   store!: AppState;
@@ -217,6 +248,25 @@ export class DistributionTableComponent {
         this.TotalRows.set(pagingInfo.TotalRows);
         this.PageSize.set(pagingInfo.PageSize);
         this.CurrentPage.set(pagingInfo.CurrentPage);
+        let dataToBeSent = this.allApplicationsService.cardsData().filter((item: any, index: number) => {
+          let actionsToBeSent = (item.Actions && item.Actions.length) ? item.Actions.filter((item: any) => {
+            return !!item.ShowConditionId
+          }) : [];
+          this.allApplicationsService.cardsData()[index].apiActions = actionsToBeSent
+          return actionsToBeSent.length > 0
+        })
+        dataToBeSent = dataToBeSent.map((item: any) => {
+          return {
+            RequestID: item.RequestID,
+            ActionDetailsIDs: item.apiActions.map((action: any) => action.ActionDetailsID)
+          }
+        })
+        if (dataToBeSent.length > 0) {
+          this.allApplicationsService.EvaluateActionConditionBulk(dataToBeSent).subscribe((evalRes: any) => {
+            this.allApplicationsService.evalResSignal.set(evalRes);
+          })
+        }
+
       },
       error: (err) => {
         console.error('Error loading cards data:', err);
@@ -1948,5 +1998,14 @@ export class DistributionTableComponent {
       this.fileService.fileAnalysisData.set({ ...this.fileService.fileAnalysisData(), 'request': res })
       this.openAnalysisModel.emit(true)
     })
+  }
+
+  checkEval(requestID: string, actionDetailsID: number) {
+    let evaluation = this.allApplicationsService.evalResSignal().find((item: any) => item.RequestID === requestID)
+    if (!evaluation?.VisibleActions) {
+      return false;
+    }
+    let action = evaluation.VisibleActions.find((item: any) => item.ActionDetailsID === actionDetailsID)
+    return !!action;
   }
 }

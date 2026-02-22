@@ -42,7 +42,7 @@ export class AllApplicationsService {
       "pagingRequest": {
         "PageSize": pagingInfo?.PageSize || "200",
         "PageNum": pagingInfo?.PageNum || "1",
-        "SortField": pagingInfo?.SortField || "CreationDate",
+        "SortField": pagingInfo?.SortField || "ApplicationNumber",
         "SortOrder": (pagingInfo?.SortDirection && pagingInfo?.SortDirection === 1 ? "ASC" : "DESC" )
       },
       "filters": [],
@@ -130,6 +130,7 @@ export class AllApplicationsService {
     return this.http.post<any>(`${this.baseUrl}/api/EServicesLookup/getpagewithsearch/1/1000/TypeID/1`, payload)
   }
 
+  evalResSignal = signal<any>([]);
   EvaluateActionConditionBulk(payload: any) {
     return this.http.post<any>(`${this.baseUrl}/EvaluateActionConditionBulk`, payload)
   }

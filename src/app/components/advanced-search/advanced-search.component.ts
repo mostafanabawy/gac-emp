@@ -48,7 +48,7 @@ export class AdvancedSearchComponent {
     if (this.allApplicationsService.lookupValues()) {
 
       let lookup = this.allApplicationsService.lookupValues().filter((item: any) => {
-        return item.LookupTypeID === 5 ||item.LookupID === -1
+        return item.LookupTypeID === 5 || item.LookupID === -1
       }).sort((item1: any, item2: any) => item1.LookupID - item2.LookupID)
       return lookup
     } else {
@@ -68,7 +68,7 @@ export class AdvancedSearchComponent {
     }
   });
   ngOnInit() {
-    
+
   }
   initForm() {
     this.searchForm = this.fb.group({
@@ -143,6 +143,24 @@ export class AdvancedSearchComponent {
       this.paginationInfo.emit(pagingInfo);
       this.allApplicationsService.tableLoader.set(false);
       this.allApplicationsService.disableTabs.set(false);
+      let dataToBeSent = this.allApplicationsService.cardsData().filter((item: any, index: number) => {
+        let actionsToBeSent = (item.Actions && item.Actions.length) ? item.Actions.filter((item: any) => {
+          return !!item.ShowConditionId
+        }) : [];
+        this.allApplicationsService.cardsData()[index].apiActions = actionsToBeSent
+        return actionsToBeSent.length > 0
+      })
+      dataToBeSent = dataToBeSent.map((item: any) => {
+        return {
+          RequestID: item.RequestID,
+          ActionDetailsIDs: item.apiActions.map((action: any) => action.ActionDetailsID)
+        }
+      })
+      if (dataToBeSent.length > 0) {
+        this.allApplicationsService.EvaluateActionConditionBulk(dataToBeSent).subscribe((evalRes: any) => {
+          this.allApplicationsService.evalResSignal.set(evalRes);
+        })
+      }
     })
   }
   resetData() {
@@ -167,6 +185,24 @@ export class AdvancedSearchComponent {
       this.allApplicationsService.cardsData.set(res.Data || [])
       let pagingInfo = JSON.parse(res.PagingInfo);
       this.paginationInfo.emit(pagingInfo);
+      let dataToBeSent = this.allApplicationsService.cardsData().filter((item: any, index: number) => {
+        let actionsToBeSent = (item.Actions && item.Actions.length) ? item.Actions.filter((item: any) => {
+          return !!item.ShowConditionId
+        }) : [];
+        this.allApplicationsService.cardsData()[index].apiActions = actionsToBeSent
+        return actionsToBeSent.length > 0
+      })
+      dataToBeSent = dataToBeSent.map((item: any) => {
+        return {
+          RequestID: item.RequestID,
+          ActionDetailsIDs: item.apiActions.map((action: any) => action.ActionDetailsID)
+        }
+      })
+      if (dataToBeSent.length > 0) {
+        this.allApplicationsService.EvaluateActionConditionBulk(dataToBeSent).subscribe((evalRes: any) => {
+          this.allApplicationsService.evalResSignal.set(evalRes);
+        })
+      }
       this.allApplicationsService.tableLoader.set(false);
       this.allApplicationsService.disableTabs.set(false);
     })
@@ -178,13 +214,13 @@ export class AdvancedSearchComponent {
   isSearchCollapsed = input<boolean>();
   isAdvancedSearchCollapsed = input<boolean>();
   isGlobalSearchCollapsed = input<boolean>();
-  toggleSearchView(){
+  toggleSearchView() {
     this.onToggleSearch.emit(!this.isSearchCollapsed());
   }
   toggleAdvancedSearchView() {
     this.onToggleAdvancedSearch.emit(!this.isAdvancedSearchCollapsed());
   }
-  toggleGlobalSearchView(){
+  toggleGlobalSearchView() {
     this.onToggleGlobalSearch.emit(!this.isGlobalSearchCollapsed());
   }
 

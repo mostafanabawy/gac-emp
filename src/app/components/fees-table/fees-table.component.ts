@@ -520,7 +520,7 @@ export class FeesTableComponent implements OnInit, OnDestroy, OnChanges {
     return this.selectedRowIds.has(row[this.rowIdentifierField]);
   }
 
-  // Get Activited badge class (for user status)
+  // Get Activited badge class (for user status)12
   getActivitedBadgeClass(row: any): string {
     const isActive = row.ActivitedOriginal !== undefined ? row.ActivitedOriginal : row.Activited;
 
@@ -533,5 +533,9 @@ export class FeesTableComponent implements OnInit, OnDestroy, OnChanges {
   onAnalysis = output();
   emitAnalysis(row: any) {
     this.onAnalysis.emit(row);
+  }
+
+  isActionMenu(row: any): boolean {
+    return row.Actions?.some((action: any) => action.visible === true);
   }
 }

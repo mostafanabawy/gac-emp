@@ -58,7 +58,7 @@ export class SingleLicenceCardComponent {
 
         if (this.evalRes().length > 0) {
           if (!!action.ShowConditionId) {
-            action.visible = this.chackEval(this.allData().RequestID, action.ActionDetailsID);
+            action.visible = this.checkEval(this.allData().RequestID, action.ActionDetailsID);
           } else {
             action.visible = true
           }
@@ -251,7 +251,7 @@ export class SingleLicenceCardComponent {
     finalDisplay.push(moreGroup);
     return finalDisplay;
   }
-  chackEval(requestID: string, actionDetailsID: number) {
+  checkEval(requestID: string, actionDetailsID: number) {
     let evaluation = this.evalRes().find((item: any) => item.RequestID === requestID)
     if (!evaluation?.VisibleActions) {
       return false;

@@ -419,13 +419,14 @@
                                             <ng-container
                                                 *ngFor="let action of row.Actions?.slice(0, 2); let i = index">
                                                 @if(action.ActionID !== 1877){
+                                                @if(action.visible === true){
                                                 <button
                                                     (click)="handleActionClick(action, row); $event.stopPropagation()"
                                                     class="flex items-center justify-center px-2 py-1 text-xs rounded hover:bg-gray-100 hover:scale-110 transition cursor-pointer
-                                                    !w-fit" [title]="isArabic ? action.TitleAR : action.TitleEN">
+                                                        !w-fit" [title]="isArabic ? action.TitleAR : action.TitleEN">
                                                     <!-- {{ (isArabic ? action.TitleAR : action.TitleEN) | slice:0:8 }}{{
-                                                    (isArabic ? action.TitleAR : action.TitleEN)?.length > 8 ? '...' :
-                                                    '' }} -->
+                                                        (isArabic ? action.TitleAR : action.TitleEN)?.length > 8 ? '...' :
+                                                        '' }} -->
                                                     @if(action.ActionID === 865 || action.ActionID === 1841){
                                                     <img src="/assets/images/icons/clipboard-remove-svgrepo-com.svg"
                                                         alt="remove icon" class="flex-shrink-0 h-4 w-4">
@@ -475,10 +476,11 @@
                                                     }
                                                 </button>
                                                 }
+                                                }
                                             </ng-container>
 
                                             <!-- Dropdown for more actions if there are more than 2 -->
-                                            <div *ngIf="row.Actions?.length > 2" class="relative">
+                                            <div *ngIf="row.Actions?.length > 2 && (isActionMenu(row))" class="relative">
                                                 <button [attr.popovertarget]="row[rowIdentifierField]"
                                                     (click)="toggleActionMenu(row[rowIdentifierField]); $event.stopPropagation()"
                                                     [style.anchor-name]="'--anchor-' + row[rowIdentifierField]"
@@ -500,11 +502,13 @@
                                                     (click)="$event.stopPropagation()">
                                                     <ng-container *ngFor="let action of row.Actions?.slice(2)">
                                                         @if(action.ActionID !== 1877){
+                                                        @if(action.visible){
                                                         <button
                                                             (click)="handleActionClick(action, row); toggleActionMenu(row[rowIdentifierField]); $event.stopPropagation()"
                                                             class="block w-full text-right px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-primary transition">
                                                             {{ isArabic ? action.TitleAR : action.TitleEN }}
                                                         </button>
+                                                        }
                                                         }
                                                     </ng-container>
                                                 </div>
