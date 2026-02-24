@@ -169,6 +169,7 @@ export class NewApplicationService {
   activityFees = signal<any>('');
   popupCPResultResponse = signal<any>('');
   popupCRResultResponse = signal<any>('');
+  overWriteGDX = false;
   getCR(url: string) {
     return this.http.get(`${url}`)
   }
