@@ -235,7 +235,7 @@ export class DistributionTableComponent {
     this.allApplicationsService.disableTabs.set(true);
 
     // 3. Call the API
-    this.allApplicationsService.getCardsData(inboxType, servicesType, pagingInfo).subscribe({
+    this.allApplicationsService.getCardsData(inboxType, servicesType, pagingInfo, this.searchQuery).subscribe({
       next: (res) => {
         console.log(res);
         // 4. Update the cards data Signal
@@ -1419,6 +1419,39 @@ export class DistributionTableComponent {
     this.searchCriteria = [];
     this.loadCardsData({ PageSize: this.PageSize(), PageNum: 1 });
   }
+
+  searchQuery: any = null;
+  searchAdvanced(payload: any) {
+    this.searchQuery = payload.filters
+    this.allApplicationsService.getCardsDataWithSearch(payload).subscribe((res) => {
+      console.log(res);
+      this.allApplicationsService.cardsData.set(res.Data || [])
+      let pagingInfo = JSON.parse(res.PagingInfo);
+      this.setPaginationInfo(pagingInfo);
+      this.allApplicationsService.tableLoader.set(false);
+      this.allApplicationsService.disableTabs.set(false);
+      let dataToBeSent = this.allApplicationsService.cardsData().filter((item: any, index: number) => {
+        let actionsToBeSent = (item.Actions && item.Actions.length) ? item.Actions.filter((item: any) => {
+          return !!item.ShowConditionId
+        }) : [];
+        this.allApplicationsService.cardsData()[index].apiActions = actionsToBeSent
+        return actionsToBeSent.length > 0
+      })
+      dataToBeSent = dataToBeSent.map((item: any) => {
+        return {
+          RequestID: item.RequestID,
+          ActionDetailsIDs: item.apiActions.map((action: any) => action.ActionDetailsID)
+        }
+      })
+      if (dataToBeSent.length > 0) {
+        this.allApplicationsService.EvaluateActionConditionBulk(dataToBeSent).subscribe((evalRes: any) => {
+          this.allApplicationsService.evalResSignal.set(evalRes);
+        })
+      }
+    })
+  }
+
+
 
   searchApplications() {
     const formValue = this.searchForm.value;

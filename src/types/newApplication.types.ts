@@ -130,6 +130,7 @@ export type FieldJson = {
     AIExtractDataPriority?: number;
     hasDataFromAiPriority?: number;
     isGDXVal?: boolean;
+    isUpdateGDX?: boolean;
     GDXDim: boolean;
     BusinessRuleColmns?: string;
     BusinessRuleFun?: string;

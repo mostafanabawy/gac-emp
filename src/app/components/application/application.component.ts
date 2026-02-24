@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, computed, effect, ElementRef, HostListener, inject, Injector, QueryList, runInInjectionContext, signal, ViewChild, ViewChildren, } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, effect, ElementRef, HostListener, inject, Injector, QueryList, runInInjectionContext, signal, untracked, ViewChild, ViewChildren, } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot, DetachedRouteHandle, Params, Router, RouteReuseStrategy } from '@angular/router';
@@ -18,6 +18,7 @@ import { WizardServiceService } from 'src/app/service/wizard-service.service';
 import { reverseChevron, slideDownUp, toggleAnimation } from 'src/app/shared/animations';
 import { CustomValidators } from 'src/app/validators/custom-validators';
 import { AppState } from 'src/types/auth.types';
+import { isEqual } from 'lodash';
 import { Action, ActionDetail, ActionGroup, FieldJson, GetServiceFieldsByActionsApiResponse, LookupValue, NavigationTab, ResponseBody, ServiceApiPayload, TableServiceField, TabSection } from 'src/types/newApplication.types';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
 
@@ -342,10 +343,26 @@ export class ApplicationComponent {
                             this.setupEffect(field);
                         }
                     }
+
                     /* if (field.FieldAddress.includes('GDX.CP')) {
                         this.setupEffect('GDX.CP.', () => this.newApplicationService.CPResultResponse(), 'hasPatchedCP', field);
-                    } */
+                        } */
                 });
+                if (this.newApplicationService.requestData()) {
+                    untracked(() => {
+                        // 1. Define the business rules clearly
+                        const hasMissingExpiryDates =
+                            !this.newApplicationService.requestData().CommercialRegistry_Expire_Date
+                            || !this.newApplicationService.requestData().CommercialLicense_Expire_Date;
+                        const hasGDXData = this.newApplicationService.CPResultResponse() || this.newApplicationService.CRResultResponse();
+
+                        // 2. Execute with a flat structure
+                        if (hasMissingExpiryDates && hasGDXData && !this.hasGDXFiredApiOnce) {
+                            this.setupConditionalGDXUpdate();
+                            this.hasGDXFiredApiOnce = true;
+                        }
+                    })
+                }
             }
         }, { allowSignalWrites: true });
 
@@ -360,6 +377,16 @@ export class ApplicationComponent {
                 allFields.forEach((field) => {
                     if (field.FieldType === 8 && field.ApiFieldAddress.includes('?cr')) {
                         this.patchTableData(field)
+                    }
+                })
+
+                setTimeout(() => {
+                    const hasGDXData = this.newApplicationService.CPResultResponse() || this.newApplicationService.CRResultResponse();
+                    if (this.newApplicationService.requestData()) {
+                        if (!this.hasGDXTableFiredApiOnce && hasGDXData && this.newApplicationService.rowsFromApi()) {
+                            this.setupConditionalGDXTableUpdate();
+                            this.hasGDXTableFiredApiOnce = true;
+                        }
                     }
                 })
             }
@@ -1171,42 +1198,11 @@ export class ApplicationComponent {
                                 })
                             }
                         }
-                        this.navigationTabs()!.forEach(tab => {
-                            this.isSection[tab.NavigationTabID] = {}
-                            tab.TabSections.forEach(section => {
-                                this.isSection[tab.NavigationTabID][section.SectionID] = true
-                                const groupedByRow: FieldJson[][] = this.groupFieldsByRow(section.FieldsJson);
-                                this.groupedSections[section.SectionOrder] = groupedByRow; // Store the grouped result
-                                this.prepareControlsForReactiveForm(section);
-                            });
-                        });
-                        this.initializeTabFieldCount();
-                        this.calculateTabVisibility(); // Add this line
-                        this.setupRelevantFieldListeners();
                         this.closeLoader();
 
 
                     } else {
-                        console.log(this.navigationTabs());
-                        console.log(this.visibleNavigationTabs());
-                        console.log(this.currentTab());
-                        this.initializeTabFieldCount();
-                        this.calculateTabVisibility(); // Add this line
-                        this.setupRelevantFieldListeners();
-                        this.closeLoader();
 
-                        this.navigationTabs()!.forEach(tab => {
-                            this.isSection[tab.NavigationTabID] = {}
-                            tab.TabSections.forEach(section => {
-                                this.isSection[tab.NavigationTabID][section.SectionID] = true
-                                const groupedByRow: FieldJson[][] = this.groupFieldsByRow(section.FieldsJson);
-                                this.groupedSections[section.SectionOrder] = groupedByRow; // Store the grouped result
-                                this.prepareControlsForReactiveForm(section);
-                            });
-                        });
-                        this.initializeTabFieldCount();
-                        this.calculateTabVisibility(); // Add this line
-                        this.setupRelevantFieldListeners();
                         this.closeLoader();
 
                         let crFields = currentTabFields.filter((field) => {
@@ -2031,7 +2027,7 @@ export class ApplicationComponent {
                         }
                     });
                     // gdx modified
-                   // return;
+                    // return;
                 }
 
                 // This logic runs only if a CP change didn't trigger an API call.
@@ -2565,7 +2561,7 @@ export class ApplicationComponent {
                         control.patchValue('');
                     }
                 } */
-               /* gdx modified */
+                /* gdx modified */
                 /* if (field.InternalFieldName === 'CommercialRegistry_Expire_Date' && !this.newApplicationService.CPResultResponse()) {
                     return;
                 } */
@@ -2592,25 +2588,59 @@ export class ApplicationComponent {
                                 let newVals = field.LookupValues!.filter((item) => [item.ISOTitleAr?.trim(), item.ISOTitleEn?.trim(), item.ISOLookupID].some(val => val === value.trim()));
                                 if (newVals.length > 0) {
                                     field.isGDXVal = true;
-                                    control.patchValue(newVals.map((newVal) => newVal.LookupID));
+                                    if (!(this.newApplicationService.requestData()[field.InternalFieldName] &&
+                                        this.newApplicationService.requestData()[field.InternalFieldName].length > 0)) {
+                                        field.isUpdateGDX = true;
+                                    }
+
+
+                                    if (!(this.newApplicationService.requestData() && this.newApplicationService.requestData()[field.InternalFieldName] && this.newApplicationService.requestData()[field.InternalFieldName].length > 0) || this.newApplicationService.overWriteGDX === true) {
+                                        control.patchValue(newVals.filter((val) => !!val).map((newVal) => newVal.LookupID));
+                                    } else if (!this.newApplicationService.requestData()) {
+                                        control.patchValue(newVals.filter((val) => !!val).map((newVal) => newVal.LookupID));
+                                    }
                                 }
                             } else {
                                 let newVal = field.LookupValues!.find((item) => [item.ISOTitleAr?.trim(), item.ISOTitleEn?.trim(), item.ISOLookupID].includes(value.trim()))
                                 if (newVal) {
                                     field.isGDXVal = true;
-                                    control.patchValue(newVal.LookupID);
+                                    if (!(this.newApplicationService.requestData()[field.InternalFieldName] &&
+                                        this.newApplicationService.requestData()[field.InternalFieldName].length > 0)) {
+                                        field.isUpdateGDX = true;
+                                    }
+
+                                    if (!(this.newApplicationService.requestData() && this.newApplicationService.requestData()[field.InternalFieldName]) || this.newApplicationService.overWriteGDX === true) {
+                                        control.patchValue(newVal.LookupID);
+                                    } else if (!this.newApplicationService.requestData()) {
+                                        control.patchValue(newVal.LookupID);
+                                    }
                                 }
                             }
                         } else {
                             if (field.InternalFieldName === 'CommercialRegistry_Expire_Date' || field.FieldType === 3) {
                                 /* gdx modified */
                                 field.isGDXVal = true;
+                                if (!(this.newApplicationService.requestData()[field.InternalFieldName])) {
+                                    field.isUpdateGDX = true;
+                                }
+
                                 const [year, month, day] = value.split("T")[0].split("-");
                                 const formattedExpiryDate = `${day}/${month}/${year}`;
-                                control.patchValue(formattedExpiryDate);
+                                if (!(this.newApplicationService.requestData() && this.newApplicationService.requestData()[field.InternalFieldName]) || this.newApplicationService.overWriteGDX === true) {
+                                    control.patchValue(value);
+                                } else if (!this.newApplicationService.requestData()) {
+                                    control.patchValue(value);
+                                }
                             } else {
                                 field.isGDXVal = true;
-                                control.patchValue(value);
+                                if (!(this.newApplicationService.requestData()[field.InternalFieldName])) {
+                                    field.isUpdateGDX = true;
+                                }
+                                if (!(this.newApplicationService.requestData() && this.newApplicationService.requestData()[field.InternalFieldName]) || this.newApplicationService.overWriteGDX === true) {
+                                    control.patchValue(value);
+                                } else if (!this.newApplicationService.requestData()) {
+                                    control.patchValue(value);
+                                }
                             }
                         }
                         if (value) { // Break if we found a value in an (OR) case
@@ -2655,7 +2685,7 @@ export class ApplicationComponent {
 
 
                                     if (newVal && (newVal as any[]).filter((val) => !!val).length > 0) {
-                                        newVal = (newVal as any[]).map((newVal: any) => newVal.LookupID)
+                                        newVal = (newVal as any[]).filter((val) => !!val).map((newVal: any) => newVal.LookupID)
                                         this.newApplicationService.appendColumnValuesToSource(sourceKey, field.InternalFieldName, newVal as any[]);
                                     }
                                 } else {
@@ -2675,7 +2705,7 @@ export class ApplicationComponent {
                                 columnValues = columnValues || []
                                 let newVal = (columnValues as any[]).map((value) => field.LookupValues!.find((item) => [item.ISOTitleAr?.trim(), item.ISOTitleEn?.trim(), ...(item.ISOLookupID !== undefined ? item.ISOLookupID.split(',') : [])].includes(value.trim())))
                                 if (newVal && (newVal as any[]).filter((val) => !!val).length > 0) {
-                                    newVal = (newVal as any[]).map((newVal: any) => newVal.LookupID)
+                                    newVal = (newVal as any[]).filter((val) => !!val).map((newVal: any) => newVal.LookupID)
                                     this.newApplicationService.appendColumnValuesFromPath(path, field.InternalFieldName, newVal as any[]);
                                 }
                             } else {
@@ -2687,6 +2717,51 @@ export class ApplicationComponent {
                 }
                 this[sourceInfo.patchFlagKey] = true;
             }
+        }
+    }
+
+    hasGDXFiredApiOnce = false;
+    hasGDXTableFiredApiOnce = false;
+    setupConditionalGDXUpdate() {
+        let uiData: any = [];
+        this.visibleNavigationTabs()!.forEach((tab) => {
+            tab.TabSections.forEach(section => {
+                uiData.push(...section.FieldsJson);
+            });
+        })
+        let gdxData = uiData.filter((field: any) => field.isUpdateGDX === true).reduce((acc: any, field: any) => {
+            if (field.InternalFieldName && field.FieldType !== 8) {
+                acc[field.InternalFieldName] = this.wizardForm!.get(field.InternalFieldName)!.value;
+                if (field.FieldType === 3) {
+                    acc[field.InternalFieldName] = this.wizardService.convertDateToISO(acc[field.InternalFieldName])
+                }
+            }
+            return acc
+        }, {});
+        if (gdxData && Object.keys(gdxData).length > 0) {
+            gdxData.RequestID = this.newApplicationService.requestData().RequestID
+            this.wizardService.updateGDXInfo(gdxData).subscribe();
+        }
+    }
+    setupConditionalGDXTableUpdate() {
+        let uiData: any = [];
+        this.visibleNavigationTabs()!.forEach((tab) => {
+            tab.TabSections.forEach(section => {
+                uiData.push(...section.FieldsJson);
+            });
+        })
+        let payload: any = {};
+        let gdxTableData = uiData.filter((field: any) => field.isUpdateGDX === true).reduce((acc: any, field: any) => {
+            if (field.InternalFieldName && field.FieldType === 8) {
+                acc[field.InternalFieldName] = this.wizardForm!.get(field.InternalFieldName)!.value.slice(0, -1);
+                payload.SourceTableID = field.SourceTableID
+            }
+            return acc
+        }, {});
+        if (gdxTableData && Object.keys(gdxTableData).length > 0) {
+            payload.FkRequestID = this.newApplicationService.requestData().RequestID
+            payload.Partners = Object.values(gdxTableData).flat();
+            this.wizardService.updatePartner(payload).subscribe();
         }
     }
 
@@ -2914,6 +2989,7 @@ export class ApplicationComponent {
                 /* this.tabsRendered = true;
                 this.aiPopupFirstInitFlag.set(true);
                 this.aiPopupAnswer.set(''); */
+
                 const formArr = new FormArray<any>([]);
                 field.Attachments?.forEach(attachment => {
                     const attachmentFormGroup = new FormGroup({});
@@ -2944,6 +3020,9 @@ export class ApplicationComponent {
                         attachmentFormGroup.addControl('files', attachmentFilesControl);
                         attachmentFormGroup.addControl(`${attachmentField.InternalFieldName}`, attachmentControl);
                     });
+                    const orgTypeValue = (attachment as any)[field.FieldAddress]; // e.g., 2910
+                    const uniqueKey = `${attachment.ID}_${orgTypeValue}`;
+                    this.masterAttachmentGroups.set(uniqueKey, attachmentFormGroup);
                     formArr.push(attachmentFormGroup);
                 })
                 this.wizardForm!.addControl(idsFieldName, new FormControl(AttachmentIDs));
@@ -5781,8 +5860,11 @@ export class ApplicationComponent {
             }
         }
     }
+    allFilesMap = new Map<string, any>();
+    private masterAttachmentGroups = new Map<string, FormGroup>();
     private setupRelevantFieldListeners(): void {
         const relevantFields = new Set<string>();
+        let allFields = this.extractFields(this.navigationTabs());
 
         // Collect all relevant field names
         this.navigationTabs()!.forEach(tab => {
@@ -5790,6 +5872,59 @@ export class ApplicationComponent {
                 section.FieldsJson.forEach(field => {
                     if (field.RelevantInternalName && field.RelevantVisibleOperator || field.FieldAddress?.toLowerCase()?.includes('fee')) {
                         relevantFields.add(field.RelevantInternalName || field.InternalFieldName);
+                    }
+                    if (field.FieldType === 9 && field.FieldAddress) {
+                        let relevantFieldName = field.FieldAddress
+                        let relevantField = allFields.find(field => field.InternalFieldName === relevantFieldName)
+                        this.allFilesMap.set(field.InternalFieldName, JSON.parse(JSON.stringify([...(field.Attachments || [])])))
+                        if (relevantField) {
+                            if ([6, 19, 5].includes(relevantField.FieldType)) {
+
+                                let fileConfigKeys = relevantField.LookupValues!
+                                let filesConfig = fileConfigKeys.reduce((acc: any, fileConfigKey: any) => {
+                                    let files = this.allFilesMap.get(field.InternalFieldName)!.filter((file: any) => file[field.FieldAddress] === fileConfigKey.LookupID);
+                                    acc[fileConfigKey.LookupID] = files
+                                    return acc
+                                }, {})
+                                const control = this.wizardForm!.get(field.FieldAddress);
+                                if (control) {
+                                    control.valueChanges.pipe(
+                                        takeUntil(this.destroy$)
+                                    ).subscribe((selectedValue) => {
+                                        // 1. Get the specific config for this attachment field
+                                        const config = filesConfig
+
+                                        if (config) {
+                                            // 2. Identify which files belong to the selected dropdown value
+                                            // SelectedValue corresponds to the 'fileConfigKey' from your reduce function
+                                            const activeFiles = config[selectedValue] || [];
+
+                                            field.Attachments = activeFiles
+                                            const activeIDs = activeFiles.map((a: any) => a.ID.toString());
+
+                                            // 4. Update the Form Value
+                                            // Since you only want to submit the visible ones, patch the main 
+                                            // attachment control with only the active files.
+                                            const formArr = this.wizardForm!.get(field.InternalFieldName) as FormArray;
+
+                                            while (formArr.length !== 0) {
+                                                formArr.removeAt(0);
+                                            }
+                                            // 3. Reconstruct FormGroups for ONLY the active attachments
+                                            field.Attachments?.forEach((attachment) => {
+                                                const uniqueKey = `${attachment.ID}_${selectedValue}`;
+                                                const existingGroup = this.masterAttachmentGroups.get(uniqueKey);
+
+                                                if (existingGroup) {
+                                                    formArr.push(existingGroup);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }
+                        }
+
                     }
                 });
             });
@@ -6474,6 +6609,7 @@ export class ApplicationComponent {
     patchTableData(field: FieldJson) {
         let data: any;
         if (this.newApplicationService.rowsFromApi()) {
+
             /* this.rows.set(null); */
             const currentRowsFromApi = this.newApplicationService.rowsFromApi();
             data = structuredClone((Object.values(this.newApplicationService.rowsFromApi()).flat().reduce((prev: any, curr) => prev.concat(curr), []) as any).filter((obj: any) => Object.keys(obj).every(key => obj[key] !== null)));
@@ -6494,6 +6630,37 @@ export class ApplicationComponent {
                 formArray.clear();
             }
             if (data.length > 0) {
+                const apiKeys = Object.keys(data[0] || {});
+                const cleanedStoredData = this.newApplicationService.requestData()?.[field.InternalFieldName]?.map((row: any) => {
+                    const newObj: any = {};
+                    apiKeys.forEach(key => {
+                        newObj[key] = row[key];
+                    });
+                    return newObj;
+                });
+                // keep types for properties consistent
+                const normalizedData = data.map((apiRow: any, index: number) => {
+                    const storedRow = cleanedStoredData[index];
+                    const newApiObj: any = {};
+
+                    Object.keys(apiRow).forEach(key => {
+                        const apiValue = apiRow[key];
+                        const storedValue = storedRow?.[key];
+
+                        // If types are different, coerce apiValue to match storedValue's type
+                        try {
+                            const Constructor = storedValue.constructor;
+                            newApiObj[key] = Constructor(apiValue);
+                        } catch (e) {
+                            newApiObj[key] = apiValue; // Fallback if constructor fails
+                        }
+                    });
+                    return newApiObj;
+                });
+                if (!this.newApplicationService.requestData()?.[field.InternalFieldName]?.length || !isEqual(cleanedStoredData, normalizedData)) {
+                    field.isUpdateGDX = true;
+                }
+
                 field.isGDXVal = true;
                 data.forEach((singleRow: any) => {
                     this.addTableRow(field);
@@ -7195,7 +7362,7 @@ export class ApplicationComponent {
             this.activeDropdown = this.activeDropdown.filter((d) => d !== name);
         } else {
             this.activeDropdown = [name];
-           
+
         }
 
     }

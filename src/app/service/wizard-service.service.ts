@@ -46,6 +46,13 @@ export class WizardServiceService {
       15: 'Float'
     };
   }
+  updatePartner(payload: any){
+    return this.http.post<any>(`${this.baseUrl}/api/ServiceTablesData/partner/bulkupdate`, payload)
+  }
+
+  updateGDXInfo(payload: any){
+    return this.http.post<any>(`${this.baseUrl}/api/ServicesData/update-commercial-info`, payload)
+  }
 
   serviceDataActionApi(payload: any, action: Action, dataToSend?: GetServiceFieldsByActionsApiResponse, uiData?: FieldJson[], RequestID?: any, parentID?: any, secondParent?: any, ActionDetailsID?: any) {
     let restructuredPayload: any
@@ -403,7 +410,7 @@ export class WizardServiceService {
   }
 
 
-  private convertDateToISO(dateValue: string): string {
+  convertDateToISO(dateValue: string): string {
     // Check if the dateValue is null, undefined, or not a string.
     if (!dateValue || typeof dateValue !== 'string') {
       return dateValue;

@@ -366,7 +366,7 @@ export class AllApplicationsTableComponent implements OnInit {
     }
 
     // 4. Call the API
-    this.allApplicationsService.getCardsData(inboxType, servicesType, pagingInfo).subscribe({
+    this.allApplicationsService.getCardsData(inboxType, servicesType, pagingInfo, this.searchQuery).subscribe({
       next: (res) => {
         console.log(res);
         // 5. Update the cards data Signal
@@ -1215,65 +1215,34 @@ export class AllApplicationsTableComponent implements OnInit {
       this.loadCardsData({ PageSize: event.pagesize, PageNum: event.current_page });
     }
   }
-  searchAdvanced() {
-    this.allApplicationsService.tableLoader.set(true);
-    this.allApplicationsService.disableTabs.set(true);
-    console.log(this.searchForm.value)
-    let filterPayload = Object.keys(this.searchForm.value)
-      .flatMap(key => {
-        let value = this.searchForm.value[key];
-        // If the value is an array and not null/undefined
-        if (Array.isArray(value) && value.length > 0) {
-          if (value) {
-            // Map each item of the array to the desired object structure
-            return {
-              "Key": key,
-              "Operator": "in",
-              "Value": value.join(','),
-              "SecondValue": null
-            };
-          }
-        } else { // If the value is not an array (and not null/undefined) 
-          if (value) {
-            // Create a single object for the non-array value
-            return {
-              "Key": key,
-              "Operator": "like",
-              "Value": value,
-              "SecondValue": null
-            };
-          }
-        }
-        // Return an empty array for falsy values to be flattened out
-        return [];
-      }).filter((item: any) => (item.Value && item.Value?.length > 0));
-    let payload: any = {
-      "pagingRequest": {
-        "PageSize": this.PageSize(),
-        "PageNum": "1",
-        "SortField": "CreationDate",
-        "SortOrder": "DESC"
-      },
-
-      "filters": filterPayload,
-      "InboxType": this.tabData()?.InboxType,
-      "ServicesType": this.ServicesType(),
-      "Table8Filters": []
-    }
-    /* if (this.searchForm.value.FkStatusID) {
-      payload.Statuses = this.searchForm.value.FkStatusID.join(',')
-    } */
+  searchQuery: any = null;
+  searchAdvanced(payload: any) {
+    this.searchQuery = payload.filters
     this.allApplicationsService.getCardsDataWithSearch(payload).subscribe((res) => {
       console.log(res);
       this.allApplicationsService.cardsData.set(res.Data || [])
       let pagingInfo = JSON.parse(res.PagingInfo);
-      this.PageSize.set(pagingInfo.PageSize);
-      this.TotalRows.set(pagingInfo.TotalRows);
-      this.CurrentPage.set(pagingInfo.CurrentPage);
-      this.allApplicationsService.cardsData.set(res.Data || [])
-      this.originalRows = res.Data || [];
+      this.setPaginationInfo(pagingInfo);
       this.allApplicationsService.tableLoader.set(false);
       this.allApplicationsService.disableTabs.set(false);
+      let dataToBeSent = this.allApplicationsService.cardsData().filter((item: any, index: number) => {
+        let actionsToBeSent = (item.Actions && item.Actions.length) ? item.Actions.filter((item: any) => {
+          return !!item.ShowConditionId
+        }) : [];
+        this.allApplicationsService.cardsData()[index].apiActions = actionsToBeSent
+        return actionsToBeSent.length > 0
+      })
+      dataToBeSent = dataToBeSent.map((item: any) => {
+        return {
+          RequestID: item.RequestID,
+          ActionDetailsIDs: item.apiActions.map((action: any) => action.ActionDetailsID)
+        }
+      })
+      if (dataToBeSent.length > 0) {
+        this.allApplicationsService.EvaluateActionConditionBulk(dataToBeSent).subscribe((evalRes: any) => {
+          this.allApplicationsService.evalResSignal.set(evalRes);
+        })
+      }
     })
   }
 

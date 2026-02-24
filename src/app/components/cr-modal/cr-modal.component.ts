@@ -109,13 +109,15 @@ export class CrModalComponent {
     this.focusableEls = [];
   }
   autoCompleteData(answer: string){
+    this.newApplicationService.overWriteGDX = true;
     if(this.newApplicationService.popupCRResultResponse()){
-      this.newApplicationService.CRResultResponse.set(this.newApplicationService.popupCRResultResponse());
+      this.newApplicationService.CRResultResponse.set({...this.newApplicationService.popupCRResultResponse()});
       this.closed.emit(answer);
     }else{
       this.newApplicationService.getCR(this.crURL()!).subscribe((res: any) => {
         this.newApplicationService.popupCRResultResponse.set(res);
         this.newApplicationService.CRResultResponse.set(res);
+        this.closed.emit(answer);
       })
     }
   }

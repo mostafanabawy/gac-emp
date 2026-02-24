@@ -132,6 +132,7 @@ export class CpModalComponent {
     this.focusableEls = [];
   }
   autoCompleteData(answer: string) {
+    this.newApplicationService.overWriteGDX = true;
     if (this.newApplicationService.popupCPResultResponse()) {
       this.newApplicationService.CPResultResponse.set({...this.newApplicationService.popupCPResultResponse()});
     } else {

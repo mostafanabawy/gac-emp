@@ -4,7 +4,7 @@
     (paginationInfo)="setPaginationInfo($event)" (onToggleSearch)="toggleSearchView()"
     (onToggleAdvancedSearch)="toggleAdvancedSearch()" (onToggleGlobalSearch)="toggleGlobalSearch()"
     [isGlobalSearchCollapsed]="isGlobalSearch" [normalLookupsServiceID]="normalLookupsServiceID()"
-    [lookupsData]="lookupsData()" [empLookup]="empLookup()"
+    [lookupsData]="lookupsData()" [empLookup]="empLookup()" (searchPayload)="searchAdvanced($event)"
     [isAdvancedSearchCollapsed]="isAdvancedSearch"></app-very-advanced-search>
 </div>
 <div *ngIf="!isLoading && isGlobalSearch" class="p-3 bg-white rounded-lg shadow-sm border border-gray-200">
@@ -52,6 +52,7 @@
 <div *ngIf="!isLoading && !isSearchCollapsed" class="p-3 bg-white rounded-lg shadow-sm border border-gray-200">
   <app-advanced-search [mainTabsData]="mainTabsData()" [isSearchCollapsed]="isSearchCollapsed"
     [currentTabData]="tabData()" [pageSize]="PageSize()" [ServicesType]="ServicesType()"
+    (searchPayload)="searchAdvanced($event)"
     (onToggleSearch)="toggleSearchView()" (onToggleAdvancedSearch)="toggleAdvancedSearch()"
     (paginationInfo)="setPaginationInfo($event)" (onToggleGlobalSearch)="toggleGlobalSearch()"
     [isGlobalSearchCollapsed]="isGlobalSearch" [normalLookupsServiceID]="normalLookupsServiceID()"
@@ -374,7 +375,7 @@
             <img src="/assets/images/icons/Star.svg" class="h-4" alt="star icon for rating">
             }@else if (action.ActionID === 1842 || action.ActionID === 1843 || action.ActionID === 1993 ||
             action.ActionID === 1852 || action.ActionID === 1901) {
-            <img src="/assets/images/icons/printer57135.svg" alt="print icon">
+            <img src="/assets/images/icons/printer57135.svg" alt="print icon" class="h-4 w-4 flex-shrink-0">
             }@else if (action.ActionID === 1859 || action.ActionID === 1865) {
             <icon-history-clock class="h-5 text-primary"></icon-history-clock>
             }

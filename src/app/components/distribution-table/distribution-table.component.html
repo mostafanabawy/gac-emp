@@ -174,7 +174,7 @@
         (paginationInfo)="setPaginationInfo($event)" (onToggleSearch)="toggleSearchView()"
         (onToggleAdvancedSearch)="toggleAdvancedSearch()" (onToggleGlobalSearch)="toggleGlobalSearch()"
         [isGlobalSearchCollapsed]="isGlobalSearch" [normalLookupsServiceID]="normalLookupsServiceID()"
-        [lookupsData]="lookupsData()" [empLookup]="empLookup()"
+        [lookupsData]="lookupsData()" [empLookup]="empLookup()" (searchPayload)="searchAdvanced($event)"
         [isAdvancedSearchCollapsed]="isAdvancedSearch"></app-very-advanced-search>
 </div>
 <div *ngIf="!isLoading && isGlobalSearch" class="p-3 bg-white rounded-lg shadow-sm border border-gray-200">
@@ -225,7 +225,7 @@
 </div>
 <div *ngIf="!isLoading && !isSearchCollapsed" class="p-3 bg-white rounded-lg shadow-sm border border-gray-200">
     <app-advanced-search [mainTabsData]="mainTabsData()" [isSearchCollapsed]="isSearchCollapsed"
-        [currentTabData]="tabData()" [pageSize]="PageSize()" [ServicesType]="ServicesType()"
+        [currentTabData]="tabData()" [pageSize]="PageSize()" [ServicesType]="ServicesType()" (searchPayload)="searchAdvanced($event)"
         (onToggleSearch)="toggleSearchView()" (onToggleAdvancedSearch)="toggleAdvancedSearch()"
         (paginationInfo)="setPaginationInfo($event)" (onToggleGlobalSearch)="toggleGlobalSearch()"
         [isGlobalSearchCollapsed]="isGlobalSearch" [normalLookupsServiceID]="normalLookupsServiceID()"
@@ -507,7 +507,7 @@
                         {{ store.index.locale === 'en' ? row.FkProcessID_TitleEn : row.FkProcessID_TitleAr }}
                     </p>
                     @if( ![7008, 7005, 5015].includes(row.ServiceID)){
-                    <button (click)="openRequestAnalysis(row); $event.stopPropagation();"
+                    <button (click)="openRequestAnalysis(row); $event.stopPropagation()"
                         class="ltr:ml-auto rtl:mr-auto flex items-center gap-2 btn btn-primary hover:shadow-none text-nowrap">
                         <icon-stars class="w-5 h-5 self-start"></icon-stars>
                         {{ translations()?.analysisBtnInTable.label }}

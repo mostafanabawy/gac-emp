@@ -37,7 +37,7 @@ export class AllApplicationsService {
     return this.http.get(`${this.baseUrl}/api/EServicesInboxTabsFilter/selectall`)
   }
 
-  getCardsData(tabName: any, ServicesType: any, pagingInfo?: { PageSize: number, PageNum: number } | any) {
+  getCardsData(tabName: any, ServicesType: any, pagingInfo?: { PageSize: number, PageNum: number } | any, filters?: any) {
     let payload = {
       "pagingRequest": {
         "PageSize": pagingInfo?.PageSize || "200",
@@ -45,7 +45,7 @@ export class AllApplicationsService {
         "SortField": pagingInfo?.SortField || "ApplicationNumber",
         "SortOrder": (pagingInfo?.SortDirection && pagingInfo?.SortDirection === 1 ? "ASC" : "DESC" )
       },
-      "filters": [],
+      "filters": filters || [],
       "Table8Filters": [],
       "InboxType": tabName,
       "ServicesType": ServicesType
