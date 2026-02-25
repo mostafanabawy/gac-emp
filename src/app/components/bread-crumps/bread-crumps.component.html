@@ -1,6 +1,6 @@
-<div class="border-b-[1px] border-[#CDCDCD] pb-4">
-    <div class="flex justify-between mb-2 flex-col md:flex-row space-y-3 md:space-y-0">
-        <h2 class="text-3xl font-bold">{{ pageNameChange() || pageName() }}</h2>
+<div class="border-b-[1px] border-[#CDCDCD] p-5 pb-4">
+    <div class="flex justify-between mb-2 flex-col md:flex-row space-y-3 md:space-y-0 flex-wrap">
+        <h2 class="text-3xl font-bold">{{ pageNameChange() ||  pageName() }}</h2>
         <!-- <ul class="flex gap-6">
             <li>
                 <a routerLink="/contact-us"
@@ -31,10 +31,10 @@
             </li>
         </ul> -->
     </div>
-    <ul class="flex space-x-2 rtl:space-x-reverse">
+    <ul class="flex space-x-2 rtl:space-x-reverse flex-wrap">
         <li *ngFor="let crumb of breadcrumbs(); let i = index; let last = last"
-            class="before:opacity-100 ltr:before:mr-2 rtl:before:ml-2"
-            [ngClass]="{'custom-arrow': i !== 0, 'flex items-center': store.locale === 'en'}">
+            class="before:opacity-100 ltr:before:mr-2 rtl:before:ml-2 flex items-center gap-2"
+            [ngClass]="{'custom-arrow': i !== 0}">
             <ng-container *ngIf="crumb.hasComponent; else noComponent">
                 <a [routerLink]="crumb.url" [ngClass]="{'text-primary': last}" class="text-lg hover:underline">
                     {{ crumb.label }}

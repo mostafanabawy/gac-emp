@@ -98,23 +98,23 @@
         </p>
         }@else if((field.FieldAddress === 'Fee_Calculation' && control?.value !== 0) || field.InternalFieldName !==
         'Fee_Calculation'){
-        <input [type]="getInputType()" [id]="field.InternalFieldName" [formControlName]="field.InternalFieldName"
+        <input [type]="getInputType()" [id]="field.InternalFieldName" dir="auto" [formControlName]="field.InternalFieldName"
             [placeholder]="store.index.locale == 'en'? field.DescriptionEn: field.DescriptionAr"
-            [readonly]="shouldBeDim() ? true : null" (input)="checkDirection($event); enforceMaxLength($event, field.MAX_Length); 
+            [readonly]="shouldBeDim() ? true : null" (input)="enforceMaxLength($event, field.MAX_Length); 
             ((field.FieldType === 12 || field.FieldType === 15 || field.FieldType === 20) ? enforcePositiveNumber($event) : '');
              (field.FieldType === 24? enforceCompoundNumber($event) : '')" class="form-input" [ngClass]="{'bg-gray-100 !cursor-not-allowed md:col-span-2': shouldBeDim(),
-            'direction-ltr': !isArabic, 'direction-rtl': isArabic, '!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en',
+            '!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en',
             '!border-2 rounded-md !border-red-500': control?.invalid && control?.touched
             }">
         }
     </ng-container>
 
     <ng-container *ngIf="field.FieldType === 2">
-        <textarea [id]="field.InternalFieldName" [formControlName]="field.InternalFieldName"
+        <textarea [id]="field.InternalFieldName" dir="auto" [formControlName]="field.InternalFieldName"
             [readonly]="shouldBeDim() ? true : null" (keyup)="enforceMaxLength($event, field.MAX_Length)"
             [readonly]="shouldBeDim() ? true : null" rows="3" class="form-input"
             [ngClass]="{'bg-gray-100 !cursor-not-allowed md:col-span-2': shouldBeDim(), 'border-red-500': control?.invalid && control?.touched,
-            'direction-ltr': !isArabic, 'direction-rtl': isArabic, '!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en'}"></textarea>
+            '!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en'}"></textarea>
     </ng-container>
 
     <ng-container *ngIf="field.FieldType === 3">
@@ -126,14 +126,14 @@
     </ng-container>
     <ng-container *ngIf="field.FieldType === 23">
         <input type="text" [id]="field.InternalFieldName" mwlFlatpickr [options]="dateTime"
-            [readonly]="shouldBeDim() ? true : null" [formControlName]="field.InternalFieldName"
+            [readonly]="shouldBeDim() ? true : null" dir="auto" [formControlName]="field.InternalFieldName"
             class="form-input direction-ltr ltr:text-left rtl:text-right" [ngClass]="{'!border-2 rounded-md !border-red-500': control?.invalid && control?.touched,
                 'bg-gray-100 !cursor-not-allowed md:col-span-2': shouldBeDim()
             }">
     </ng-container>
 
     <ng-container *ngIf="field.FieldType === 7">
-        <input type="time" [id]="field.InternalFieldName" [formControlName]="field.InternalFieldName"
+        <input type="time" [id]="field.InternalFieldName" dir="auto" [formControlName]="field.InternalFieldName"
             [readonly]="shouldBeDim() ? true : null"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm cursor-pointer" [ngClass]="{'bg-gray-100 !cursor-not-allowed md:col-span-2': shouldBeDim(), 'border-red-500': control?.invalid && control?.touched
             }">
@@ -251,7 +251,7 @@
                 <div *ngIf="lookup.LookupID !== -1" class="">
                     <label class="flex items-center cursor-pointer text-sm text-gray-900 hover:text-primary">
                         <input type="radio" [attr.name]="field.InternalFieldName" [value]="lookup.LookupID"
-                            [formControlName]="field.InternalFieldName" (change)="onLookupChange(lookup)"
+                            dir="auto" [formControlName]="field.InternalFieldName" (change)="onLookupChange(lookup)"
                             class="h-4 w-4 border-gray-300 form-radio" [ngClass]="{'bg-gray-100 !cursor-not-allowed md:col-span-2': shouldBeDim()
                         }">
                         @if(store.index.locale == 'en'){
@@ -266,7 +266,7 @@
     </ng-container>
 
     <ng-container *ngIf="(field.FieldType === 6 && field.LookupValues)">
-        <ng-select [formControlName]="field.InternalFieldName" [id]="field.InternalFieldName"
+        <ng-select dir="auto" [formControlName]="field.InternalFieldName" [id]="field.InternalFieldName"
             [notFoundText]="translations()?.ngSelectSearchErr.label"
             [appIdSetter]="'select-input-' + field.ServiceFieldID" [readonly]="shouldBeDim() ? true : null"
             (change)="onLookupChange($event)" [clearable]="false"
@@ -333,11 +333,11 @@
                         <ng-container
                             *ngIf="(tableField.FieldType === 1 || tableField.FieldType === 12 || tableField.FieldType === 15 || tableField.FieldType === 11 || tableField.FieldType === 20 || tableField.FieldType === 21 || tableField.FieldType === 22 || tableField.FieldType === 24) && !tableField.IsSystemField">
                             <input [type]="getTableFieldInputType(tableField.FieldType)"
-                                (input)="checkDirection($event); enforceMaxLength($event, tableField.MAX_Length, tableField); 
+                                (input)="enforceMaxLength($event, tableField.MAX_Length, tableField); 
             ((tableField.FieldType === 12 || tableField.FieldType === 15 || tableField.FieldType === 20) ? enforcePositiveNumberForTable($event, tableField) : '');
             ((tableField.FieldType === 11 || tableField.FieldType === 24) ? enforceCompoundNumber($event, tableField) : '');" [id]="tableField.InternalFieldName"
                                 [readonly]="(shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || (this.shouldBeDim() && !field.isGDXVal)"
-                                [formControlName]="tableField.InternalFieldName" class="form-input flex-1" [ngClass]="{'!border-2 rounded-md !border-red-500': getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required') && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched, 'direction-ltr': !isArabic, 'direction-rtl': isArabic, '!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en',
+                                dir="auto" [formControlName]="tableField.InternalFieldName" class="form-input flex-1" [ngClass]="{'!border-2 rounded-md !border-red-500': getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required') && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched,'!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en',
                                     'bg-gray-100 !cursor-not-allowed md:col-span-2': (shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || this.shouldBeDim()
                                 }">
                         </ng-container>
@@ -345,7 +345,7 @@
                         <!-- TextArea -->
                         <ng-container *ngIf="tableField.FieldType === 2 && !tableField.IsSystemField">
                             <textarea [id]="tableField.InternalFieldName"
-                                [formControlName]="tableField.InternalFieldName" rows="3" class="form-input w-full"
+                                dir="auto" [formControlName]="tableField.InternalFieldName" rows="3" class="form-input w-full"
                                 [readonly]="(shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || (this.shouldBeDim() && !field.isGDXVal)"
                                 (keyup)="enforceMaxLength($event, field.MAX_Length, tableField)" [ngClass]="{'!border-2 rounded-md !border-red-500': getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required') && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched,
                                     'bg-gray-100 !cursor-not-allowed md:col-span-2': (shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || (this.shouldBeDim() && !field.isGDXVal)
@@ -364,7 +364,7 @@
                         <ng-container *ngIf="tableField.FieldType === 23 && !tableField.IsSystemField">
                             <input type="text" [id]="tableField.InternalFieldName" mwlFlatpickr [options]="dateTime"
                                 [readonly]="(shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || this.shouldBeDim() ? true : null"
-                                [formControlName]="tableField.InternalFieldName"
+                                dir="auto" [formControlName]="tableField.InternalFieldName"
                                 class="form-input direction-ltr ltr:text-left rtl:text-right"
                                 [ngClass]="{'!border-2 rounded-md !border-red-500': getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required') && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched,
                                 'bg-gray-100 !cursor-not-allowed md:col-span-2':(shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || (this.shouldBeDim() && !field.isGDXVal)}">
@@ -401,10 +401,10 @@
                             *ngIf="tableField.FieldType === 5 && !tableField.IsSystemField && tableField.LookupValues">
                             <div class="mt-1 w-full">
                                 <div *ngFor="let lookup of field.LookupValues"
-                                    class="flex items-center mb-2 cursor-pointer">
+                                    class="flex items-center flex-wrap mb-2 cursor-pointer">
                                     <input type="radio" [id]="tableField.InternalFieldName + '-' + lookup.LookupID"
                                         [name]="tableField.InternalFieldName" [value]="lookup.LookupID"
-                                        [disabled]="shouldBeDim()" [formControlName]="tableField.InternalFieldName"
+                                        [disabled]="shouldBeDim()" dir="auto" [formControlName]="tableField.InternalFieldName"
                                         (change)="onLookupChange($event)" class="h-4 w-4 border-gray-300">
                                     <label [for]="tableField.InternalFieldName + '-' + lookup.LookupID"
                                         class="ml-3 block text-sm font-medium text-gray-700">
@@ -418,7 +418,7 @@
                         <ng-container
                             *ngIf="tableField.FieldType === 6 && tableField.LookupValues && !tableField.IsSystemField">
                             <div class="flex-1">
-                                <ng-select [formControlName]="tableField.InternalFieldName"
+                                <ng-select dir="auto" [formControlName]="tableField.InternalFieldName"
                                     [notFoundText]="translations()?.ngSelectSearchErr.label"
                                     [id]="tableField.InternalFieldName"
                                     [readonly]="(shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || (this.shouldBeDim() && !field.isGDXVal)"
@@ -442,7 +442,7 @@
                         <ng-container *ngIf="tableField.FieldType === 7 && !tableField.IsSystemField">
                             <input type="time" [id]="tableField.InternalFieldName"
                                 [readonly]="(shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || this.shouldBeDim() ? true : null"
-                                [formControlName]="tableField.InternalFieldName" class="form-input" [ngClass]="{'!border-2 rounded-md !border-red-500': getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required') && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched,
+                                dir="auto" [formControlName]="tableField.InternalFieldName" class="form-input" [ngClass]="{'!border-2 rounded-md !border-red-500': getControlFromGroup(formGroup, tableField.InternalFieldName)?.hasError('required') && getControlFromGroup(formGroup, tableField.InternalFieldName)?.touched,
                                     'bg-gray-100 !cursor-not-allowed md:col-span-2': (shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || this.shouldBeDim()
                                 }">
                         </ng-container>
@@ -521,7 +521,7 @@
                                 <label class="ml-2 block text-sm text-gray-900 cursor-pointer hover:text-primary">
                                     <input type="checkbox" [name]="tableField.InternalFieldName"
                                         [disabled]="shouldBeDim()" [value]="tableField.TitleEn"
-                                        [formControlName]="tableField.InternalFieldName" class="form-checkbox"
+                                        dir="auto" [formControlName]="tableField.InternalFieldName" class="form-checkbox"
                                         [ngClass]="{'bg-gray-100 !cursor-not-allowed md:col-span-2': (shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || this.shouldBeDim()}">>
                                     @if(store.index.locale == 'en'){
                                     {{ tableField.TitleEn }}
@@ -591,16 +591,16 @@
                             </div>
                         </ng-container>
                         <ng-container *ngIf="tableField.FieldType === 17">
-                            <!--  <quill-editor [modules]="modules2" [formControlName]="field.InternalFieldName"
+                            <!--  <quill-editor [modules]="modules2" dir="auto" [formControlName]="field.InternalFieldName"
             [placeholder]="store.index.locale == 'en'? field.DescriptionEn: field.DescriptionAr"
             [id]="field.InternalFieldName" [attr.disabled]="shouldBeDim() ? true : null" class="w-full h-40" [ngClass]="{'bg-gray-100 !cursor-not-allowed md:col-span-2': shouldBeDim(), 'border-red-500': control?.invalid && control?.touched
             }"></quill-editor> -->
                             <div>
-                                <app-my-editor [formControlName]="tableField.InternalFieldName"
+                                <app-my-editor dir="auto" [formControlName]="tableField.InternalFieldName"
                                     [quillID]="tableField.InternalFieldName" [isTable]="true"
                                     [placeHolder]="store.index.locale == 'en'? tableField.DescriptionEn: tableField.DescriptionAr"
                                     [isDisabled]="shouldBeDim()"
-                                    [ngClass]="{'direction-ltr': !isArabic, 'direction-rtl': isArabic, '!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en'}"></app-my-editor>
+                                    [ngClass]="{'!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en'}"></app-my-editor>
                             </div>
                         </ng-container>
 
@@ -609,7 +609,7 @@
                             *ngIf="tableField.FieldType === 19 && !tableField.IsSystemField && tableField.LookupValues">
                             <div class="flex-1">
                                 <ng-container #selectRef2>
-                                    <ng-select [formControlName]="tableField.InternalFieldName"
+                                    <ng-select dir="auto" [formControlName]="tableField.InternalFieldName"
                                         [notFoundText]="translations()?.ngSelectSearchErr.label"
                                         [id]="tableField.InternalFieldName"
                                         [readonly]="(shouldBeDim() && getControlFromGroup(formGroup, 'GDXTableFieldIDs')?.value.includes(tableField.ServiceTableFieldID) && tableField.GDXDim) || this.shouldBeDim() ? true : null"
@@ -961,7 +961,7 @@
 
         <div class="w-full" [formArrayName]="field.InternalFieldName">
             <div class="flex flex-wrap gap-6">
-                @if(!(shouldBeDim() && allFilesEmpty())){
+                @if(!(shouldBeDim() && allFilesEmpty()) && !(field.Attachments && field.Attachments.length === 0)){
                 @for(formGroup of getFormArray(field.InternalFieldName)?.controls; track $index) {
                 @if(!(shouldBeDim() && formGroup.get('files')?.value.length == 0) || !shouldBeDim()){
                 <ng-container>
@@ -970,6 +970,7 @@
                         @if(field.Attachments![$index]){
                         <!-- [attachmentGroup]="formGroup"
                                                 [$index]="$index" -->
+                                                
                         <app-file-upload [form]="form" formControlName="files" [field]="field"
                             [title]="store.index.locale == 'en'? field.Attachments![$index].TitleEn: field.Attachments![$index].TitleAr"
                             [format]="field.Attachments![$index].AllowedFileTypes" [index]="$index"
@@ -1012,7 +1013,7 @@
         </div>
         <!--  @for (attachment of field.Attachments; track $index) {
             <app-file-upload [title]="store.index.locale == 'en'? attachment.TitleEn: attachment.TitleAr" [format]="attachment.AllowedFileTypes" [uploadId]="attachment.ID + ''"
-                acceptedTypes="*" [multiple]="attachment.AddMoreThanOne" [formControlName]="attachment.ID" [maxFileSizeKB]="attachment.MaxAttachmentSizeKB" [required]="attachment.REQ[0].IsRequired">
+                acceptedTypes="*" [multiple]="attachment.AddMoreThanOne" dir="auto" [formControlName]="attachment.ID" [maxFileSizeKB]="attachment.MaxAttachmentSizeKB" [required]="attachment.REQ[0].IsRequired">
             </app-file-upload>
         } -->
     </ng-container>
@@ -1112,7 +1113,7 @@
     </ng-container>
 
     <ng-container *ngIf="(field.FieldType === 19 && field.LookupValues)">
-        <ng-select [formControlName]="field.InternalFieldName" [id]="field.InternalFieldName" [deselectOnClick]="true"
+        <ng-select dir="auto" [formControlName]="field.InternalFieldName" [id]="field.InternalFieldName" [deselectOnClick]="true"
             [notFoundText]="translations()?.ngSelectSearchErr.label" (add)="onItemAdded($event)"
             [appIdSetter]="'select-input-' + field.ServiceFieldID" [readonly]="shouldBeDim() ? true : null"
             (change)="onLookupChange($event)" [clearable]="false" [multiple]="true"
@@ -1180,15 +1181,15 @@
         </button>
     </ng-container>
     <ng-container *ngIf="field.FieldType === 17">
-        <!--  <quill-editor [modules]="modules2" [formControlName]="field.InternalFieldName"
+        <!--  <quill-editor [modules]="modules2" dir="auto" [formControlName]="field.InternalFieldName"
             [placeholder]="store.index.locale == 'en'? field.DescriptionEn: field.DescriptionAr"
             [id]="field.InternalFieldName" [attr.disabled]="shouldBeDim() ? true : null" class="w-full h-40" [ngClass]="{'bg-gray-100 !cursor-not-allowed md:col-span-2': shouldBeDim(), 'border-red-500': control?.invalid && control?.touched
             }"></quill-editor> -->
         <div>
-            <app-my-editor [formControlName]="field.InternalFieldName" [quillID]="field.InternalFieldName"
+            <app-my-editor dir="auto" [formControlName]="field.InternalFieldName" [quillID]="field.InternalFieldName"
                 [placeHolder]="store.index.locale == 'en'? field.DescriptionEn: field.DescriptionAr"
                 [isDisabled]="shouldBeDim()" [isTable]="false"
-                [ngClass]="{'direction-ltr': !isArabic, 'direction-rtl': isArabic, '!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en'}"></app-my-editor>
+                [ngClass]="{'!text-left': store.index.locale == 'en', '!text-right': store.index.locale != 'en'}"></app-my-editor>
         </div>
     </ng-container>
     @if (field.FieldType !== 18 && field.FieldType !== 8 && control && control.touched) {
