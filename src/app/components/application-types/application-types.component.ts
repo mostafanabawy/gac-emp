@@ -88,7 +88,9 @@ export class ApplicationTypesComponent {
         const isRefresh = state?.navigationId === 1 || !this.router.navigated;
         const restoreExplicitly = state?.restoreTabs === true;
         const branchTab = history.state?.['branchTab'];
-        if (((isRefresh && branchTab) || (restoreExplicitly && branchTab)) && !!this.applicationTypes().find((item: any) => item.InboxType === branchTab)) {
+        const lastNav = this.router.lastSuccessfulNavigation;
+        const isBackNav = lastNav?.trigger === 'popstate';
+        if (((isRefresh && branchTab) || (restoreExplicitly && branchTab) || (isBackNav && branchTab)) && !!this.applicationTypes().find((item: any) => item.InboxType === branchTab)) {
           this.activeTab = branchTab
           this.overrideSet = true;
         }
@@ -168,6 +170,7 @@ export class ApplicationTypesComponent {
           this.dataPage.set(2);
           let getAll = this.applicationTypes().find((item: any) => item.InboxType === this.activeTab);
           if (this.dataPage() <= pagingInfo.TotalPages && ![2852, 2855].includes(getAll.TabStyleID)) {
+            this.showLoaderIfLazyLoad.set(true);
             this.loadCardsData({ PageSize: this.pageSize(), PageNum: this.dataPage() }, tabName);
           }
           let dataToBeSent = cards.Data.slice(startIndex, startIndex + this.itemsPerPage()).filter((item: any, index: number) => {

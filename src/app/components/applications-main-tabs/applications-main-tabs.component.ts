@@ -34,7 +34,9 @@ export class ApplicationsTabsComponent {
         const isRefresh = state?.navigationId === 1 || !this.router.navigated;
         const mainTab = history.state?.['mainTab'];
         const restoreExplicitly = state?.restoreTabs === true;
-        if ((isRefresh && mainTab) || (restoreExplicitly && mainTab)) {
+        const lastNav = this.router.lastSuccessfulNavigation;
+        const isBackNav = lastNav?.trigger === 'popstate';
+        if ((isRefresh && mainTab) || (restoreExplicitly && mainTab) || (isBackNav && mainTab)) {
           this.tab8 = mainTab;
           this.allApplicationsService.mainTab = mainTab
           this.overrideSet = true;
